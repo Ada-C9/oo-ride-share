@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Trip class" do
 
@@ -14,6 +15,7 @@ describe "Trip class" do
         end_time: end_time,
         cost: 23.45,
         rating: 3
+        duration: (end_time - start_time) * 60
       }
       @trip = RideShare::Trip.new(@trip_data)
     end
@@ -37,6 +39,14 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
+    end
+
+    it "Raises an exception if a trip's end time is before its start time." do
+      @trip_data[:start_time] = '2016-04-05T14:09:00+00:00'
+      @trip_data[:end_time] = '2016-04-05T14:01:00+00:00'
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
     end
   end
 end

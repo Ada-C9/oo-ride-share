@@ -71,20 +71,20 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
-        parsed_trip = {
-          id: raw_trip[:id].to_i,
-          driver: driver,
-          passenger: passenger,
-          start_time: Time.parse(raw_trip[:start_time]),
-          end_time: Time.parse(raw_trip[:end_time]),
-          cost: raw_trip[:cost].to_f,
-          rating: raw_trip[:rating].to_i
-        }
+          parsed_trip = {
+            id: raw_trip[:id].to_i,
+            driver: driver,
+            passenger: passenger,
+            start_time: Time.parse(raw_trip[:start_time]),
+            end_time: Time.parse(raw_trip[:end_time]),
+            cost: raw_trip[:cost].to_f,
+            rating: raw_trip[:rating].to_i
+          }
 
-        trip = Trip.new(parsed_trip)
-        driver.add_trip(trip)
-        passenger.add_trip(trip)
-        trips << trip
+          trip = Trip.new(parsed_trip)
+          driver.add_trip(trip)
+          passenger.add_trip(trip)
+          trips << trip
       end
 
       trips
