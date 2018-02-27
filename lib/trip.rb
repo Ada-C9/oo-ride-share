@@ -22,5 +22,9 @@ module RideShare
       end
     end
 
+    def duration
+      (@end_time - @start_time).to_i
+    end
+
   end
 end
