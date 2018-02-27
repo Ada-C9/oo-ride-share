@@ -22,6 +22,22 @@ describe "Trip class" do
       @trip.must_be_kind_of RideShare::Trip
     end
 
+    it "raises an error if end_time is before start_time" do
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2016-04-05T14:09:00+00:00'),
+        end_time: Time.parse('2016-04-05T14:01:00+00:00'),
+        cost: 23.45,
+        rating: 3
+      }
+      
+      proc {
+        RideShare::Trip.new(trip_data)
+      }.must_raise ArgumentError
+    end
+
     it "stores an instance of passenger" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end
