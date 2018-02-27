@@ -44,8 +44,8 @@ Each `Passenger` has:
 
 **Attribute**|**Description**
 -----|-----
-id|The Driver's ID number
-name|The name of the Driver
+id|The Passenger's ID number
+name|The name of the Passenger
 Phone Number|The Passenger's Phone Number which must be in phone number format (XXX) XXX-XXXX
 trips|A list of trips that only this passenger has taken
 
