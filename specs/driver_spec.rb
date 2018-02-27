@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Driver class" do
+xdescribe "Driver class" do
 
   describe "Driver instantiation" do
     before do
