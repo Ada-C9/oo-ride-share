@@ -76,5 +76,23 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
+
+    #For a given driver, calculate their total revenue for all trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
+
+    describe "get_total_rev" do
+      before do
+        @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
+      end
+      it "gets drivers total revenue" do
+        # Arrange/Given
+        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5, cost: 5.00})
+        trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5, cost: 5.00})
+        # Act/When
+        @driver.add_trip(trip)
+        @driver.add_trip(trip2)
+        # Assert/Then
+        @driver.get_total_rev.must_equal 5.36
+      end
+    end
   end
 end
