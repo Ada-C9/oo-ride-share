@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -71,6 +72,8 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+
+
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
@@ -90,6 +93,8 @@ module RideShare
       trips
     end
 
+    # any method below private cannot be called to operate by other methods
+    # this is because it's best practice to make things as private as possible by default
     private
 
     def check_id(id)
