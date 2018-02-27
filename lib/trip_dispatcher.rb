@@ -64,12 +64,15 @@ module RideShare
     end
 
     def load_trips
+
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
 
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+        start_time = Time.parse(raw_trip[:start_time])
+        end_time = Time.parse(raw_trip[:end_time])
 
         parsed_trip = {
           id: raw_trip[:id].to_i,

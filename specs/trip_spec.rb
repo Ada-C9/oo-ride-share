@@ -18,6 +18,22 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
     end
 
+    it "raises and ArgumentError if end_time is before start_time" do
+      start_time = Time.parse('2015-05-20T12:16:00+00:00')
+      end_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+      @trip_data.must_raise ArgumentError
+    end
+
     it "is an instance of Trip" do
       @trip.must_be_kind_of RideShare::Trip
     end
