@@ -88,5 +88,22 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "accurately loads trip info for time" do
+      dispatcher = RideShare::TripDispatcher.new
+      first_trip = dispatcher.trips.first
+
+      first_trip.start_time.must_be_kind_of Time
+      first_trip.start_time.must_equal Time.parse("2016-04-05T14:01:00+00:00")
+      first_trip.end_time.must_be_kind_of Time
+      first_trip.end_time.must_equal Time.parse("2016-04-05T14:09:00+00:00")
+
+      last_trip = dispatcher.trips.last
+
+      last_trip.start_time.must_be_kind_of Time
+      last_trip.start_time.must_equal Time.parse("2016-04-25T02:59:00+00:00")
+      last_trip.end_time.must_be_kind_of Time
+      last_trip.end_time.must_equal Time.parse("2016-04-25T03:06:00+00:00")
+    end
   end
 end
