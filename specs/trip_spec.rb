@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Trip class" do
 
@@ -32,7 +33,7 @@ describe "Trip class" do
         cost: 23.45,
         rating: 3
       }
-      
+
       proc {
         RideShare::Trip.new(trip_data)
       }.must_raise ArgumentError
@@ -53,6 +54,25 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
+    end
+  end
+
+  describe "duration" do
+    before do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2016-04-05T14:01:00+00:00'),
+        end_time: Time.parse('2016-04-05T14:09:00+00:00'),
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "calculates the duration of a trip in seconds" do
+      @trip.duration_in_seconds.must_be_kind_of Integer
     end
   end
 end
