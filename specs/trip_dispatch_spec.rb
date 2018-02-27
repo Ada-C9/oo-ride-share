@@ -2,12 +2,12 @@ require_relative 'spec_helper'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
-    it "is an instance of TripDispatcher" do
+    it "001 is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
       dispatcher.must_be_kind_of RideShare::TripDispatcher
     end
 
-    it "establishes the base data structures when instantiated" do
+    it "002 establishes the base data structures when instantiated" do
       dispatcher = RideShare::TripDispatcher.new
       [:trips, :passengers, :drivers].each do |prop|
         dispatcher.must_respond_to prop
@@ -19,16 +19,17 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "find_driver method" do
+  describe "003 find_driver method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
 
-    it "throws an argument error for a bad ID" do
+    #driver id #trip_spec and driver do this also
+    it "004 throws an argument error for a bad ID" do
       proc{ @dispatcher.find_driver(0) }.must_raise ArgumentError
     end
 
-    it "finds a driver instance" do
+    it "005 finds a driver instance" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
     end
@@ -38,19 +39,19 @@ describe "TripDispatcher class" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
-
-    it "throws an argument error for a bad ID" do
+    #passenger does not have this
+    it "006 throws an argument error for a bad ID" do
       proc{ @dispatcher.find_passenger(0) }.must_raise ArgumentError
     end
 
-    it "finds a passenger instance" do
+    it "007 finds a passenger instance" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
     end
   end
 
   describe "loader methods" do
-    it "accurately loads driver information into drivers array" do
+    it "008accurately loads driver information into drivers array" do
       dispatcher = RideShare::TripDispatcher.new
 
       first_driver = dispatcher.drivers.first
@@ -64,7 +65,7 @@ describe "TripDispatcher class" do
       last_driver.status.must_equal :AVAILABLE
     end
 
-    it "accurately loads passenger information into passengers array" do
+    it "009 accurately loads passenger information into passengers array" do
       dispatcher = RideShare::TripDispatcher.new
 
       first_passenger = dispatcher.passengers.first
@@ -76,7 +77,7 @@ describe "TripDispatcher class" do
       last_passenger.id.must_equal 300
     end
 
-    it "accurately loads trip info and associates trips with drivers and passengers" do
+    it "010 accurately loads trip info and associates trips with drivers and passengers" do
       dispatcher = RideShare::TripDispatcher.new
 
       trip = dispatcher.trips.first
@@ -87,6 +88,19 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+    end
+
+    it "011 parses time into time class" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      trip = dispatcher.trips.first
+      driver = trip.driver
+      passenger = trip.passenger
+
+      trip.start_time.must_be_kind_of Time
+    end
+
+    it "012 returns an error if start time is before end time" do
     end
   end
 end

@@ -13,6 +13,7 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
+      #there is also a test for this in driver specs
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end

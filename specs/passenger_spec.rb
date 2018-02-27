@@ -7,20 +7,21 @@ describe "Passenger class" do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
     end
 
-    it "is an instance of Passenger" do
+    it "001 is an instance of Passenger" do
       @passenger.must_be_kind_of RideShare::Passenger
     end
 
-    it "throws an argument error with a bad ID value" do
+    it "002 throws an argument error with a bad ID value" do
       proc{ RideShare::Passenger.new(id: 0, name: "Smithy")}.must_raise ArgumentError
     end
 
-    it "sets trips to an empty array if not provided" do
+    #differs from driver_spec-throws error
+    it "003 sets trips to an empty array if not provided" do
       @passenger.trips.must_be_kind_of Array
       @passenger.trips.length.must_equal 0
     end
 
-    it "is set up for specific attributes and data types" do
+    it "004 is set up for specific attributes and data types" do
       [:id, :name, :phone_number, :trips].each do |prop|
         @passenger.must_respond_to prop
       end
@@ -41,13 +42,13 @@ describe "Passenger class" do
       @passenger.add_trip(trip)
     end
 
-    it "each item in array is a Trip instance" do
+    it "005 each item in array is a Trip instance" do
       @passenger.trips.each do |trip|
         trip.must_be_kind_of RideShare::Trip
       end
     end
 
-    it "all Trips must have the same Passenger id" do
+    it "006 all Trips must have the same Passenger id" do
       @passenger.trips.each do |trip|
         trip.passenger.id.must_equal 9
       end
@@ -63,13 +64,13 @@ describe "Passenger class" do
       @passenger.add_trip(trip)
     end
 
-    it "returns an array" do
+    it "007 returns an array" do
       drivers = @passenger.get_drivers
       drivers.must_be_kind_of Array
       drivers.length.must_equal 1
     end
 
-    it "all items in array are Driver instances" do
+    it "008 all items in array are Driver instances" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
       end

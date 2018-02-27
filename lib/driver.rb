@@ -16,11 +16,13 @@ module RideShare
       @id = input[:id]
       @name = input[:name]
       @vehicle_id = input[:vin]
+      #is nil if avaialbe otherwise status
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
+      #is nil if empty array, otherwise trips
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    #for driver/trip
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
@@ -36,6 +38,8 @@ module RideShare
       return average
     end
 
+    #takes in Trip class to check parameter
+    #adds trip to instance variable trips within driver class
     def add_trip(trip)
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")

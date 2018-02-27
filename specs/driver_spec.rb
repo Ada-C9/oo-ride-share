@@ -7,25 +7,26 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
     end
 
-    it "is an instance of Driver" do
+    it "001 is an instance of Driver" do
       @driver.must_be_kind_of RideShare::Driver
     end
 
-    it "throws an argument error with a bad ID value" do
+    it "002 throws an argument error with a bad ID value" do
       proc{ RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")}.must_raise ArgumentError
     end
 
-    it "throws an argument error with a bad VIN value" do
+    it "003 throws an argument error with a bad VIN value" do
       proc{ RideShare::Driver.new(id: 100, name: "George", vin: "")}.must_raise ArgumentError
       proc{ RideShare::Driver.new(id: 100, name: "George", vin: "33133313331333133extranums")}.must_raise ArgumentError
     end
 
-    it "sets trips to an empty array if not provided" do
+    #how si this different from test 6?
+    it "004 sets trips to an empty array if not provided" do
       @driver.trips.must_be_kind_of Array
       @driver.trips.length.must_equal 0
     end
 
-    it "is set up for specific attributes and data types" do
+    it "005 is set up for specific attributes and data types" do
       [:id, :name, :vehicle_id, :status].each do |prop|
         @driver.must_respond_to prop
       end
@@ -44,35 +45,36 @@ describe "Driver class" do
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
     end
 
-    it "throws an argument error if trip is not provided" do
+    #different from 4?
+    it "006 throws an argument error if trip is not provided" do
       proc{ @driver.add_trip(1) }.must_raise ArgumentError
     end
 
-    it "increases the trip count by one" do
+    it "007 increases the trip count by one" do
       previous = @driver.trips.length
       @driver.add_trip(@trip)
       @driver.trips.length.must_equal previous + 1
     end
   end
 
-  describe "average_rating method" do
+  describe " average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
       @driver.add_trip(trip)
     end
 
-    it "returns a float" do
+    it "008 returns a float" do
       @driver.average_rating.must_be_kind_of Float
     end
 
-    it "returns a float within range of 1.0 to 5.0" do
+    it "009 returns a float within range of 1.0 to 5.0" do
       average = @driver.average_rating
       average.must_be :>=, 1.0
       average.must_be :<=, 5.0
     end
 
-    it "returns zero if no trips" do
+    it "010 returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end

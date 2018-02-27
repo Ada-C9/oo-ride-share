@@ -39,7 +39,10 @@ module RideShare
     end
 
     def find_driver(id)
+      #checkid method for each driver(in this class)
       check_id(id)
+      #for each driver in instance variable for TripDispenser instance, assign their id ?
+      #if true
       @drivers.find{ |driver| driver.id == id }
     end
 
@@ -59,10 +62,15 @@ module RideShare
     end
 
     def find_passenger(id)
+      #check passenger id
       check_id(id)
+      #for each passenger in instance variable of dispatcher id is passenger id
+      #finds first result in @passenger instance variable
+      #if true
       @passengers.find{ |passenger| passenger.id == id }
     end
 
+#????Go over this
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
@@ -75,8 +83,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }

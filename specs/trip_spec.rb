@@ -18,19 +18,20 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
     end
 
-    it "is an instance of Trip" do
+    it "001 is an instance of Trip" do
       @trip.must_be_kind_of RideShare::Trip
     end
 
-    it "stores an instance of passenger" do
+    it "002 stores an instance of passenger" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end
 
-    it "stores an instance of driver" do
+    it "003 stores an instance of driver" do
       @trip.driver.must_be_kind_of RideShare::Driver
     end
 
-    it "raises an error for an invalid rating" do
+    #driver also does this,
+    it "004 raises an error for an invalid rating" do
       [-3, 0, 6].each do |rating|
         @trip_data[:rating] = rating
         proc {
