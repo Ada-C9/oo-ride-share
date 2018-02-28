@@ -141,18 +141,5 @@ describe "TripDispatcher class" do
       new_trips_length.must_equal initial_trips_length + 1
     end
 
-    it "updates trips list for driver" do
-      passenger_id = 150
-      #driver with id = 2 is the first available driver
-      driver = @dispatcher.find_driver(2)
-      initial_trips_length = driver.trips.length
-
-      new_trip = @dispatcher.request_trip(passenger_id)
-      driver = @dispatcher.find_driver(2)
-      new_trips_length = driver.trips.length
-
-      new_trips_length.must_equal initial_trips_length + 1
-    end
-
   end
 end

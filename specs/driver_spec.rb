@@ -38,13 +38,23 @@ describe "Driver class" do
   end
 
   describe "#update_driver_info" do
-    it "changes driver status to UNAVAILABLE" do
+    before do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE, trips: [])
 
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: nil, cost: nil, rating: nil})
+    end
 
+    it "changes driver status to UNAVAILABLE" do
       @driver.update_driver_info(@trip)
       @driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "updates trips array with new_trip" do
+      initial_trips_length = @driver.trips.length
+      @driver.update_driver_info(@trip)
+      new_trips_length = @driver.trips.length
+
+      new_trips_length.must_equal initial_trips_length + 1
     end
   end
 
