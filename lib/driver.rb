@@ -7,7 +7,8 @@ module RideShare
     FEE = 1.65
     PERCENT_TAKEHOME = 0.8
 
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :trips
+    attr_accessor :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
