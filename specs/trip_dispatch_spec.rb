@@ -88,5 +88,12 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "returns time" do
+      last_trip = RideShare::TripDispatcher.new
+
+      last_trip.trips.last.start_time.must_be_kind_of Time
+    end
+
   end
 end

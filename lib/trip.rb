@@ -1,5 +1,5 @@
 require 'csv'
-
+require 'time'
 module RideShare
   class Trip
     attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
@@ -8,8 +8,8 @@ module RideShare
       @id = input[:id]
       @driver = input[:driver]
       @passenger = input[:passenger]
-      @start_time = input[:start_time]
-      @end_time = input[:end_time]
+      @start_time = Time.parse(input[:start_time])
+      @end_time = Time.parse(input[:end_time])
       @cost = input[:cost]
       @rating = input[:rating]
 
@@ -17,5 +17,14 @@ module RideShare
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
     end
+
+    def trip_duration
+      if ((@end_time - @start_time) / 60 ).to_i < 0
+        raise ArgumentError.new "Invalid trip duration, Trip must begin before it can end."
+      else
+        return ((@end_time - @start_time) / 60 ).to_i
+      end
+    end
+
   end
 end

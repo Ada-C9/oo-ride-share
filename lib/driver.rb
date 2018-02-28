@@ -40,8 +40,23 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
+    end
+
+    def total_revenue
+      driver_revenue = 0
+      @trips.each do |trip|
+        driver_revenue += ((trip.cost - 1.65) * 0.8)
+      end
+      return driver_revenue
+    end
+
+    def average_revenue_per_hour
+      if @trips.length > 0
+        driver_revenue = total_revenue / @trips.length
+      else
+        raise ArgumentError.new "No trips to provide revenue"
+      end
     end
   end
 end

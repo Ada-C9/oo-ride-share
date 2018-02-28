@@ -36,7 +36,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: '2015-05-20T12:15:00+00:00', end_time: '2015-05-20T12:35:00+00:00', rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +58,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: '2015-05-20T12:15:00+00:00', end_time: '2015-05-20T12:35:00+00:00', rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -73,6 +73,26 @@ describe "Passenger class" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
       end
+    end
+  end
+
+  describe "total_amount_of_money method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: '2015-05-20T12:15:00+00:00', end_time: '2015-05-20T12:35:00+00:00', cost: 7.00, rating: 5})
+
+      @passenger.add_trip(trip)
+    end
+
+    it "returns the total of money spent on all trips" do
+      @passenger.total_amount_of_money.must_be_kind_of Float
+      @passenger.total_amount_of_money.must_equal 7
+    end
+
+    it "returns the accumulative time spent on trips" do
+      @passenger.total_amount_of_time.must_be_kind_of Integer
+      @passenger.total_amount_of_time.must_equal 20
     end
   end
 end
