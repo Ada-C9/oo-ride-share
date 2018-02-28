@@ -77,4 +77,13 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue method" do
+    it "returns total revenue" do
+
+
+    end
+
+  end
+
 end

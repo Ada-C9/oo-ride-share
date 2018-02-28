@@ -43,5 +43,20 @@ module RideShare
 
       @trips << trip
     end
+
+    # def total_revenue
+    #   #
+    #   # iterate through trips in all trips
+    #   # - fee is 1.65
+    #   # - trip_cost
+    #   # - trip_revenue is (trip_cost - fee) * 0.8
+    #   # - trip_revenue adds to total_revenue
+    #   #
+    #   #
+    #   # return total_revenue
+    #
+    # end
+
+
   end
 end
