@@ -102,5 +102,45 @@ describe "Passenger class" do
 
   end # Describe total_spent
 
+  describe "#total_time" do
+
+    it "returns total spent in float" do
+      pass = RideShare::Passenger.new({
+        id: 89,
+        trips: [
+          RideShare::Trip.new({
+            rating:3,
+            cost:27,
+            start_time: Time.parse("2016-02-16T12:45:00+00:00"),
+            end_time: Time.parse("2016-02-16T12:45:00+00:00") + 25 * 60
+            }),
+          RideShare::Trip.new({
+            rating:3,
+            cost:27,
+            start_time: Time.parse("2016-02-16T12:45:00+00:00"),
+            end_time: Time.parse("2016-02-16T12:45:00+00:00") + 15 * 60
+            }),
+          RideShare::Trip.new({
+            rating:3,
+            cost:27,
+            start_time: Time.parse("2016-02-16T12:45:00+00:00"),
+            end_time: Time.parse("2016-02-16T12:45:00+00:00") + 42 * 60
+            })
+        ]
+        })
+      expected_total = 4920
+      result = pass.total_time
+      result.must_equal expected_total
+    end
+
+    it "returns zero if passanger has no trips" do
+      pass = RideShare::Passenger.new({id: 89})
+      expected_total = 0
+      result = pass.total_time
+      result.must_equal expected_total
+    end
+
+  end # Describe total_spent
+
 
 end # Describe Passanger Class
