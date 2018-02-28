@@ -26,7 +26,7 @@ describe "Trip class" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end
 
-    it "stores an instance of driver" do
+    it "stores an instanxce of driver" do
       @trip.driver.must_be_kind_of RideShare::Driver
     end
 
@@ -56,7 +56,7 @@ describe "Trip class" do
       @trip_data[:end_time] = end_time
       @trip = RideShare::Trip.new(@trip_data)
 
-      @trip.duration.must_equal nil
+      @trip.get_duration.must_equal nil
      end
 
     it "calculates the duration of the trip in seconds when short time" do
@@ -66,7 +66,7 @@ describe "Trip class" do
       @trip_data[:end_time] = end_time
       @trip = RideShare::Trip.new(@trip_data)
 
-      @trip.duration.must_equal 1500
+      @trip.get_duration.must_equal 1500
     end
 
     it "calculates the duration of the trip in seconds when long time" do
@@ -76,7 +76,7 @@ describe "Trip class" do
       @trip_data[:end_time] = end_time
       @trip = RideShare::Trip.new(@trip_data)
 
-      @trip.duration.must_equal 36000
+      @trip.get_duration.must_equal 36000
     end
 
   end

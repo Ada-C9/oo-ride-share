@@ -81,4 +81,42 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "get_revenue method" do
+    before do
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+    end
+
+    it "calculates revenue with one trip" do
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 15.00, rating: 5})
+      @driver.add_trip(trip)
+      @driver.get_revenue.must_equal 10.68
+    end
+
+    it "calculates revenue with multiple trips" do
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 15.25, rating: 5})
+      @driver.add_trip(trip)
+
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 35.03, rating: 5})
+      @driver.add_trip(trip)
+
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 55.15, rating: 5})
+      @driver.add_trip(trip)
+
+      @driver.get_revenue.must_equal 80.38
+    end
+
+    it "returns zero where there are no trips" do
+      @driver.get_revenue.must_equal 0
+    end
+
+    it "returns zero if fee is greater than or equal to cost" do
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 1.00, rating: 5})
+      @driver.add_trip(trip)
+      @driver.get_revenue.must_equal 0
+    end
+
+  end
 end

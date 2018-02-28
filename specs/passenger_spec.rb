@@ -30,8 +30,25 @@ describe "Passenger class" do
       @passenger.phone_number.must_be_kind_of String
       @passenger.trips.must_be_kind_of Array
     end
-  end
 
+    it "total_spent is zero if no trips taken" do
+      @passenger.get_total.must_equal 0
+    end
+
+    it "total_spent is calculated with one trip" do
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 15.00, rating: 5})
+      @passenger.add_trip(trip)
+
+      @passenger.get_total.must_equal 15.00
+    end
+
+    it "total_spent is calculated with many trips" do
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, cost: 15.00, rating: 5})
+      10.times { @passenger.add_trip(trip) }
+
+      @passenger.get_total.must_equal 150.00
+    end
+  end
 
   describe "trips property" do
     before do
@@ -79,5 +96,42 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end
+
+  describe "get_trip_time" do
+    before do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
+    end
+
+    it "trip time is zero if no trips taken" do
+      @passenger.get_trip_time.must_equal 0
+    end
+
+    it "trip time returns zero if trip exists but duration nil" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, start_time: start_time, cost: 15.00, rating: 5})
+      @passenger.add_trip(trip)
+
+      @passenger.get_trip_time.must_equal 0
+    end
+
+    it "trip time is calculated with one trip" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+      @passenger.add_trip(trip)
+
+      @passenger.get_trip_time.must_equal 1500
+    end
+
+    it "trip time is calculated with many trips" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+      10.times { @passenger.add_trip(trip) }
+
+      @passenger.get_trip_time.must_equal 15000.0
+    end
+
   end
 end

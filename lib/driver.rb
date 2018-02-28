@@ -5,6 +5,9 @@ module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
+    EMPLOYER_FEE = 1.65
+    TAKEHOME_RATE = 0.8
+
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
@@ -43,5 +46,36 @@ module RideShare
 
       @trips << trip
     end
+
+    def get_revenue
+      subtotal = 0
+
+      @trips.each do |trip|
+        unless trip.cost <= EMPLOYER_FEE
+          subtotal += trip.cost - EMPLOYER_FEE
+        end
+      end
+      revenue = subtotal * TAKEHOME_RATE
+      return revenue.round(2)
+    end
+
+    # # Alternative 1
+    # def get_revenue
+    #   @trips.map { |trip|
+    #     trip.cost >= EMPLOYER_FEE ? (trip.cost - EMPLOYER_FEE) * TAKEHOME_RATE : 0
+    #   }.inject(0, :+)
+    # end
+
+    # # Alternative 2
+    # def get_revenue
+    #   @trips.map { |trip|
+    #     if trip.cost <= EMPLOYER_FEE
+    #       0
+    #     else
+    #       (trip.cost - EMPLOYER_FEE) * TAKEHOME_RATE
+    #     end
+    #   }.inject(0, :+)
+    # end
+
   end
 end

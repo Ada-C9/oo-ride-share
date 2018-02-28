@@ -2,7 +2,7 @@ require 'csv'
 
 module RideShare
   class Trip
-    attr_reader :id, :passenger, :driver, :start_time, :end_time, :duration, :cost, :rating
+    attr_reader :id, :driver, :passenger, :start_time, :end_time, :cost, :rating
 
     def initialize(input)
       @id = input[:id]
@@ -18,11 +18,6 @@ module RideShare
         end
       end
 
-      @duration = nil
-      if !@start_time.nil? && !@end_time.nil?
-        @duration = @end_time - @start_time
-      end
-
       @cost = input[:cost]
       @rating = input[:rating]
 
@@ -30,5 +25,13 @@ module RideShare
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
     end
+
+    def get_duration
+      duration = nil
+      if !@start_time.nil? && !@end_time.nil?
+        duration = @end_time - @start_time
+      end
+    end
+
   end
 end
