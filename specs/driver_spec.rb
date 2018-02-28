@@ -102,5 +102,21 @@ describe "Driver class" do
     end
   end
 
+  describe "total_drive_time_hours" do
+    it "accurately returns total drive time for a driver in hours" do
+      trips = [
+        RideShare::Trip.new({cost: 10.00, rating: 3,start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T16:01:00+00:00")})
+      ]
+      driver_data = {
+        id: 7,
+        vin: "e1e1e1e1e1e1e1e1e",
+        name: 'Speed Racer',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(driver_data)
+      driver.total_drive_time_hours.must_equal(2.0)
+    end
+  end
 
 end

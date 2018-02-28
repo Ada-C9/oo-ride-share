@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require_relative 'passenger' #take this out later
 require 'time'
 
 module RideShare
@@ -57,5 +58,41 @@ module RideShare
       total = subtotal * driver_percent
       return total
     end
+
+    def average_revenue_per_hour
+      revenue = self.total_revenue
+      total_drive_time = self.total_drive_time_hours
+
+      average_revenue_per_hour = (revenue / total_drive_time)
+      return average_revenue_per_hour
+    end
+
+    def total_drive_time_seconds #refactor all this time stuff somewhere. trip?
+      total_drive_time_seconds = 0
+      @trips.each do |trip|
+        total_drive_time_seconds += trip.calculate_duration
+      end
+      return total_drive_time_seconds
+    end
+
+    def total_drive_time_hours #refactor all this time stuff somewhere. trip?
+      total_drive_time_minutes = self.total_drive_time_seconds / 60
+      total_drive_time_hours = total_drive_time_minutes / 60
+      return total_drive_time_hours
+    end
   end
 end
+
+
+# trips = [
+#   RideShare::Trip.new({cost: 10.00, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T16:01:00+00:00")})
+# ]
+# driver_data = {
+#   id: 7,
+#   vin: "e1e1e1e1e1e1e1e1e",
+#   name: 'Speed Racer',
+#   trips: trips
+# }
+# speedy = RideShare::Driver.new(driver_data)
+# puts "Avg revenue per hour: #{speedy.average_revenue_per_hour}"
+# puts "Total drive time in hours: #{speedy.total_drive_time_hours}"

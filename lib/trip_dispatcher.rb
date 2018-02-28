@@ -92,6 +92,10 @@ module RideShare
       trips
     end
 
+    def request_trip(passenger_id)
+
+    end
+
     private
 
     def check_id(id)
