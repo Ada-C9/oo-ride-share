@@ -30,13 +30,13 @@ describe "Passenger class" do
       @passenger.phone_number.must_be_kind_of String
       @passenger.trips.must_be_kind_of Array
     end
-  end
+  end # end of describe "Passenger instantiation"
 
 
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -52,13 +52,13 @@ describe "Passenger class" do
         trip.passenger.id.must_equal 9
       end
     end
-  end
+  end # end of describe "trips property"
 
   describe "get_drivers method" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -74,5 +74,29 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end # end of describe "get_drivers method"
+
+
+
+  describe "money_spent" do
+    it "calculate the total money spent" do
+      trips = [
+        RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 5, rating: 3}),
+        RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 7, rating: 3}),
+        RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 8, rating: 3}),
+      ]
+
+      driver_data = {
+        id: 7,
+        name: "test driver",
+        vin: "1C9EVBRM0YBC564DZ",
+        trips: trips
+      }
+
+      driver = RideShare::Passenger.new(driver_data)
+
+      driver.money_spent.must_equal 20
+    end
   end
-end
+
+end # end of describe "Passenger class"

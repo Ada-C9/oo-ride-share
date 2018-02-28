@@ -1,9 +1,11 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
+
 
 module RideShare
   class TripDispatcher
@@ -67,27 +69,35 @@ module RideShare
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
 
+      # header_converters: :symbol means to take the first line of headers
+      # to make into keys
+      # taking the raw data from the CSV
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+        # setting up parsed_trip to take in the raw_trip data
+        # prepping it for the Trip class
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
+        # this setting up the instance of trip
         trip = Trip.new(parsed_trip)
+
+        # Set up relations
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
       end
 
-      trips
+      return trips
     end
 
     private
@@ -99,3 +109,6 @@ module RideShare
     end
   end
 end
+
+# testing_code = RideShare::TripDispatcher.new
+# puts testing_code
