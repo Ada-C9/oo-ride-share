@@ -17,6 +17,17 @@ describe "Trip class" do
         cost: 23.45,
         rating: 3
       }
+
+      @in_progress_trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2016-04-05T14:01:00+00:00'),
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
       @trip = RideShare::Trip.new(@trip_data)
     end
 
@@ -55,6 +66,12 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
+    end
+
+    it "allows rating to be nil" do
+      proc {
+        RideShare::Trip.new(@in_progress_trip_data)
+      }.must_be_silent
     end
 
   end
