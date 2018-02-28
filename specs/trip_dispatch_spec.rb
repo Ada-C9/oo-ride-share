@@ -127,7 +127,11 @@ describe "TripDispatcher class" do
     end
 
     it "should throw an error if there are no available drivers" do
-      # how to test this?
+      no_available_drivers = @dispatcher.drivers.select{ |driver| driver.status == :AVAILABLE }.length
+      no_available_drivers.times do
+        @dispatcher.request_trip(@passenger)
+      end
+      proc {@dispatcher.request_trip(@passenger)}.must_raise ArgumentError
     end
 
     it "should add the trip to the passenger's list of trips" do
