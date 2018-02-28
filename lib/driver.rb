@@ -3,7 +3,7 @@ require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vin, :status, :trips
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -43,5 +43,14 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      @trips.empty? ? 0 : (@trips.reduce(0) { |rev, trip| rev + trip.cost } - 1.65) * 0.8
+    end
+
+    def ave_rev_per_hour
+
+    end
+
   end
 end
