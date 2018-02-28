@@ -15,6 +15,10 @@ module RideShare
       @trips = load_trips
     end
 
+    
+
+    # this is NOT a self method
+    # will have an instance of Trip Dispatcher
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
 

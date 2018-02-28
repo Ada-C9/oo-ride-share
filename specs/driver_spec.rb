@@ -37,6 +37,25 @@ describe "Driver class" do
     end
   end
 
+  describe "total_revenue method" do
+    it "returns a driver's total revenue" do
+      trips = [
+        RideShare::Trip.new({cost: 5, rating: 3}),
+        RideShare::Trip.new({cost: 3, rating: 1}),
+        RideShare::Trip.new({cost: 2, rating: 5})
+      ]
+      driver_details = {
+        id: 7,
+        vin: "WBWSS52P9NEYLVDE9",
+        name: 'test driver',
+        trips: trips
+      }
+      driver = RideShare::Driver.new(driver_details)
+
+      driver.total_revenue.must_equal 4.04
+    end
+  end
+
   describe "add trip method" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")

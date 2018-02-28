@@ -10,6 +10,10 @@ module RideShare
       @id = input[:id]
       @name = input[:name]
       @phone_number = input[:phone]
+      # did whoever gave us this input hash
+      # put any trips in it?
+      # will get nil back if the key in question
+      # doesn't exist
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
