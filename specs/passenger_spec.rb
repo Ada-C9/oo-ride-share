@@ -122,7 +122,7 @@ describe "Passenger class" do
       total_time = @trip.duration_in_seconds + @trip2.duration_in_seconds
 
       @passenger.total_time_spent.must_equal total_time
-      @passenger.total_times_spent.must_be_kind_of Integer
+      @passenger.total_time_spent.must_be_kind_of Integer
     end
   end
 

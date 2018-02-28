@@ -44,22 +44,25 @@ module RideShare
       @trips << trip
     end
 
-    # def total_revenue
-    #
-    #   @trips.each do |trip|
-    #     trip = trip.cost + 1.65
-    #   #
-    #   # iterate through trips in all trips
-    #   # - fee is 1.65
-    #   # - trip_cost
-    #   # - trip_revenue is (trip_cost - fee) * 0.8
-    #   # - trip_revenue adds to total_revenue
-    #   #
-    #   #
-    #   # return total_revenue
-    #
-    # end
+    def total_revenue
+    fee = 1.65
+    total_revenue = 0
+      @trips.each do |trip|
+        trip = (trip.cost - fee) * 0.8
+        total_revenue += trip
+      end
+      return total_revenue
+    end
 
+    def average_revenue_per_hour
+      total_mins = 0
+      @trips.each do |trip|
+        trip = trip.end_time.min - trip.start_time.min
+        total_mins += trip
+      end
+      total_hours = total_mins.to_f / 60
+      return total_revenue / total_hours
+    end
 
   end
 end
