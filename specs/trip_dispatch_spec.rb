@@ -116,6 +116,8 @@ describe "TripDispatcher class" do
     end
 
     it "uses the current time for the start time" do
+      current_time = Time.now
+      @result.start_time.to_a.must_equal current_time.to_a 
     end
 
     it "assigns end time, cost, and rating to nil" do
