@@ -106,4 +106,46 @@ describe "TripDispatcher class" do
       last_trip.end_time.must_equal Time.parse("2016-04-25T03:06:00+00:00")
     end
   end
+
+  describe "request_trip" do
+    it 'return a new trip' do
+      dispatcher = RideShare::TripDispatcher.new
+      expected_trip_id = dispatcher.trips.size
+      new_trip = dispatcher.request_trip(21)
+
+      new_trip.must_be_instance_of RideShare::Trip
+      new_trip.id.must_equal expected_trip_id
+    end
+
+    it 'adds the trip to passenger and driver trips' do
+      dispatcher = RideShare::TripDispatcher.new
+      new_trip = dispatcher.request_trip(22)
+
+      new_trip.passenger.must_be_instance_of RideShare::Passenger
+      new_trip.passenger.id.must_equal 22
+      new_trip.passenger.trips.last.must_equal new_trip
+      new_trip.passenger.trips.last.id.must_equal new_trip.id
+
+      new_trip.driver.must_be_instance_of RideShare::Driver
+      new_trip.driver.trips.last.must_equal new_trip
+      new_trip.driver.trips.last.id.must_equal new_trip.id
+    end
+
+    it 'add the trip to all trips' do
+      dispatcher = RideShare::TripDispatcher.new
+      size_before =  dispatcher.trips.size
+      dispatcher.request_trip(23)
+      dispatcher.trips.size.must_equal size_before + 1
+    end
+
+    it 'selects an available driver' do
+      dispatcher = RideShare::TripDispatcher.new
+      available_drivers_ids = dispatcher.drivers.map { |driver| driver.id if driver.is_available? }
+      new_trip = dispatcher.request_trip(24)
+      
+      available_drivers_ids.include?(new_trip.driver.id).must_equal true
+      new_trip.driver.status.must_equal :UNAVAILABLE
+    end
+  end
+
 end

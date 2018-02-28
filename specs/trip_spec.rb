@@ -44,12 +44,12 @@ describe "Trip class" do
       }.must_raise ArgumentError
     end
 
-    it "raises an error if end_time is not a time" do
-      proc {
-        @trip_data[:end_time] = "This is not a end time!"
-        RideShare::Trip.new(@trip_data)
-      }.must_raise ArgumentError
-    end
+    # it "raises an error if end_time is not a time" do
+    #   proc {
+    #     @trip_data[:end_time] = "This is not a end time!"
+    #     RideShare::Trip.new(@trip_data)
+    #   }.must_raise ArgumentError
+    # end
 
     it "raises an error for an invalid rating" do
       [-3, 0, 6].each do |rating|

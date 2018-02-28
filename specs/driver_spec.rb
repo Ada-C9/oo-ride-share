@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 
+
 describe "Driver class" do
 
   describe "Driver instantiation" do
@@ -98,7 +99,7 @@ describe "Driver class" do
         phone: "1-602-620-2330 x3723", trips: [])
 
       @driver = RideShare::Driver.new(id: 53, name: "Rogers Bartell IV",
-        vin: "1C9EVBRM0YBC564DZ",trips: [] )
+        vin: "1C9EVBRM0YBC564DZ",trips: [])
 
       trip1 = RideShare::Trip.new({id: 3, driver: @driver, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:40:00+00:00"),
@@ -157,5 +158,23 @@ describe "Driver class" do
     end
   end # end describe "get_avg_revenue_per_hour"
 
+  describe "is_available?" do
+    it "returns 'true' if the driver's status is ':AVAILABLE'" do
+      test_driver = RideShare::Driver.new(id: 3, name: "Lovelace",
+        vin: "12345678912345678", status: :AVAILABLE)
+
+      test_driver.is_available?.must_equal true
+    end
+
+    it "returns 'false' if the driver's status is ':AVAILABLE'" do
+      test_driver = RideShare::Driver.new(id: 3, name: "Lovelace",
+        vin: "12345678912345678", status: :UNAVAILABLE)
+
+      test_driver.is_available?.must_equal false
+
+    end
+
+
+  end
 
 end # end describe driver
