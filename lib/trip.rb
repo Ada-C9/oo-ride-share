@@ -15,8 +15,12 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @end_time < @start_time #something is up with this
-        raise ArgumentError.new("Trip End Time cannot be before Trip Start Time")
+      # p @end_time.class
+      # p @start_time.class
+      unless @end_time == nil || @start_time == nil
+        if @end_time < @start_time #something is up with this
+          raise ArgumentError.new("Trip End Time cannot be before Trip Start Time")
+        end
       end
 
       if @rating > 5 || @rating < 1

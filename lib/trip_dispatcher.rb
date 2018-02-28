@@ -76,9 +76,9 @@ module RideShare
           driver: driver,
           passenger: passenger,
           # start_time: raw_trip[:start_time],
-          start_time: Time.new(raw_trip[:start_time]),
+          start_time: Time.parse(raw_trip[:start_time]),
           # end_time: raw_trip[:end_time],
-          end_time: Time.new(raw_trip[:end_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
