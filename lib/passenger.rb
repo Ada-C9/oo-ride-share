@@ -9,7 +9,7 @@ module RideShare
 
       @id = input[:id]
       @name = input[:name]
-      @phone_number = input[:phone]
+      @phone_number = input[:phone_number]
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
