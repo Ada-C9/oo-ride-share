@@ -101,6 +101,10 @@ describe "Driver class" do
 
     end
 
+    it "returns zero if no trips" do
+      @driver.calc_revenue.must_equal 0
+    end
+
   end
 
 end
