@@ -12,7 +12,7 @@ module RideShare
       #assigning value of zero if start time is nil
       @start_time = input[:start_time] ||= Time.parse('2016-04-05T14:01:00+00:00')
       #assigning value of zero if start time is nil
-      @end_time = input[:end_time] ||= Time.parse('2016-04-05T14:09:00+00:00')
+      @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
 
@@ -23,11 +23,9 @@ module RideShare
 
 
       #p :hello
-      if @start_time > @end_time
-
+      if @end_time != nil && @start_time > @end_time
         raise ArgumentError.new("Invalid Trip Time")
       end
-
 
     end
 

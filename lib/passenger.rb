@@ -27,9 +27,10 @@ module RideShare
 
     #here
     def total_spent
+
       total = 0
       if @trips == []
-        return nil
+        return 0
       else
         trips.each do |trip|
           total += trip.cost

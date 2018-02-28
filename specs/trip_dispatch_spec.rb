@@ -100,7 +100,11 @@ describe "TripDispatcher class" do
       trip.start_time.must_be_kind_of Time
     end
 
+    it "012 ends trip if over 12 hours" do
+    end
 
+    it "013 raises an error if no drivers are available" do
+    end 
 
   end
 end

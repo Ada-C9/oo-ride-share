@@ -101,7 +101,7 @@ describe "Driver class" do
 
     end
 
-    it "012 if driver has taken no trips, returns nil for total_spent" do
+    it "012 if driver has taken no trips, returns 0 for total_spent" do
       @driver_data = {
         id: 7,
         vin: 'a' * 17,
@@ -110,7 +110,7 @@ describe "Driver class" do
       }
       driver = RideShare::Driver.new(@driver_data)
 
-      driver.total_revenue.must_be_nil
+      driver.total_revenue.must_equal 0
     end
   end
 

@@ -71,7 +71,7 @@ module RideShare
       @passengers.find{ |passenger| passenger.id == id }
     end
 
-#????Go over this
+    #????Go over this
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
@@ -110,8 +110,36 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
+      def request_trip(passenger_id)
+
+        #Your code should automatically assign a driver to the trip
+          @drivers.find{ |driver| driver.status == :AVAILABLE }
+
+        #For this initial version, choose the first driver whose status is :AVAILABLE
+        #goes through drivers and finds one who is available alldrivers.each do |status|
+        #if status == :AVAILABLE
+          #IS DRIVER
+        #end
+        #this needs to be able to change- how will it change, to pick the driver with the least trips eg
+
+
+
+
+
+        #Your code should use the current time for the start time
+         start_time = Time.now
+
+
+        #The end date, cost and rating will all be nil
+        #instance of trip- calling it in dispatcher
+
+        #call an instance of trip in dispatcher
+
+        unfinished_trip = RideShare::Trip(:id, :passenger, :driver, :start_time, endtime: nil, cost: nil, rating: nil)
+    end
   end
 end
 
 #dispatcher = RideShare::TripDispatcher.new
- #ap dispatcher.find_passenger(9)
+#ap dispatcher.find_passenger(9)

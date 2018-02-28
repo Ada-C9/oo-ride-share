@@ -94,7 +94,7 @@ describe "Passenger class" do
         @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
 
 
-        @passenger.total_spent.must_be_nil
+        @passenger.total_spent.must_equal 0 
 
       end
     end

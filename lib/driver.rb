@@ -51,7 +51,7 @@ module RideShare
     def total_revenue
 
       if trips == []
-        return nil
+        return 0
       else
         fee = 1.65
         driver_takehome = 0.8
