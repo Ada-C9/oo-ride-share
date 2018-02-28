@@ -89,8 +89,9 @@ describe "Driver class" do
       ]
       @driver_data = {
         id: 7,vin: 'a' * 17, name: 'test driver',
-        trips: trip}
-      end
+        trips: trips
+      }
+
     end
 
     it "011 returns the total revenue for the driver " do
@@ -105,11 +106,11 @@ describe "Driver class" do
         id: 7,
         vin: 'a' * 17,
         name: 'test driver',
-        trips: []}
-        driver = RideShare::Driver.new(@driver_data)
+        trips: []
+      }
+      driver = RideShare::Driver.new(@driver_data)
 
-        driver.total_revenue.must_be_nil
-      end
+      driver.total_revenue.must_be_nil
     end
   end
 
@@ -124,13 +125,12 @@ describe "Driver class" do
         id: 7,
         vin: 'a' * 17,
         name: 'test driver',
-        trips: trips}
+        trips: trips
+      }
 
-        driver = RideShare::Driver.new(@driver_data)
+      driver = RideShare::Driver.new(@driver_data)
 
-        driver.avg_revenue.must_be_within_delta 4.01
-      end
+      driver.avg_revenue.must_be_within_delta 4.013
     end
-
   end
 end
