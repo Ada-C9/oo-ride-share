@@ -35,8 +35,10 @@ describe "Passenger class" do
 
   describe "trips property" do
     before do
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = start_time + 60 * 60 # + 1 hour
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -56,9 +58,11 @@ describe "Passenger class" do
 
   describe "get_drivers method" do
     before do
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = start_time + 60 * 60 # + 1 hour
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -80,9 +84,12 @@ describe "Passenger class" do
 
     it 'Returns the total amount of money that passenger has spent on their trips' do
 
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = start_time + 60 * 60 # + 1 hour
+
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
-      trip = RideShare::Trip.new({id: 8, driver: driver, date: "2016-08-08", cost: 17.39, rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, start_time: start_time, end_time: end_time, cost: 17.39, rating: 5})
 
       passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
 

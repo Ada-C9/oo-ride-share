@@ -20,7 +20,7 @@ module RideShare
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      if @start_time.to_i > @end_time.to_i
+      if @start_time > @end_time
         raise ArgumentError.new("End time cannot be before the start time.")
       end
     end
