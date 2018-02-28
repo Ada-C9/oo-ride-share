@@ -62,6 +62,7 @@ describe "Passenger class" do
       trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_date: Time.parse('2016-08-08T16:01:00+00:00'), end_date: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
 
       @passenger.add_trip(trip)
+
     end
 
     it "returns an array" do
@@ -78,6 +79,30 @@ describe "Passenger class" do
   end
 
   describe "total_ride_time" do
+
+    before do
+
+    @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+    driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+    trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_date: Time.parse('2016-08-08T16:01:00+00:00'), end_date: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
+
+    trip_2 = RideShare::Trip.new({id: 9, driver: driver, passenger: @passenger, start_date: Time.parse('2016-09-08T16:01:00+00:00'), end_date: Time.parse('2016-09-08T16:37:00+00:00'), cost: 10.12, rating: 5})
+
+    trip_3 = RideShare::Trip.new({id: 10, driver: driver, passenger: @passenger, start_date: Time.parse('2016-10-08T16:01:00+00:00'), end_date: Time.parse('2016-10-08T16:37:00+00:00'), cost: 10.12, rating: 5})
+
+    @passenger.add_trip(trip)
+    @passenger.add_trip(trip_2)
+    @passenger.add_trip(trip_3)
+
+    end
+
+    it "returns an accurate tally of the passenger's ride-times" do
+
+      total_trip_seconds = @passenger.total_ride_time
+      total_trip_seconds.must_equal 6480
+
+    end
   end
 
   describe "total_spent" do
