@@ -98,7 +98,17 @@ describe "Passenger class" do
   end
 
   describe "total_time" do
+    it "calculates that passenger's total time spent on all trips" do
+      @passenger.add_trip(@trip_1)
+      @passenger.add_trip(@trip_2)
+      expected_total_time = @trip_1.duration + @trip_2.duration
 
+      @passenger.total_time.must_equal expected_total_time
+    end
+
+    it "returns 0 if there is no trip for this passenger" do
+      @passenger.total_time.must_equal 0
+    end
   end
 
 end
