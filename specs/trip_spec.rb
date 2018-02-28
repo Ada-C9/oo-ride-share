@@ -38,5 +38,12 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
+    it "raises an error for end before start time" do
+      trip_input = {id: 1,driver: 12, passenger: 13, start_time: "2017-04-05T14:01:00+00:00", end_time: "2016-04-05T14:01:00+00:00", cost: 20.00, rating: 5}
+      proc {
+        my_trip = RideShare::Trip.new(trip_input)
+      }.must_raise(ArgumentError)
+    end
   end
 end
