@@ -77,7 +77,7 @@ describe "Passenger class" do
   end # Describe get_drivers method
 
 
-  describe "#total_spent" do
+  describe "#total_money" do
 
     it "returns total spent in float" do
       pass = RideShare::Passenger.new({
@@ -89,18 +89,18 @@ describe "Passenger class" do
         ]
         })
       expected_total = 46.82
-      result = pass.total_spent
+      result = pass.total_money
       result.must_equal expected_total
     end
 
     it "returns zero if passanger has no trips" do
       pass = RideShare::Passenger.new({id: 89})
       expected_total = 0
-      result = pass.total_spent
+      result = pass.total_money
       result.must_equal expected_total
     end
 
-  end # Describe total_spent
+  end # Describe total_money
 
   describe "#total_time" do
 

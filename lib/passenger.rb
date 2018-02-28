@@ -21,7 +21,7 @@ module RideShare
       @trips << trip
     end # add_trip
 
-    def total_spent
+    def total_money
       total = @trips.map {|trip| trip.cost}.sum
       return total
     end # total_spent
@@ -29,7 +29,7 @@ module RideShare
     def total_time
       total = @trips.map {|trip| trip.duration}.sum
       return total
-    end # total_spent
+    end # total_time
 
   end # Class Passenger
 end # Module RideShare
