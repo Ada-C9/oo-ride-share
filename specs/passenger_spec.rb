@@ -76,29 +76,45 @@ describe "Passenger class" do
     end
   end # describe get_drivers method
 
-  describe "total_spent" do
+  describe "total_money_spent and total_time_spent" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
       @trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:25:00+00:00'), cost: 10.15, rating: 5})
+      @trip_hundred = RideShare::Trip.new({id: 100, driver: nil, passenger: @passenger, start_time: Time.parse('2014-05-20T12:14:00+00:00'), end_time: Time.parse('2014-05-20T12:25:00+00:00'), cost: 5.20, rating: 5})
+
+      @trip_hundred_one = RideShare::Trip.new({id: 101, driver: nil, passenger: @passenger, start_time: Time.parse('2013-05-20T12:14:00+00:00'), end_time: Time.parse('2013-05-20T12:25:00+00:00'), cost: 8.54, rating: 5})
+
       @passenger.add_trip(@trip)
+      @passenger.add_trip(@trip_hundred)
+      @passenger.add_trip(@trip_hundred_one)
     end
 
-    it "returns a float equal to amount passenger has spent on all trips" do
-      trip_hundred = RideShare::Trip.new({id: 100, driver: nil, passenger: @passenger, start_time: Time.parse('2014-05-20T12:14:00+00:00'), end_time: Time.parse('2014-05-20T12:25:00+00:00'), cost: 5.20, rating: 5})
+    describe "total_money_spent" do
+      it "returns a float equal to amount passenger has spent on all trips" do
 
-      trip_hundred_one = RideShare::Trip.new({id: 101, driver: nil, passenger: @passenger, start_time: Time.parse('2013-05-20T12:14:00+00:00'), end_time: Time.parse('2013-05-20T12:25:00+00:00'), cost: 8.54, rating: 5})
+        total_money_spent = @trip.cost + @trip_hundred.cost + @trip_hundred_one.cost
 
-      @passenger.add_trip(trip_hundred)
-      @passenger.add_trip(trip_hundred_one)
+        result = @passenger.total_money_spent
 
-      total_spent = @trip.cost + trip_hundred.cost + trip_hundred_one.cost
+        result.must_be_kind_of Float
+        result.must_equal total_money_spent
 
-      result = @passenger.total_spent
+      end
+    end # total money spent
 
-      result.must_be_kind_of Float
-      result.must_equal total_spent
+    describe "total_time_spent" do
+      it "returns a float equal to the amount of time a passenger has spent in total on their trips" do
+        total_time_spent = @trip.duration + @trip_hundred.duration + @trip_hundred_one.duration
+
+        result = @passenger.total_time_spent
+
+        result.must_be_kind_of Float
+        result.must_equal total_time_spent 
+      end
 
     end
-  end
+
+  end # total money and time spent
 
 end # describe Passenger
