@@ -1,4 +1,5 @@
 require 'time'
+require 'pry'
 
 module RideShare
   class Passenger
@@ -24,6 +25,7 @@ module RideShare
     end
 
     def total_ride_time
+      @trips.map{ |t| t.duration_seconds }.reduce(:+)
     end
 
     def total_spent
