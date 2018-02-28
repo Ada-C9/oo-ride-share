@@ -41,7 +41,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: "2016-08-08", rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +58,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -77,4 +77,90 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue method" do
+    it "returns total revenue of a driver" do
+
+      driver_data = {
+        id: 3,
+        name: "Lovelace",
+        vin: "12345678912345678"
+      }
+      driver = RideShare::Driver.new(driver_data)
+
+      start_time_1 = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time_1 = start_time_1 + 40 * 60
+      trip_1 = {
+        id: 8,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time_1,
+        end_time: end_time_1,
+        cost: 50.45,
+        rating: 4
+      }
+
+      start_time_2 = Time.parse('2015-07-20T12:14:00+00:00')
+      end_time_2 = start_time_2 + 20 * 60
+      trip_2 = {
+        id: 9,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 4, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time_2,
+        end_time: end_time_2,
+        cost: 23.45,
+        rating: 3
+      }
+
+      start_time_3 = Time.parse('2015-09-20T12:14:00+00:00')
+      end_time_3 = start_time_3 + 90 * 60
+      trip_3 = {
+        id: 10,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 5, name: "Wenjie", phone: "206-432-7640"),
+        start_time: start_time_3,
+        end_time: end_time_3,
+        cost: 99.45,
+        rating: 5
+      }
+
+      trips = [
+        RideShare::Trip.new(trip_1),
+        RideShare::Trip.new(trip_2),
+        RideShare::Trip.new(trip_3)
+      ]
+
+      trips.each do |trip|
+        driver.add_trip(trip)
+      end
+
+      driver.total_revenue.must_equal 134.72
+    end
+
+    it "raises an StandardError when total revenue is negative" do
+      driver_data = {
+        id: 3,
+        name: "Lovelace",
+        vin: "12345678912345678"
+      }
+      driver = RideShare::Driver.new(driver_data)
+
+      start_time_1 = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time_1 = start_time_1 + 2 * 60
+      trip_1 = {
+        id: 8,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time_1,
+        end_time: end_time_1,
+        cost: 1.5,
+        rating: 4
+      }
+
+      driver.add_trip(RideShare::Trip.new(trip_1))
+      proc { driver.total_revenue }.must_raise StandardError
+    end
+  end
+
+
 end
