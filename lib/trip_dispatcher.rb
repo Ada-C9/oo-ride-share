@@ -13,8 +13,15 @@ module RideShare
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
+
     end
 
+    # this is what i was trying to create but this not make sense because this is a method
+    def time
+      @start_time = start_time
+      @end_time = end_time
+    end
+#initialize that raises an ArgumentError if the end time is before the start time, and a corresponding test
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
 
@@ -75,13 +82,14 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.new(raw_trip[:start_time]),
+          end_time: Time.new(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
         trip = Trip.new(parsed_trip)
+
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
@@ -91,7 +99,7 @@ module RideShare
     end
 
     private
-
+     # this checks id if the id does not exist or the id is less than or equal to zero.
     def check_id(id)
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")

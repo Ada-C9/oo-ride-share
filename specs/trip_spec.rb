@@ -38,5 +38,8 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+    it "raises an error if end time is before start time" do
+      @trip
+    end
   end
 end

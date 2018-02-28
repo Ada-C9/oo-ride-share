@@ -15,6 +15,9 @@ module RideShare
 
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
+       if @end_time > @start_time
+        raise ArgumentError.new("Invalid end_time #{@end_time}")
+      end
       end
     end
   end
