@@ -135,7 +135,11 @@ describe "Driver class" do
       end
 
       it "ignores in progress trips" do
-
+        @driver.add_trip(@trip1)
+        total1 = (@driver.trips[0].cost - @fee) * 0.8
+        time1 = (@driver.trips[0].duration_in_seconds / 3600).round(2)
+        @driver.add_trip(@in_progress_trip)
+        @driver.avg_revenue_per_hour.must_equal (total1 / time1)
       end
     end
   end
