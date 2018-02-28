@@ -26,6 +26,11 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def update_driver_info(new_trip)
+      new_trip.driver.status = :UNAVAILABLE
+      add_trip(new_trip)
+    end
+
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
