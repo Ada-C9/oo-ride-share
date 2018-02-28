@@ -23,7 +23,10 @@ module RideShare
     end
 
     def total_spent
-      return trips.inject(0) {|sum, trip| sum += trip.cost}
+      total = trips.inject(0) do |sum, trip|
+        trip.cost != nil ? sum += trip.cost : sum += 0
+      end
+      return total
     end
 
     def total_time
