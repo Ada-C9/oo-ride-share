@@ -92,40 +92,30 @@ describe "Passenger class" do
     end
   end
 
-  # describe "time_spent" do
-  #   before do
-  #     start_time = Time.parse('2015-05-20T12:14:00+00:00')
-  #     end_time = start_time + 25 * 60 # 25 minutes
-  #     @trip_data = {
-  #       id: 8,
-  #       driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
-  #       passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
-  #       start_time: start_time,
-  #       end_time: end_time,
-  #       cost: 23.45,
-  #       rating: 3
-  #     }
-  #     @trip = RideShare::Trip.new(@trip_data)
-  #   end
-  #
-  #   it "calculate the total amount of time the passenger spent" do
-  #
-  #     trips = [
-  #       RideShare::Trip.new({start_time: @trip_data[:start_time], end_time: @trip_data[:end_time], cost: 5, rating: 3}),
-  #       RideShare::Trip.new({start_time: @trip_data[:start_time], end_time: @trip_data[:end_time], cost: 7, rating: 3}),
-  #       RideShare::Trip.new({start_time: @trip_data[:start_time], end_time: @trip_data[:end_time], cost: 8, rating: 3}),
-  #     ]
-  #
-  #     driver_data = {
-  #       id: 7,
-  #       name: "test driver",
-  #       vin: "1C9EVBRM0YBC564DZ",
-  #       trips: trips
-  #     }
-  #
-  #     driver = RideShare::Passenger.new(driver_data)
-  #     driver.money_spent.must_equal 5400
-  #   end
-  # end
+  describe "time_spent" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 30
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      trip = RideShare::Trip.new(trip_data)
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      @passenger.add_trip(trip)
+    end
+
+    it "calculate the total amount of time the passenger spent" do
+
+      @passenger.time_spent.must_equal 1800
+
+    end
+  end
 
 end # end of describe "Passenger class"

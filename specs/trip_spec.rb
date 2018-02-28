@@ -68,7 +68,7 @@ describe "Trip class" do
 
     it "correctly calculates the calculate the duration of the trip in seconds" do
 
-      @trip.duration.must_equal 1800.0
+      @trip.duration.must_equal 1800
 
     end
 
