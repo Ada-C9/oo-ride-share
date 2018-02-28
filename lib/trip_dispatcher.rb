@@ -87,19 +87,40 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
+    end
+
+    def request_trip(passenger_id)
+      if passenger_id == nil || passenger_id <= 0
+        raise ArgumentError.new("Invalid passenger id!")
+      else
+        new_rider = find_passenger(passenger_id)
+      end
+
+      new_driver = all_drivers.status.select {|status| status == :AVAILABLE}.first
+
+      new_ride = RideShare::Trip.new({
+        id: (trips.last.id + 1),
+        driver: new_driver,
+        passenger: new_rider,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+        })
+
+      # new_driver.add_trip(new_ride)
+      return new_rider.add_trip(new_ride)
     end
 
     private
 
     def check_id(id)
       if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
   end
 end
-
-# a = RideShare::TripDispatcher.new
-# ap a.loadtrips
+  # a = RideShare::TripDispatcher.new
+  # ap a.loadtrips

@@ -88,13 +88,13 @@ describe "Driver class" do
 
     it "returns total earnings with 1 trip" do
       @driver.total_revenue.must_be_instance_of Float
-      @driver.total_revenue.must_equal 3.08
+      @driver.total_revenue.must_be_within_delta 3.08
     end
 
     it "returns total earnings for driver with 2 trips" do
       trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), cost: 9.75, rating: 5})
       @driver.add_trip(trip2)
-      @driver.total_revenue.must_equal 9.56
+      @driver.total_revenue.must_be_within_delta 9.56
     end
   end
 
@@ -108,7 +108,7 @@ describe "Driver class" do
 
     it 'returns accurate information for driver with 1 trip' do
       @driver.rate.must_be_kind_of Float
-      @driver.rate.must_equal 71.4
+      @driver.rate.must_be_within_delta 71.4
     end
 
     it 'returns accurate information for driver with 2 trips' do
@@ -117,9 +117,7 @@ describe "Driver class" do
       )
 
       @driver.rate.must_be_kind_of Float
-      @driver.rate.must_equal 71.4
+      @driver.rate.must_be_within_delta 71.4
     end
   end
 end
-
-      #
