@@ -34,10 +34,11 @@ module RideShare
       @trips.each do |trip|
         total += trip.trip_duration
       end
-      hours = total / 3600
-      minutes = (total % 3600) / 60
-      seconds = (total % 3600) % 60
-      return "You've ridden for a total of #{hours} hours, #{minutes} minutes, and #{seconds} seconds."
+      return total
+      # hours = total / 3600
+      # minutes = (total % 3600) / 60
+      # seconds = (total % 3600) % 60
+      # return "You've ridden for a total of #{hours} hours, #{minutes} minutes, and #{seconds} seconds."
     end
 
   end # Passenger

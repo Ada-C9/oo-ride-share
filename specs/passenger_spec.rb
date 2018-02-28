@@ -78,42 +78,49 @@ describe "Passenger class" do
 
   describe "total_spent" do
     it "calculates the total amount of money a passenger has spent on trips" do
-      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
 
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
-      trip1_details = {id: 8, driver: driver, passenger: @passenger, cost: 10, rating: 5, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00"}
+      trip1_details = {id: 8, driver: driver, passenger: passenger, cost: 10, rating: 5, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00"}
 
-      trip2_details = {id: 8, driver: driver, passenger: @passenger, cost: 15.02, rating: 3, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00"}
+      trip2_details = {id: 8, driver: driver, passenger: passenger, cost: 15.02, rating: 3, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00"}
 
       trip1 = RideShare::Trip.new(trip1_details)
 
       trip2 = RideShare::Trip.new(trip2_details)
 
-      @passenger.add_trip(trip1)
-      @passenger.add_trip(trip2)
+      passenger.add_trip(trip1)
+      passenger.add_trip(trip2)
 
-      @passenger.total_spent.must_equal 25.02
+      passenger.total_spent.must_equal 25.02
+    end
+
+    it "should return zero if no trips have been made" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      passenger.total_spent.must_equal 0
     end
   end
 
   describe "total_time" do
     it "calculates the total amount of money a passenger has spent on trips" do
-      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
 
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
-      trip1_details = {id: 8, driver: driver, passenger: @passenger, cost: 10, rating: 5, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00"}
+      trip1_details = {id: 8, driver: driver, passenger: passenger, cost: 10, rating: 5, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00"}
 
-      trip2_details = {id: 8, driver: driver, passenger: @passenger, cost: 15.02, rating: 3, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00"}
+      trip2_details = {id: 8, driver: driver, passenger: passenger, cost: 15.02, rating: 3, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00"}
 
       trip1 = RideShare::Trip.new(trip1_details)
       trip2 = RideShare::Trip.new(trip2_details)
 
-      @passenger.add_trip(trip1)
-      @passenger.add_trip(trip2)
+      passenger.add_trip(trip1)
+      passenger.add_trip(trip2)
 
-      @passenger.total_time.must_equal "You've ridden for a total of 0 hours, 16 minutes, and 0 seconds."
+      # passenger.total_time.must_equal "You've ridden for a total of 0 hours, 16 minutes, and 0 seconds."
+      passenger.total_time.must_equal 960
     end
   end
 end

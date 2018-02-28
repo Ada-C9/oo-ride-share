@@ -43,5 +43,34 @@ module RideShare
 
       @trips << trip
     end
-  end
-end
+
+    def total_revenue
+      subtotal = 0
+      fee = 1.65
+      driver_cut = 0.8
+      @trips.each do |trip|
+        unless trip.cost <= fee
+          subtotal += (trip.cost - fee)
+        else
+          subtotal += 0
+        end
+      end
+      total = subtotal * driver_cut
+      return total.round(2)
+    end
+
+    def total_hours
+      total_seconds = 0
+      @trips.each do |trip|
+        total_seconds += trip.trip_duration
+      end
+      total_hours = total_seconds.to_f / 3600
+      return total_hours.round(2)
+    end
+
+    def avg_revenue
+      return total_hours == 0 ? 0 : (total_revenue/total_hours).round(2) 
+    end
+
+  end # Driver
+end # RideShare
