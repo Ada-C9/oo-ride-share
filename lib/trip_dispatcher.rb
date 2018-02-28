@@ -95,7 +95,10 @@ module RideShare
     def request_trip(passenger_id)
       new_trip_id = @trips.length + 1
       passenger = find_passenger(passenger_id)
+      # Q: if there is no available driver
       request_driver = @drivers.find{|driver| driver.status == :AVAILABLE }
+
+      raise StandardError "No available driver" if request_driver.nil?
 
       trip = {
         id: new_trip_id,
@@ -106,10 +109,9 @@ module RideShare
 
       new_trip = RideShare::Trip.new(trip)
       @trips << new_trip
+      # driver.new_trip(new_trip)
       return new_trip
     end
-
-
 
 
 
@@ -120,9 +122,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-
-
-
 
   end
 end

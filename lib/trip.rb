@@ -14,7 +14,7 @@ module RideShare
       @cost = input[:cost] == nil ? nil : input[:cost]
       @rating = input[:rating] == nil ? nil : input[:rating]
 
-      if @rating > 5 || @rating < 1
+      if !@rating.nil? && (@rating > 5 || @rating < 1)
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 

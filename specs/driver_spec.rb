@@ -58,7 +58,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", end_time: Time.parse("2016-08-10"), cost: 1000, rating: 5})
       @driver.add_trip(trip)
     end
 
