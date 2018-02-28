@@ -21,13 +21,12 @@ module RideShare
       @trips << trip
     end
 
-    def calculate_total_spent
-      total_cost = [0]
+    def calculate_total_revenue
+      total_cost = 0
       @trips.each do |trip|
-        trip_cost = trip.cost
-        total_cost << trip_cost
+        total_cost += trip.cost
       end
-      return Float(total_cost.sum).round(2)
+      return Float(total_cost).round(2)
     end
   end
 end
