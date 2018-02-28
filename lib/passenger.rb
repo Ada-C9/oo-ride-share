@@ -28,5 +28,9 @@ module RideShare
       end
       return total_cost
     end
+
+    def calculate_total_trips_time
+
+    end
   end # end of Passenger
 end # end of RideShare
