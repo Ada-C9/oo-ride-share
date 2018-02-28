@@ -75,4 +75,34 @@ describe "Passenger class" do
       end
     end
   end
+
+  describe 'total_money_spent' do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+    end
+    it "returns the sum of money spent by passenger on all their trips" do
+      @passenger.add_trip(RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5, cost: 8.00}))
+      @passenger.add_trip(RideShare::Trip.new({id: 9, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5, cost: 8.00}))
+      @passenger.add_trip(RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5, cost: 8.00}))
+
+      @passenger.total_money_spent.must_be_kind_of Float
+      @passenger.total_money_spent.must_equal 24
+    end
+  end
+
+  describe 'total_time_spent' do
+    it 'returns the sum of time spent by passenger on all their trips' do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      start_time = Time.parse("2016-01-13T13:16:00+00:00")
+      end_time = start_time + 30 * 60
+      @passenger.add_trip(RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5, cost: 8.00}))
+      @passenger.add_trip(RideShare::Trip.new({id: 9, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5, cost: 8.00}))
+      @passenger.add_trip(RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5, cost: 8.00}))
+
+      @passenger.total_time_spent.must_be_kind_of Float
+      @passenger.total_time_spent.must_equal 5400
+    end
+
+
+  end
 end
