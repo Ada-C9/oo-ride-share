@@ -12,10 +12,13 @@ describe "TripDispatcher class" do
       [:trips, :passengers, :drivers].each do |prop|
         dispatcher.must_respond_to prop
       end
+      trip = dispatcher.trips.first
 
       dispatcher.trips.must_be_kind_of Array
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
+      trip.start_time.must_be_kind_of Time
+      trip.end_time.must_be_kind_of Time
     end
   end
 
