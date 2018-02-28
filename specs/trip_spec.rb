@@ -66,11 +66,12 @@ describe "Trip class" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes
       difference = end_time - start_time
+      difference_in_hours = difference / 3600
 
       result = @trip.duration
 
       result.must_be_kind_of Float
-      result.must_equal difference
+      result.must_equal difference_in_hours
     end
   end
 

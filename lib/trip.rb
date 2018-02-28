@@ -25,7 +25,8 @@ module RideShare
     end
 
     def duration
-      @end_time - @start_time 
+      time_in_seconds = @end_time - @start_time
+      time_in_hours = time_in_seconds / 3600 
     end
 
   end
