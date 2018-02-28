@@ -1,4 +1,6 @@
+require 'time'
 require_relative 'spec_helper'
+
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -82,11 +84,16 @@ describe "TripDispatcher class" do
       trip = dispatcher.trips.first
       driver = trip.driver
       passenger = trip.passenger
+      start_time = trip.start_time
+      end_time = trip.end_time
 
       driver.must_be_instance_of RideShare::Driver
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+      start_time.must_be_instance_of Time
+      end_time.must_be_instance_of Time
+
     end
   end
 end
