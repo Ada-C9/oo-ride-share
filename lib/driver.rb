@@ -44,33 +44,17 @@ module RideShare
       @trips << trip
     end
 
-    def total_revenue
+    def calculate_driver_revenue
       fee = 1.65
       driver_takehome = 0.8
 
       subtotal = 0
       @trips.each do |trip|
-        # What if trip cost is less than the fee?
         subtotal += trip.cost - fee
       end
       total = subtotal * driver_takehome
       return total
     end
-
-    # # Test 1: two trips
-    # trips = [
-    #   RideShare::Trip.new({cost: 5, rating: 3}),
-    #   RideShare::Trip.new({cost: 7, rating: 3}),
-    #   RideShare::Trip.new({cost: 8, rating: 3})
-    # ]
-    #
-    # driver_data = {
-    #   id: 7,
-    #   vin: 'a' * 17,
-    #   name: 'test driver',
-    #   trips: trips
-    # }
-    # driver = Driver.new(driver_data)
-    # driver.total_revenue.must_equal 8
+    
   end
 end

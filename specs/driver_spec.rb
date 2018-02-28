@@ -77,4 +77,43 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "calculate_driver_revenue method" do
+    it "returns the total revenue the driver earned on 80% of the total fare after the service fee" do
+
+      trip_data_one = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T12:24:00+00:00'),
+        cost: 23.45,
+        rating: 3,
+      }
+
+      trip_data_two = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T12:24:00+00:00'),
+        cost: 23.45,
+        rating: 3,
+      }
+
+      trips = [
+        RideShare::Trip.new(trip_data_one),
+        RideShare::Trip.new(trip_data_two),
+      ]
+      driver_data = {
+        id: 7,
+        vin: 'a' * 17,
+        name: 'test driver',
+        trips: trips
+      }
+      driver = RideShare::Driver.new(driver_data)
+      driver.calculate_driver_revenue.must_equal 34.88
+    end
+  end
+
 end
