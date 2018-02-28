@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Driver class" do
 
@@ -6,7 +7,7 @@ describe "Driver class" do
     before do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
     end
-
+ 
     it "is an instance of Driver" do
       @driver.must_be_kind_of RideShare::Driver
     end
@@ -41,7 +42,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:25:00+00:00'), rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +59,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:25:00+00:00'), rating: 5})
       @driver.add_trip(trip)
     end
 
