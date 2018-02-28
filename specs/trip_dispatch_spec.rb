@@ -129,17 +129,5 @@ describe "TripDispatcher class" do
       new_trip.driver.status.must_equal :AVAILABLE
     end
 
-    it "updates trips list for passenger" do
-      passenger_id = 150
-      passenger = @dispatcher.find_passenger(passenger_id)
-      initial_trips_length = passenger.trips.length
-
-      new_trip = @dispatcher.request_trip(passenger_id)
-      passenger = @dispatcher.find_passenger(passenger_id)
-      new_trips_length = passenger.trips.length
-
-      new_trips_length.must_equal initial_trips_length + 1
-    end
-
   end
 end
