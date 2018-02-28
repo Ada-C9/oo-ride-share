@@ -1,3 +1,4 @@
+require 'pry'
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -20,5 +21,14 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_spent
+      total = 0
+      trips.each do |trip|
+        total += trip.cost
+      end
+      return total
+    end
+
   end
 end
