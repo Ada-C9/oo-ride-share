@@ -32,7 +32,6 @@ describe "Passenger class" do
     end
   end
 
-
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
@@ -77,11 +76,17 @@ describe "Passenger class" do
   end
 
   describe "summation methods" do
+
     before do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips: []})
+
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
       @trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 17.29, rating: 5})
+
       @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2016-03-05T14:01:00+00:00'), end_time: Time.parse('2016-03-05T14:11:00+00:00'), cost: 15.0, rating: 5})
+
+      @in_progress_trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2016-03-05T14:01:00+00:00'), end_time: nil, cost: nil, rating: nil})
     end
 
     describe "total_spent method" do
@@ -89,12 +94,19 @@ describe "Passenger class" do
         @passenger.total_spent.must_equal 0
       end
 
-      it "returns a float if there are any trips" do
+      it "returns a float > 0 if there are any trips" do
         @passenger.add_trip(@trip1)
         @passenger.add_trip(@trip2)
 
         @passenger.total_spent.must_be :>, 0
+        @passenger.total_spent.must_equal 17.29 + 15.0
         @passenger.total_spent.must_be_kind_of Float
+      end
+
+      it "ignores in progress trips" do
+        @passenger.add_trip(@trip1)
+        @passenger.add_trip(@in_progress_trip)
+        @passenger.total_spent.must_equal 17.29
       end
     end
 
@@ -110,7 +122,14 @@ describe "Passenger class" do
         @passenger.total_time.must_be :>, 0
         @passenger.total_time.must_be_kind_of Float
       end
+
+      it "ignores in progress trips" do
+        @passenger.add_trip(@trip1)
+        @passenger.add_trip(@in_progress_trip)
+        @passenger.total_time.must_equal 480
+      end
     end
+
   end
 
 end
