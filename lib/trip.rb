@@ -18,6 +18,12 @@ module RideShare
       end
 
       if @end_time.to_f < @start_time.to_f
+        # p "+++++TEST+++"
+        # p @start_time
+        # p @end_time
+        #
+        # p @start_time.to_f
+        # p @end_time.to_f
 
         raise ArgumentError.new("Start time must be before end time.")
 
