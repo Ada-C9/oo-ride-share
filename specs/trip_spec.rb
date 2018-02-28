@@ -47,15 +47,6 @@ describe "Trip class" do
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
     end
-
-    it "raises an error if end_time is same as start_time" do
-      @trip_data[:end_time] = Time.parse('2015-05-20T12:14:00+00:00')
-      @trip_data[:start_time] = Time.parse('2015-05-20T12:14:00+00:00')
-
-      proc {
-        RideShare::Trip.new(@trip_data)
-      }.must_raise ArgumentError
-    end
   end
 
   describe 'calculate_duration' do
