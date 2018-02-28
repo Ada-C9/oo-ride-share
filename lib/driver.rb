@@ -77,5 +77,13 @@ module RideShare
     #   }.inject(0, :+)
     # end
 
+    def get_total_time
+      Trip.total_time(@trips)
+    end
+
+    def get_revenue_per_hour
+      self.get_revenue / self.get_total_time
+    end
+
   end
 end

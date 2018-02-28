@@ -28,20 +28,8 @@ module RideShare
       @trips << trip
     end
 
-    def get_trip_time
-      trip_time = 0
-      @trips.each do |trip|
-        unless trip.get_duration.nil?
-          trip_time += trip.get_duration
-        end
-      end
-      return trip_time
-
-      # # Alternative 1
-      # def get_trip_time
-      #   @trips.map {|trip| trip.get_duration !=nil ? trip.get_duration : 0}.inject(0, :+)
-      # end
-
+    def get_total_time
+      Trip.total_time(@trips)
     end
 
   end

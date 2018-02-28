@@ -98,13 +98,13 @@ describe "Passenger class" do
     end
   end
 
-  describe "get_trip_time" do
+  describe "get_total_time" do
     before do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
     end
 
     it "trip time is zero if no trips taken" do
-      @passenger.get_trip_time.must_equal 0
+      @passenger.get_total_time.must_equal 0
     end
 
     it "trip time returns zero if trip exists but duration nil" do
@@ -112,7 +112,7 @@ describe "Passenger class" do
       trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, start_time: start_time, cost: 15.00, rating: 5})
       @passenger.add_trip(trip)
 
-      @passenger.get_trip_time.must_equal 0
+      @passenger.get_total_time.must_equal 0
     end
 
     it "trip time is calculated with one trip" do
@@ -121,7 +121,7 @@ describe "Passenger class" do
       trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
       @passenger.add_trip(trip)
 
-      @passenger.get_trip_time.must_equal 1500
+      @passenger.get_total_time.must_equal 1500
     end
 
     it "trip time is calculated with many trips" do
@@ -130,7 +130,7 @@ describe "Passenger class" do
       trip = RideShare::Trip.new({id: 1, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
       10.times { @passenger.add_trip(trip) }
 
-      @passenger.get_trip_time.must_equal 15000.0
+      @passenger.get_total_time.must_equal 15000.0
     end
 
   end

@@ -48,16 +48,28 @@ describe "Trip class" do
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
      end
+  end
 
-     it "returns nil if start_time/end_time unavailable" do
+  describe "get_duration method" do
+    before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = nil
-      @trip_data[:start_time] = start_time
-      @trip_data[:end_time] = end_time
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
       @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "returns nil if start_time/end_time unavailable" do
 
       @trip.get_duration.must_equal nil
-     end
+    end
 
     it "calculates the duration of the trip in seconds when short time" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
@@ -77,6 +89,40 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
 
       @trip.get_duration.must_equal 36000
+    end
+  end
+
+  describe "self.total_time method" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "returns zero when there are no trips" do
+      trip_list = []
+      RideShare::Trip.total_time(trip_list).must_equal 0
+    end
+
+    it "calculates total time when one trip" do
+      trip_list = []
+      trip_list << @trip
+      RideShare::Trip.total_time(trip_list).must_equal 1500
+    end
+
+    it "calculates total time when many trips" do
+      trip_list = []
+      10.times { trip_list << @trip }
+      RideShare::Trip.total_time(trip_list).must_equal 15000.0
     end
 
   end

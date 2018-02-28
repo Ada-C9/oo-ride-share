@@ -31,7 +31,23 @@ module RideShare
       if !@start_time.nil? && !@end_time.nil?
         duration = @end_time - @start_time
       end
+      return duration
     end
+
+    def self.total_time(trip_list)
+      trip_time = 0
+      trip_list.each do |trip|
+        unless trip.get_duration.nil?
+          trip_time += trip.get_duration
+        end
+      end
+      return trip_time
+    end
+
+    # # Alternative 1
+    # def self.total_time(trip_list)
+    #   trip_list.map {|trip| trip.get_duration != nil ? trip.get_duration : 0}.inject(0, :+)
+    # end
 
   end
 end
