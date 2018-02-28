@@ -29,6 +29,7 @@ module RideShare
     end
 
     def total_spent
+     @trips.map{ |t| t.cost }.reduce(:+)
     end
   end
 end
