@@ -46,19 +46,8 @@ module RideShare
       @trips << trip
     end
 
-    # For a given driver, calculate their total revenue for all trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
-
-    # get total rev method
-    # total rev starts at 0
-    # returns total_rev
-    # interate though all trips
-    # each trip sub the fee (1.65)
-    # then trip *0.8
-    # sum of all trips
-# TODO: figure out why @trips is not an Array
     def get_total_rev
       total_rev = 0
-      # binding.pry
       @trips.each do |trip|
         trip_total = (trip.cost - 1.65) * 0.8
         total_rev += trip_total
