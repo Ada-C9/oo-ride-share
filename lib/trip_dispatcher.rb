@@ -66,7 +66,7 @@ module RideShare
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
-
+      #header_converters gives you a hash when you use :symbol so you can use headers as keys
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
@@ -75,8 +75,10 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          # start_time: raw_trip[:start_time],
+          start_time: Time.new(raw_trip[:start_time]),
+          # end_time: raw_trip[:end_time],
+          end_time: Time.new(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -99,3 +101,8 @@ module RideShare
     end
   end
 end
+
+trip_dispatch = RideShare::TripDispatcher.new
+trip_dispatch.load_drivers
+trip_dispatch.load_passengers
+trip_dispatch.load_trips

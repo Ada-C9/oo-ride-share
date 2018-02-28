@@ -1,9 +1,10 @@
 require 'csv'
 require_relative 'trip'
+require 'time'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :status, :trips, :total
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -17,8 +18,8 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
+
     end
 
     def average_rating
@@ -42,6 +43,19 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def total_revenue
+      fee = 1.65
+      driver_percent = 0.8
+
+      subtotal = 0
+      @trips.each do |trip|
+        subtotal += trip.cost - fee
+      end
+
+      total = subtotal * driver_percent
+      return total
     end
   end
 end
