@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -100,6 +101,10 @@ module RideShare
 
     private
 
+    def trip_time
+      return trip[:start_time] - trip[:endtime]
+    end
+
     def check_id(id)
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
@@ -107,3 +112,6 @@ module RideShare
     end
   end
 end
+
+#dispatcher = RideShare::TripDispatcher.new
+ #ap dispatcher.find_passenger(9)

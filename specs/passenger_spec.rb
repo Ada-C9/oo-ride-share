@@ -37,7 +37,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date:Time.parse( "2016-08-08"), rating: 5})
 
       @passenger.add_trip(trip)
     end

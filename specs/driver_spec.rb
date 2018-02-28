@@ -42,7 +42,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: Time.parse("2016-08-08"), rating: 5})
     end
 
     #different from 4?

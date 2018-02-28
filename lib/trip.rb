@@ -1,4 +1,5 @@
 require 'csv'
+require 'time'
 
 module RideShare
   class Trip
@@ -8,8 +9,10 @@ module RideShare
       @id = input[:id]
       @driver = input[:driver]
       @passenger = input[:passenger]
-      @start_time = input[:start_time]
-      @end_time = input[:end_time]
+      #assigning value of zero if start time is nil
+      @start_time = input[:start_time] ||= Time.parse('2016-04-05T14:01:00+00:00')
+      #assigning value of zero if start time is nil
+      @end_time = input[:end_time] ||= Time.parse('2016-04-05T14:09:00+00:00')
       @cost = input[:cost]
       @rating = input[:rating]
 
@@ -17,6 +20,40 @@ module RideShare
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
+
+      #can't do this with instance variables, only
+      #symbols
+      #p :hello
+      if @start_time > @end_time
+
+        raise ArgumentError.new("Invalid Trip Time")
+      end
+
+
+    end
+
+    #returns trip duration in seconds
+    def duration
+      trip_duration =  @end_time - @start_time
+      #in seconds
+      return  trip_duration
     end
   end
 end
+
+# @trip_data = {
+#   id: 8,
+#   driver: "Lovelace",
+#   passenger: "Passenger",
+#   start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+#   end_time: Time.parse('2015-05-20T12:14:00+00:00')+ 25 * 60 ,
+#   cost: 23.45,
+#   rating: 3
+# }
+#
+# a = RideShare::Trip.new(@trip_data)
+# puts @trip_data[:start_time]
+# puts @trip_data[:end_time]
+#
+#
+# a.duration

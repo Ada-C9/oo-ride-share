@@ -16,6 +16,8 @@ describe "Trip class" do
         rating: 3
       }
       @trip = RideShare::Trip.new(@trip_data)
+
+
     end
 
     it "001 is an instance of Trip" do
@@ -39,5 +41,24 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
+    it "005 returns an error if start time is after end time" do
+      @trip_data[:end_time] = @trip_data[:start_time]-60 # 25 minutes
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+    end
+
+    it "0006 returns a duration of trip time" do
+      @trip.duration.must_equal 1500
+
+    end
+
+
+
+
+
+
+
   end
 end

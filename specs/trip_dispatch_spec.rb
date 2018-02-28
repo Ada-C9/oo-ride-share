@@ -100,7 +100,7 @@ describe "TripDispatcher class" do
       trip.start_time.must_be_kind_of Time
     end
 
-    it "012 returns an error if start time is before end time" do
-    end
+
+
   end
 end
