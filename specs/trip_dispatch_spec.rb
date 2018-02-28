@@ -145,5 +145,13 @@ describe "TripDispatcher class" do
       passenger.trips.must_include @new_trip
       @trip_dispatcher.trips.must_include @new_trip
     end
+
+    it 'returns nil if no drivers are available' do
+      available_drivers = @trip_dispatcher.drivers.map { | driver | driver.status == :AVAILABLE }
+      available_drivers.length.times do |x|
+        @trip_dispatcher.request_trip(x + 1)
+      end
+      @trip_dispatcher.request_trip(300).must_be_nil
+    end
   end
 end
