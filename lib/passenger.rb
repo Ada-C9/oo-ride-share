@@ -30,7 +30,14 @@ module RideShare
     end
 
     def calculate_total_trips_time
-
+      trip_time_lengths = []
+      @trips.each do |trip|
+        trip_duration = trip.end_time.to_f - trip.start_time.to_f
+        trip_time_lengths << trip_duration
+      end
+      total_time = 0
+      total_time = trip_time_lengths.inject(:+)
+      return total_time
     end
   end # end of Passenger
 end # end of RideShare
