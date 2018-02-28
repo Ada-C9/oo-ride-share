@@ -75,12 +75,12 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          # ***** ATTEMPT AT TIME CLASS-----
+          # **W1: ATTEMPT AT TIME CLASS-----
           start_time: Time.new(raw_trip[:start_time]),
           end_time: Time.new(raw_trip[:end_time]),
           # start_time: raw_trip[:start_time],
           # end_time: raw_trip[:end_time],
-          # ****** ATTEMPT AT TIME CLASS----
+          # ** W1:ATTEMPT AT TIME CLASS----
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
