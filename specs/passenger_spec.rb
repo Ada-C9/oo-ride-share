@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Passenger class" do
+xdescribe "Passenger class" do
 
   before do
     # 1,Nina Hintz Sr.,560.815.3059

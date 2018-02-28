@@ -10,10 +10,7 @@ describe "Driver class" do
     @driver = RideShare::Driver.new(id: 1, name: "Bernardo Prosacco", vin: "WBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: [])
   end
 
-  xdescribe "Driver instantiation" do
-    before do
-      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
-    end
+  describe "Driver instantiation" do
 
     it "is an instance of Driver" do
       @driver.must_be_kind_of RideShare::Driver
@@ -34,23 +31,19 @@ describe "Driver class" do
     end
 
     it "is set up for specific attributes and data types" do
-      [:id, :name, :vehicle_id, :status].each do |prop|
+      [:id, :name, :vin, :status].each do |prop|
         @driver.must_respond_to prop
       end
 
       @driver.id.must_be_kind_of Integer
       @driver.name.must_be_kind_of String
-      @driver.vehicle_id.must_be_kind_of String
+      @driver.vin.must_be_kind_of String
       @driver.status.must_be_kind_of Symbol
     end
+    
   end
 
-  xdescribe "add trip method" do
-    before do
-      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
-      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
-    end
+  describe "add trip method" do
 
     it "throws an argument error if trip is not provided" do
       proc{ @driver.add_trip(1) }.must_raise ArgumentError
@@ -58,32 +51,34 @@ describe "Driver class" do
 
     it "increases the trip count by one" do
       previous = @driver.trips.length
-      @driver.add_trip(@trip)
+      @driver.add_trip(@trip_1)
       @driver.trips.length.must_equal previous + 1
     end
+
   end
 
-  xdescribe "average_rating method" do
-    before do
-      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
-      @driver.add_trip(trip)
-    end
+  describe "average_rating method" do
 
     it "returns a float" do
+      @driver.add_trip(@trip_1)
+      @driver.add_trip(@trip_2)
+
       @driver.average_rating.must_be_kind_of Float
     end
 
     it "returns a float within range of 1.0 to 5.0" do
+      @driver.add_trip(@trip_1)
+      @driver.add_trip(@trip_2)
+
       average = @driver.average_rating
       average.must_be :>=, 1.0
       average.must_be :<=, 5.0
     end
 
     it "returns zero if no trips" do
-      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      driver.average_rating.must_equal 0
+      @driver.average_rating.must_equal 0
     end
+
   end
 
   describe "total_revenue" do
@@ -102,6 +97,7 @@ describe "Driver class" do
   end
 
   describe "ave_rev_per_hr" do
+
     it "calculates the average revenue per hour" do
       @driver.add_trip(@trip_1)
       @driver.add_trip(@trip_2)
@@ -112,6 +108,7 @@ describe "Driver class" do
     it "returns 0 if there is no trip for this driver" do
       @driver.ave_rev_per_hr.must_equal 0
     end
+
   end
 
 end

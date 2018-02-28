@@ -15,7 +15,7 @@ module RideShare
 
       @id = input[:id]
       @name = input[:name]
-      @vehicle_id = input[:vin]
+      @vin = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
@@ -28,7 +28,7 @@ module RideShare
       end
 
       if trips.length == 0
-        average = 0
+        average = 0.0
       else
         average = (total_ratings.to_f) / trips.length
       end
