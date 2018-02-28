@@ -95,9 +95,12 @@ describe "TripDispatcher class" do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
       @dispatcher = RideShare::TripDispatcher.new
     end
+    it "should return an instance of Trip" do
+      @dispatcher.request_trip(@passenger).must_be_instance_of RideShare::Trip
+    end
 
     it "should automatically assign a driver to the trip" do
-      @dispatcher.request_trip(@passenger).driver.must_be_instance_of Driver
+      @dispatcher.request_trip(@passenger).driver.must_be_instance_of RideShare::Driver
     end
 
     it "should set a start time for the trip" do
