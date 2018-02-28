@@ -11,7 +11,7 @@ describe "Driver class" do
   end
 
 
-  describe "Driver instantiation" do
+  xdescribe "Driver instantiation" do
     before do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
     end
@@ -46,7 +46,7 @@ describe "Driver class" do
     end
   end
 
-  describe "add trip method" do
+  xdescribe "add trip method" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
@@ -64,7 +64,7 @@ describe "Driver class" do
     end
   end
 
-  describe "average_rating method" do
+  xdescribe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
@@ -84,6 +84,26 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe "total_revenue" do
+    it "calculates the driver total revenue" do
+      @driver.add_trip(@trip_1)
+      @driver.add_trip(@trip_2)
+      @driver.total_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8
+    end
+
+    it "returns 0 if there is no trip for this driver" do
+      @driver.total_revenue.must_equal 0
+    end
+  end
+
+  describe "average_revenue per hour" do
+    it "calculates the driver average revenue" do
+      @driver.add_trip(@trip_1)
+      @driver.add_trip(@trip_2)
+      @driver.average_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8 / 2.round(2)
     end
   end
 end

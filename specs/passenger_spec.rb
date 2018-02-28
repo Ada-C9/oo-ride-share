@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Passenger class" do
+xdescribe "Passenger class" do
   before do
     # 1,Nina Hintz Sr.,560.815.3059
     # 98,Ms. Winston Emard,1F9Z5CF13VV8041ND,AVAILABLE
@@ -90,16 +90,16 @@ describe "Passenger class" do
   end
 
   describe "total_amount_of_money" do
-    it "calculates total amount of money spent"
-    @passenger.add_trip(@trip_1)
-    @passenger.add_trip(@trip_2)
+    it "calculates total amount of money spent" do
+      @passenger.add_trip(@trip_1)
+      @passenger.add_trip(@trip_2)
 
-    @passenger.total_amount_of_money.must_equal (13.04 + 24.25)
+      @passenger.total_amount_of_money.must_equal (13.04 + 24.25)
+    end
+    it "returns 0 if there is no trip for this passenger" do
+      @passenger.total_amount_of_money.must_equal 0
+    end
   end
-  it "returns 0 if there is no trip for this passenger" do
-    @passenger.total_amount_of_money.must_equal 0
-  end
-
 
   describe "total_amount_of_time" do
 
@@ -116,5 +116,4 @@ describe "Passenger class" do
     end
 
   end
-end
 end

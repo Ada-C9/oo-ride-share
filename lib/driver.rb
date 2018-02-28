@@ -43,5 +43,13 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      @trips.empty? ? 0 : (@trips.inject(0){ |rev, trip| rev + trip.cost } - 1.65) * 0.8
+    end
+
+    def average_revenue
+      @trips.empty? ? 0 : (total_revenue / @trips.length.round(2))
+    end
   end
 end
