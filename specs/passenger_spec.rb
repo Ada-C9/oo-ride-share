@@ -52,12 +52,12 @@ describe "Passenger class" do
       @trip2 = RideShare::Trip.new({id: 5, driver: nil, passenger: @passenger,
         start_time: Time.parse("2018-01-04T10:45:00+00:00"),
         end_time: Time.parse("2018-01-4T11:15:00+00:00"), cost: 10.05,
-        rating: 5})
+        rating: 4})
 
       @trip3 = RideShare::Trip.new({id: 22, driver: nil, passenger: @passenger,
         start_time: Time.parse("2018-01-05T09:30:00+00:00"),
         end_time: Time.parse("2018-01-05T10:00:00+00:00"), cost: 11.0,
-        rating: 5})
+        rating: 2})
       [@trip1, @trip2, @trip3].each { |trip| @passenger.add_trip(trip)}
     end
 
