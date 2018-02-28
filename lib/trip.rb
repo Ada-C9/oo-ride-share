@@ -24,8 +24,16 @@ module RideShare
 
     def duration
     # calculate the duration of the trip in seconds
-    duration = (@end_time - @start_time)
+      duration = (@end_time - @start_time)
     return duration
+    end
+
+    def self.total_time(trip_list)
+      total_time = 0
+      trip_list.each do |trip|
+       total_time += trip.duration
+      end
+      return total_time
     end
 
   end # Class trip

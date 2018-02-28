@@ -43,6 +43,7 @@ module RideShare
 
       @trips << trip
     end # add_trip
+
     def total_revenue
       tax = 1.65
       driver_pay = 0.8
@@ -53,6 +54,19 @@ module RideShare
       end
       total_revenue = gross_pay * driver_pay
       return total_revenue
+    end
+
+    # calulate drivers average revenue per hour spend driving
+    def average_revenue
+      # input: total_revenue, total_time_spent(hours),
+      # output: average_revenue = total_revenue / total_time_spent
+      average_revenue = 0
+      total_time = Trip.total_time(trips)/60/60.round(2)
+      average = self.total_revenue / total_time
+      #12.04/.8
+      average_revenue += average
+      # ((Passenger.total_time_spent * 60)* 60)
+      return average_revenue.round(2)
     end
   end # class
 end # module

@@ -106,4 +106,28 @@ describe "Driver class" do
       driver.total_revenue.must_equal 12.04
     end # calculate total rev
   end # total_revenue
-end
+
+  describe 'average_revenue' do
+    it "can calculate the average pay per hour spent driving" do
+
+      trips = [
+        RideShare::Trip.new({cost: 10, rating: 3, start_time: Time.parse('2015-05-20T14:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T14:30:00+00:00')}), #16m 960s
+        RideShare::Trip.new({cost: 4, rating: 3, start_time: Time.parse('2015-05-20T14:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T14:30:00+00:00')}),#16m 960s
+        RideShare::Trip.new({cost: 6, rating: 3,start_time: Time.parse('2015-05-20T14:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T14:30:00+00:00')}),#16m 960s
+      ]
+
+      data = {
+        id: 3,
+        vin: 'kkkkkkkkkkkkkkkkk',
+        name: 'Lola',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(data)
+      driver.average_revenue.must_equal 15.05
+    end
+  end # average_revenue
+end # driver class
