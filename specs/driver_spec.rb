@@ -111,7 +111,7 @@ describe "Driver class" do
 
     # This is kind of a goofy test, I know, because a lot of what it does
     # is test itself.  But I think it still makes sense as a test of this method,
-    # because it shows the steps in the calculation by which we arrive at the
+    # because it shows the steps by which we arrive at the
     # figure in the previous test.
 
     # It's sort of a proof-of-concept for the calculation in the method, and it
@@ -143,6 +143,8 @@ describe "Driver class" do
   end
 
   describe "average_revenue" do
-
+    it "accurately returns a given driver's average per-trip take-home revenue" do
+      @driver_a.average_revenue.must_be_within_delta 6.78, 0.003
+    end
   end
 end
