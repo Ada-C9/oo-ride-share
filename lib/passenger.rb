@@ -32,21 +32,22 @@ module RideShare
     end
 
     def money_spent
-      trips_cost = 0
-      @trips.each do |ride|
-        trips_cost += ride.cost
+      total_passenger_cost = 0
+      @trips.each do |trip|
+        total_passenger_cost += trip.cost
       end
-      return trips_cost
+      return total_passenger_cost
     end
 
     def time_spent
-      total_time = 0
-      @trips.each do |start_time, end_time|
-
+      total_passenger_time = 0
+      @trips.duration.each do |trip|
+        total_passenger_time += trip.duration
       end
+      return total_passenger_time
     end
 
-  end # end of Passenger class 
+  end # end of Passenger class
 end # end of RideShare module
 
 # testing_code = RideShare::Passenger.new(

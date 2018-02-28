@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Passenger class" do
 
@@ -79,24 +80,52 @@ describe "Passenger class" do
 
 
   describe "money_spent" do
-    it "calculate the total money spent" do
-      trips = [
-        RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 5, rating: 3}),
-        RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 7, rating: 3}),
-        RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 8, rating: 3}),
-      ]
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 30, rating: 5})
 
-      driver_data = {
-        id: 7,
-        name: "test driver",
-        vin: "1C9EVBRM0YBC564DZ",
-        trips: trips
-      }
+      @passenger.add_trip(trip)
+    end
 
-      driver = RideShare::Passenger.new(driver_data)
-
-      driver.money_spent.must_equal 20
+    it "calculate the total amount of money the passenger spent" do
+      @passenger.money_spent.must_equal 30
     end
   end
+
+  # describe "time_spent" do
+  #   before do
+  #     start_time = Time.parse('2015-05-20T12:14:00+00:00')
+  #     end_time = start_time + 25 * 60 # 25 minutes
+  #     @trip_data = {
+  #       id: 8,
+  #       driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+  #       passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+  #       start_time: start_time,
+  #       end_time: end_time,
+  #       cost: 23.45,
+  #       rating: 3
+  #     }
+  #     @trip = RideShare::Trip.new(@trip_data)
+  #   end
+  #
+  #   it "calculate the total amount of time the passenger spent" do
+  #
+  #     trips = [
+  #       RideShare::Trip.new({start_time: @trip_data[:start_time], end_time: @trip_data[:end_time], cost: 5, rating: 3}),
+  #       RideShare::Trip.new({start_time: @trip_data[:start_time], end_time: @trip_data[:end_time], cost: 7, rating: 3}),
+  #       RideShare::Trip.new({start_time: @trip_data[:start_time], end_time: @trip_data[:end_time], cost: 8, rating: 3}),
+  #     ]
+  #
+  #     driver_data = {
+  #       id: 7,
+  #       name: "test driver",
+  #       vin: "1C9EVBRM0YBC564DZ",
+  #       trips: trips
+  #     }
+  #
+  #     driver = RideShare::Passenger.new(driver_data)
+  #     driver.money_spent.must_equal 5400
+  #   end
+  # end
 
 end # end of describe "Passenger class"
