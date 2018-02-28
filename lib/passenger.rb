@@ -21,7 +21,7 @@ module RideShare
       @trips << trip
     end
 
-    def tot_spent
+    def tot_money_spent
       tot_spent = 0
       @trips.each do |trip|
         tot_spent += trip.cost

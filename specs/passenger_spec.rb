@@ -97,14 +97,14 @@ describe "Passenger class" do
       @passenger.add_trip(trip2)
       # When
       # Then
-      @passenger.tot_spent.must_equal 13.00
+      @passenger.tot_money_spent.must_equal 13.00
     end
 
     it "returns 0 if no trips have been taken" do
       # Given
       # When
       # Then
-      @passenger.tot_spent.must_equal 0
+      @passenger.tot_money_spent.must_equal 0
     end
   end
 end
