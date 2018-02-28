@@ -95,18 +95,22 @@ describe "Passenger class" do
     end
   end
 
-  # describe "#calculate_total_time" do
-  #   before do
-  #     @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-  #     trip_one = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00", cost: 5.75, rating: 5})
-  #     trip_two = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00", cost: 10.00, rating: 5})
-  #
-  #     @passenger.add_trip(trip_one)
-  #     @passenger.add_trip(trip_two)
-  #   end
-  #
-  #   it "text" do
-  #
-  #   end
-  # end
+  describe "#calculate_total_time" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      trip_one = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), cost: 5.75, rating: 5})
+      trip_two = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse("2016-04-05T16:01:00+00:00"), end_time: Time.parse("2016-04-05T16:09:00+00:00"), cost: 10.00, rating: 5})
+
+      @passenger.add_trip(trip_one)
+      @passenger.add_trip(trip_two)
+    end
+
+    it "returns the total amount of time a passenger has spent on their trips in minutes" do
+      @passenger.calculate_total_time.must_equal 16
+    end
+
+    it "returns the time in minutes as a float" do
+      @passenger.calculate_total_time.must_be_instance_of Float
+    end
+  end
 end
