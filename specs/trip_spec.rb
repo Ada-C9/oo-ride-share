@@ -76,7 +76,8 @@ describe "Trip class" do
       }
 
       @trip = RideShare::Trip.new(@trip_data)
-      @trip.duration_of_trip.must_equal 60
+      @trip.duration.must_equal 60
+
     end
   end
 
