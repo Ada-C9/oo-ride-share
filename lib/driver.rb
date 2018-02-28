@@ -43,8 +43,17 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_rev
+      total_rev = 0
+      @trips.each {|trip| total_rev +=  (trip.cost - 1.65) * 0.8}
+      return total_rev
+    end
+
   end
 end
+
+# 3. Add an instance method to Driver to calculate that driver's total revenue across all their trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
 
 # Dee's  Pseudocode:
 
