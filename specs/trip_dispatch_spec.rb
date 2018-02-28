@@ -1,6 +1,7 @@
 require_relative 'spec_helper'
+require 'time'
 
-xdescribe "TripDispatcher class" do
+describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -98,6 +99,37 @@ xdescribe "TripDispatcher class" do
 
       start_time.must_be_instance_of Time
       end_time.must_be_instance_of Time
+    end
+  end
+
+  describe "request_trip" do
+    before do
+      @trip_dispatcher = RideShare::TripDispatcher.new
+      @new_trip = @trip_dispatcher.request_trip(33)
+    end
+    it "throws an error for an invalid passenger id" do
+      proc { @trip_dispatcher.request_trip(nil) }.must_raise ArgumentError
+      proc { @trip_dispatcher.request_trip("not an id") }.must_raise ArgumentError
+    end
+
+    it "returns a newly created trip" do
+      @new_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "has an existing driver and a start_time of now" do
+      another_trip = @trip_dispatcher.request_trip(18)
+      driver = another_trip.driver
+      same_driver = @trip_dispatcher.find_driver(driver.id)
+
+      another_trip.start_time.must_be_instance_of Time
+      driver.must_equal same_driver
+    end
+
+    it "assigns value of 'nil' to end_time, cost, and rating" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
+
     end
   end
 end
