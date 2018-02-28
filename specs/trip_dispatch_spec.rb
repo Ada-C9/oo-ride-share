@@ -88,5 +88,14 @@ xdescribe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it 'stores start_time and end_time as instances of time' do
+      dispatcher = RideShare::TripDispatcher.new
+      trip = dispatcher.trips.first
+      trip.start_time.must_be_instance_of Time
+      dispatcher = RideShare::TripDispatcher.new
+      trip = dispatcher.trips.first
+      trip.end_time.must_be_instance_of Time
+    end
   end
 end
