@@ -36,9 +36,12 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + (1500)
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time,end_time:end_time, rating: 5})
 
       @passenger.add_trip(trip)
+
     end
 
     it "each item in array is a Trip instance" do
@@ -54,11 +57,38 @@ describe "Passenger class" do
     end
   end
 
+  describe "total_amount_spent" do
+    #no trips, multiple trips tests include these!
+    it "can return the total amount spent on rides per passenger" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + (1500)
+
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, start_time: start_time, end_time:end_time ,rating: 5,cost:10})
+
+      passenger.add_trip(trip)
+      passenger.total_amount_spent.must_equal 250
+
+    end
+  end
+
+  describe "total_amount_time" do
+    it "can return the total amount of time spend on a ride" do
+      a_trip = RideShare::Trip.new({id:12345,driver:"A driver",passenger:"a passenger",start_time:0,end_time:60,cost:10,rating:4})
+      a_passenger = RideShare::Passenger.new({id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [a_trip]})
+      a_passenger.total_amount_time.must_equal 1
+    end
+  end
+
   describe "get_drivers method" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + (1500)
+
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time:end_time ,rating: 5})
 
       @passenger.add_trip(trip)
     end
