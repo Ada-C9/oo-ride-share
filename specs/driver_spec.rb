@@ -57,8 +57,10 @@ describe "Driver class" do
 
   describe "average_rating method" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = Time.parse('2015-05-20T14:16:23+00:00')
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -75,6 +77,40 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe "#total_revenue" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = Time.parse('2015-05-20T14:16:23+00:00')
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time,cost: 4, rating: 5})
+      trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.50, rating: 5})
+
+      @driver.add_trip(trip)
+      @driver.add_trip(trip1)
+    end
+    it "returns driver's total revenue across all their trips" do
+      @driver.total_revenue.must_equal 4.16
+      @driver.total_revenue.must_be_instance_of Float
+    end
+  end
+
+    describe "#average_revenue_per_hour" do
+      before do
+        start_time = Time.parse('2015-05-20T12:14:00+00:00')
+        end_time = Time.parse('2015-05-20T14:16:23+00:00')
+        @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time,cost: 4, rating: 5})
+        trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.50, rating: 5})
+
+        @driver.add_trip(trip)
+        @driver.add_trip(trip1)
+      end
+      it "returns the driver's average revenue per hour spent driving" do
+        @driver.average_revenue_per_hour.must_equal 1.04
+        @driver.average_revenue_per_hour.must_be_instance_of Float
     end
   end
 end

@@ -35,24 +35,24 @@ module RideShare
     end
 
     def total_revenue
-      total_revenue = 0
-      @trips.map{ |each_trip|
-        total_revenue += (each_trip.cost-1.65)* 0.8}
-      return total_revenue
+      # total_revenue = 0
+      # @trips.each{ |each_trip|
+      #   total_revenue += (each_trip.cost-1.65)* 0.8}
+      # return total_revenue.round(2)
+      return @trips.reduce(0) { |total, each_trip| total + (each_trip.cost-1.65) * 0.8 }.round(2)
     end
 
     def average_revenue_per_hour
+      total_duration = 0
       @trips.map{|each_trip|
-        average_revenue_per_hour = total_revenue/(each_trip.duration/60)}
-        return average_revenue_per_hour
+        total_duration += each_trip.duration }
+      return total_revenue / (total_duration / 3600)
     end
 
     def add_trip(trip)
-      if trip.class != Trip
-        raise ArgumentError.new("Can only add trip instance to trip collection")
-      end
-
+      raise ArgumentError.new("Can only add trip instance to trip collection") if trip.class != Trip
       @trips << trip
     end
+
   end
 end
