@@ -80,12 +80,7 @@ describe "Driver class" do
 
   describe "total_revenue method" do
     it "returns total revenue of a driver" do
-
-      driver_data = {
-        id: 3,
-        name: "Lovelace",
-        vin: "12345678912345678"
-      }
+      driver_data = {id: 3, name: "Lovelace", vin: "12345678912345678"}
       driver = RideShare::Driver.new(driver_data)
 
       start_time_1 = Time.parse('2015-05-20T12:14:00+00:00')
@@ -138,11 +133,7 @@ describe "Driver class" do
     end
 
     it "raises an StandardError when total revenue is negative" do
-      driver_data = {
-        id: 3,
-        name: "Lovelace",
-        vin: "12345678912345678"
-      }
+      driver_data = {id: 3, name: "Lovelace", vin: "12345678912345678"}
       driver = RideShare::Driver.new(driver_data)
 
       start_time_1 = Time.parse('2015-05-20T12:14:00+00:00')
@@ -159,6 +150,42 @@ describe "Driver class" do
 
       driver.add_trip(RideShare::Trip.new(trip_1))
       proc { driver.total_revenue }.must_raise StandardError
+    end
+  end
+
+  describe "average_revenue method" do
+    it "returns average revenue per hour by a driver" do
+      driver_data = {id: 3, name: "Lovelace", vin: "12345678912345678"}
+      driver = RideShare::Driver.new(driver_data)
+
+
+      start_time_1 = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time_1 = start_time_1 + 30 * 60
+      trip_1 = {
+        id: 8,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time_1,
+        end_time: end_time_1,
+        cost: 36.65,
+        rating: 4
+      }
+
+      start_time_2 = Time.parse('2015-07-20T12:14:00+00:00')
+      end_time_2 = start_time_2 + 60 * 60
+      trip_2 = {
+        id: 9,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 4, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time_2,
+        end_time: end_time_2,
+        cost: 121.65,
+        rating: 3
+      }
+      driver.add_trip(RideShare::Trip.new(trip_1))
+      driver.add_trip(RideShare::Trip.new(trip_2))
+
+      driver.average_revenue.must_equal 82.67
     end
   end
 
