@@ -140,16 +140,19 @@ module RideShare
   end
 end
 
-trip_disp = RideShare::TripDispatcher.new()
-# puts trip_disp.drivers
-# puts trip_disp.passengers[0].id
-puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+#for my personal testing:
 
-new_trip = trip_disp.request_trip(1)
-
-puts "new_trip = #{new_trip}"
-puts "new_trip.id = #{new_trip.id}"
-
-puts "new trip driver = #{new_trip.driver}"
-# puts trip_disp.request_trip(1).start_time
-puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+# trip_disp = RideShare::TripDispatcher.new()
+# # puts trip_disp.drivers
+# # puts trip_disp.passengers[0].id
+# puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+#
+# new_trip = trip_disp.request_trip(1)
+#
+# puts "new_trip = #{new_trip}"
+# puts "new_trip.id = #{new_trip.id}"
+#
+# puts "new trip driver = #{new_trip.driver}"
+# # puts trip_disp.request_trip(1).start_time
+# puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+# puts "trip_disp.trips.length = #{new_trip.driver.trips.length}"

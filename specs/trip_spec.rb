@@ -73,10 +73,49 @@ describe "Trip class" do
         rating: 3
       }
       @trip = RideShare::Trip.new(@trip_data)
-      
+
       @trip.duration_method.must_equal 60
 
     end
   end
 
+  describe '#request_trip' do
+    it 'Updates the trip list in trip_dispatcher:' do
+      trip_disp = RideShare::TripDispatcher.new()
+      initial_list_length = trip_disp.trips.length
+
+      # Request new trip:
+      trip_disp.request_trip(1)
+
+      final_list_length = trip_disp.trips.length
+
+      final_list_length.must_equal initial_list_length + 1
+    end
+
+    it 'Updates the driver s trip list:' do
+      trip_disp = RideShare::TripDispatcher.new()
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+      driver_for_new_trip = new_trip.driver
+
+      find_new_trip_in_driver = driver_for_new_trip.trips.find{ |trip|  trip == new_trip }
+
+      find_new_trip_in_driver.must_equal new_trip
+
+      # maybe do this too!:
+      # final_driver_list_length = driver_for_new_trip.trips.length
+      #
+      # final_driver_list_length.must_equal initial_driver_list_length + 1
+    end
+  end
+
 end
+
+
+
+# Was the trip created properly?
+# Were the trip lists for the driver and passenger updated?
+# Was the driver who was selected AVAILABLE?
+# What happens if you try to request a trip when there are no AVAILABLE drivers?
