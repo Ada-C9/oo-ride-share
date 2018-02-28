@@ -17,23 +17,13 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
     def average_rating
-      total_ratings = 0
-      @trips.each do |trip|
-        total_ratings += trip.rating
-      end
-
-      if trips.length == 0
-        average = 0
-      else
-        average = (total_ratings.to_f) / trips.length
-      end
-
-      return average
+      return 0 if trips.length == 0
+      total_ratings = @trips.inject(0) { |total, trip| total + trip.rating }
+      return (total_ratings.to_f) / trips.length
     end
 
     def add_trip(trip)
@@ -43,5 +33,35 @@ module RideShare
 
       @trips << trip
     end
+
+    def get_total_revenue
+      return @trips.inject(0.0) { |total, trip| total + (trip.cost - 1.56) * 0.80 }
+    end
+
+    def get_avg_revenue_per_hour
+      return (get_total_revenue / get_all_trip_durations).round(2)
+    end
+
+    private
+
+    def get_all_trip_durations
+      return @trips.inject(0) { |sum, trip| sum + trip.get_duration }.to_f / 120
+    end
+
   end
 end
+
+
+# original average rating
+# total_ratings = 0
+# @trips.each do |trip|
+#   total_ratings += trip.rating
+# end
+#
+# if trips.length == 0
+#   average = 0
+# else
+#   average = (total_ratings.to_f) / trips.length
+# end
+#
+# return average

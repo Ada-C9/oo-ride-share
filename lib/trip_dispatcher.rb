@@ -11,7 +11,6 @@ module RideShare
     attr_reader :drivers, :passengers, :trips
 
     def initialize
-      
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
@@ -23,8 +22,7 @@ module RideShare
       all_drivers = []
       my_file.each do |line|
         input_data = {}
-        # Set to a default value
-        vin = line[2].length == 17 ? line[2] : "0" * 17
+        vin = line[2].length == 17 ? line[2] : "0" * 17  # Set to default value
 
         # Status logic
         status = line[3]
@@ -42,27 +40,25 @@ module RideShare
 
     def find_driver(id)
       check_id(id)
-      @drivers.find{ |driver| driver.id == id }
+      return @drivers.find{ |driver| driver.id == id }
     end
 
     def load_passengers
       passengers = []
-
       CSV.read('support/passengers.csv', headers: true).each do |line|
         input_data = {}
         input_data[:id] = line[0].to_i
         input_data[:name] = line[1]
         input_data[:phone] = line[2]
-
         passengers << Passenger.new(input_data)
       end
-
       return passengers
     end
 
+
     def find_passenger(id)
       check_id(id)
-      @passengers.find{ |passenger| passenger.id == id }
+      return @passengers.find{ |passenger| passenger.id == id }
     end
 
     def load_trips
@@ -88,7 +84,7 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
     end
 
     private
