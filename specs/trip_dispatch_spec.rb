@@ -116,13 +116,10 @@ describe "TripDispatcher class" do
       @new_trip.must_be_instance_of RideShare::Trip
     end
 
-    it "has an existing driver and is now :UNAVAILABLE" do
-      driver = @new_trip.driver
-      same_driver = @trip_dispatcher.find_driver(driver.id)
-
-      driver.must_equal same_driver
-      driver.status.must_equal :UNAVAILABLE
-      driver.must_be_instance_of RideShare::Driver
+    it "assigns value of 'nil' to end_time, cost, and rating" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
     end
 
     it "has start_time of now" do
@@ -131,10 +128,21 @@ describe "TripDispatcher class" do
       another_trip.start_time.ctime.must_equal Time.now.ctime
     end
 
-    it "assigns value of 'nil' to end_time, cost, and rating" do
-      @new_trip.end_time.must_be_nil
-      @new_trip.cost.must_be_nil
-      @new_trip.rating.must_be_nil
+    it "has an existing driver that is now :UNAVAILABLE" do
+      driver = @new_trip.driver
+      same_driver = @trip_dispatcher.find_driver(driver.id)
+
+      driver.must_equal same_driver
+      driver.status.must_equal :UNAVAILABLE
+      driver.must_be_instance_of RideShare::Driver
+    end
+
+    it "adds new trip to both passenger's and driver's trips" do
+      driver = @new_trip.driver
+      passenger = @new_trip.passenger
+
+      driver.trips.must_include @new_trip
+      passenger.trips.must_include @new_trip
     end
   end
 end
