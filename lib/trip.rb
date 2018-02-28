@@ -1,4 +1,5 @@
-require 'csv'
+ require 'csv'
+ require 'time'
 
 module RideShare
   class Trip
@@ -13,9 +14,20 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
+      if @end_time < @start_time
+        raise ArgumentError.new("End time cannot be before start time.")
+      end
+
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
+    end # end of initialize
+
+    def duration
+      duration = (@end_time - @start_time).to_f
+
     end
-  end
-end
+
+
+  end # end of class
+end # end of module

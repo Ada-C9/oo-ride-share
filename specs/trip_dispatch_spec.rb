@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "TripDispatcher class" do
+xdescribe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
