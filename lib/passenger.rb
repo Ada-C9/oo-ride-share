@@ -20,5 +20,13 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_cost
+      @trips.empty? ? 0 : @trips.reduce(0) { |total, trip| total + trip.cost } 
+    end
+
+    def total_time
+    end
+
   end
 end

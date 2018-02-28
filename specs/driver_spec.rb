@@ -102,7 +102,7 @@ describe "Driver class" do
   end
 
   describe "ave_rev_per_hr" do
-    it "calculate the average revenue per hour" do
+    it "calculates the average revenue per hour" do
       @driver.add_trip(@trip_1)
       @driver.add_trip(@trip_2)
 
