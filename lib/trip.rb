@@ -1,4 +1,5 @@
 require 'csv'
+require 'time'
 
 module RideShare
   class Trip
@@ -16,6 +17,11 @@ module RideShare
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
+
+      if @start_time > @end_time
+        raise ArgumentError.new("Invalid start and end time input. End time before start time.")
+      end
+
     end
   end
 end
