@@ -6,6 +6,7 @@ module RideShare
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
     def initialize(input)
+
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
       end
@@ -58,7 +59,13 @@ module RideShare
       return average_rev
     end
 
+    def change_status
+      @status = :UNAVAILABLE
+    end
+    # * Modify this selected driver using a new helper method in Driver:
+    #     * Add the new trip to the collection of trips for that Driver
+    #     * Set the driver's status to :UNAVAILABLE
+
+
   end
 end
-
-# 4. Add an instance method to Driver to calculate that driver's average revenue per hour spent driving, using the above formula for revenue

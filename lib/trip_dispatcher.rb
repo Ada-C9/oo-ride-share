@@ -90,6 +90,46 @@ module RideShare
       trips
     end
 
+    def select_driver
+      # For this initial version, choose the first driver whose status is :AVAILABLE
+      @drivers.each {|driver| return select_driver = driver if driver.status == :AVAILABLE }
+      # @drivers.find{ |driver| driver.status == :AVAILABLE }
+    end
+
+
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+
+      select_driver
+
+      in_progress_trip = {
+        id: (@trips.size + 1),
+        driver: select_driver,
+        passenger: passenger,
+        start_time: Time.now, #Your code should use the current time for the start time
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+
+      # Create a new instance of Trip:
+      trip_in_progress = Trip.new(in_progress_trip)
+
+      # Add the new trip to the collection of trips for that Driver:
+      select_driver.add_trip(trip_in_progress)
+      # Set the driver's status to :UNAVAILABLE:
+      select_driver.change_status
+
+      # Add the new trip to the collection of trips for the Passenger:
+      passenger.add_trip(trip_in_progress)
+
+      # Add the new trip to the collection of all Trips in TripDispatcher:
+      trips << trip_in_progress
+
+      # Return the newly created trip:
+      return trip_in_progress
+    end
+
     private
 
     def check_id(id)
@@ -99,3 +139,17 @@ module RideShare
     end
   end
 end
+
+trip_disp = RideShare::TripDispatcher.new()
+# puts trip_disp.drivers
+# puts trip_disp.passengers[0].id
+puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+
+new_trip = trip_disp.request_trip(1)
+
+puts "new_trip = #{new_trip}"
+puts "new_trip.id = #{new_trip.id}"
+
+puts "new trip driver = #{new_trip.driver}"
+# puts trip_disp.request_trip(1).start_time
+puts "trip_disp.trips.length = #{trip_disp.trips.length}"
