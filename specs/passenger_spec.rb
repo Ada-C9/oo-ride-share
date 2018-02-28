@@ -79,4 +79,32 @@ describe "Passenger class" do
       end
     end
   end
+
+  describe "total amount of money spent" do
+    before do
+      @start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @end_time = @start_time + 25 * 60 # 25 minutes
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+    end
+    it "returns total amount of money spent by passenger" do
+      # Given
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: @start_time, end_time: @end_time, cost: 5.00, rating: 5})
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: @start_time, end_time: @end_time, cost: 8.00, rating: 5})
+
+      @passenger.add_trip(trip)
+      @passenger.add_trip(trip2)
+      # When
+      # Then
+      @passenger.tot_spent.must_equal 13.00
+    end
+
+    it "returns 0 if no trips have been taken" do
+      # Given
+      # When
+      # Then
+      @passenger.tot_spent.must_equal 0
+    end
+  end
 end
