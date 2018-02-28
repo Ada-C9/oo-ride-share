@@ -71,18 +71,22 @@ module RideShare
       return total.round(2)
     end
 
+    def avg_revenue
+      return total_hours == 0 ? 0 : (total_revenue/total_hours).round(2)
+    end
+
+    private
+
     def total_hours
       total_seconds = 0
       @trips.each do |trip|
+        next if trip.trip_duration.nil?
         total_seconds += trip.trip_duration
       end
       total_hours = total_seconds.to_f / 3600
       return total_hours.round(2)
     end
 
-    def avg_revenue
-      return total_hours == 0 ? 0 : (total_revenue/total_hours).round(2)
-    end
 
   end # Driver
 end # RideShare
