@@ -43,5 +43,15 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      fee = 1.65
+      driver_portion = 0.8
+      subtotal = @trips.map{|trip| trip.cost - fee}.inject(0, :+).round(2)
+
+      raise StandardError.new("Negative revenue") if subtotal < 0
+
+      return subtotal * driver_portion
+    end
   end
 end
