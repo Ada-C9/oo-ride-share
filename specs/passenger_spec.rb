@@ -32,6 +32,22 @@ describe "Passenger class" do
     end
   end
 
+  describe "#update_passenger_info" do
+    it "updates trip array with new trip" do
+      passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips: []})
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+      trip1 = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: nil, cost: nil, rating: nil})
+
+      initial_trips_length = passenger.trips.length
+      passenger.update_passenger_info(trip1)
+      new_trips_length = passenger.trips.length
+
+      new_trips_length.must_equal initial_trips_length + 1
+    end
+  end
+
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])

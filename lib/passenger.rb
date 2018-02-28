@@ -14,6 +14,10 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def update_passenger_info(new_trip)
+      add_trip(new_trip)
+    end
+
     def get_drivers
       @trips.map{ |t| t.driver }
     end
@@ -22,7 +26,7 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-      
+
       @trips << trip
     end
 
