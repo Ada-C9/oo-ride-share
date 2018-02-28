@@ -56,13 +56,21 @@ describe "Trip class" do
     end
   end
 
-  
+
   describe "trip_duration" do
     it "should return one integer" do
-      trip = RideShare::Trip.new(start_time: "2016-04-05 14:01:00 +0000", end_time: "2016-04-05 14:01:00 +0000", rating: 3)
+
+      trip = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:01:00 +0000"), rating: 3)
+      puts trip.start_time
+      puts trip.end_time
       trip.trip_duration.must_be_kind_of Float
     end
 
+    it "Should return 60.0 for a minute RideShare" do
+
+    trip = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3)
+    trip.trip_duration.must_equal 60
+  end
 
   end
 end
