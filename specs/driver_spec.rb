@@ -109,7 +109,21 @@ describe "Driver class" do
     end
 
     describe "average revenue" do
+      it "returns 0 if there are no trips" do
+        @driver.avg_revenue_per_hour.must_equal 0
+      end
 
+      it "returns a float > 0 if there are any trips" do
+        @driver.add_trip(@trip1)
+        total1 = (@driver.trips[0].cost - @fee) * 0.8
+        time1 = (@driver.trips[0].duration_in_seconds/3600).round(2)
+        @driver.avg_revenue_per_hour.must_equal total1 / time1
+
+        @driver.add_trip(@trip2)
+        @driver.avg_revenue_per_hour.must_be :> , total1 / time1
+
+        @driver.avg_revenue_per_hour.must_be_kind_of Float
+      end
     end
   end
 end
