@@ -160,7 +160,7 @@ Now that we have data for cost available for every trip, we can do some interest
 
 **All of these methods must have tests.**
 
-<!-- ### Wave 2
+### Wave 2
 
 Our program needs a way to make new trips and appropriately assign a driver and passenger.
 
@@ -220,7 +220,7 @@ Grace is excluded because they are not `AVAILABLE`, and because they have one in
 
 Of Ada and Katherine, we prefer Ada, because their most recent trip is older.
 
-**All of this code must have tests.** -->
+**All of this code must have tests.**
 
 ## What Instructors Are Looking For
 Check out the [feedback template](feedback.md) which lists the items instructors will be looking for as they evaluate your project.
