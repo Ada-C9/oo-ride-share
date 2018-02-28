@@ -3,6 +3,10 @@ require_relative 'trip'
 
 module RideShare
   class Driver
+
+    FEE = 1.65
+    PERCENT_TAKEHOME = 0.8
+
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
     def initialize(input)
@@ -42,6 +46,10 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def total_revenue
+      return trips.inject(0) {|sum, trip| sum += (trip.cost - FEE) * PERCENT_TAKEHOME}
     end
   end
 end
