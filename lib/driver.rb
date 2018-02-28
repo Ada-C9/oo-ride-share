@@ -44,33 +44,14 @@ module RideShare
       @trips << trip
     end
 
-    # pseudocode calc revenue
-    # def calc revenue
-      # load all trips w/ @trips
-      # iterate through @ trips and sum up @trip.cost
-      # subtract fee of 1.65 * num trips, so @trip.length
-      # current amount is now subtotal
-      # multiply subtotal by 0.80
-      # this is now total revenue
-    # end
+    def total_revenue
+      total_revenue = 0
+      @trips.each do |trip|
+        total_revenue += trip.cost
+      end
+      return total_revenue
+    end
 
-    # follow along with live-code pseudocode lesson
-    # Pseudocode: Total Revenue for Driver
 
-    # Output - Total revenue (float)
-    # Input - none
-    # Where does it live? Driver#total_revenue
-
-    # def total_revenue
-      # fee = 1.65
-      # driver_percentage = 0.80
-      # subtotal = 0
-      # @trips.each do |trip|
-      # => Question - what if the ride costs less than the fee ???
-        # subtotal += trip.cost - fee
-      # end
-      # total = subtotal * driver_percentage
-      # return total
-    # end
   end
 end
