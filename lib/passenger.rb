@@ -11,21 +11,20 @@ module RideShare
       @name = input[:name]
       @phone_number = input[:phone]
       @trips = input[:trips] == nil ? [] : input[:trips]
-    end
+    end # initialize
 
     def get_drivers
       @trips.map{ |t| t.driver }
-    end
+    end # get_drivers
 
     def add_trip(trip)
       @trips << trip
-    end
+    end # add_trip
 
     def total_spent
       total = @trips.map {|trip| trip.cost}.sum
       return total
-    end
-
+    end # total_spent
 
 
   end # Class Passenger
