@@ -20,5 +20,13 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
-  end
-end
+
+    def calculate_all_trips_cost
+      total_cost = 0
+      @trips.each do |trip|
+        total_cost += trip.cost
+      end
+      return total_cost
+    end
+  end # end of Passenger
+end # end of RideShare

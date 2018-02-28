@@ -30,7 +30,7 @@ describe "Passenger class" do
       @passenger.phone_number.must_be_kind_of String
       @passenger.trips.must_be_kind_of Array
     end
-  end
+  end # end of describe Passenger initiation
 
 
   describe "trips property" do
@@ -55,7 +55,7 @@ describe "Passenger class" do
         trip.passenger.id.must_equal 9
       end
     end
-  end
+  end # end of describe trips property
 
   describe "get_drivers method" do
     before do
@@ -81,5 +81,31 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
-  end
-end
+  end # end of describe get_drivers method
+
+  describe "calculate_all_trips_cost method" do
+
+    it "returns a float" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      start_time = Time.parse("2015-05-27T01:11:00+00:00")
+      end_time = Time.parse("2015-05-27T01:11:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+      @passenger.add_trip(trip)
+
+      start_time = Time.parse("2016-05-25T23:04:00+00:00")
+      end_time = Time.parse("2016-05-25T23:49:00+00:00")
+      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 23, rating: 5})
+
+      @passenger.add_trip(trip1)
+
+      @passenger.calculate_all_trips_cost.must_be_kind_of Float
+    end # end of returns a float
+
+    it "returns 0 when no trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      @passenger.calculate_all_trips_cost.must_equal 0
+    end
+  end # end of describe calculate_all_trips_cost
+end # end of describe Passenger
