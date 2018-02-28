@@ -49,7 +49,10 @@ module RideShare
     end
 
     def total_revenue
-      return trips.inject(0) {|sum, trip| sum += (trip.cost - FEE) * PERCENT_TAKEHOME}
+      total = trips.inject(0) do  |sum, trip|
+        trip.cost != nil ? sum += (trip.cost - FEE) * PERCENT_TAKEHOME : sum += 0
+      end
+      return total
     end
 
     def avg_revenue_per_hour

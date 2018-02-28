@@ -88,6 +88,8 @@ describe "Driver class" do
       @trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 12.5, rating: 5})
 
       @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 15.0, rating: 5})
+
+      @in_progress_trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: nil, cost: nil, rating: nil})
     end
 
     describe "total revenue" do
@@ -102,9 +104,16 @@ describe "Driver class" do
 
         @driver.add_trip(@trip2)
         total2 = (@driver.trips[1].cost - @fee) * 0.8
-        @driver.total_revenue.must_equal total1 + total2
+        @driver.total_revenue.must_equal (total1 + total2)
 
         @driver.total_revenue.must_be_kind_of Float
+      end
+
+      it "ignores in progress trips" do
+        @driver.add_trip(@trip1)
+        total1 = (@driver.trips[0].cost - @fee) * 0.8
+        @driver.add_trip(@in_progress_trip)
+        @driver.total_revenue.must_equal total1
       end
     end
 
@@ -116,13 +125,17 @@ describe "Driver class" do
       it "returns a float > 0 if there are any trips" do
         @driver.add_trip(@trip1)
         total1 = (@driver.trips[0].cost - @fee) * 0.8
-        time1 = (@driver.trips[0].duration_in_seconds/3600).round(2)
-        @driver.avg_revenue_per_hour.must_equal total1 / time1
+        time1 = (@driver.trips[0].duration_in_seconds / 3600).round(2)
+        @driver.avg_revenue_per_hour.must_equal (total1 / time1)
 
         @driver.add_trip(@trip2)
-        @driver.avg_revenue_per_hour.must_be :> , total1 / time1
+        @driver.avg_revenue_per_hour.must_be :> , (total1 / time1)
 
         @driver.avg_revenue_per_hour.must_be_kind_of Float
+      end
+
+      it "ignores in progress trips" do
+
       end
     end
   end
