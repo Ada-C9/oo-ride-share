@@ -7,6 +7,7 @@ describe "TripDispatcher class" do
       dispatcher.must_be_kind_of RideShare::TripDispatcher
     end
 
+
     it "establishes the base data structures when instantiated" do
       dispatcher = RideShare::TripDispatcher.new
       [:trips, :passengers, :drivers].each do |prop|
@@ -47,6 +48,7 @@ describe "TripDispatcher class" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
     end
+
   end
 
   describe "loader methods" do
