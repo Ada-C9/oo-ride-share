@@ -1,4 +1,5 @@
 require 'csv'
+require 'pry'
 require_relative 'trip'
 
 module RideShare
@@ -24,6 +25,7 @@ module RideShare
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
+        next if trip.rating == nil
         total_ratings += trip.rating
       end
 
@@ -69,8 +71,10 @@ module RideShare
     end
 
     def avg_revenue
-      return total_hours == 0 ? 0 : (total_revenue/total_hours).round(2) 
+      return total_hours == 0 ? 0 : (total_revenue/total_hours).round(2)
     end
 
   end # Driver
 end # RideShare
+
+# binding.pry

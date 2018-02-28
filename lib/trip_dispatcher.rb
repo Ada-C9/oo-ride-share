@@ -90,6 +90,24 @@ module RideShare
       trips
     end
 
+    def request_trip(passenger)
+      new_trip_details = {
+        id: get_next_trip_id,
+        driver: get_driver,
+        passenger: passenger,
+        start_time: Time.now.to_s,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      new_trip = Trip.new(new_trip_details)
+      passenger.add_trip(new_trip)
+      # new_trip.driver.add_trip(new_trip)
+
+      return new_trip
+    end
+
+
     private
 
     def check_id(id)
@@ -97,5 +115,19 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-  end
-end
+
+    def get_next_trip_id
+      trip_ids = @trips.map { |trip| trip.id }
+      sorted_ids = trip_ids.sort!
+      return sorted_ids.last + 1
+    end
+
+    def get_driver
+      available_driver = @drivers.find do |driver|
+        driver.status == :available
+      end
+      return available_driver
+    end
+
+  end # class
+end # module

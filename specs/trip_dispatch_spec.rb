@@ -89,4 +89,29 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "TripDispatcher#request_trip" do
+    before do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "should automatically assign a driver to the trip" do
+      @dispatcher.request_trip(@passenger).driver.must_be_instance_of Driver
+    end
+
+    it "should set a start time for the trip" do
+      @dispatcher.request_trip(@passenger).start_time.must_be_instance_of Time
+    end
+
+    it "should set the end time, cost, and rating to nil" do
+      @dispatcher.request_trip(@passenger).end_time.must_be_nil
+      @dispatcher.request_trip(@passenger).cost.must_be_nil
+      @dispatcher.request_trip(@passenger).rating.must_be_nil
+    end
+
+    it "should assign the new trip a new id" do
+      @dispatcher.request_trip(@passenger).id.must_equal 601
+    end
+  end
 end

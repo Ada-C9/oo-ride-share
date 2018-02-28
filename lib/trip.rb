@@ -12,14 +12,10 @@ module RideShare
       input[:start_time].nil? ? @start_time = nil : @start_time = Time.parse(input[:start_time])
       input[:end_time].nil? ? @end_time = nil : @end_time = Time.parse(input[:end_time])
       @cost = input[:cost]
-      @rating = input[:rating]
-
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
-      end
+      @rating = input[:rating] == nil ? nil : check_rating(input[:rating])
 
       if @start_time == nil || @end_time == nil
-        return nil # this has to return nil so that the driver or passenger knows how to deal with a no-trip entry
+         # this has to return nil so that the driver or passenger knows how to deal with a no-trip entry
       elsif @start_time > @end_time
         raise ArgumentError.new("Invalid end time #{@end_time}")
       end
@@ -40,6 +36,15 @@ module RideShare
       start_time_secs = (@start_time.hour * 3600) + (@start_time.min * 60)
 
       return end_time_secs - start_time_secs
+    end
+
+    private
+
+    def check_rating(rating)
+      if (rating > 5 || rating < 1)
+        raise ArgumentError.new("Invalid rating #{rating}")
+      end
+      return rating
     end
 
   end # trip

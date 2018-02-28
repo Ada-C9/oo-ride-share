@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Driver class" do
 
@@ -59,7 +60,9 @@ describe "Driver class" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-04-06T14:01:00+00:00"})
       @driver.add_trip(trip)
+      @driver.add_trip(trip2)
     end
 
     it "returns a float" do
