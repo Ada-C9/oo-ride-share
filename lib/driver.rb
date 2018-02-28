@@ -23,7 +23,7 @@ module RideShare
 
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      finished_trips.each do |trip|
         total_ratings += trip.rating
       end
 
@@ -33,7 +33,7 @@ module RideShare
         average = (total_ratings.to_f) / trips.length
       end
 
-      return average
+      return average.to_f
     end
 
     def add_trip(trip)
@@ -44,10 +44,21 @@ module RideShare
       @trips << trip
     end
 
+    def finished_trips
+      trips_closed = @trips
+      trips_closed.each do |trip|
+        if trip.end_time == nil || trip.cost == nil || trip.rating == nil
+          trips_closed.delete(trip)
+        end
+      end
+
+      return trips_closed
+    end
+
     def total_revenue
       fee = 1.65
       driver_portion = 0.8
-      subtotal = @trips.map{ |trip| trip.cost - fee}.inject(0, :+).round(2)
+      subtotal = finished_trips.map{ |trip| trip.cost - fee}.inject(0, :+).round(2)
 
       raise StandardError.new("Negative revenue") if subtotal < 0
 
@@ -56,7 +67,8 @@ module RideShare
 
     def average_revenue
       hour_to_second = 3600
-      total_duration = @trips.map {|trip| trip.duration}.inject(0, :+) / hour_to_second
+      total_duration = finished_trips.map {|trip| trip.duration}.inject(0, :+) / hour_to_second
+
       return (total_revenue / total_duration).round(2)
     end
 
