@@ -90,7 +90,7 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
     end
 
     private
