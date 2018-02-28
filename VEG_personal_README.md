@@ -125,3 +125,63 @@ I think the first thing we need to do is split out the timezone bit using a
 regexp.  There's just no help for it.  If it's still there when the rest of
 the string gets processed, it'll get broken up in exactly the wrong way, so it
 has to be handled first.
+
+Actually, scratch that.  Before we go ot Regexp Hell, let's -juuuust- have a look
+at Time.parse and see if we get something better.
+
+
+So, to recap:  
+
+
+The relevant handling loop we need to fit into is:
+
+trip_data.each do |raw_trip|
+  driver = find_driver(raw_trip[:driver_id].to_i)
+  passenger = find_passenger(raw_trip[:passenger_id].to_i)
+
+And what we want to process is:
+
+  2016-04-05T14:01:00+00:00
+
+So, let's PSEUDOCODE that:
+
+1. Find the header, which is start_time, so, roughly:
+      start_time = find_start_time(raw_trip[:start_time].A_METHOD_HAPPENS)
+      ** NOTE HERE THAT THERE NEEDS TO BE A find_start_time helper method,
+        like the existing find_driver and find_passenger methods.
+
+2. The method that has to happen is:
+
+    Time.new(correctly_processed_time_string)
+
+3.  So, how's that processing going to work?
+    -- As a helper method, clearly.  
+
+4.  What does that helper method look like?
+    a. remove all "-" and replace with ", ".
+    b. remove "T" and replace with ", "
+    c. identify anchoring "+00:00" (or any series of numbers begining with +,
+        followed by two digits, a colon, and another two digits, enclose in "",
+        and set aside, to be added to the end of the (string? expression? what??
+          thinking I'm going to go with "thingee," here) thingee.
+
+
+****ACTUALLY, LET'S PUT A PIN IN THIS.******
+
+Because we can use Time.parse() to convert the strings we have into Time objects.
+
+Given the template we have:  
+
+trip_data.each do |raw_trip|
+  driver = find_driver(raw_trip[:driver_id].to_i)
+  passenger = find_passenger(raw_trip[:passenger_id].to_i)
+
+I think we can do:
+
+start_time = find_start_time(Time.parse(raw_trip[:start_time]))
+
+and
+
+end_time = find_end_time(Time.parse(raw_trip[:end_time]))
+
+or something like that. 
