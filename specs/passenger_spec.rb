@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
-
+gem 'minitest', '>= 5.0.0'
+require 'minitest/pride'
 describe "Passenger class" do
 
   describe "Passenger instantiation" do

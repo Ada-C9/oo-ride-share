@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
-
+gem 'minitest', '>= 5.0.0'
+require 'minitest/pride'
 describe "Driver class" do
 
   describe "Driver instantiation" do
