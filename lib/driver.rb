@@ -53,5 +53,10 @@ module RideShare
       return revenue
     end
 
+    def calc_avg_revenue
+      avg_revenue = 0
+      return avg_revenue
+    end
+
   end
 end
