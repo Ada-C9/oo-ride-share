@@ -23,6 +23,10 @@ module RideShare
       return @trips.inject(0.0) { |total, trip| total + trip.cost }
     end
 
+    def get_total_time
+      return @trips.inject(0) { |total, trip| total + trip.get_duration }
+    end
+
     private
 
     def valid_id_or_error(input_id)

@@ -36,13 +36,6 @@ module RideShare
       end
     end
 
-    def valid_rating_or_error(rating)
-      if rating > 5 || rating < 1
-        raise ArgumentError.new("Invalid rating #{rating}")
-      end
-      return rating
-    end
-
     def valid_time_or_error(input_time)
       if input_time.class != Time
         raise ArgumentError.new("Invalid time #{input_time}")
