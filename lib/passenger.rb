@@ -20,5 +20,13 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
-  end
-end
+
+    def total_spent
+      total = @trips.map {|trip| trip.cost}.sum
+      return total
+    end
+
+
+
+  end # Class Passenger
+end # Module RideShare
