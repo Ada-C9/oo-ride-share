@@ -25,7 +25,6 @@ module RideShare
 
     def duration
       @end_time - @start_time
-      binding.pry
     end
   end
 end
