@@ -52,5 +52,9 @@ module RideShare
       @trips.empty? ?  0 : (total_revenue / @trips.length).round(2)
     end
 
+    def set_status(status)
+      @status = status
+    end
+
   end
 end

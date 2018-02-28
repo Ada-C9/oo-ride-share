@@ -90,6 +90,27 @@ module RideShare
       trips
     end
 
+    def request_trip(passenger_id)
+      check_id(passenger_id)
+      selected_driver = @drivers.find { |driver| driver.status == :AVAILABLE }
+      if selected_driver == nil
+        return nil
+      end
+
+      trip_info = { id: (@trips.length + 1), driver: selected_driver, passenger: find_passenger(passenger_id), start_time: Time.now, end_time: nil, cost: nil, rating: nil }
+      trip = RideShare::Trip.new(trip_info)
+
+
+      driver_id = selected_driver.id
+      @drivers[driver_id - 1].add_trip(trip)
+      @drivers[driver_id - 1].set_status(:UNAVAILABLE)
+
+      @passengers[passenger_id - 1].add_trip(trip)
+
+      @trips << trip
+      return trip
+    end
+
     private
 
     def check_id(id)
