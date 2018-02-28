@@ -78,7 +78,7 @@ describe "Passenger class" do
 
   describe "#total_spent" do
 
-    it 'return the total amount of money that passenger has spent on their trips' do
+    it 'Returns the total amount of money that passenger has spent on their trips' do
 
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
@@ -92,14 +92,26 @@ describe "Passenger class" do
       passenger.total_spent.must_equal trip.cost
     end
   end
+
+  describe 'total_time_spent' do
+    it 'Returns the total amount of time that passenger has spent on their trips' do
+
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = Time.parse("2016-08-08T16:37:00+00:00")
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+      trip = RideShare::Trip.new({id: 8, driver: driver, date: "2016-08-08", cost: 17.39, rating: 5, start_time: start_time, end_time: end_time })
+
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      passenger.add_trip(trip)
+
+
+      duration_of_ride = (end_time.to_f - start_time.to_f)
+
+      passenger.total_time_spent.must_equal duration_of_ride
+
+    end
+  end
 end
-
-
-       # 8,93,104,2016-08-08T16:01:00+00:00,2016-08-08T16:37:00+00:00,10.12,5
-      #
-      # start_time = Time.parse("2016-08-08T16:01:00+00:00")
-      # end_time = Time.parse("2016-08-08T16:37:00+00:00")
-      # duration_of_ride = (end_time.to_f - start_time.to_f)
-      #
-      #
-      # @passenger.total_spent.must_equal duration_of_ride
