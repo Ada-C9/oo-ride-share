@@ -1,3 +1,5 @@
+require 'awesome_print'
+
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -32,9 +34,25 @@ module RideShare
     def total_ride_time
       car_time = 0
       @trips.each do |trip|
-        car_time += trip.duration
+        car_time += (trip.duration/60).round(2) #in minutes
       end
       return car_time
     end
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
