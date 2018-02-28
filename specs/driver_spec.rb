@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Driver class" do
 
@@ -121,6 +122,24 @@ describe "Driver class" do
 
       @driver.average_hourly_revenue.must_be_kind_of Float
       @driver.average_hourly_revenue.must_equal 5.36
+    end
+  end
+
+  describe 'start_new_trip' do
+    before do
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.now, end_time: nil, rating: nil, cost: nil})
+    end
+    it "adds new trip to driver's trips" do
+      @driver.start_new_trip(@trip)
+
+      @driver.trips.must_include @trip
+    end
+    it 'changes status to :UNAVAILABLE' do
+      @driver.start_new_trip(@trip)
+
+      @driver.status.must_equal :UNAVAILABLE
     end
   end
 end

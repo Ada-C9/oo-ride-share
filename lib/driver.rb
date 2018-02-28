@@ -52,8 +52,12 @@ module RideShare
     def average_hourly_revenue
       total_minutes = @trips.sum{ |t| t.calculate_duration / 60 }
       total_hours = total_minutes / 60
-      # binding.pry
       (total_revenue / total_hours).round(2)
+    end
+
+    def start_new_trip(trip)
+      add_trip(trip)
+      @status = :UNAVAILABLE
     end
   end
 end

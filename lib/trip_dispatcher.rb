@@ -108,7 +108,7 @@ module RideShare
       }
 
       trip = Trip.new(new_trip)
-      
+      available_driver.start_new_trip(trip)
       trips << trip
       trip
     end
