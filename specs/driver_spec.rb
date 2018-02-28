@@ -78,7 +78,7 @@ describe "Driver class" do
     end
   end
 
-  describe 'total_rev' do
+  describe '#total_rev' do
     it 'Calculates that driver total revenue across all their trips.' do
 
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
@@ -90,6 +90,26 @@ describe "Driver class" do
       cost = (10 - 1.65) * 0.8
 
       @driver.total_rev.must_equal cost
+    end
+  end
+
+  describe '#average_revenue' do
+    it 'Calculates that driver average revenue per hour spent driving' do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = start_time + 60 * 60 # + 1 hour
+
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10})
+
+      @driver.add_trip(trip)
+
+      total_hours = (end_time.to_i - start_time.to_i)/3600
+      total_rev = (10 - 1.65) * 0.8
+      average_rev = total_rev / total_hours
+      @driver.average_revenue.must_equal average_rev
+
+
     end
   end
 end

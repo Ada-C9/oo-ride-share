@@ -50,21 +50,15 @@ module RideShare
       return total_rev
     end
 
+    def average_revenue
+      total_hours = 0
+      @trips.each {|trip| total_hours += trip.duration_method}
+      average_rev = total_rev / (total_hours/3600) #to hours
+
+      return average_rev
+    end
+
   end
 end
 
-# 3. Add an instance method to Driver to calculate that driver's total revenue across all their trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
-
-# Dee's  Pseudocode:
-
-# get toal rev method
-# total_rev starts at 0
-#
-# iterate through each trip in all_trips
-#   fee is 1.65
-#   trip_cost
-#   trip_rev is (trip_cost - fee) * 0.8
-#   trip_rev adds to total_rev
-#
-#
-# return total_rev
+# 4. Add an instance method to Driver to calculate that driver's average revenue per hour spent driving, using the above formula for revenue
