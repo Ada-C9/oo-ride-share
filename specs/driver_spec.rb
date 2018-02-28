@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-xdescribe "Driver class" do
+describe "Driver class" do
   before do
     # 1,Bernardo Prosacco,WBWSS52P9NEYLVDE9,UNAVAILABLE
     # 1,1,54,2016-04-05T14:01:00+00:00,2016-04-05T14:09:00+00:00,17.39,3
@@ -8,6 +8,7 @@ xdescribe "Driver class" do
     @trip_1 = RideShare::Trip.new(id: 1, driver: 1, passenger: 54, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 17.39, rating: 3)
     @trip_2 = RideShare::Trip.new(id: 122, driver: 1, passenger: 247, start_time: Time.parse('2015-12-24T04:57:00+00:00'), end_time: Time.parse('2015-12-24T04:57:00+00:00'), cost: 13.11, rating: 5)
     @driver = RideShare::Driver.new(id: 1, name: "Bernardo Prosacco", vin: "WBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: [])
+    @in_progress_trip = RideShare::Trip.new(id: 601, driver: 1, passenger: 2, start_time: Time.now, end_time: nil, cost: 10.00, rating: nil)
   end
 
   describe "Driver instantiation" do
@@ -81,6 +82,8 @@ xdescribe "Driver class" do
 
   end
 
+  # Ignore any in-progress trips (end_time is nil) for calculation
+  # Add new tests (driver_spec & passenger_spec) for this new situation (in-progress trip added)
   describe "total_revenue" do
 
     it "calculates that driver's total revenue" do
@@ -92,6 +95,14 @@ xdescribe "Driver class" do
 
     it "returns 0 if there is no trip for this driver" do
       @driver.total_revenue.must_equal 0
+    end
+
+    it "ignore in-progress trips" do
+      @driver.add_trip(@trip_1)
+      @driver.add_trip(@trip_2)
+      @driver.add_trip(@in_progress_trip)
+
+      @driver.total_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8
     end
 
   end

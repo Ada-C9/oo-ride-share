@@ -4,7 +4,7 @@ require_relative '../lib/driver'
 require_relative '../lib/passenger'
 require_relative '../lib/trip_dispatcher'
 
-describe "TripDispatcher class" do
+xdescribe "TripDispatcher class" do
 
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
@@ -113,8 +113,6 @@ describe "TripDispatcher class" do
       @trip_dispatcher = RideShare::TripDispatcher.new
     end
 
-    # Ignore any in-progress trips (end_time is nil) for calculation
-    # Add new tests (driver_spec & passenger_spec) for this new situation (in-progress trip added)
     it "creates a new instance of Trip" do
       @trip = @trip_dispatcher.request_trip(1)
       @trip.must_be_instance_of RideShare::Trip
@@ -127,9 +125,9 @@ describe "TripDispatcher class" do
       @trip.driver.id.must_equal 2
       @trip.passenger.id.must_equal 1
       @trip.start_time.to_i.must_equal Time.now.to_i
-      @trip.end_time.to_i.must_equal Time.now.to_i
-      @trip.cost.must_equal 0
-      @trip.rating.must_equal 1
+      @trip.end_time.must_be_nil
+      @trip.cost.must_be_nil
+      @trip.rating.must_be_nil
     end
 
     it "assigns a driver to the trip (use first AVAILABLE driver from the file)" do
@@ -146,15 +144,6 @@ describe "TripDispatcher class" do
       @trip.start_time.to_i.must_equal Time.now.to_i
     end
 
-    # Extra tests
-    it "assigns nil to end_time, cost and rating" do
-      @trip = @trip_dispatcher.request_trip(1)
-
-      @trip.end_time.to_i.must_equal Time.now.to_i
-      @trip.cost.must_equal 0
-      @trip.rating.must_equal 1
-    end
-
     it "adds the new trip to the trips for that driver" do
       orig_trip_length = @trip_dispatcher.drivers[2 - 1].trips.length
 
@@ -164,6 +153,8 @@ describe "TripDispatcher class" do
     end
 
     it "sets the driver's status to :UNAVAILABLE" do
+      @trip_dispatcher.drivers[2 - 1].status.must_equal :AVAILABLE
+
       @trip_dispatcher.request_trip(1)
 
       @trip_dispatcher.drivers[2 - 1].status.must_equal :UNAVAILABLE

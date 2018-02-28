@@ -84,6 +84,8 @@ xdescribe "Passenger class" do
 
   end
 
+  # Ignore any in-progress trips (end_time is nil) for calculation
+  # Add new tests (driver_spec & passenger_spec) for this new situation (in-progress trip added)
   describe "total_cost" do
 
     it "calculates that passenger's total amount of money spent" do
@@ -96,6 +98,8 @@ xdescribe "Passenger class" do
     it "returns 0 if there is no trip for this passenger" do
       @passenger.total_cost.must_equal 0
     end
+
+    # it ""
 
   end
 
