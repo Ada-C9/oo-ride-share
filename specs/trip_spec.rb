@@ -38,5 +38,46 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
+    it "raises an error when the end time is before the start time" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time - 25 * 60 # 25 minutes before start
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+     end
+
+     it "returns nil if start_time/end_time unavailable" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = nil
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.duration.must_equal nil
+     end
+
+    it "calculates the duration of the trip in seconds when short time" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.duration.must_equal 1500
+    end
+
+    it "calculates the duration of the trip in seconds when long time" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 600 * 60 # 10 hours
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.duration.must_equal 36000
+    end
+
   end
 end

@@ -1,0 +1,22 @@
+Exercise: Look at this requirement in Wave 1: "For a given driver, calculate their total revenue for all trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted." Spend some time writing pseudocode for this.
+
+
+pseudocode: Total Revenue for Driver
+
+Input: none
+Output: Total revenue (float)
+Where does it live? Driver#total_revenue
+
+def total_revenue
+  fee = 1.65
+  driver_takehome = 0.8
+
+  subtotal = 0
+  @trips.each do |trip|
+    #Question: what id the cost is less than the fee
+    subtotal += trip.cost - fee
+  end
+
+  total = subtotal * driver_takehome
+  return total
+end   
