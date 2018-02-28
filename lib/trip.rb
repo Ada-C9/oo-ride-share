@@ -22,5 +22,10 @@ module RideShare
         raise ArgumentError.new("End time cannot be before the start time, unless you are the Doctor.")
       end
     end
+
+    def duration
+      @end_time - @start_time
+      binding.pry
+    end
   end
 end
