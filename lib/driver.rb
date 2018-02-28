@@ -51,5 +51,15 @@ module RideShare
     def total_revenue
       return trips.inject(0) {|sum, trip| sum += (trip.cost - FEE) * PERCENT_TAKEHOME}
     end
+
+    def avg_revenue_per_hour
+      revenue = total_revenue
+      time_in_secs = trips.inject(0) {|sum, trip| sum += trip.duration_in_seconds}
+      time_in_hours = (time_in_secs / 3600).round(2)
+      if time_in_secs != 0
+        return revenue / time_in_hours
+      end
+      return 0
+    end
   end
 end
