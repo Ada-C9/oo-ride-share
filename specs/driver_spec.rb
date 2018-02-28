@@ -89,8 +89,10 @@ describe "Driver class" do
       end
       it "gets drivers total revenue" do
         # Arrange/Given
-        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5, cost: 5.00})
-        trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5, cost: 5.00})
+        start_time = Time.parse('2015-05-20T12:14:00+00:00')
+        end_time = start_time + 25 * 60 # 25 minutes
+        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 5.00})
+        trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 5.00})
         # Act/When
         @driver.add_trip(trip)
         @driver.add_trip(trip2)
