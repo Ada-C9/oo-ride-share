@@ -20,5 +20,15 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
-  end
-end
+
+    def total_spending
+      @trips.map{|trip| trip.cost}.inject(0, :+).round(2)
+    end
+
+    def total_time
+      @trips.map{|trip| (trip.end_time - trip.start_time)}.inject(0, :+).round(1)
+    end
+
+  end # Passenger class ends
+
+end # Rideshare module ends
