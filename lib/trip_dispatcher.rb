@@ -75,13 +75,15 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
         trip = Trip.new(parsed_trip)
+
+        #set up relation
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
