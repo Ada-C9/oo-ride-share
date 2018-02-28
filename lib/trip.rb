@@ -1,4 +1,7 @@
 require 'csv'
+require 'time'
+require_relative 'driver'
+require_relative 'passenger'
 
 module RideShare
   class Trip
@@ -16,6 +19,14 @@ module RideShare
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
+
+      if (@start_time <=> @end_time) == 1
+        raise ArgumentError.new("Invalid time entries. Trip end time must be later than start time.")
+      end
+    end
+
+    def duration
+      return @end_time - @start_time
     end
   end
 end

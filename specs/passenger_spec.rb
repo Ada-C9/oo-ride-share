@@ -32,7 +32,6 @@ describe "Passenger class" do
     end
   end
 
-
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
@@ -73,6 +72,58 @@ describe "Passenger class" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
       end
+    end
+  end
+
+  describe "total_cost method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+    end
+
+    it "returns a number" do
+      @passenger.must_respond_to :total_cost
+      @passenger.total_cost.must_be_kind_of Numeric
+    end
+
+    it "returns zero if the passenger has no trips" do
+      @passenger.total_cost.must_equal 0
+    end
+
+    it "returns the sum cost of the passenger's trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, cost: 10.15, rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, cost: 7, rating: 5})
+      @passenger.add_trip(trip_1)
+      @passenger.add_trip(trip_2)
+
+      @passenger.total_cost.must_equal 17.15
+    end
+  end
+
+  describe "total_time method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+    end
+
+    it "returns a number" do
+      @passenger.must_respond_to :total_time
+      @passenger.total_time.must_be_kind_of Numeric
+    end
+
+    it "returns zero if the passenger has no trips" do
+      @passenger.total_time.must_equal 0
+    end
+
+    it "returns the sum duration of the passenger's trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-01-13T13:16:00+00:00"), end_time: Time.parse("2016-01-13T13:28:00+00:00"), rating: 5})
+      @passenger.add_trip(trip_1)
+      @passenger.total_time.must_equal 480
+      @passenger.add_trip(trip_2)
+      @passenger.total_time.must_equal 1200
     end
   end
 end

@@ -77,4 +77,93 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue method" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+    end
+
+    it "returns a number" do
+      @driver.must_respond_to :total_revenue
+      @driver.total_revenue.must_be_kind_of Numeric
+    end
+
+    it "returns zero if driver has no trips" do
+      @driver.total_revenue.must_equal 0
+    end
+
+    it "does not deduct the trip fee for trips that cost less than $1.65" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      trip_1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), cost: 1.50, rating: 1})
+      @driver.add_trip(trip_1)
+      @driver.total_revenue.must_be_within_delta 1.2, 0.01
+    end
+
+    it "returns the total revenue for all of the driver's trips" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      trip_1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), cost: 10.00, rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-01-13T13:16:00+00:00"), end_time: Time.parse("2016-01-13T13:28:00+00:00"), cost: 15.00, rating: 5})
+      @driver.add_trip(trip_1)
+      @driver.total_revenue.must_be_within_delta 6.68, 0.01
+      @driver.add_trip(trip_2)
+      @driver.total_revenue.must_be_within_delta 17.36, 0.01
+    end
+  end
+
+  describe "total_time method" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+    end
+
+    it "returns a number" do
+      @driver.must_respond_to :total_time
+      @driver.total_time.must_be_kind_of Numeric
+    end
+
+    it "returns zero if driver has no trips" do
+      @driver.total_time.must_equal 0
+    end
+
+    it "returns the sum duration for all of the driver's trips" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      trip_1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), cost: 10.00, rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-01-13T13:16:00+00:00"), end_time: Time.parse("2016-01-13T13:28:00+00:00"), cost: 15.00, rating: 5})
+      @driver.add_trip(trip_1)
+      @driver.total_time.must_equal 480
+      @driver.add_trip(trip_2)
+      @driver.total_time.must_equal 1200
+    end
+  end
+
+  describe "revenue_per_hour method" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+    end
+
+    it "returns a number" do
+      @driver.must_respond_to :revenue_per_hour
+      @driver.revenue_per_hour.must_be_kind_of Numeric
+    end
+
+    it "returns zero if driver has no trips" do
+      @driver.revenue_per_hour.must_equal 0
+    end
+
+    it "returns zero if driver's total trip durations are zero" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      trip_1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:01:00+00:00"), cost: 10.00, rating: 3})
+      @driver.add_trip(trip_1)
+      @driver.revenue_per_hour.must_equal 0
+    end
+
+    it "returns the average revenue per hour for the driver's trips" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      trip_1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), cost: 10.00, rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-01-13T13:16:00+00:00"), end_time: Time.parse("2016-01-13T13:28:00+00:00"), cost: 15.00, rating: 5})
+      @driver.add_trip(trip_1)
+      @driver.revenue_per_hour.must_be_within_delta 50.1, 0.01
+      @driver.add_trip(trip_2)
+      @driver.revenue_per_hour.must_be_within_delta 52.08, 0.01
+    end
+  end
 end
