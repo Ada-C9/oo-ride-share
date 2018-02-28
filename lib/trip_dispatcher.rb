@@ -72,18 +72,12 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
-        # make start_time and end_time instances of Time
-        start_time = raw_trip[3].gsub("T", " ")
-        start_time = Time.parse(start_time)
-        end_time = raw_trip[4].gsub("T", " ")
-        end_time = Time.parse(end_time)
-
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: start_time,
-          end_time: end_time,
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
