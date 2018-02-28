@@ -20,5 +20,21 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_spent
+      spent = 0
+      @trips.each do |trip|
+        spent += trip.cost
+      end
+      return spent.round(2)
+    end
+
+    def total_ride_time
+      car_time = 0
+      @trips.each do |trip|
+        car_time += trip.duration
+      end
+      return car_time
+    end
   end
 end
