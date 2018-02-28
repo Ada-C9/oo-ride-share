@@ -91,11 +91,28 @@ describe "Passenger class" do
 
       trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2016-03-05T14:01:00+00:00'), end_time: Time.parse('2016-03-05T14:11:00+00:00'), cost: 15.0, rating: 5})
 
-      first_trip = @passenger.add_trip(trip1)
-      second_trip = @passenger.add_trip(trip2)
-      money_spent = @passenger.total_spent
+      @passenger.add_trip(trip1)
+      @passenger.add_trip(trip2)
+
       @passenger.total_spent.must_be :>, 0
       @passenger.total_spent.must_be_kind_of Float
     end
   end
+
+  # describe "total_time method" do
+  #   before do
+  #     @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips: []})
+  #     @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+  #   end
+  #
+  #   it "returns zero if there are no trips" do
+  #     @passenger.total_time.must_equal 0
+  #   end
+  #
+  #   it "returns float if there are any trips" do
+  #     trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 17.29, rating: 5})
+  #
+  #     trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2016-03-05T14:01:00+00:00'), end_time: Time.parse('2016-03-05T14:11:00+00:00'), cost: 15.0, rating: 5})
+  #   end
+  # end
 end
