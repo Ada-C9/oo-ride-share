@@ -157,7 +157,12 @@ describe "TripDispatcher class" do
       initial_status.must_equal :AVAILABLE
     end
 
-    it 'Returns nil if there are no AVAILABLE drivers' do
+    it 'Returns an exeption if there are no AVAILABLE drivers' do
+
+      @trip_disp.drivers.each {|driver| driver.change_status}
+
+      proc {@trip_disp.request_trip(1)}.must_raise StandardError
+
 
     end
   end

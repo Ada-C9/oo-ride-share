@@ -21,7 +21,7 @@ module RideShare
         end
       end
 
-      if @rating != nil
+      if @end_time != nil
         if @start_time > @end_time
           raise ArgumentError.new("End time cannot be before the start time.")
         end

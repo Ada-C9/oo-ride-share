@@ -92,6 +92,7 @@ module RideShare
 
     def select_driver_available
       # For this initial version, choose the first driver whose status is :AVAILABLE
+
       @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
       # @drivers.find{ |driver| driver.status == :AVAILABLE }
     end
@@ -116,7 +117,12 @@ module RideShare
       trip_in_progress = Trip.new(in_progress_trip)
 
       # Add the new trip to the collection of trips for that Driver:
-      select_driver_available.add_trip(trip_in_progress)
+      begin
+        select_driver_available.add_trip(trip_in_progress)
+      rescue SystemCallError => exception
+        puts "There is no available drivers #{exception.message}"
+      end
+
       # Set the driver's status to :UNAVAILABLE:
       select_driver_available.change_status
 
