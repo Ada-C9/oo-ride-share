@@ -55,6 +55,10 @@ module RideShare
       total = subtotal * driver_takehome
       return total
     end
-    
+
+    def calculate_driver_average_revenue
+      return calculate_driver_revenue / @trips.length
+    end
+
   end
 end
