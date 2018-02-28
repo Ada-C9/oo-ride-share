@@ -4,8 +4,8 @@ describe "Trip class" do
 
   describe "initialize" do
     before do
-      start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60 # 25 minutes
+      start_time = '2015-05-20T12:14:00+00:00'
+      end_time = '2015-05-20T12:39:00+00:00' # add 25 minutes
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -40,8 +40,8 @@ describe "Trip class" do
     end
 
     it "throws an argument error if a trip end time is before the start time" do
-      start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time - 25 * 60 # 25 minutes
+      start_time = '2015-05-20T12:14:00+00:00'
+      end_time = '2015-05-20T12:00:00+00:00' # 25 minutes
       test_details = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -52,6 +52,27 @@ describe "Trip class" do
         rating: 3
       }
       proc { RideShare::Trip.new(test_details)}.must_raise ArgumentError
+    end
+  end
+
+  describe "Trip.trip_duration" do
+    before do
+      start_time = '2015-05-20T12:14:00+00:00'
+      end_time = '2015-05-20T12:39:00+00:00' # add 25 minutes
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "calculates the amount of time for one trip in seconds" do
+      @trip.trip_duration.must_equal 1500
     end
   end
 end
