@@ -24,20 +24,20 @@ module RideShare
     end
 
     def calc_total_spent
-    total_spent = 0
+      total_spent = 0
       @trips.each do |trip|
         total_spent += trip.cost
       end
-    return total_spent
+      return total_spent
     end
 
-    # def calc_total_duration
-    # total_duration = 0
-    #   # @trips.each do |trip|
-    #   #   total_spent += trip.cost
-    #   # end
-    # return total_duration
-    # end
+    def calc_total_duration
+      total_duration = 0
+      @trips.each do |trip|
+        total_duration += trip.duration
+      end
+      return total_duration
+    end
 
   end
 end
