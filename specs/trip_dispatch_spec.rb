@@ -98,7 +98,7 @@ describe "TripDispatcher class" do
   end
 
   describe '#request_trip' do
-    it 'Updates the trip list in trip_dispatcher:' do
+    it 'Updates the length of trip list in trip_dispatcher:' do
       trip_disp = RideShare::TripDispatcher.new()
       initial_list_length = trip_disp.trips.length
 
@@ -108,6 +108,19 @@ describe "TripDispatcher class" do
       final_list_length = trip_disp.trips.length
 
       final_list_length.must_equal initial_list_length + 1
+    end
+
+    it 'Can find new trip in the trip list in trip_dispatcher' do
+      trip_disp = RideShare::TripDispatcher.new()
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+
+      exists = false
+      trip_disp.trips.each{ |trip| exists = true if trip == new_trip}
+
+      exists.must_equal true
     end
 
     it 'Updates the drivers trip list:' do
