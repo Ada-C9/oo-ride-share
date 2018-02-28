@@ -41,7 +41,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: @start_time, end_time: @end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +58,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: @start_time, end_time: @end_time, rating: 5})
       @driver.add_trip(trip)
     end
 
