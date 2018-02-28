@@ -35,7 +35,7 @@ describe "Driver class" do
       @driver.vehicle_id.must_be_kind_of String
       @driver.status.must_be_kind_of Symbol
     end
-  end
+  end # Instantiation
 
   describe "add trip method" do
     before do
@@ -53,7 +53,7 @@ describe "Driver class" do
       @driver.add_trip(@trip)
       @driver.trips.length.must_equal previous + 1
     end
-  end
+  end # Add Trip
 
   describe "average_rating method" do
     before do
@@ -76,51 +76,67 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
-  end
+  end # average rating
 
   describe "#total_revenue"do
 
-    it "returns accurate total revenue" do
-      driver = RideShare::Driver.new({
-        id:56,
-        vin:"a"*17,
-        trips: [
-          RideShare::Trip.new({cost:14.8, rating: 3}),
-          RideShare::Trip.new({cost:50, rating: 3}),
-          RideShare::Trip.new({cost:27, rating: 3})
-        ]
-        })
+  it "returns accurate total revenue" do
+    trips = [
+      RideShare::Trip.new({cost:14.8, rating: 3}),
+      RideShare::Trip.new({cost:50, rating: 3}),
+      RideShare::Trip.new({cost:27, rating: 3})
+    ]
+    driver = RideShare::Driver.new({id:56, vin:"a"*17, trips: trips})
 
-      expected_revenue = 69.48
-      result = driver.total_revenue
-      result.must_equal expected_revenue
-    end
+    expected_revenue = 69.48
+    result = driver.total_revenue
+    result.must_equal expected_revenue
+  end
 
-    it "returns zero if the driver does not have any trips" do
-      driver = RideShare::Driver.new({
-        id:56,
-        vin:"a"*17,
-        })
+  it "returns zero if the driver does not have any trips" do
+    driver = RideShare::Driver.new({ id:56, vin:"a"*17})
+    expected_revenue = 0
+    result = driver.total_revenue
+    result.must_equal expected_revenue
+  end
+
+  it "does not return a negative revenue" do
+    trips = [RideShare::Trip.new({cost:1.30, rating: 3}), RideShare::Trip.new({cost:1.25, rating: 3}), RideShare::Trip.new({cost:1.03, rating: 3})]
+    driver = RideShare::Driver.new({
+      id:56,
+      vin:"a"*17,
+      trips: trips
+      })
       expected_revenue = 0
       result = driver.total_revenue
       result.must_equal expected_revenue
     end
 
-    it "does not return a negative revenue" do
-      driver = RideShare::Driver.new({
-        id:56,
-        vin:"a"*17,
-        trips: [
-          RideShare::Trip.new({cost:1.30, rating: 3}),
-          RideShare::Trip.new({cost:1.25, rating: 3}),
-          RideShare::Trip.new({cost:1.03, rating: 3})
-        ]
-        })
-    expected_revenue = 0
-    result = driver.total_revenue
-    result.must_equal expected_revenue
+  end # total_revenue
 
+  describe "#ave_revenue_per_hour" do
+
+    it "returns average revenue of trips" do
+      start_time = Time.parse("2016-05-24T15:37:00+00:00")
+      trips = [
+        RideShare::Trip.new({cost: 45, rating: 3, start_time: start_time, end_time: start_time + 35 + 60}),
+        RideShare::Trip.new({cost: 32, rating: 3, start_time: start_time, end_time: start_time + 25 + 60})
+      ]
+      driver = RideShare::Driver.new({id: 63, vin:"a"*17, trips: trips})
+      expected_average = 58.96
+      result = driver.ave_revenue_per_hour
+      result.must_equal expected_average
     end
 
-  end
-end
+
+    it "returns zero if driver has no trips" do
+      driver = RideShare::Driver.new({
+        id: 63, vin:"a"*17
+        })
+        expected_average = 0
+        result = driver.ave_revenue_per_hour
+        result.must_equal expected_average
+      end
+
+    end
+  end # Describe driver Class
