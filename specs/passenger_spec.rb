@@ -30,7 +30,7 @@ describe "Passenger class" do
       @passenger.phone_number.must_be_kind_of String
       @passenger.trips.must_be_kind_of Array
     end
-  end
+  end # Describe instantiation
 
 
   describe "trips property" do
@@ -52,7 +52,7 @@ describe "Passenger class" do
         trip.passenger.id.must_equal 9
       end
     end
-  end
+  end # Describe trips property
 
   describe "get_drivers method" do
     before do
@@ -74,5 +74,33 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
-  end
-end
+  end # Describe get_drivers method
+
+
+  describe "#total_spent" do
+
+    it "returns total spent in float" do
+      pass = RideShare::Passenger.new({
+        id: 89,
+        trips: [
+          RideShare::Trip.new({rating:3,cost:27}),
+          RideShare::Trip.new({rating:3,cost:14.87}),
+          RideShare::Trip.new({rating:3,cost:4.95}),
+        ]
+        })
+      expected_total = 46.82
+      result = pass.total_spent
+      result.must_equal expected_total
+    end
+
+    it "returns zero if passanger has no trips" do
+      pass = RideShare::Passenger.new({id: 89})
+      expected_total = 0
+      result = pass.total_spent
+      result.must_equal expected_total
+    end
+
+  end # Describe total_spent
+
+
+end # Describe Passanger Class
