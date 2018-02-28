@@ -36,12 +36,45 @@ describe "Driver class" do
       @driver.status.must_be_kind_of Symbol
     end
   end
+  describe "total_revenu" do
+    #add more tests
+    it 'can calculate the total_revenu'do
+    start_time = Time.parse('2015-05-20 12:10:00 +0000')
+    end_time = Time.parse('2015-05-20 12:15:00 +0000')
+
+    pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+    driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    trip = RideShare::Trip.new({id: 8, driver: driver, passenger: pass, start_time: start_time, end_time: end_time ,rating: 5,cost:10})
+    driver.add_trip(trip)
+
+    assert_in_delta driver.total_revenue, 6.68, 0.01
+
+  end
+  end
+
+  describe "total_revenu per hour" do
+    #add more tests
+    it 'can calculate the total_revenu per hour' do
+      start_time = Time.parse('2015-05-20 02:10:00 +0000')
+      end_time = Time.parse('2015-05-20 12:15:00 +0000')
+
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: pass, start_time: start_time, end_time:end_time ,rating: 5,cost:126.65})
+      driver.add_trip(trip)
+      assert_in_delta driver.total_revenue_per_hour, 10, 0.2
+
+    end
+  end
 
   describe "add trip method" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + (1500)
+
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time:start_time, end_time:end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +91,9 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + (1500)
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time:start_time, end_time:end_time, rating: 5})
       @driver.add_trip(trip)
     end
 
