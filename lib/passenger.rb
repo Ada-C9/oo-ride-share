@@ -26,6 +26,10 @@ module RideShare
       return total
     end # total_spent
 
+    def total_time
+      total = @trips.map {|trip| trip.duration}.sum
+      return total
+    end # total_spent
 
   end # Class Passenger
 end # Module RideShare
