@@ -79,4 +79,28 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "calc_revenue method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    end
+
+    it "returns driver's total revenue across all their trips" do
+      trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:24:00+00:00'), cost: 11.65, rating: 5})
+
+      trip2 = RideShare::Trip.new({id: 18, driver: @driver, passenger: @passenger, start_time: Time.parse('2015-04-20T12:14:00+00:00'), end_time: Time.parse('2015-04-20T12:24:00+00:00'), cost: 12.65, rating: 5})
+
+      trip3 = RideShare::Trip.new({id: 28, driver: @driver, passenger: @passenger, start_time: Time.parse('2015-07-20T12:14:00+00:00'), end_time: Time.parse('2015-07-20T12:19:00+00:00'), cost: 5.65, rating: 5})
+
+      @driver.add_trip(trip1)
+      @driver.add_trip(trip2)
+      @driver.add_trip(trip3)
+
+      @driver.calc_revenue.must_equal 20
+
+    end
+
+  end
+
 end

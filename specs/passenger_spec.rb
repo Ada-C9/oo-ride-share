@@ -120,7 +120,7 @@ describe "Passenger class" do
       @passenger.add_trip(trip2)
       @passenger.add_trip(trip3)
 
-         @passenger.calc_total_duration.must_equal 1500
+      @passenger.calc_total_duration.must_equal 1500
     end
 
     it "will return return zero time if no trips" do
