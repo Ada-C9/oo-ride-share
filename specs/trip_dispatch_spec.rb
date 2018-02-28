@@ -76,6 +76,13 @@ describe "TripDispatcher class" do
       last_passenger.id.must_equal 300
     end
 
+    it 'start_time and end_time parsed' do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.trips.first.start_time.must_be_instance_of Time
+      dispatcher.trips.first.end_time.must_be_instance_of Time
+
+    end
+
     it "accurately loads trip info and associates trips with drivers and passengers" do
       dispatcher = RideShare::TripDispatcher.new
 
