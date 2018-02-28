@@ -24,8 +24,8 @@ module RideShare
 
     def duration
     # calculate the duration of the trip in seconds
-    return (@end_time - @start_time)/60
-
+    duration = (@end_time - @start_time)
+    return duration
     end
 
   end # Class trip

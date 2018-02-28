@@ -1,5 +1,3 @@
-gem 'minitest', '>= 5.0.0'
-require 'minitest/pride'
 require 'time'
 require 'minitest'
 require 'minitest/autorun'

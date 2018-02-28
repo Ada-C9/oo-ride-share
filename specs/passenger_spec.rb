@@ -1,3 +1,4 @@
+require_relative '../lib/passenger'
 require_relative 'spec_helper'
 gem 'minitest', '>= 5.0.0'
 require 'minitest/pride'
@@ -77,5 +78,51 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end # get_drivers method
+
+  describe 'total_spent' do
+    it "sums up total cost of all trips" do
+      trips = [
+        RideShare::Trip.new({cost: 10, rating: 2, start_time: Time.parse('2015-05-20T09:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T09:20:00+00:00')}),
+        RideShare::Trip.new({cost: 3, rating: 5, start_time: Time.parse('2015-05-20T09:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T09:30:00+00:00')}),
+        RideShare::Trip.new({cost: 7, rating: 3, start_time: Time.parse('2015-05-20T09:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T10:15:00+00:00')})
+      ]
+
+      passenger_data = {
+        id: 23,
+        name: "Kiera",
+        phone_number: 123-4567,
+        trips: trips
+      }
+
+      passenger = RideShare::Passenger.new(passenger_data)
+      passenger.total_spent.must_equal 20
+    end # total_cost
+    describe 'total_time_spent' do
+      it "adds the total time spent riding" do
+
+        trips = [
+          RideShare::Trip.new({cost: 10, rating: 2, start_time: Time.parse('2015-05-20T09:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T09:20:00+00:00')}),#360
+          RideShare::Trip.new({cost: 3, rating: 5, start_time: Time.parse('2015-05-20T09:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T09:30:00+00:00')}),#960s
+          RideShare::Trip.new({cost: 7, rating: 3, start_time: Time.parse('2015-05-20T09:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T10:15:00+00:00')})#3660s
+        ]
+
+        passenger_data = {
+          id: 23,
+          name: "Kiera",
+          phone_number: 123-4567,
+          trips: trips
+        }
+
+        passenger = RideShare::Passenger.new(passenger_data)
+        passenger.total_time_spent.must_equal 4980
+      end
+    end
   end
-end
+end # passenger class
