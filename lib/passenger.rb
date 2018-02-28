@@ -29,6 +29,11 @@ module RideShare
       @trips.map{|trip| (trip.end_time - trip.start_time)}.inject(0, :+).round(1)
     end
 
+    def new_trip(trip)
+      @trips << trip
+    end
+
+
   end # Passenger class ends
 
 end # Rideshare module ends

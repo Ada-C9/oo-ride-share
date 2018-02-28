@@ -60,5 +60,10 @@ module RideShare
       return (total_revenue / total_duration).round(2)
     end
 
+    def new_trip(trip)
+      @trips << trip
+      @status = :UNAVAILABLE
+    end
+
   end
 end
