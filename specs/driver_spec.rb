@@ -78,3 +78,24 @@ describe "Driver class" do
     end
   end
 end
+
+# For Dee's Pseudocode:
+
+# Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted
+
+# describe 'get_total_rev' do
+#   it 'gets total reveue' do
+#
+#     # Arrage:
+#     @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+#
+#     trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+#     @driver.add_trip(trip)
+#
+#     # Act:
+#     total_rev = @driver.get_total_rev
+#
+#     # Assert
+#     total_rev.must_equal 1000
+#   end
+# end

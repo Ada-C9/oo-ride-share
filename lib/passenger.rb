@@ -20,5 +20,12 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_spent
+      total = 0
+      @trips.each {total +=  @trips.duration_method}
+    end
   end
 end
+
+# Add an instance method to Passenger that will return the total amount of money that passenger has spent on their trips

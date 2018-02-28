@@ -45,3 +45,17 @@ module RideShare
     end
   end
 end
+
+# Dee's  Pseudocode:
+
+# get toal rev method
+# total_rev starts at 0
+#
+# iterate through each trip in all_trips
+#   fee is 1.65
+#   trip_cost
+#   trip_rev is (trip_cost - fee) * 0.8
+#   trip_rev adds to total_rev
+#
+#
+# return total_rev
