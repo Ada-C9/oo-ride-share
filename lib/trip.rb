@@ -10,16 +10,15 @@ module RideShare
       @driver = input[:driver]
       @passenger = input[:passenger]
       @start_time = input[:start_time].class == Time ? input[:start_time] : Time.parse(input[:start_time]) # instance of Time
-      @end_time = input[:end_time] # instance of Time
-      @cost = input[:cost]
-      @rating = input[:rating]
+      @end_time = input[:end_time] == nil ? nil : input[:end_time] # instance of Time
+      @cost = input[:cost] == nil ? nil : input[:cost]
+      @rating = input[:rating] == nil ? nil : input[:rating]
 
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
       if !@end_time.nil? && @start_time > @end_time
-        # binding.pry
         raise ArgumentError.new("Invalid time")
       end
     end
@@ -27,5 +26,6 @@ module RideShare
     def duration
       @end_time - @start_time
     end
+
   end
 end
