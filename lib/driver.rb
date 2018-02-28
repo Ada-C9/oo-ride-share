@@ -48,8 +48,8 @@ module RideShare
       @trips.empty? ? 0 : (@trips.reduce(0) { |rev, trip| rev + trip.cost } - 1.65) * 0.8
     end
 
-    def ave_rev_per_hour
-
+    def ave_rev_per_hr
+      @trips.empty? ?  0 : (total_revenue / @trips.length).round(2)
     end
 
   end
