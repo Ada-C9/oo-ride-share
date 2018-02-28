@@ -109,6 +109,21 @@ describe "Trip class" do
       #
       # final_driver_list_length.must_equal initial_driver_list_length + 1
     end
+
+    it 'Updates the passanger s trip list:' do
+      trip_disp = RideShare::TripDispatcher.new()
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+      passenger_for_new_trip = new_trip.passenger
+
+      find_new_trip_in_passanger = passenger_for_new_trip.trips.find{ |trip|  trip == new_trip }
+
+      find_new_trip_in_passanger.must_equal new_trip
+
+    end
+
   end
 
 end
