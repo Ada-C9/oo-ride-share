@@ -43,5 +43,18 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      fee = 1.65
+      driver_takehome = 0.8
+
+      subtotal = 0
+      @trips.each do |trip|
+        # What if trip cost is less than the fee?
+        subtotal += trip.cost - fee
+      end
+      total = subtotal * driver_takehome
+      return total
+    end
   end
 end

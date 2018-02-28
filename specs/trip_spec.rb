@@ -14,7 +14,7 @@ describe "Trip class" do
         start_time: start_time,
         end_time: end_time,
         cost: 23.45,
-        rating: 3
+        rating: 3,
         duration: (end_time - start_time) * 60
       }
       @trip = RideShare::Trip.new(@trip_data)
@@ -22,6 +22,10 @@ describe "Trip class" do
 
     it "is an instance of Trip" do
       @trip.must_be_kind_of RideShare::Trip
+    end
+
+    it "stores the duration of the trip in seconds as an instance of Time" do
+      @trip.duration.must_be_instance_of Time
     end
 
     it "stores an instance of passenger" do
