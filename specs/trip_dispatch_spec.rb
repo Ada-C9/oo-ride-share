@@ -137,12 +137,13 @@ describe "TripDispatcher class" do
       driver.must_be_instance_of RideShare::Driver
     end
 
-    it "adds new trip to both passenger's and driver's trips" do
+    it "adds new trip to both passenger's, driver's, and trip dispatcher trips" do
       driver = @new_trip.driver
       passenger = @new_trip.passenger
 
       driver.trips.must_include @new_trip
       passenger.trips.must_include @new_trip
+      @trip_dispatcher.trips.must_include @new_trip
     end
   end
 end
