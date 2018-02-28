@@ -5,7 +5,7 @@ require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips, :total_revenue
+    attr_reader :id, :name, :vehicle_id, :status, :trips, :total_revenue, :average_revenue
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -53,6 +53,7 @@ module RideShare
     end
 
     def average_revenue
+      @average_revenue = (@total_revenue / @trips.length).round(2)
     end
   end
 end

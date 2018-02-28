@@ -144,7 +144,11 @@ describe "Driver class" do
 
   describe "average_revenue" do
     it "accurately returns a given driver's average per-trip take-home revenue" do
+
+      @driver_a.total_revenue
+
       @driver_a.average_revenue.must_be_within_delta 6.78, 0.003
+      
     end
   end
 end
