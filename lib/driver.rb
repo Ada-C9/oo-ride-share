@@ -30,7 +30,7 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
+      @status = :UNAVAILABLE if trip.end_time.nil? && is_available? 
       @trips << trip
     end
 
@@ -40,6 +40,10 @@ module RideShare
 
     def get_avg_revenue_per_hour
       return (get_total_revenue / get_all_trip_durations).round(2)
+    end
+
+    def is_available?
+      return @status == :AVAILABLE
     end
 
     private

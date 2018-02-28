@@ -11,7 +11,7 @@ module RideShare
       @driver = input[:driver]
       @passenger = input[:passenger]
       @start_time = valid_time_or_error(input[:start_time])
-      @end_time = valid_time_or_error(input[:end_time])
+      @end_time = input[:end_time]#valid_time_or_error(input[:end_time])
       @cost = input[:cost]
       @rating = valid_rating_or_error(input[:rating])
       valid_trip_duration_or_error
@@ -23,15 +23,19 @@ module RideShare
 
     private
 
+    def is_trip_in_progress?
+      return @end_time.nil?
+    end
+
     def valid_rating_or_error(rating)
-      if rating > 5 || rating < 1
+      if !is_trip_in_progress? && (rating > 5 || rating < 1)
         raise ArgumentError.new("Invalid rating #{rating}")
       end
       return rating
     end
 
     def valid_trip_duration_or_error
-      if get_duration < 0.0
+      if !is_trip_in_progress? && get_duration < 0.0
         raise ArgumentError.new("Invalid duration #{get_duration}")
       end
     end

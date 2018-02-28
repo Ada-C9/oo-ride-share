@@ -67,6 +67,7 @@ module RideShare
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+        # raw_trip[:driver] = driver
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
@@ -77,14 +78,32 @@ module RideShare
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
-
-        trip = Trip.new(parsed_trip)
-        driver.add_trip(trip)
-        passenger.add_trip(trip)
-        trips << trip
+        # trips << make_new_trip(raw_trip)
+        #
+        # trip = Trip.new(parsed_trip)
+        # driver.add_trip(trip)
+        # passenger.add_trip(trip)
+        trips << make_new_trip(parsed_trip) #trip
       end
 
       return trips
+    end
+
+    def request_trip(passenger_id)
+      trip_id = @trips.empty? ? 1 : @trips.size
+      new_trip_data = {
+        id: trip_id,
+        driver: find_available_driver,
+        passenger: find_passenger(passenger_id),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = make_new_trip(new_trip_data)
+      @trips << new_trip
+      return new_trip
     end
 
     private
@@ -93,6 +112,17 @@ module RideShare
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
+    end
+
+    def make_new_trip(new_trip_data)
+      trip = Trip.new(new_trip_data)
+      trip.driver.add_trip(trip)
+      trip.passenger.add_trip(trip)
+      return trip
+    end
+
+    def find_available_driver
+      return @drivers.find {|driver| driver.is_available? }
     end
   end
 end
