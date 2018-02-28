@@ -102,4 +102,27 @@ describe "Passenger class" do
   end
 
 
+  describe 'total_time method' do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-04-05T12:14:00+00:00"),
+      end_time: Time.parse("2016-04-05T12:39:00+00:00"),cost: 10.0,  rating: 5})
+
+      @passenger.add_trip(trip)
+    end
+
+    it "returns a float" do
+      @passenger.total_time.must_be_instance_of Float
+    end
+
+    it "returns total time spent riding" do
+      @passenger.total_time.must_equal 1500
+    end
+
+  end
+
+
 end

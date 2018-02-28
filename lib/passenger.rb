@@ -22,13 +22,23 @@ module RideShare
     end
 
     def total_spent
+      #if time, try to convert this to an enumerable
       total_spent = 0
       @trips.each do |trip|
         total_spent += trip.cost
       end
-
       return total_spent
     end
+
+
+    def total_time
+      total_time = 0
+      @trips.each do |trip|
+        total_time += trip.duration
+      end
+      return total_time
+    end
+
 
   end
 end
