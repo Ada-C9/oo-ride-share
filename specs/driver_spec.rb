@@ -78,12 +78,12 @@ describe "Driver class" do
     end
   end
 
-  describe "total_revenue method" do
-    it "returns total revenue" do
-
-
-    end
-
-  end
+  # describe "total revenue method" do
+  #   it "returns total revenue" do
+  #
+  #
+  #   end
+  #
+  # end
 
 end

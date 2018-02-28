@@ -45,6 +45,9 @@ module RideShare
     end
 
     # def total_revenue
+    #
+    #   @trips.each do |trip|
+    #     trip = trip.cost + 1.65
     #   #
     #   # iterate through trips in all trips
     #   # - fee is 1.65

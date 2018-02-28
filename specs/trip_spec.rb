@@ -52,8 +52,15 @@ describe "Trip class" do
 
   describe "Duration in seconds method" do
     it "returns trip duration in seconds" do
-      @trip.duration_in_seconds.must_be_kind_of Integer
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
 
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      duration = end_time - start_time
+
+      @trip.duration_in_seconds.must_be_kind_of Integer
+      @trip.duration_in_seconds.must_equal duration
     end
 
   end
