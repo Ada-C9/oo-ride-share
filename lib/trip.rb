@@ -18,13 +18,16 @@ module RideShare
         raise ArgumentError.new("Invalid start & end times")
       end
 
-      if @rating > 5 || @rating < 1
+      if @rating != nil && (@rating > 5 || @rating < 1)
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
     end
 
     def duration_in_seconds
-      duration = (@end_time - @start_time).to_i
+      if end_time != nil
+        return end_time - start_time
+      end
+      return 0
     end
 
   end
