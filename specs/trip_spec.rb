@@ -37,9 +37,9 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
-      
+
     end
-    it 'Raises ArgumentError start time is after end time' do
+    it 'Raises ArgumentError if start time is after end time' do
 
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time - 25 * 60 # - 25 minutes
