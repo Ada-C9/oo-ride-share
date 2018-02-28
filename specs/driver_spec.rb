@@ -40,9 +40,9 @@ describe "Driver class" do
   describe "total_revenue method" do
     it "returns a driver's total revenue" do
       trips = [
-        RideShare::Trip.new({cost: 5, rating: 3, start_time: Time.new("2016-04-05T14:01:00+00:00"), end_time: Time.new("2016-04-05T14:09:00+00:00")}),
-        RideShare::Trip.new({cost: 3, rating: 1, start_time: Time.new("2016-04-05T14:01:00+00:00"), end_time: Time.new("2016-04-05T14:09:00+00:00")}),
-        RideShare::Trip.new({cost: 2, rating: 5, start_time: Time.new("2016-04-05T14:01:00+00:00"), end_time: Time.new("2016-04-05T14:09:00+00:00")})
+        RideShare::Trip.new({cost: 5, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
+        RideShare::Trip.new({cost: 3, rating: 1, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
+        RideShare::Trip.new({cost: 2, rating: 5, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")})
       ]
       driver_details = {
         id: 7,
@@ -56,11 +56,31 @@ describe "Driver class" do
     end
   end
 
+  describe "average_hourly_revenue method" do
+    it "returns a driver's average revenue per hour spent driving" do
+      trips = [
+        RideShare::Trip.new({cost: 5, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:11:00+00:00")}),
+        RideShare::Trip.new({cost: 3, rating: 1, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:21:00+00:00")}),
+        RideShare::Trip.new({cost: 2, rating: 5, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:31:00+00:00")})
+      ]
+      driver_details = {
+        id: 7,
+        vin: "WBWSS52P9NEYLVDE9",
+        name: 'test driver',
+        trips: trips
+      }
+      driver = RideShare::Driver.new(driver_details)
+
+      driver.average_hourly_revenue.must_equal 4.04
+    end
+
+  end
+
   describe "add trip method" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.new("2016-04-05T14:01:00+00:00"), end_time: Time.new("2016-04-05T14:09:00+00:00"), date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), date: "2016-08-08", rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -77,7 +97,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.new("2016-04-05T14:01:00+00:00"), end_time: Time.new("2016-04-05T14:09:00+00:00"), date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), date: "2016-08-08", rating: 5})
       @driver.add_trip(trip)
     end
 

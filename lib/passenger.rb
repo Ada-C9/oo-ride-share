@@ -17,6 +17,22 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def money_spent
+      total = 0.0
+      @trips.each do |trip|
+        total += trip.cost
+      end
+      return total
+    end
+
+    def time_spent
+      time_spent = 0.0
+      @trips.each do |trip|
+        time_spent += trip.trip_duration
+      end
+      return time_spent
+    end
+
     def get_drivers
       @trips.map{ |t| t.driver }
     end

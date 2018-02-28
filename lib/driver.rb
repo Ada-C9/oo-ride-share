@@ -21,16 +21,6 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def total_revenue
-      subtotal = 0.0
-      fee = 1.65
-      take_home = 0.8
-
-      @trips.each do |trip_instance|
-        subtotal += trip_instance.cost - fee
-      end
-      total = (subtotal * take_home).round(2)
-    end
 
     def average_rating
       total_ratings = 0
@@ -45,6 +35,30 @@ module RideShare
       end
 
       return average
+    end
+
+    def total_revenue
+      subtotal = 0.0
+      fee = 1.65
+      take_home = 0.8
+
+      @trips.each do |trip_instance|
+        subtotal += trip_instance.cost - fee
+      end
+      total = (subtotal * take_home).round(2)
+    end
+
+    def average_hourly_revenue
+      trip_in_hours = 0.0
+      total_hours = 0.0
+      total_revenue = 0.0
+      @trips.each do |trip|
+        trip_in_hours = trip.trip_duration / 3600
+        total_hours += trip_in_hours
+        # total_revenue += trip.total_revenue
+      end
+      average_hourly_revenue = self.total_revenue / total_hours
+      return average_hourly_revenue
     end
 
     def add_trip(trip)
