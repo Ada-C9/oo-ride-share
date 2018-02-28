@@ -23,9 +23,10 @@ module RideShare
       end
     end
     # **W1:MAKE INSTANCE METHOD TO CALCULATE DURATION OF TRIP IN SECONDS----------
-    # def duration
-    #
-    # end
+    def duration
+      duration = @end_time - @start_time
+      return duration
+    end
     # **W1:MAKE INSTANCE METHOD TO CALCULATE DURATION OF TRIP IN SECONDS----------
   end
 end
