@@ -103,7 +103,7 @@ describe "Driver class" do
     it "returns an accurate report of the driver's total revenue" do
 
       driver_total_take_home = @driver_a.total_revenue
-      driver_total_take_home.must_be_within_delta 20.35, 0.001
+      driver_total_take_home.must_be_within_delta 20.35, 0.003
 
     end
 
@@ -129,15 +129,15 @@ describe "Driver class" do
       overall_gross = per_trip_gross.sum
 
       total_trips.must_equal 3
-      fees_deducted.must_be_within_delta 4.95, 0.001
+      fees_deducted.must_be_within_delta 4.95, 0.003
       per_trip_gross.length.must_equal 3
-      overall_gross.must_be_within_delta 30.39, 0.001
+      overall_gross.must_be_within_delta 30.39, 0.003
 
       overall_gross_less_fees = overall_gross - fees_deducted
-      overall_gross_less_fees.must_be_within_delta 25.44, 0.001
+      overall_gross_less_fees.must_be_within_delta 25.44, 0.003
       overall_driver_revenue = overall_gross_less_fees * 0.8
 
-      @driver_a.total_revenue.must_be_within_delta overall_driver_revenue, 0.001
+      @driver_a.total_revenue.must_be_within_delta overall_driver_revenue, 0.003
 
     end
   end

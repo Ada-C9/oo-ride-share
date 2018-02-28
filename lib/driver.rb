@@ -1,10 +1,11 @@
 require 'csv'
 require 'time'
+require 'pry'
 require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :status, :trips, :total_revenue
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -46,6 +47,9 @@ module RideShare
     end
 
     def total_revenue
+      overall_gross_revenue = @trips.map{ |t| t.cost }.reduce(:+)
+      fees_to_deduct = 1.65 * @trips.length
+      @total_revenue = ((overall_gross_revenue - fees_to_deduct) * 0.8 ).round(2)
     end
 
     def average_revenue
