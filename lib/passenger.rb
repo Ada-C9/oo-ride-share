@@ -1,3 +1,6 @@
+# Add an instance method to Passenger that will return the total amount of money that passenger has spent on their trips
+#
+
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -20,5 +23,23 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_amount_spent
+      #refactor with .inject if you have time.
+        sum = 0
+          @trips.each do |a_trip|
+            sum+=a_trip.cost*((a_trip.end_time - a_trip.start_time)/60)
+          end
+      return sum
+    end
+
+    def total_amount_time
+      sum = 0
+      @trips.each do |a_trip|
+        sum+=a_trip.trip_in_seconds.to_i
+      end
+      return sum/60
+    end
+
   end
 end
