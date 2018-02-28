@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -10,6 +11,7 @@ module RideShare
     attr_reader :drivers, :passengers, :trips
 
     def initialize
+      
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
@@ -66,7 +68,6 @@ module RideShare
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
-
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
