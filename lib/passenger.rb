@@ -22,5 +22,11 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_ride_time
+    end
+
+    def total_spent
+    end
   end
 end

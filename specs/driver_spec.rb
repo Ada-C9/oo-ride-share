@@ -78,4 +78,10 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue" do
+  end
+
+  describe "average_revenue" do
+  end
 end

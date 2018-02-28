@@ -57,10 +57,9 @@ describe "Trip class" do
           }.must_raise ArgumentError
     end
   end
-  describe "trip_duration?" do
-    it "returns the duration of a given trip" do
-      trip_time = @trip.trip_duration?
-      trip_time.must_equal "1 hour(s), 6 minute(s), 0 second(s)."
+  describe "report_trip_duration" do
+    it "reports the hours, minutes, and seconds in a trip in a readable string." do
+      @trip.report_trip_duration.must_equal "1 hour(s), 6 minute(s), 0 second(s)."
     end
   end
 end

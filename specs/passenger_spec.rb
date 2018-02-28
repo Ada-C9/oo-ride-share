@@ -76,4 +76,10 @@ describe "Passenger class" do
       end
     end
   end
+
+  describe "total_ride_time" do
+  end
+
+  describe "total_spent" do
+  end
 end

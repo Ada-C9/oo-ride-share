@@ -44,5 +44,11 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+    end
+
+    def average_revenue
+    end
   end
 end
