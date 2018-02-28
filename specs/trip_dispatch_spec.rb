@@ -88,5 +88,25 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "accurately loads trip information into trips array" do
+      dispatcher = RideShare::TripDispatcher.new
+      first_trip = dispatcher.trips.first
+      last_trip = dispatcher.trips.last
+      #attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
+    #  1, 1, 54, 2016-04-05T14:01:00+00:00, 2016-04-05T14:09:00+00:00, 17.39, 3
+
+      first_trip.id.must_equal 1
+      first_trip.driver.id.must_equal 1
+      first_trip.passenger.id.must_equal 54
+      first_trip.start_time.must_equal Time.parse('2016-04-05T14:01:00+00:00')
+      first_trip.end_time.must_equal Time.parse('2016-04-05T14:09:00+00:00')
+      first_trip.cost.must_equal 17.39
+      first_trip.rating.must_equal 3
+
+      # last_trip.name.must_equal "Miss Isom Gleason"
+      # last_trip.id.must_equal 300
+    end
+
   end
 end
