@@ -17,7 +17,7 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
-  end
+  end # Initializer
 
   describe "find_driver method" do
     before do
@@ -32,7 +32,7 @@ describe "TripDispatcher class" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
     end
-  end
+  end # find_driver
 
   describe "find_passenger method" do
     before do
@@ -47,7 +47,7 @@ describe "TripDispatcher class" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
     end
-  end
+  end # find_passenger
 
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
@@ -93,8 +93,35 @@ describe "TripDispatcher class" do
       dispatcher = RideShare::TripDispatcher.new
 
       trip = dispatcher.trips.first
-      trip.start_time.must_be_kind_of Time
+      trip.start_time.must_be_instance_of Time
 
     end
+  end # loader methods
+
+  describe "#request_trip" do
+
+    it "raises argument error if no passenger id provided" do
+      dispatcher = RideShare::TripDispatcher.new
+      proc {
+        dispatcher.request_trip()
+      }.must_raise
+    end
+
+    it "returns instance of trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(45)
+      result.must_be_instance_of RideShare::Trip
+    end
+
+    it "the trip returned must have correct data" do
+      dispatcher = RideShare::TripDispatcher.new
+      pass = dispatcher.find_passenger(32)
+      original_trips = pass.trips.length
+      result = dispatcher.request_trip(32)
+      result.driver.must_be_instance_of RideShare::Driver
+      result.passanger.must_be_instance_of RideShare::Passenger
+      result.trips.length.must_equal original_trips + 1
+    end
+
   end
-end
+end  # Describe TripDispatcher class
