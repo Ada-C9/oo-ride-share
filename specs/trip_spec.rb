@@ -15,17 +15,12 @@ describe "Trip class" do
         end_time: end_time,
         cost: 23.45,
         rating: 3,
-        duration: (end_time - start_time) * 60
       }
       @trip = RideShare::Trip.new(@trip_data)
     end
 
     it "is an instance of Trip" do
       @trip.must_be_kind_of RideShare::Trip
-    end
-
-    it "stores the duration of the trip in seconds as an instance of Time" do
-      @trip.duration.must_be_instance_of Time
     end
 
     it "stores an instance of passenger" do
@@ -51,6 +46,24 @@ describe "Trip class" do
       proc {
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
+    end
+  end
+
+  describe "#calculate_duration" do
+    it "calculates the duration of the trip in seconds" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3,
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+      @trip.calculate_duration.must_equal 1500
     end
   end
 end
