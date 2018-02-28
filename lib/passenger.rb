@@ -29,5 +29,16 @@ module RideShare
       return cost.round(2)
     end
 
+    def total_time
+      total = 0
+      @trips.each do |trip|
+        total += trip.trip_duration
+      end
+      hours = total / 3600
+      minutes = (total % 3600) / 60
+      seconds = (total % 3600) % 60
+      return "You've ridden for a total of #{hours} hours, #{minutes} minutes, and #{seconds} seconds."
+    end
+
   end # Passenger
 end # RideShare
