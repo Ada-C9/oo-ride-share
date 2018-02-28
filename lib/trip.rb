@@ -20,5 +20,9 @@ module RideShare
         raise ArgumentError.new("Invalid end_time #{@end_time}")
       end
     end
+
+    def trip_duration
+      return @end_time - @start_time
+    end
   end
 end
