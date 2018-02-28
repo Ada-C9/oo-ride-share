@@ -25,15 +25,15 @@ module RideShare
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
+        if trip.end_time != nil
         total_ratings += trip.rating
+        end
       end
-
       if trips.length == 0
         average = 0
       else
         average = (total_ratings.to_f) / trips.length
       end
-
       return average
     end
 
@@ -42,8 +42,10 @@ module RideShare
       fee = 1.65
       take_home = 0.8
 
-      @trips.each do |trip_instance|
-        subtotal += trip_instance.cost - fee
+      @trips.each do |trip|
+        if trip.end_time != nil
+          subtotal += trip.cost - fee
+        end
       end
       total = (subtotal * take_home).round(2)
     end
@@ -51,14 +53,14 @@ module RideShare
     def average_hourly_revenue
       trip_in_hours = 0.0
       total_hours = 0.0
-      total_revenue = 0.0
       @trips.each do |trip|
+        if trip.end_time != nil
         trip_in_hours = trip.trip_duration / 3600
         total_hours += trip_in_hours
-        # total_revenue += trip.total_revenue
+        end 
       end
       average_hourly_revenue = self.total_revenue / total_hours
-      return average_hourly_revenue
+      # return average_hourly_revenue
     end
 
     def add_trip(trip)
