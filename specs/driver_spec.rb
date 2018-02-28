@@ -41,7 +41,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 13.5, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +58,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 12.5, rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -75,6 +75,41 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe "revenue methods" do
+
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      @fee = 1.65
+
+      @trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 12.5, rating: 5})
+
+      @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 15.0, rating: 5})
+    end
+
+    describe "total revenue" do
+      it "returns 0 if there are no trips" do
+        @driver.total_revenue.must_equal 0
+      end
+
+      it "returns a float > 0 if there are any trips" do
+        @driver.add_trip(@trip1)
+        total1 = (@driver.trips[0].cost - @fee) * 0.8
+        @driver.total_revenue.must_equal total1
+
+        @driver.add_trip(@trip2)
+        total2 = (@driver.trips[1].cost - @fee) * 0.8
+        @driver.total_revenue.must_equal total1 + total2
+
+        @driver.total_revenue.must_be_kind_of Float
+      end
+    end
+
+    describe "average revenue" do
+
     end
   end
 end
