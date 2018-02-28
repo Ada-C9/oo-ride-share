@@ -135,7 +135,7 @@ describe "Driver class" do
       it "returns the sum of the cost of each of the driver's trips" do
         total_duration_in_seconds = @trip_one.duration + @trip_two.duration + @trip_three.duration
 
-        total_duration_in_hours = total_duration_in_seconds / 3600
+        total_duration_in_hours = total_duration_in_seconds
 
         total_revenue = @trip_one.cost + @trip_two.cost + @trip_three.cost
 

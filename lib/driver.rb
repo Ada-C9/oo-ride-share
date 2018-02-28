@@ -53,7 +53,7 @@ module RideShare
     end
 
     def average_revenue
-      return self.total_time_spent == 0.0 ? 0.00 : (self.total_revenue / self.total_time_spent * 3600).round(2)
+      return self.total_time_spent == 0.0 ? 0.00 : (self.total_revenue / self.total_time_spent).round(2)
     end
 
     def total_time_spent
