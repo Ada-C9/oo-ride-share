@@ -112,9 +112,7 @@ describe "Passenger class" do
     end
 
     it "calculate the total amount of time the passenger spent" do
-
       @passenger.time_spent.must_equal 1800
-
     end
   end
 
