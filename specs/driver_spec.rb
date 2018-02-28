@@ -109,7 +109,6 @@ describe "Driver class" do
     it 'returns accurate information for driver with 1 trip' do
       @driver.rate.must_be_kind_of Float
       @driver.rate.must_equal 71.4
-      binding.pry
     end
 
     it 'returns accurate information for driver with 2 trips' do

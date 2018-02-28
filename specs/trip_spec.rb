@@ -56,11 +56,9 @@ describe "Trip class" do
         RideShare::Trip.new(invalid_data)
       }.must_raise ArgumentError
     end
-
-    #edge case test
   end
 
-  describe 'duration method' do
+  describe "duration method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes
@@ -78,7 +76,8 @@ describe "Trip class" do
 
     it "calculates trip length in seconds" do
       @trip.duration.must_be_instance_of Float
-      @trip.duration.must_equal 1500.00
+      @trip.duration.must_equal 1500.00 #seconds
     end
+
   end
 end

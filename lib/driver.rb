@@ -63,14 +63,6 @@ module RideShare
   end
 end
 
-# driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-# driver.add_trip(
-#   RideShare::Trip.new({id: 9, driver: @driver, passenger: nil, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), cost: 19.50, rating: 5}))
-#
-# ap driver.total_revenue
-# ap driver.rate.class
-# ap driver.rate
-
 
 
 
