@@ -45,7 +45,7 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2015-05-20T12:14:00+00:00'),
-      end_time: Time.parse('2015-05-20T12:20:00+00:00'), rating: 5})
+        end_time: Time.parse('2015-05-20T12:20:00+00:00'), rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -63,8 +63,8 @@ describe "Driver class" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2015-05-20T14:14:00+00:00'),
-      end_time: Time.parse('2015-05-20T14:30:00+00:00'), rating: 5})
-      @driver.add_trip(trip)
+        end_time: Time.parse('2015-05-20T14:30:00+00:00'), rating: 5})
+        @driver.add_trip(trip)
     end
 
     it "returns a float" do
@@ -81,5 +81,29 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
-  end
+  end # average_rating
+
+
+  describe 'total_revenue' do
+    it "calculates take home pay for driver" do
+      trips = [
+        RideShare::Trip.new({cost: 10, rating: 3, start_time: Time.parse('2015-05-20T14:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T14:30:00+00:00')}),
+        RideShare::Trip.new({cost: 4, rating: 3, start_time: Time.parse('2015-05-20T14:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T14:30:00+00:00')}),
+        RideShare::Trip.new({cost: 6, rating: 3,start_time: Time.parse('2015-05-20T14:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T14:30:00+00:00')}),
+      ]
+
+      data = {
+        id: 3,
+        vin: 'kkkkkkkkkkkkkkkkk',
+        name: 'Lola',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(data)
+      driver.total_revenue.must_equal 12.04
+    end # calculate total rev
+  end # total_revenue
 end

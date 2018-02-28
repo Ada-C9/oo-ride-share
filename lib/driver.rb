@@ -42,6 +42,17 @@ module RideShare
       end
 
       @trips << trip
+    end # add_trip
+    def total_revenue
+      tax = 1.65
+      driver_pay = 0.8
+      gross_pay = 0
+
+      trips.each do |trip|
+        gross_pay += trip.cost - tax
+      end
+      total_revenue = gross_pay * driver_pay
+      return total_revenue
     end
-  end
-end
+  end # class
+end # module
