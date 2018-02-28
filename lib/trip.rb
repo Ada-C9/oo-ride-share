@@ -14,12 +14,13 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @end_time < @start_time
-        raise ArgumentError.new("End time cannot be before start time.")
-      end
-
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
+      if @end_time != nil
+        if @end_time < @start_time
+          raise ArgumentError.new("End time cannot be before start time.")
+        end
+        if @rating > 5 || @rating < 1
+          raise ArgumentError.new("Invalid rating #{@rating}")
+        end
       end
     end # end of initialize
 

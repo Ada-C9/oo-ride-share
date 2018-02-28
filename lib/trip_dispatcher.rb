@@ -82,15 +82,32 @@ module RideShare
           rating: raw_trip[:rating].to_i
         }
 
-
         trip = Trip.new(parsed_trip)
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
     end
+
+    def request_trip(passenger_id)
+
+      driver = @drivers.find {|driver| driver.status == :AVAILABLE}
+
+      passenger = find_passenger(passenger_id)
+
+      new_trip = {
+        id: @trips.length + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      requested_trip = RideShare::Trip.new(new_trip)
+    end
+
 
     private
 

@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-xdescribe "TripDispatcher class" do
+describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -89,4 +89,16 @@ xdescribe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe 'request_trip method' do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "will create a new trip object" do
+      @dispatcher.request_trip(2).must_be_instance_of RideShare::Trip
+    end
+
+  end
+
 end
