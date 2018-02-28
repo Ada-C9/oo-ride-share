@@ -121,16 +121,27 @@ describe "Trip class" do
       find_new_trip_in_passanger = passenger_for_new_trip.trips.find{ |trip|  trip == new_trip }
 
       find_new_trip_in_passanger.must_equal new_trip
-
     end
 
+    it 'Select an AVAILABLE driver' do
+
+      trip_disp = RideShare::TripDispatcher.new()
+      initial_drivers_list = trip_disp.load_drivers
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+      # Find the status for this driver in the initial list from file:
+
+      initial_status = initial_drivers_list[new_trip.driver.id - 1].status
+
+      # Assert:
+      initial_status.must_equal :AVAILABLE
+
+    end
   end
 
 end
 
 
-
-# Was the trip created properly?
-# Were the trip lists for the driver and passenger updated?
-# Was the driver who was selected AVAILABLE?
 # What happens if you try to request a trip when there are no AVAILABLE drivers?
