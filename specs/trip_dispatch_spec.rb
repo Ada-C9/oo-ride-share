@@ -93,7 +93,9 @@ describe "TripDispatcher class" do
       dispatcher = RideShare::TripDispatcher.new
       trip = dispatcher.trips.first
       trip.start_time.must_be_instance_of Time
-      trip = dispatcher.trips.end
+
+      dispatcher = RideShare::TripDispatcher.new
+      trip = dispatcher.trips.first
       trip.end_time.must_be_instance_of Time
     end
   end
