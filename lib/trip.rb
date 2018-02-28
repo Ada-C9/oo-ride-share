@@ -10,8 +10,11 @@ module RideShare
       @id = input[:id]
       @driver = input[:driver]
       @passenger = input[:passenger]
-      @start_time = input[:start_time].class == Time ? input[:start_time] : 0
-      @end_time = input[:end_time].class == Time ? input[:end_time] : 1
+      # method for temporarily dealng with bad data in test specs
+      # @start_time = input[:start_time].class == Time ? input[:start_time] : 0
+      # @end_time = input[:end_time].class == Time ? input[:end_time] : 1
+      @start_time = input[:start_time]
+      @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
 
