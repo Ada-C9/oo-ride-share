@@ -74,5 +74,21 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end#end get_drivers method
+
+  describe 'total_trips_cost method' do
+
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, cost: 32.64, date: "2016-08-08", rating: 5})
+      @passenger.add_trip(trip)
+    end
+
+    it 'can return total money passenger spent on rides' do
+      trip2 = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, cost: 12.35, date: "2016-010-08", rating: 4})
+      @passenger.add_trip(trip2)
+      @passenger.total_trips_cost.must_be_kind_of Float
+      @passenger.total_trips_cost.must_equal 44.99
+    end
   end
 end
