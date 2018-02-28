@@ -12,7 +12,12 @@ describe "Driver class" do
     end
 
     it "throws an argument error with a bad ID value" do
-      proc{ RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")}.must_raise ArgumentError
+      begin
+      RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")
+      fail
+    rescue ArgumentError
+      pass
+      end
     end
 
     it "throws an argument error with a bad VIN value" do
@@ -39,9 +44,11 @@ describe "Driver class" do
 
   describe "add trip method" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = (start_time + 25 * 60)
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -57,8 +64,10 @@ describe "Driver class" do
 
   describe "average_rating method" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = (start_time + 25 * 60)
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
     end
 

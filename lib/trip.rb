@@ -10,12 +10,23 @@ module RideShare
       @passenger = input[:passenger]
       @start_time = input[:start_time]
       @end_time = input[:end_time]
-      @cost = input[:cost]
+      @cost = input[:cost] == nil ? 0 : input[:cost]
       @rating = input[:rating]
+
 
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
+
+      if end_time < start_time
+        raise ArgumentError.new("Invalid date range")
+      end
     end
+
+      def duration
+        duration = (end_time - start_time) * 60
+        return duration
+      end
+
   end
 end

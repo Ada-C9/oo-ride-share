@@ -35,8 +35,10 @@ describe "Passenger class" do
 
   describe "trips property" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -54,11 +56,37 @@ describe "Passenger class" do
     end
   end
 
+  describe 'passenger totals' do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60
+
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 50, rating: 5})
+
+      @passenger.add_trip(trip)
+      end
+    it 'can add the trip cost to the total amount spent' do
+        rider_total = @passenger.total_amount_spent
+
+        rider_total.must_equal 50
+      end
+
+    it 'can add the time per trip to total time spent' do
+        # rider_total = @passenger.total_time_spent
+        # rider_total.must_be_instance_of Time.new
+        # rider_total.must_equal
+    end
+  end
+
   describe "get_drivers method" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end

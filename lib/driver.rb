@@ -1,4 +1,5 @@
 require 'csv'
+require 'time'
 require_relative 'trip'
 
 module RideShare
@@ -43,5 +44,23 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      fee = 1.65
+      subtotal = 0
+      driver_takehome = 0.8
+
+      @trips.each do |trip|
+        if trip.cost < fee
+          subtotal += trip.cost
+        end
+        if trip.cost >= fee
+          subtotal += (trip.cost - fee)
+        end
+        total = subtotal * driver_takehome
+        return total
+      end
+    end
+
   end
 end
