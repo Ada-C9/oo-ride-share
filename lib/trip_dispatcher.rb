@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -91,12 +92,19 @@ module RideShare
     end
 
     def request_trip(passenger_id)
+      passenger = @passengers.select do |passenger|
+        passenger.id == passenger_id
+      end
+
+      driver = @drivers.find do |driver|
+        driver.status == :AVAILABLE
+      end
+
+      # binding.pry
       trip_info = {
         id: load_trips.length,
-        driver: nil,
-        passenger: load_passengers.select do |passenger|
-          passenger.id == passenger_id
-        end,
+        passenger: passenger,
+        driver: driver,
         start_time: Time.now,
         # remember to change end_time to nil
         # and update whatever gets broken in
@@ -106,7 +114,10 @@ module RideShare
         cost: 10.00,
         rating: 5,
       }
+
       trip = Trip.new(trip_info)
+      driver.new_trip(trip)
+
       return trip
     end
     private

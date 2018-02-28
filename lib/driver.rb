@@ -68,5 +68,10 @@ module RideShare
       return @trips.length
     end
 
+    def new_trip(trip)
+      @trips << trip
+      @status = :UNAVAILABLE
+    end
+
   end
 end

@@ -93,18 +93,23 @@ describe "TripDispatcher class" do
   describe "request_trip(passenger_id) method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
+      @result = @dispatcher.request_trip(1)
     end
 
     it "returns a proper trip" do
-      result = @dispatcher.request_trip(1)
-      result.must_be_kind_of RideShare::Trip
+      @result.must_be_kind_of RideShare::Trip
     end
 
     it "assigns the first driver with available status" do
-      # do two rounds of this so that you can check that the next available driver is chosen after the first
+      first_available_driver_id = 2
+      second_available_driver_id = 3
+      @result.driver.id.must_equal first_available_driver_id
+      result = @dispatcher.request_trip(1)
+      result.driver.id.must_equal second_available_driver_id
     end
 
     it "sets the selected driver's status to unavailable" do
+      @result.driver.status.must_equal :UNAVAILABLE
     end
 
     it "returns an error if there are no available drivers" do
@@ -120,6 +125,8 @@ describe "TripDispatcher class" do
     end
 
     it "updates the trip list for the driver" do
+      result = @result.driver.trips
+      result.must_include @result
     end
 
     it "updates the trip list for the passenger" do
