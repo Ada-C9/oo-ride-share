@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require "pry"
 
 module RideShare
   class Driver
@@ -42,6 +43,17 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def total_revenue
+      ((@trips.sum { |t| t.cost - 1.65}) * 0.8).round(2)
+    end
+
+    def average_hourly_revenue
+      total_minutes = @trips.sum{ |t| t.calculate_duration / 60 }
+      total_hours = total_minutes / 60
+      # binding.pry
+      (total_revenue / total_hours).round(2)
     end
   end
 end
