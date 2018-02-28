@@ -5,6 +5,9 @@ module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
+    FEE_PER_TRIP = 1.65
+    PERCENT_DRIVER = 0.80
+
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
@@ -42,6 +45,26 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def total_revenue
+      costs_array = @trips.collect do |trip|
+        if trip.cost < FEE_PER_TRIP
+          0
+        else
+          trip.cost - FEE_PER_TRIP
+        end
+      end
+      sub_total = costs_array.sum
+      total_revenue = (sub_total) *(PERCENT_DRIVER)
+      return total_revenue
+
+    end
+    # Add an instance method to Driver to calculate that driver's average revenue
+    # per hour spent driving, using the above formula for revenue
+    def average_revenue_per_hr
+      #hours driving of each driver
+      total_revenue
     end
   end
 end

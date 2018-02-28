@@ -77,4 +77,31 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue method" do
+    it 'returns a total_revenue' do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ",
+        trips: [RideShare::Trip.new({rating: 3, cost: 10}), RideShare::Trip.new({rating: 5, cost: 10})])
+      result = @driver.total_revenue
+      expected_revenue = 13.36
+      result.must_equal expected_revenue
+    end
+
+    it 'return 0 if the driver didnt have any trips ' do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      result = @driver.total_revenue
+      expected_revenue = 0
+      result.must_equal expected_revenue
+    end
+
+    it 'return 0 if the drivers trips costs less than the fee charged' do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ",
+        trips: [RideShare::Trip.new({rating: 3, cost: 1.5})])
+      result = @driver.total_revenue
+      result = @driver.total_revenue
+      expected_revenue = 0
+      result.must_equal expected_revenue
+    end
+
+  end
 end
