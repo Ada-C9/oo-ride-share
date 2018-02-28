@@ -39,9 +39,14 @@ describe "Trip class" do
       end
     end
 
+    it "stores start and end times as instances of Time" do
+      @trip.start_time.must_be_instance_of Time
+      @trip.end_time.must_be_instance_of Time
+    end
+
     it "raises an error for invalid start and end times" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time - 25 * 60 # 25 minutes before start
+      end_time = start_time - 25 * 60 # negative - 25 minutes before start
       trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -56,4 +61,16 @@ describe "Trip class" do
       proc {trip = RideShare::Trip.new(trip_data)}.must_raise ArgumentError
     end
   end
+
+  describe 'trip_duration method'do
+  it "returns the duration of a trip" do
+    start_time = Time.parse("2016-01-13T13:16:00+00:00")
+    end_time = Time.parse("2016-01-13T13:28:00+00:00")
+    trip_data = {rating: 3, start_time: start_time , end_time: end_time}
+
+    trip = RideShare::Trip.new(trip_data)
+
+    trip.trip_duration.must_equal 720
+  end
+end
 end
