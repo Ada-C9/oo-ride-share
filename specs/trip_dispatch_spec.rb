@@ -17,6 +17,7 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
+
   end
 
   describe "find_driver method" do

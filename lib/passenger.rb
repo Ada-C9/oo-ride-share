@@ -1,3 +1,5 @@
+require 'time'
+
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -20,5 +22,22 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def calc_total_spent
+    total_spent = 0
+      @trips.each do |trip|
+        total_spent += trip.cost
+      end
+    return total_spent
+    end
+
+    # def calc_total_duration
+    # total_duration = 0
+    #   # @trips.each do |trip|
+    #   #   total_spent += trip.cost
+    #   # end
+    # return total_duration
+    # end
+
   end
 end
