@@ -2,29 +2,28 @@ require_relative 'spec_helper'
 require 'pry'
 
 describe "TripDispatcher class" do
+
+  before do
+    @dispatcher = RideShare::TripDispatcher.new
+  end
+
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
-      dispatcher = RideShare::TripDispatcher.new
-      dispatcher.must_be_kind_of RideShare::TripDispatcher
+      @dispatcher.must_be_kind_of RideShare::TripDispatcher
     end
 
     it "establishes the base data structures when instantiated" do
-      dispatcher = RideShare::TripDispatcher.new
       [:trips, :passengers, :drivers].each do |prop|
-        dispatcher.must_respond_to prop
+        @dispatcher.must_respond_to prop
       end
 
-      dispatcher.trips.must_be_kind_of Array
-      dispatcher.passengers.must_be_kind_of Array
-      dispatcher.drivers.must_be_kind_of Array
+      @dispatcher.trips.must_be_kind_of Array
+      @dispatcher.passengers.must_be_kind_of Array
+      @dispatcher.drivers.must_be_kind_of Array
     end
   end
 
   describe "find_driver method" do
-    before do
-      @dispatcher = RideShare::TripDispatcher.new
-    end
-
     it "throws an argument error for a bad ID" do
       proc{ @dispatcher.find_driver(0) }.must_raise ArgumentError
     end
@@ -36,10 +35,6 @@ describe "TripDispatcher class" do
   end
 
   describe "find_passenger method" do
-    before do
-      @dispatcher = RideShare::TripDispatcher.new
-    end
-
     it "throws an argument error for a bad ID" do
       proc{ @dispatcher.find_passenger(0) }.must_raise ArgumentError
     end
@@ -52,10 +47,9 @@ describe "TripDispatcher class" do
 
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
-      dispatcher = RideShare::TripDispatcher.new
 
-      first_driver = dispatcher.drivers.first
-      last_driver = dispatcher.drivers.last
+      first_driver = @dispatcher.drivers.first
+      last_driver = @dispatcher.drivers.last
 
       first_driver.name.must_equal "Bernardo Prosacco"
       first_driver.id.must_equal 1
@@ -66,10 +60,8 @@ describe "TripDispatcher class" do
     end
 
     it "accurately loads passenger information into passengers array" do
-      dispatcher = RideShare::TripDispatcher.new
-
-      first_passenger = dispatcher.passengers.first
-      last_passenger = dispatcher.passengers.last
+      first_passenger = @dispatcher.passengers.first
+      last_passenger = @dispatcher.passengers.last
 
       first_passenger.name.must_equal "Nina Hintz Sr."
       first_passenger.id.must_equal 1
@@ -78,9 +70,7 @@ describe "TripDispatcher class" do
     end
 
     it "accurately loads trip info and associates trips with drivers and passengers" do
-      dispatcher = RideShare::TripDispatcher.new
-
-      trip = dispatcher.trips.first
+      trip = @dispatcher.trips.first
       driver = trip.driver
       passenger = trip.passenger
 
@@ -90,14 +80,79 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
 
-    it "accurately converts strings to Time objects in load_trips" do
-      dispatcher = RideShare::TripDispatcher.new
-      trip = dispatcher.trips.first
+    it "accurately converts strings to Time objects" do
+      trip = @dispatcher.trips.first
       start_time = trip.start_time
       end_time = trip.end_time
 
       start_time.must_be_kind_of Time
       end_time.must_be_kind_of Time
     end
+  end
+
+  describe "#request_trip(passenger_id)" do
+    it "returns a Trip instance" do
+      passenger_id = 150
+      new_trip = @dispatcher.request_trip(passenger_id)
+      new_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "accurately assigns nil values" do
+      passenger_id = 150
+      new_trip = @dispatcher.request_trip(passenger_id)
+      new_trip.end_time.must_be_nil
+      new_trip.rating.must_be_nil
+      new_trip.cost.must_be_nil
+    end
+
+    it "must add to the trips array" do
+      initial_trips_length = @dispatcher.trips.length
+      passenger_id = 150
+      new_trip = @dispatcher.request_trip(passenger_id)
+      new_trips_length = @dispatcher.trips.length
+
+      new_trips_length.must_equal initial_trips_length + 1
+    end
+
+    it "returns nil if no driver is available" do
+      @dispatcher.drivers.map { |driver| driver.status = :UNAVAILABLE }
+      passenger_id = 150
+      new_trip = @dispatcher.request_trip(passenger_id)
+      new_trip.must_be_nil
+    end
+
+    it "only selects a driver who is available" do
+      passenger_id = 150
+      new_trip = @dispatcher.request_trip(passenger_id)
+      new_trip.driver.id.must_equal 2
+      new_trip.driver.name.must_equal "Emory Rosenbaum"
+      new_trip.driver.status.must_equal :AVAILABLE
+    end
+
+    it "updates trips list for passenger" do
+      passenger_id = 150
+      passenger = @dispatcher.find_passenger(passenger_id)
+      initial_trips_length = passenger.trips.length
+
+      new_trip = @dispatcher.request_trip(passenger_id)
+      passenger = @dispatcher.find_passenger(passenger_id)
+      new_trips_length = passenger.trips.length
+
+      new_trips_length.must_equal initial_trips_length + 1
+    end
+
+    it "updates trips list for driver" do
+      passenger_id = 150
+      #driver with id = 2 is the first available driver
+      driver = @dispatcher.find_driver(2)
+      initial_trips_length = driver.trips.length
+
+      new_trip = @dispatcher.request_trip(passenger_id)
+      driver = @dispatcher.find_driver(2)
+      new_trips_length = driver.trips.length
+
+      new_trips_length.must_equal initial_trips_length + 1
+    end
+
   end
 end
