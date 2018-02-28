@@ -87,6 +87,17 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+
+      trip.start_time.must_be_instance_of Time
+
+      trip.end_time.must_be_instance_of Time
+
     end
   end
+
+  # describe "Time String to Time Instance" do
+  #   it "turns the time string to a time instance" do
+  #
+  # end
+
 end

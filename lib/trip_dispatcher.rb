@@ -1,7 +1,7 @@
 require 'csv'
 require 'time'
 
-require_relative 'driver'
+# require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
 
@@ -75,8 +75,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -89,6 +89,10 @@ module RideShare
 
       trips
     end
+
+    # def date_to_time_instance
+    #   Time.parse
+    # end
 
     private
 
