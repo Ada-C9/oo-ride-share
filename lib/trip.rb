@@ -19,8 +19,14 @@ module RideShare
       end
 
       if @end_time != nil && @end_time - @start_time < 0
-        raise ArgumentError.new "Invalid #{@end_time}"
+        raise ArgumentError.new("Invalid end_time #{@end_time}")
       end
     end
+
+    def duration_in_seconds
+      duration = @end_time.to_i - @start_time.to_i
+      return duration
+    end
+
   end
 end
