@@ -38,5 +38,16 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
+    it "raises an error if end_time is before start_time" do
+      # Given
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time - 25 * 60 # -25 minutes
+      # When
+      # Then
+      proc {
+        RideShare::Trip.new(@trip_data, end_time)
+      }.must_raise ArgumentError
+    end
   end
 end
