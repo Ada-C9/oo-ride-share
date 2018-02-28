@@ -38,8 +38,12 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
     it "raises an error if end time is before start time" do
-      @trip
+      @trip_data[:end_time] = @trip_data[:start_time] - (25 * 60)
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
     end
   end
 end
