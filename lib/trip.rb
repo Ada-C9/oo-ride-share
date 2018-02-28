@@ -4,8 +4,8 @@ require 'awesome_print'
 
 module RideShare
   class Trip
-    attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
-    attr_writer :start_time, :end_time
+    attr_reader :id, :passenger, :driver, :cost, :rating
+    attr_accessor :start_time, :end_time
 
     def initialize(input)
       @id = input[:id]
@@ -22,6 +22,9 @@ module RideShare
       end
 
       convert_time
+      check_time_validity
+
+
     end
 
     def convert_time
@@ -30,5 +33,18 @@ module RideShare
         @end_time = Time.parse(@end_time)
       end
     end
+
+    def check_time_validity
+      status = @start_time <=> @end_time
+      if status != -1
+        raise ArgumentError.new("Those are invalid times!")
+      end
+    end
+
+    def duration
+      duration = @end_time - @start_time
+      return duration
+    end
+
   end
 end

@@ -60,4 +60,43 @@ describe "Trip class" do
     @trip.end_time.must_be_kind_of Time
     end
   end
+
+  describe "check_time_validity" do
+    before do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: "2015-05-20T12:14:00+00:00",
+        end_time: "2014-05-20T12:14:00+00:00",
+        cost: 23.45,
+        rating: 3
+      }
+    end
+
+
+    it "raises argument error if end time is before start time" do
+      proc { @trip = RideShare::Trip.new(@trip_data)}.must_raise ArgumentError
+    end
+  end
+
+  describe "duration" do
+    before do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: "2015-05-20T12:14:00+00:00",
+        end_time: "2015-05-20T12:15:0+00:00",
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "calculates duration in seconds" do
+      @trip.duration.must_equal 60
+    end
+
+  end
 end
