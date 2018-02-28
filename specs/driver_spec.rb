@@ -119,8 +119,8 @@ describe "Driver class" do
     it "returns average revenue of trips" do
       start_time = Time.parse("2016-05-24T15:37:00+00:00")
       trips = [
-        RideShare::Trip.new({cost: 45, rating: 3, start_time: start_time, end_time: start_time + 35 + 60}),
-        RideShare::Trip.new({cost: 32, rating: 3, start_time: start_time, end_time: start_time + 25 + 60})
+        RideShare::Trip.new({cost: 45, rating: 3, start_time: start_time, end_time: start_time + 35 * 60}),
+        RideShare::Trip.new({cost: 32, rating: 3, start_time: start_time, end_time: start_time + 25 * 60})
       ]
       driver = RideShare::Driver.new({id: 63, vin:"a"*17, trips: trips})
       expected_average = 58.96

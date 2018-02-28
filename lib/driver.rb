@@ -68,6 +68,15 @@ module RideShare
 
     end # total_revenue
 
+    def ave_revenue_per_hour
+      rev = self.total_revenue
+      seconds = @trips.map {|trip| trip.duration}.sum
+      hours = (seconds/60)/60
+      return 0 if hours == 0
+      average = rev/hours
+      return average.round(2)
+    end
+
 
   end # Class Driver
 end # Module RideShare
