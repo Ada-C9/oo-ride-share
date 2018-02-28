@@ -24,6 +24,7 @@ module RideShare
     def total_spent
       cost = 0.00
       @trips.each do |trip|
+        next if trip.cost.nil?
         cost += trip.cost
       end
       return cost.round(2)
@@ -32,7 +33,8 @@ module RideShare
     def total_time
       total = 0
       @trips.each do |trip|
-        total += trip.trip_duration
+        next if trip.cost.nil?
+        total += trip.trip_duration # this is in seconds
       end
       return total
       # hours = total / 3600

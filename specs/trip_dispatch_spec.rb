@@ -95,12 +95,57 @@ describe "TripDispatcher class" do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
       @dispatcher = RideShare::TripDispatcher.new
     end
+
     it "should return an instance of Trip" do
       @dispatcher.request_trip(@passenger).must_be_instance_of RideShare::Trip
     end
 
     it "should automatically assign a driver to the trip" do
       @dispatcher.request_trip(@passenger).driver.must_be_instance_of RideShare::Driver
+    end
+
+    it "should should set the assigned driver's status to UNAVAILABLE" do
+      new_trip = @dispatcher.request_trip(@passenger)
+      new_trip_driver = new_trip.driver
+      new_trip_driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "should not affect the driver's total revenue calculation when starting a new trip" do
+      driver2 = @dispatcher.drivers.find { |driver| driver.id == 2 }
+      before_new_trip_revenue = driver2.total_revenue
+      before_new_trip_revenue.must_equal 103.58
+      new_trip = @dispatcher.request_trip(@passenger)
+      new_trip_driver = new_trip.driver
+      new_trip_driver.id.must_equal 2
+      new_trip_driver.total_revenue.must_equal before_new_trip_revenue
+    end
+
+    it "should add the trip to the driver's list of trips" do
+      new_trip = @dispatcher.request_trip(@passenger)
+      new_trip_driver = new_trip.driver
+      new_trip_driver.trips.must_include new_trip
+    end
+
+    it "should throw an error if there are no available drivers" do
+      # how to test this?
+    end
+
+    it "should add the trip to the passenger's list of trips" do
+      new_trip = @dispatcher.request_trip(@passenger)
+      new_trip_passenger = new_trip.passenger
+      new_trip_passenger.trips.must_include new_trip
+    end
+
+    it "should not yet affect the passenger's total cost calculation when starting a new trip" do
+      before_new_trip_spent = @passenger.total_spent
+      @dispatcher.request_trip(@passenger)
+      @passenger.total_spent.must_equal before_new_trip_spent
+    end
+
+    it "should not yet affect the passenger's total time calculation when starting a new trip" do
+      before_new_trip_time = @passenger.total_time
+      @dispatcher.request_trip(@passenger)
+      @passenger.total_time.must_equal before_new_trip_time
     end
 
     it "should set a start time for the trip" do

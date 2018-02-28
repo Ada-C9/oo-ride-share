@@ -102,7 +102,7 @@ module RideShare
       }
       new_trip = Trip.new(new_trip_details)
       passenger.add_trip(new_trip)
-      new_trip.driver.add_trip(new_trip)
+      new_trip.driver.add_new_trip(new_trip)
 
       return new_trip
     end
@@ -125,6 +125,9 @@ module RideShare
     def get_driver
       available_driver = @drivers.find do |driver|
         driver.status == :AVAILABLE
+      end
+      if available_driver.nil?
+        raise ArgumentError.new("Unable to create a new trip, no available drivers")
       end
       return available_driver
     end

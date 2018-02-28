@@ -4,7 +4,8 @@ require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :trips
+    attr_accessor :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -46,11 +47,20 @@ module RideShare
       @trips << trip
     end
 
+    def add_new_trip(trip)
+      if trip.class != Trip
+        raise ArgumentError.new("Can only add trip instance to trip collection")
+      end
+      self.status = :UNAVAILABLE
+      @trips << trip
+    end
+
     def total_revenue
       subtotal = 0
       fee = 1.65
       driver_cut = 0.8
       @trips.each do |trip|
+        next if trip.cost.nil?
         unless trip.cost <= fee
           subtotal += (trip.cost - fee)
         else
