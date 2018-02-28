@@ -22,11 +22,22 @@ module RideShare
     end
 
     def total_spending
-      @trips.map{|trip| trip.cost}.inject(0, :+).round(2)
+      finished_trips.map{|trip| trip.cost}.inject(0, :+).round(2)
+    end
+
+    def finished_trips
+      trips_closed = @trips
+      trips_closed.each do |trip|
+        if trip.end_time == nil || trip.cost == nil || trip.rating == nil
+          trips_closed.delete(trip)
+        end
+      end
+
+      return trips_closed
     end
 
     def total_time
-      @trips.map{|trip| (trip.end_time - trip.start_time)}.inject(0, :+).round(1)
+      finished_trips.map{|trip| trip.duration}.inject(0, :+).round(1)
     end
 
     def new_trip(trip)
