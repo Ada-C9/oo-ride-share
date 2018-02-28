@@ -16,7 +16,7 @@ module RideShare
 
     def get_drivers
       #for each in @trips, run driver method on it
-      #where is this driver method? 
+      #where is this driver method?
       @trips.map{ |t| t.driver }
     end
 
@@ -24,5 +24,19 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    #here
+    def total_spent
+      total = 0
+      if @trips == []
+        return nil
+      else
+        trips.each do |trip|
+          total += trip.cost
+        end
+      end
+      return total
+    end
+
   end
 end

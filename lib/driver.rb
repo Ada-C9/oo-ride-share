@@ -47,5 +47,31 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+
+      if trips == []
+        return nil
+      else
+        fee = 1.65
+        driver_takehome = 0.8
+
+        subtotal = 0
+        trips.each do |trip|
+          subtotal += trip.cost - fee
+        end
+
+        total = subtotal * driver_takehome
+        return total
+      end
+    end
+
+    def avg_revenue
+        revenue = total_revenue
+      number_of_trips = @trips.length
+      average = revenue / number_of_trips
+      return average
+
+    end
   end
 end

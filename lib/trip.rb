@@ -21,8 +21,7 @@ module RideShare
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      #can't do this with instance variables, only
-      #symbols
+
       #p :hello
       if @start_time > @end_time
 
@@ -32,11 +31,11 @@ module RideShare
 
     end
 
-    #returns trip duration in seconds
-    def duration
-      trip_duration =  @end_time - @start_time
+    #returnst
+    def length
+      trip_length =  @end_time - @start_time
       #in seconds
-      return  trip_duration
+      return  trip_length
     end
   end
 end

@@ -43,22 +43,16 @@ describe "Trip class" do
     end
 
     it "005 returns an error if start time is after end time" do
-      @trip_data[:end_time] = @trip_data[:start_time]-60 # 25 minutes
+      @trip_data[:end_time] = @trip_data[:start_time] -25 * 60 # 25 minutes
       proc {
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
     end
 
     it "0006 returns a duration of trip time" do
-      @trip.duration.must_equal 1500
+      @trip.length.must_equal 1500
 
     end
-
-
-
-
-
-
 
   end
 end
