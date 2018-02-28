@@ -139,3 +139,38 @@ module RideShare
     end
   end
 end
+
+#for my personal testing:
+
+# trip_disp = RideShare::TripDispatcher.new()
+# # puts trip_disp.drivers
+# # puts trip_disp.passengers[0].id
+# puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+#
+# new_trip = trip_disp.request_trip(1)
+#
+# puts "new_trip = #{new_trip}"
+# puts "new_trip.id = #{new_trip.id}"
+#
+# puts "new trip driver = #{new_trip.driver}"
+# puts "new trip driver status = #{new_trip.driver.status}"
+# # puts trip_disp.request_trip(1).start_time
+# puts "trip_disp.trips.length = #{trip_disp.trips.length}"
+# puts "trip_disp.trips.length = #{new_trip.driver.trips.length}"
+
+
+
+#check initial driver status:
+# trip_disp = RideShare::TripDispatcher.new()
+#
+# initial_drivers_list = trip_disp.load_drivers
+#
+#
+# new_trip = trip_disp.request_trip(1)
+#
+# driver_for_new_trip = new_trip.driver
+#
+# puts driver_for_new_trip.id
+# puts driver_for_new_trip.status
+#
+# puts initial_drivers_list[driver_for_new_trip.id - 1].status

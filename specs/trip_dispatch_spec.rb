@@ -93,6 +93,71 @@ describe "TripDispatcher class" do
       dispatcher = RideShare::TripDispatcher.new
       trip = dispatcher.trips.first
       trip.start_time.must_be_instance_of Time
+
+    end
+  end
+
+  describe '#request_trip' do
+    it 'Updates the trip list in trip_dispatcher:' do
+      trip_disp = RideShare::TripDispatcher.new()
+      initial_list_length = trip_disp.trips.length
+
+      # Request new trip:
+      trip_disp.request_trip(1)
+
+      final_list_length = trip_disp.trips.length
+
+      final_list_length.must_equal initial_list_length + 1
+    end
+
+    it 'Updates the drivers trip list:' do
+      trip_disp = RideShare::TripDispatcher.new()
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+      driver_for_new_trip = new_trip.driver
+
+      find_new_trip_in_driver = driver_for_new_trip.trips.find{ |trip|  trip == new_trip }
+
+      find_new_trip_in_driver.must_equal new_trip
+
+      # maybe do this too!:
+      # final_driver_list_length = driver_for_new_trip.trips.length
+      #
+      # final_driver_list_length.must_equal initial_driver_list_length + 1
+    end
+
+    it 'Updates the passangers trip list:' do
+      trip_disp = RideShare::TripDispatcher.new()
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+      passenger_for_new_trip = new_trip.passenger
+
+      find_new_trip_in_passanger = passenger_for_new_trip.trips.find{ |trip|  trip == new_trip }
+
+      find_new_trip_in_passanger.must_equal new_trip
+    end
+
+    it 'Selects an AVAILABLE driver' do
+
+      trip_disp = RideShare::TripDispatcher.new()
+      initial_drivers_list = trip_disp.load_drivers
+
+      # Request new trip:
+      new_trip = trip_disp.request_trip(1)
+
+      # Find the status for this driver in the initial list from file:
+
+      initial_status = initial_drivers_list[new_trip.driver.id - 1].status
+
+      # Assert:
+      initial_status.must_equal :AVAILABLE
     end
   end
 end
+
+
+# What happens if you try to request a trip when there are no AVAILABLE drivers?
