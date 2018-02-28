@@ -7,6 +7,7 @@ module RideShare
     PERCENT_ALLOCATED_TO_DRIVER = 0.8
     SECONDS_TO_HOUR_RATE = 3600
     attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_writer :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
