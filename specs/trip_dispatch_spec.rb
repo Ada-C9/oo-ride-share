@@ -89,4 +89,19 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "find_available_driver" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.load_drivers
+      @dispatcher.load_passengers
+      @dispatcher.load_trips
+    end
+    it "returns the first available driver from @drivers" do
+      driver = @dispatcher.find_available_driver
+      driver.must_be_instance_of(RideShare::Driver)
+      driver.status.must_equal(:AVAILABLE)
+      driver.name.must_equal("Emory Rosenbaum")
+    end
+  end
 end

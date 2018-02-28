@@ -16,7 +16,7 @@ module RideShare
     end
 
     def load_drivers
-      my_file = CSV.open('support/drivers.csv', headers: true)
+      my_file = CSV.open('support/drivers.csv', headers: true) #change this back to /support
 
       all_drivers = []
       my_file.each do |line|
@@ -75,9 +75,7 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          # start_time: raw_trip[:start_time],
           start_time: Time.parse(raw_trip[:start_time]),
-          # end_time: raw_trip[:end_time],
           end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
@@ -92,9 +90,24 @@ module RideShare
       trips
     end
 
-    def request_trip(passenger_id)
-
+    def find_available_driver
+      available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
+      return available_driver
     end
+
+    def request_trip(passenger_id)
+      #assign first available driver to trip from @drivers
+      #set start_time as Time.now
+      #set end_date = nil
+      #set cost = nil
+      #set rating = nil
+      #create new instance of Trip (either in this method or elsewhere)
+      #call driver.additional_method that adds trip to drivers trips and sets driver.status to :unavailable
+      #call passenger.additional_method that adds trip to passengers trips
+      #add this trip to @trips in TripDispatcher
+      #return this newly created trip
+    end
+
 
     private
 
@@ -106,7 +119,8 @@ module RideShare
   end
 end
 
-trip_dispatch = RideShare::TripDispatcher.new
-trip_dispatch.load_drivers
-trip_dispatch.load_passengers
-trip_dispatch.load_trips
+# trip_dispatch = RideShare::TripDispatcher.new
+# trip_dispatch.load_drivers
+# trip_dispatch.load_passengers
+# trip_dispatch.load_trips
+# puts trip_dispatch.find_available_driver
