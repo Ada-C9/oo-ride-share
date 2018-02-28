@@ -13,9 +13,20 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
+      if @start_time.to_i > @end_time.to_i
+        raise ArgumentError.new('invald time input')
+      end
+
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
     end
+
+    def trip_in_seconds
+      return (end_time.to_i - start_time.to_i)
+    end
+
+
+
   end
 end
