@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "TripDispatcher class" do
+xdescribe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -87,6 +87,17 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+    end
+
+    it "stores end_time and start_time as instances of Time" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      trip = dispatcher.trips.first
+      start_time = trip.start_time
+      end_time = trip.end_time
+
+      start_time.must_be_instance_of Time
+      end_time.must_be_instance_of Time
     end
   end
 end
