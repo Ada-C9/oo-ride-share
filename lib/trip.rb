@@ -15,7 +15,7 @@ module RideShare
       @rating = input[:rating]
 
 
-      if @end_time.to_s < @start_time.to_s
+      if @end_time != nil && @start_time != nil && @end_time < @start_time
         raise ArgumentError.new("Invalid times. Cannot have start time after end time.")
       end
 
@@ -26,8 +26,11 @@ module RideShare
     end
 
     def duration
-      seconds = (@end_time - @start_time)*24*60*60
-      return seconds
+      hours = 24
+      minutes = 60
+      seconds = 60
+      return_val = @end_time - @start_time
+      return return_val
     end # duration
 
   end # Class Trip
