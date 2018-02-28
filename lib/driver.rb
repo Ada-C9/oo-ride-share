@@ -3,6 +3,9 @@ require_relative 'trip'
 
 module RideShare
   class Driver
+    DRIVER_FEE = 1.65
+    PERCENT_ALLOCATED_TO_DRIVER = 0.8
+    SECONDS_TO_HOUR_RATE = 3600
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
     def initialize(input)
@@ -43,5 +46,26 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      total_revenue = 0
+      @trips.each do |a_trip|
+        total_revenue += (a_trip.cost - DRIVER_FEE)*PERCENT_ALLOCATED_TO_DRIVER
+    end
+    return total_revenue
   end
+
+  def total_revenue_per_hour
+    total_rev = total_revenue
+    total_time = 0
+    @trips.each do |a_trip|
+      total_time += a_trip.trip_in_seconds
+    end
+
+    #total seconds
+    total_time = total_time/SECONDS_TO_HOUR_RATE
+    return total_rev/(total_time)
+  end
+
+end
 end
