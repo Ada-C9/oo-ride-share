@@ -40,6 +40,10 @@ describe "Passenger class" do
       @passenger.add_trip(trip)
     end
 
+    it "throws an argument error if trip is not provided" do
+      proc{ @passenger.add_trip(1) }.must_raise ArgumentError
+    end
+
     it "each item in array is a Trip instance" do
       @passenger.trips.each do |trip|
         trip.must_be_kind_of RideShare::Trip
