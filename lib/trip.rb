@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 module RideShare
   class Trip
@@ -18,9 +19,9 @@ module RideShare
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      # if (@end_time - @start_time) <= 0
-      #   raise ArgumentError.new("Trips must start in the past and be of a duration of at least 1 second.")
-      # end
+      if (@end_time - @start_time) < 0
+        raise ArgumentError.new("Trips must start in the past.")
+      end
     end
 
   end

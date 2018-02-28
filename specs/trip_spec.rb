@@ -49,7 +49,6 @@ describe "Trip class" do
       proc {
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
-      # ("Trips must start in the past and be of a duration of at least 1 second.")
     end
     ##
 

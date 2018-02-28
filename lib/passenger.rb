@@ -1,3 +1,5 @@
+require 'pry'
+
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
