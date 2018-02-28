@@ -116,23 +116,36 @@ describe "Driver class" do
       end
     end # describe total_revenue method
 
-    # describe "average_revenue method" do
-    #
-    #   it "returns a float" do
-    #     @driver.total_revenue.must_be_kind_of Float
-    #   end
-    #
-    #   it "returns a float within range of 1.0 to 5.0" do
-    #     average = @driver.average_rating
-    #     average.must_be :>=, 1.0
-    #     average.must_be :<=, 5.0
-    #   end
-    #
-    #   it "returns zero if no trips" do
-    #     driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-    #     driver.average_rating.must_equal 0
-    #   end
-    # end # describe average_revenue method
+    describe "average_revenue method" do
+
+      it "returns a float" do
+        @driver.average_revenue.must_be_kind_of Float
+      end
+
+      it "returns a float greater than or equal to 0.00" do
+        result = @driver.average_revenue
+        result.must_be :>=, 0.00
+      end
+
+      it "returns zero if no trips" do
+        driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+        driver.average_revenue.must_equal 0
+      end
+
+      it "returns the sum of the cost of each of the driver's trips" do
+        total_duration_in_seconds = @trip_one.duration + @trip_two.duration + @trip_three.duration
+
+        total_duration_in_hours = total_duration_in_seconds / 3600
+
+        total_revenue = @trip_one.cost + @trip_two.cost + @trip_three.cost
+
+        average_revenue = total_revenue / total_duration_in_hours
+
+        result = @driver.average_revenue
+        result.must_equal average_revenue.round(2)
+      end
+
+    end # describe average_revenue method
 
   end # describe Driver#average_rating
 

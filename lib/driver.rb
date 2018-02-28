@@ -52,6 +52,21 @@ module RideShare
       return total_revenue
     end
 
+    def average_revenue
+      return self.total_time_spent == 0.0 ? 0.00 : (self.total_revenue / self.total_time_spent * 3600).round(2)
+    end
+
+    def total_time_spent
+      total_time_spent = 0.0
+      @trips.each do |trip|
+        total_time_spent += trip.duration
+      end
+      return total_time_spent
+    end
+
+    def trip_count
+      return @trips.length
+    end
 
   end
 end
