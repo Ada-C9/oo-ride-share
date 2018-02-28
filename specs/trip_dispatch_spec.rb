@@ -121,8 +121,9 @@ describe "TripDispatcher class" do
       driver = another_trip.driver
       same_driver = @trip_dispatcher.find_driver(driver.id)
 
-      another_trip.start_time.must_be_instance_of Time
+      another_trip.start_time.ctime.must_equal Time.now.ctime
       driver.must_equal same_driver
+      driver.must_be_instance_of RideShare::Driver
     end
 
     it "assigns value of 'nil' to end_time, cost, and rating" do
