@@ -43,5 +43,23 @@ module RideShare
 
       @trips << trip
     end
+    # PSEUDOCODE
+
+    # input : none
+    # Output : Total_revenue (float)
+    # where does it live? Driver#total_revenue
+
+
+    #  def revenue_all_trips
+    #    percentagetakenhome = 0.8
+    #    fee = 1.65
+    #    revenue = 0
+    #    @trips.each do |trip |
+    ### What is the cost is less than the fee
+    #     cost = trip.cost - fee
+    #    revenue += cost
+    #    end
+    # total_rev = revenue * percentagetaken
+    #
   end
 end

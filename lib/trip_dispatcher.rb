@@ -75,8 +75,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -90,6 +90,12 @@ module RideShare
       trips
     end
 
+    def self.split_date_time(datetime)
+      #puts datetime.split("T")
+      puts Time.parse(datetime)
+    end
+
+
     private
 
     def check_id(id)
@@ -99,3 +105,5 @@ module RideShare
     end
   end
 end
+
+RideShare::TripDispatcher.split_date_time("2016-04-05T14:01:00+00:00")
