@@ -88,5 +88,43 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+  end # describe loader methods
+
+  describe "request_trip(passenger_id) method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "returns a proper trip" do
+      result = @dispatcher.request_trip(1)
+      result.must_be_kind_of RideShare::Trip
+    end
+
+    it "assigns the first driver with available status" do
+      # do two rounds of this so that you can check that the next available driver is chosen after the first
+    end
+
+    it "sets the selected driver's status to unavailable" do
+    end
+
+    it "returns an error if there are no available drivers" do
+    end
+
+    it "uses the current time for the start time" do
+    end
+
+    it "assigns end time, cost, and rating to nil" do
+    end
+
+    it "updates the trips list" do
+    end
+
+    it "updates the trip list for the driver" do
+    end
+
+    it "updates the trip list for the passenger" do
+    end
+  end # describe TripDispatcher#request_trip(passenger_id)
+
+
+end # describe TripDispatcher
