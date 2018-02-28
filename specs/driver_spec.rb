@@ -47,7 +47,8 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace",
         vin: "12345678912345678")
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass,
-        start_time: Time.parse("2016-08-08"), end_time: Time.parse("2016-08-08"),
+        start_time: Time.parse("2018-01-02T10:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
         rating: 5})
     end
 
@@ -67,7 +68,8 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV",
         vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil,
-        start_time: Time.parse("2016-08-08"), end_time: Time.parse("2016-08-08"),
+        start_time: Time.parse("2018-01-02T10:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
         rating: 5})
       @driver.add_trip(trip)
     end

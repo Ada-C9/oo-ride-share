@@ -73,6 +73,55 @@ describe "Passenger class" do
          phone: "1-902-620-2330 x3723", trips: [])
       new_passenger.get_total_money_spent.must_equal 0.0
     end
+
+    # TODO: doesn't return negative money??
+  end
+
+  describe "calculates the total trips time" do
+
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
+         phone: "1-602-620-2330 x3723", trips: [])
+
+      @trip1 = RideShare::Trip.new({id: 3, driver: nil, passenger: @passenger,
+        start_time: Time.parse("2018-01-02T10:40:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:00:00+00:00"), cost: 20.45,
+        rating: 5})
+
+      @trip2 = RideShare::Trip.new({id: 5, driver: nil, passenger: @passenger,
+        start_time: Time.parse("2018-01-04T10:45:00+00:00"),
+        end_time: Time.parse("2018-01-4T11:15:00+00:00"), cost: 10.05,
+        rating: 5})
+
+      @trip3 = RideShare::Trip.new({id: 22, driver: nil, passenger: @passenger,
+        start_time: Time.parse("2018-01-05T09:30:00+00:00"),
+        end_time: Time.parse("2018-01-05T10:00:00+00:00"), cost: 11.0,
+        rating: 5})
+
+      [@trip1, @trip2, @trip3].each { |trip| @passenger.add_trip(trip)}
+
+      @total_time_spent = [@trip1, @trip2, @trip3].inject(0) {
+        |sum, trip| sum + trip.get_duration }
+    end
+
+    it "calculates total time spent" do
+      # expected_total = 20.45 + 10.05 + 11.0
+      @passenger.get_total_time.must_be_kind_of Integer
+      @passenger.get_total_time.must_equal @total_time_spent
+    end
+
+    it "return 0 if no trips" do
+      new_passenger = RideShare::Passenger.new(id: 9, name: "No Trips Passenger",
+         phone: "1-902-620-2330 x3723", trips: [])
+      new_passenger.get_total_time.must_equal 0
+    end
+
+    # it "returns 0.0 if no trips taken" do
+    #   new_passenger = RideShare::Passenger.new(id: 9, name: "No Trips Passenger",
+    #      phone: "1-902-620-2330 x3723", trips: [])
+    #   new_passenger.get_total_money_spent.must_equal 0.0
+    # end
+
   end
 
 
