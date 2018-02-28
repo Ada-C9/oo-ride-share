@@ -4,6 +4,7 @@ require 'pry'
 describe "Trip class" do
 
   describe "initialize" do
+
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes
@@ -55,9 +56,11 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
   end
 
   describe "duration" do
+
     before do
       @trip_data = {
         id: 8,
@@ -68,11 +71,27 @@ describe "Trip class" do
         cost: 23.45,
         rating: 3
       }
-      @trip = RideShare::Trip.new(@trip_data)
+
+      @in_progress_trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2016-04-05T14:01:00+00:00'),
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
     end
 
     it "calculates the duration of a trip in seconds" do
-      @trip.duration_in_seconds.must_be_kind_of Integer
+      trip = RideShare::Trip.new(@trip_data)
+      trip.duration_in_seconds.must_be_kind_of Float
     end
+
+    it "returns zero if end_time is nil" do
+      in_progress_trip = RideShare::Trip.new(@in_progress_trip_data)
+      in_progress_trip.duration_in_seconds.must_equal 0
+    end
+
   end
 end
