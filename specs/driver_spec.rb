@@ -77,4 +77,50 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "#total_revenue"do
+
+    it "returns accurate total revenue" do
+      driver = RideShare::Driver.new({
+        id:56,
+        vin:"a"*17,
+        trips: [
+          RideShare::Trip.new({cost:14.8, rating: 3}),
+          RideShare::Trip.new({cost:50, rating: 3}),
+          RideShare::Trip.new({cost:27, rating: 3})
+        ]
+        })
+
+      expected_revenue = 69.48
+      result = driver.total_revenue
+      result.must_equal expected_revenue
+    end
+
+    it "returns zero if the driver does not have any trips" do
+      driver = RideShare::Driver.new({
+        id:56,
+        vin:"a"*17,
+        })
+      expected_revenue = 0
+      result = driver.total_revenue
+      result.must_equal expected_revenue
+    end
+
+    it "does not return a negative revenue" do
+      driver = RideShare::Driver.new({
+        id:56,
+        vin:"a"*17,
+        trips: [
+          RideShare::Trip.new({cost:1.30, rating: 3}),
+          RideShare::Trip.new({cost:1.25, rating: 3}),
+          RideShare::Trip.new({cost:1.03, rating: 3})
+        ]
+        })
+    expected_revenue = 0
+    result = driver.total_revenue
+    result.must_equal expected_revenue
+
+    end
+
+  end
 end

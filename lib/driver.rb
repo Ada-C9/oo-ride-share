@@ -5,6 +5,9 @@ module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
+    FEE_PER_TRIP = 1.65
+    REV_PERCENT = 0.80
+
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
@@ -34,7 +37,7 @@ module RideShare
       end
 
       return average
-    end
+    end # average_rating
 
     def add_trip(trip)
       if trip.class != Trip
@@ -42,6 +45,29 @@ module RideShare
       end
 
       @trips << trip
-    end
-  end
-end
+    end # add_trip
+
+    def total_revenue
+
+      if @trips == []
+        return 0
+      else
+        costs = @trips.map do |trip|
+          if trip.cost < FEE_PER_TRIP
+            0
+          else
+            trip.cost-FEE_PER_TRIP
+          end
+        end
+
+        subtotal = costs.inject(:+)
+        total_revenue = REV_PERCENT*subtotal
+
+        return total_revenue
+      end
+
+    end # total_revenue
+
+
+  end # Class Driver
+end # Module RideShare
