@@ -3,6 +3,24 @@ require_relative 'spec_helper'
 
 describe "Driver class" do
 
+  before do
+
+  @driver_a = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+  pass_a = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+  trip_1 = RideShare::Trip.new({id: 8, driver: @driver_a, passenger: pass_a, start_time: Time.parse('2016-08-08T16:01:00+00:00'), end_time: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
+
+  trip_2 = RideShare::Trip.new({id: 9, driver: @driver_a, passenger: pass_a, start_time: Time.parse('2016-09-08T16:01:00+00:00'), end_time: Time.parse('2016-09-08T16:38:00+00:00'), cost: 10.13, rating: 5})
+
+  trip_3 = RideShare::Trip.new({id: 10, driver: @driver_a, passenger: pass_a, start_time: Time.parse('2016-10-08T16:01:00+00:00'), end_time: Time.parse('2016-10-08T16:39:00+00:00'), cost: 10.14, rating: 5})
+
+  @driver_a.add_trip(trip_1)
+  @driver_a.add_trip(trip_2)
+  @driver_a.add_trip(trip_3)
+
+  end
+
   describe "Driver instantiation" do
     before do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
@@ -80,8 +98,51 @@ describe "Driver class" do
   end
 
   describe "total_revenue" do
+
+
+    it "returns an accurate report of the driver's total revenue" do
+
+      driver_total_take_home = @driver_a.total_revenue
+      driver_total_take_home.must_be_within_delta 20.35, 0.001
+
+    end
+
+    it "returns a total revenue figure that represents 80% of the total recieved by the driver, after deduction of $1.65 per trip" do
+
+    # This is kind of a goofy test, I know, because a lot of what it does
+    # is test itself.  But I think it still makes sense as a test of this method,
+    # because it shows the steps in the calculation by which we arrive at the
+    # figure in the previous test.
+
+    # It's sort of a proof-of-concept for the calculation in the method, and it
+    # would allow a non-technical person to easily see what was going on.
+
+      total_trips = @driver_a.trips.count
+      fees_deducted = 1.65 * total_trips
+
+      per_trip_gross = []
+      @driver_a.trips.each do |trips|
+        trip_cost = trips.cost
+        per_trip_gross << trip_cost
+      end
+
+      overall_gross = per_trip_gross.sum
+
+      total_trips.must_equal 3
+      fees_deducted.must_be_within_delta 4.95, 0.001
+      per_trip_gross.length.must_equal 3
+      overall_gross.must_be_within_delta 30.39, 0.001
+
+      overall_gross_less_fees = overall_gross - fees_deducted
+      overall_gross_less_fees.must_be_within_delta 25.44, 0.001
+      overall_driver_revenue = overall_gross_less_fees * 0.8
+
+      @driver_a.total_revenue.must_be_within_delta overall_driver_revenue, 0.001
+
+    end
   end
 
   describe "average_revenue" do
+
   end
 end
