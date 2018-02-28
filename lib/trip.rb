@@ -24,8 +24,7 @@ module RideShare
     end # end of initialize
 
     def duration
-      duration = (@end_time - @start_time).to_f
-
+      duration = (@end_time - @start_time)
     end
 
 

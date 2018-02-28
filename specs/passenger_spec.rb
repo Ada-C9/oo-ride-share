@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe "Passenger class" do
 
-  xdescribe "Passenger instantiation" do
+  describe "Passenger instantiation" do
     before do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
     end
@@ -33,7 +33,7 @@ describe "Passenger class" do
   end
 
 
-  xdescribe "trips property" do
+  describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
       trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse("2016-04-05T14:09:00+00:00"),
@@ -120,6 +120,7 @@ describe "Passenger class" do
 
     it "returns total time spent riding" do
       @passenger.total_time.must_equal 1500
+      @passenger.total_time.wont_equal 0
     end
 
   end

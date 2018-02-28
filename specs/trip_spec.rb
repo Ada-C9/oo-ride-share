@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Trip class" do
+xdescribe "Trip class" do
 
   describe "initialize" do
     before do
@@ -18,19 +18,19 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
     end
 
-    xit "is an instance of Trip" do
+    it "is an instance of Trip" do
       @trip.must_be_kind_of RideShare::Trip
     end
 
-    xit "stores an instance of passenger" do
+    it "stores an instance of passenger" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end
 
-    xit "stores an instance of driver" do
+    it "stores an instance of driver" do
       @trip.driver.must_be_kind_of RideShare::Driver
     end
 
-    xit "raises an error for an invalid rating" do
+    it "raises an error for an invalid rating" do
       [-3, 0, 6].each do |rating|
         @trip_data[:rating] = rating
         proc {

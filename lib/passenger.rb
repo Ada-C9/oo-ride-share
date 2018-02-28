@@ -23,20 +23,31 @@ module RideShare
 
     def total_spent
       #if time, try to convert this to an enumerable
-      total_spent = 0
-      @trips.each do |trip|
-        total_spent += trip.cost
-      end
-      return total_spent
+      # total_spent = 0
+      # @trips.each do |trip|
+      #   total_spent += trip.cost
+      # end
+      # return total_spent
+
+      # trip_cost = @trips.map {|trip| trip.cost}
+      # total_rev = trip_cost.sum
+
+      total_spent = @trips.inject(0) { |sum, trip| sum + trip.cost }
     end
 
 
     def total_time
-      total_time = 0
-      @trips.each do |trip|
-        total_time += trip.duration
-      end
-      return total_time
+      # total_time = 0
+      # @trips.each do |trip|
+      #   total_time += trip.duration
+      # end
+      # return total_time
+      # trip_durations = @trips.map {|trip| trip.duration}
+      # total_time = trip_durations.sum
+
+
+      total_time = @trips.inject(0) {|sum, trip| sum + trip.duration}
+
     end
 
 
