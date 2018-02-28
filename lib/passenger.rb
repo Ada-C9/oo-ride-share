@@ -26,5 +26,9 @@ module RideShare
       return trips.inject(0) {|sum, trip| sum += trip.cost}
     end
 
+    def total_time
+      return trips.inject(0) {|sum, trip| sum += trip.duration_in_seconds}
+    end
+
   end
 end
