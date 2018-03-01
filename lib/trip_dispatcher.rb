@@ -106,7 +106,7 @@ module RideShare
       passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
 
       #Your code should automatically assign a driver to the trip
-      check_status(driver)
+      check_status# (driver)
       driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
       passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
       puts passenger

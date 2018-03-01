@@ -121,7 +121,7 @@ describe "TripDispatcher class" do
     # end
 
     it "creates an instance of a trip" do
-      dispatcher.request_trip(9).must_be_kind_of RideShare::Trip
+      @dispatcher.request_trip(9).must_be_kind_of RideShare::Trip
     end
 
     # it " raises an error if no drivers are available" do
