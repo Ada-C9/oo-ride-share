@@ -57,5 +57,13 @@ module RideShare
       total = subtotal * driver_takehome
       return total
     end
+
+    def average_revenue
+      average = 0
+      trips.each do |trip|
+        average += (total_revenue / (trip.duration / 3600))
+      end
+      return average.round(2)
+    end
   end
 end
