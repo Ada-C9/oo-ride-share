@@ -56,6 +56,10 @@ module RideShare
       return total_earnings.to_f
     end
 
+    def avg_hourly_pay
+      avg_pay = total_revenue / @trips.length
+      return avg_pay
+    end
 
   end
 end
