@@ -91,6 +91,56 @@ module RideShare
 
       trips
     end
+    def find_first_available_driver
+      @drivers.find { |driver|
+        driver.status == :AVAILABLE
+    }
+    end
+
+    def request_trip(passenger_id)
+
+=begin
+WHAT'S HAPPENING HERE (OVERVIEW)
+(I)  IN THIS METHOD:
+    (1) Recieve a message from a passenger instance.
+    (2)  Create a new Trip instance using the first driver who is available
+        ****Method: First available driver***
+          A. Trip instance should have: start_time of now
+          B. Trip end_time, cost, and rating should be nil.
+    (3)  Add the new trip to the TripDispatcher's collection of trips
+    (4)  Return the new trip
+(II) IN DRIVER:  Make a helper method to:
+    (1). Add the new trip to the driver's collection
+    (2). Set the driver's status to :UNAVAILABLE
+
+(III) IN PASSENGER: Make a helper method to:
+    (1). Add the new trip to the passenger's trips
+
+
+PSEUDOCODE FOR (I), above:
+
+  1. Identify a driver instance by :AVAILABLE
+      .find
+  2. Create a new instance of Trip, populated with:
+      -the customer with the passed-in ID
+      -the driver you found
+      -a start_time of now
+      -a :trip_id that is one more than the highest one you can find.
+          .max_by
+      -an end-time of nil
+      -a cost of nil
+      -a rating of nil
+  3. Add the trip to TripDispatch's trips
+  4. Call .driver_helper to do the stuff in II
+  5. Call .passenger_helper to do the stuff in III
+
+=end
+
+
+    end
+
+    def create_new_trip_id
+    end
 
     private
 

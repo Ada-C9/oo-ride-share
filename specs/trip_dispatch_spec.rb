@@ -3,6 +3,11 @@ require_relative 'spec_helper'
 
 
 describe "TripDispatcher class" do
+
+  before do
+  @dispatcher_1 = RideShare::TripDispatcher.new
+  end
+
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -96,4 +101,36 @@ describe "TripDispatcher class" do
 
     end
   end
+  describe "find_first_available_driver" do
+
+    it "identifies the first available driver" do
+      driver_to_assign = @dispatcher_1.find_first_available_driver
+      driver_to_assign.must_be_instance_of RideShare::Driver
+      status = driver_to_assign.status
+      status.must_equal :AVAILABLE
+    end
+  end
+
+  describe "create_new_trip_id" do
+
+    it "creates a trip ID number that is one higher than the current highest trip ID number" do
+
+      new_trip_id = @dispatcher_1.create_new_trip_id
+      new_trip_id.must_be_kind_of Symbol
+      new_trip_id.to_i.must_equal 601
+
+    end
+  end
+  # describe "request_trip(passenger_id)" do
+  #   it "creates a new instance of Trip" do
+  #     test_trip = request_trip(passenger_id) #WALK-O
+  #     test_trip.must_be_instance_of Rideshare::Trip #WALK-O
+  #     test_trip.driver.must_equal driver_to_be_determined #GOT
+  #     test_trip.passenger.must_equal passenger_to_be_determined
+  #     test_trip.start_time.to_i.must_be_close_to Time.now.to_i, 2
+  #     test_trip.end_time.to_i.must_be_nil
+  #     test_trip.cost.must_be_nil
+  #     test_trip.rating.must_be_nil
+  #   end
+  # end
 end
