@@ -134,7 +134,7 @@ describe "Driver class" do
       @driver.add_trip(trip)
       @driver.add_trip(trip2)
       # Assert/Then
-      @driver.ave_total_rev.must_equal 6.68
+      @driver.avg_total_rev.must_equal 6.68
     end
   end
 end
