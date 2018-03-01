@@ -77,7 +77,7 @@ describe "Passenger class" do
     end
   end
 
-  describe 'trips_total' do
+  describe "trips_total" do
 
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
@@ -96,14 +96,54 @@ describe "Passenger class" do
       @passenger.add_trip(trip1)
       @passenger.add_trip(trip2)
       @passenger.add_trip(trip3)
-      
+
       @passenger.trips_total.must_equal(76.20 + 16.22 + 44.23)
     end
 
     it "return zero if passengers have no trips" do
       @passenger.trips_total.must_equal 0
     end
-
   end
 
+  describe "total_time" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    end
+
+    it "returns the total time of all passenger trips in seconds" do
+      default_time = Time.now
+      trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 30), rating: 5, cost: 76.20})
+
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 20), rating: 5, cost: 16.22})
+
+      trip3 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 39), rating: 5, cost: 44.23})
+
+      @passenger.add_trip(trip1)
+      @passenger.add_trip(trip2)
+      @passenger.add_trip(trip3)
+
+      @passenger.total_time.must_equal((60 * 30) + (60 * 20) + (60 * 39))
+    end
+
+    it "returns zero if all trips have zero duration." do
+      default_time = Time.now
+      trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time, rating: 5, cost: 76.20})
+
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time, rating: 5, cost: 16.22})
+
+      trip3 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time, rating: 5, cost: 44.23})
+
+      @passenger.add_trip(trip1)
+      @passenger.add_trip(trip2)
+      @passenger.add_trip(trip3)
+      
+      @passenger.total_time.must_equal 0
+    end
+
+    it "it returns zero if passenger has no trips." do
+      @passenger.total_time.must_equal 0
+    end
+  end
 end
