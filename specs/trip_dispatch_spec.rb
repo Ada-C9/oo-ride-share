@@ -104,25 +104,32 @@ describe "TripDispatcher class" do
       proc {@dispatcher.request_trip(0)}.must_raise ArgumentError
     end
 
+    it "inputs nil for end_time, cost, and rating" do
+      @dispatcher.request_trip(1).end_time.must_be_nil
+      @dispatcher.request_trip(1).cost.must_be_nil
+      @dispatcher.request_trip(1).rating.must_be_nil
+    end
 
-    # it "new trip must be instance of RideShare::Trip" do
-    #   @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
-    # end
+    it "new trip must be instance of RideShare::Trip" do
+      @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+    end
 
+    it "assigns first AVAILABLE driver to the trip" do
+      @dispatcher.request_trip(1).driver.id.must_equal 2
+    end
 
-    # it "assigns an AVAILABLE driver to the trip" do
-    #   @dispatcher.request_trip(1).driver.id.must_equal 2
-    # end
+    it "changes driver's status to UNAVAILABLE" do
+      @dispatcher.request_trip(1).driver.status.must_equal :UNAVAILABLE
+    end
     #
-    # it "correctly sets the start_time" do
-    #   @dispatcher.request_trip(1).start_time.must_be_instance_of Time
-    # end
-    #
-    # it "inputs nil for end_time, cost, and rating" do
-    #   @dispatcher.request_trip(1).end_time.must_be_nil
-    #   @dispatcher.request_trip(1).cost.must_be_nil
-    #   @dispatcher.request_trip(1).rating.must_be_nil
-    # end
+    it "correctly sets the start_time" do
+      @dispatcher.request_trip(1).start_time.must_be_instance_of Time
+    end
+
+    it "throws an error if no drivers are available" do
+    end
+
+
 
   end
 end

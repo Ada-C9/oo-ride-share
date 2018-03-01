@@ -2,7 +2,8 @@ require 'awesome_print'
 
 module RideShare
   class Passenger
-    attr_reader :id, :name, :phone_number, :trips
+    attr_reader :id, :name, :phone_number
+    attr_accessor :trips
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0

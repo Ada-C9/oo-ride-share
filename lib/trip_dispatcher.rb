@@ -95,12 +95,11 @@ module RideShare
         raise ArgumentError.new("Invalid passenger id!")
       else
         new_rider = find_passenger(passenger_id)
+        new_driver = @drivers.select {|driver| driver.status == :AVAILABLE}.first
       end
 
-      new_driver = all_drivers.status.select {|status| status == :AVAILABLE}.first
-
       new_ride = RideShare::Trip.new({
-        id: (trips.last.id + 1),
+        id: (@trips.last.id + 1),
         driver: new_driver,
         passenger: new_rider,
         start_time: Time.now,
@@ -109,8 +108,11 @@ module RideShare
         rating: nil
         })
 
-      # new_driver.add_trip(new_ride)
-      return new_rider.add_trip(new_ride)
+
+      new_driver.add_trip(new_ride)
+      new_rider.add_trip(new_ride)
+      new_driver.status = :UNAVAILABLE
+      return new_ride
     end
 
     private
@@ -122,5 +124,3 @@ module RideShare
     end
   end
 end
-  # a = RideShare::TripDispatcher.new
-  # ap a.loadtrips
