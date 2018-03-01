@@ -67,11 +67,18 @@ module RideShare
     end
 
     def avg_revenue
-        revenue = total_revenue
+      revenue = total_revenue
       number_of_trips = @trips.length
       average = revenue / number_of_trips
       return average
+    end
 
+    def avaialable?(available)
+      if available == false
+        @status = :UNAVAILABLE
+      elsif input
+
+      end
     end
   end
-end
+end 

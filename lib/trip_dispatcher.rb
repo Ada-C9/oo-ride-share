@@ -99,6 +99,48 @@ module RideShare
       trips
     end
 
+
+
+    def request_trip(passenger_id)
+
+      #Your code should automatically assign a driver to the trip
+      driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
+      passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
+      puts passenger
+
+      #For this initial version, choose the first driver whose status is :AVAILABLE
+      #goes through drivers and finds one who is available alldrivers.each do |status|
+      #if status == :AVAILABLE
+      #IS DRIVER
+      #end
+      #this needs to be able to change- how will it change, to pick the driver with the least trips eg
+
+      #Your code should use the current time for the start time
+
+      #The end date, cost and rating will all be nil
+      #instance of trip- calling it in dispatcher
+      in_progress_data = {
+        id: 0,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time:nil,
+        cost:nil,
+        rating:nil,
+      }
+      #call an instance of trip in dispatcher
+
+      unfinished_trip = RideShare::Trip.new(in_progress_data)
+
+      driver.avaialable?(false)
+      driver.add_trip(unfinished_trip)
+      passenger.add_trip(unfinished_trip)
+      trips.push(unfinished_trip)
+      #passenger.add_trip(unfinished_trip)
+      #how do these instances not write over each other?
+      return unfinished_trip
+    end
+
     private
 
     def trip_time
@@ -111,35 +153,24 @@ module RideShare
       end
     end
 
-      def request_trip(passenger_id)
 
-        #Your code should automatically assign a driver to the trip
-          @drivers.find{ |driver| driver.status == :AVAILABLE }
-
-        #For this initial version, choose the first driver whose status is :AVAILABLE
-        #goes through drivers and finds one who is available alldrivers.each do |status|
-        #if status == :AVAILABLE
-          #IS DRIVER
-        #end
-        #this needs to be able to change- how will it change, to pick the driver with the least trips eg
-
-
-
-
-
-        #Your code should use the current time for the start time
-         start_time = Time.now
-
-
-        #The end date, cost and rating will all be nil
-        #instance of trip- calling it in dispatcher
-
-        #call an instance of trip in dispatcher
-
-        unfinished_trip = RideShare::Trip(:id, :passenger, :driver, :start_time, endtime: nil, cost: nil, rating: nil)
-    end
   end
 end
-
-#dispatcher = RideShare::TripDispatcher.new
-#ap dispatcher.find_passenger(9)
+#
+# #puts trips.length
+# dispatcher = RideShare::TripDispatcher.new
+# yet_trip =  dispatcher.request_trip(9)
+#
+#
+# puts yet_trip.id
+# puts yet_trip.driver
+# puts yet_trip.passenger
+# puts yet_trip.start_time
+# puts yet_trip.end_time
+# puts yet_trip.cost
+# puts yet_trip.rating
+# puts yet_trip.driver.status
+# puts yet_trip.driver.trips
+# puts "*********"
+# puts yet_trip.passenger.trips
+# #puts yet_trip.length

@@ -17,13 +17,13 @@ module RideShare
       @rating = input[:rating]
 
       #there is also a test for this in driver specs
-      if @rating > 5 || @rating < 1
+      if @rating != nil && (@rating > 5 || @rating < 1 )
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
 
       #p :hello
-      if @end_time != nil && @start_time > @end_time
+      if @end_time != nil && (@start_time > @end_time)
         raise ArgumentError.new("Invalid Trip Time")
       end
 
