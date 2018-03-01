@@ -44,7 +44,7 @@ describe "Driver class" do
 
   describe "add trip method" do
     before do
-      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      @pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace",
         vin: "12345678912345678")
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass,
@@ -62,6 +62,18 @@ describe "Driver class" do
       @driver.add_trip(@trip)
       @driver.trips.length.must_equal previous + 1
     end
+
+    it "Does not add a trip if the driver is unavailable" do
+      @driver.status.must_equal :UNAVAILABLE
+      
+      proc { RideShare::Trip.new({id: 66, driver: @driver, passenger: @pass,
+        start_time: Time.parse("2018-01-02T10:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
+        rating: 5}) }.must_raise ArgumentError
+      # @driver.add_trip(@trip)
+      # @driver.trips.length.must_equal previous + 1
+    end
+
   end
 
   describe "get_average_rating method" do
