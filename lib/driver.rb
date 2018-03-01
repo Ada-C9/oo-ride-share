@@ -43,5 +43,37 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      fee = 1.65
+      driver_take_home = 0.8
+
+      subtotal = 0
+      trips.each do |trip|
+        # Question: what if the cost is less than the fee
+        if trip.cost < fee
+          puts "#{trip.cost} < #{fee}"
+          raise ArgumentError.new("Trip cost cannot be less then the trip fee (got #{trip.cost}.)")
+        end
+        subtotal += (trip.cost - fee)
+      end
+      total = subtotal * driver_take_home
+      return total
+    end
+    # **W1: METHOD TO INSTITUE AVERAGE REVENUE PER HOUR METHOD-----------
+    def av_revenue_hr
+      trip_hours = 0
+      total_hours = 0
+
+      @trips.each do |trip|
+        if trip.end_time != nil
+          trip_hours = trip.duration / 3600
+          total_hours += trip_hours
+        end
+      end
+      av_revenue_hour = total_revenue / total_hours
+      return av_revenue_hour
+    end
+    # **W1: METHOD TO INSTITUE AVERAGE REVENUE PER HOUR METHOD-----------
   end
 end
