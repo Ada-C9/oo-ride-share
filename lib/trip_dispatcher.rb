@@ -58,7 +58,7 @@ module RideShare
       return passengers
     end
 
-    def find_passenger(id)
+    def find_passenger(id) # will return nil if a passenger was not found
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
     end
@@ -70,6 +70,11 @@ module RideShare
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+
+        # could add a check here
+        # if driver.nil? || passenger.nil?
+        # => raise StandardError ("Could not find driver or passenger for trip ID #{raw_trip[:id]}")
+        # end
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
@@ -91,18 +96,23 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      id = @trips.max + 1
-      passenger = find_passenger(passenger_id)
-      driver = @drivers.find { |driver| driver.status == :UNAVAILABLE }
-      start_time = Time.now
-      end_time = nil
-      cost = nil
-      rating = nil
-      new_trip = Trip.new(id, driver, passenger, start_time, end_time, cost, rating)
+      # create new on-going trip
+      new_trip_data = {}
+      new_trip_data[:id] = @trips.map { |trip| trip.id }.max + 1
+      new_trip_data[:passenger] = find_passenger(passenger_id)
+      new_trip_data[:driver] = @drivers.find { |driver| driver.status == :AVAILABLE }
+      new_trip_data[:start_time] = Time.now
+      new_trip_data[:end_time] = nil
+      new_trip_data[:cost] = nil
+      new_trip_data[:rating] = nil
+      new_trip = Trip.new(new_trip_data)
+
+      # change driver status, add trips to all trips, driver trips, and passenger trips arrays
       @trips << new_trip
-      driver.change_status
-      driver.add_trip(new_trip)
-      passenger.add_trip(new_trip)
+      new_trip.driver.add_trip(new_trip)
+      new_trip.passenger.add_trip(new_trip)
+      new_trip.driver.change_status
+      return new_trip
     end
 
     private

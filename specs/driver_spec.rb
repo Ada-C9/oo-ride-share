@@ -42,6 +42,7 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
       @driver.status.must_equal :AVAILABLE
       @driver.change_status.must_equal :UNAVAILABLE
+      @driver.change_status.must_equal :AVAILABLE
     end
 
     it "changes status to available if initial status is unavailable" do

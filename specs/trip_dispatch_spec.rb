@@ -89,4 +89,27 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "request_trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      trips_before = @dispatcher.trips.length
+      passenger_trips_before = @dispatcher.find_passenger(1).trips.length
+      driver_trips_before = @dispatcher.find_driver(2).trips.length
+    end
+
+    it "creates an accurate trip" do
+      new_trip = @dispatcher.request_trip(1)
+      new_trip.must_be_instance_of RideShare::Trip
+      new_trip.id.must_equal 601
+      new_trip.passenger.id.must_equal 1
+      new_trip.passenger.name.must_equal "Nina Hintz Sr."
+      new_trip.driver.id.must_equal 2
+      new_trip.driver.name.must_equal "Emory Rosenbaum"
+      new_trip.end_time.must_be_nil
+      new_trip.cost.must_be_nil
+      new_trip.rating.must_be_nil
+      new_trip.driver.status.must_equal :UNAVAILABLE
+    end
+  end
 end

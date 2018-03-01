@@ -20,6 +20,14 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def change_status
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
+      else
+        @status = :AVAILABLE
+      end
+    end
+
     def add_trip(trip)
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
@@ -41,14 +49,6 @@ module RideShare
       end
 
       return average
-    end
-
-    def change_status
-      if @status == :AVAILABLE
-        @status = :UNAVAILABLE
-      else
-        @status = :AVAILABLE
-      end
     end
 
     def total_revenue
