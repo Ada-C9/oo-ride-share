@@ -92,7 +92,7 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      passenger = @passengers.select do |passenger|
+      passenger = @passengers.find do |passenger|
         passenger.id == passenger_id
       end
 
@@ -100,7 +100,6 @@ module RideShare
         driver.status == :AVAILABLE
       end
 
-      # binding.pry
       trip_info = {
         id: load_trips.length,
         passenger: passenger,
@@ -116,10 +115,14 @@ module RideShare
       }
 
       trip = Trip.new(trip_info)
-      driver.new_trip(trip)
+
+      driver.add_trip(trip)
+      driver.new_trip_change_status
+      passenger.add_trip(trip)
 
       return trip
     end
+
     private
 
     def check_id(id)
@@ -134,3 +137,7 @@ end # RideShare
 
 # dispatcher = RideShare::TripDispatcher.new
 # puts dispatcher.request_trip(1)
+
+# dispatcher = RideShare::TripDispatcher.new
+# result = dispatcher.request_trip(1)
+# puts result
