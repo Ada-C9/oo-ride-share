@@ -90,9 +90,18 @@ module RideShare
       trips
     end
 
+    def find_available_driver
+      return @drivers.find{ |each_driver| each_driver.status == :AVAILABLE }
+    end
+
     def request_trip(passenger_id)
-      driver = @drivers.find{ |each_driver| each_driver.status == :AVAILABLE }
       passenger = find_passenger(passenger_id)
+      raise ArgumentError.new("Passenger id doesn't exist") if passenger.nil?
+      driver = find_available_driver
+      if driver.nil?
+        puts "There are no drivers AVAILABLE"
+        return nil
+      end
       trip = Trip.new({
         id: @trips.last.id + 1,
         driver: driver,
@@ -102,8 +111,8 @@ module RideShare
         cost: nil,
         rating: nil
         })
-        # driver.add_latest_trip trip
-        # passenger.add_trip trip
+        driver.add_latest_trip trip
+        passenger.add_trip trip
         @trips << trip
         return trip
       end

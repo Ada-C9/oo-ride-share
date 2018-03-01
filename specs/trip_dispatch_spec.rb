@@ -118,51 +118,66 @@ describe "TripDispatcher class" do
 
   describe "#request_trip(passenger_id)" do
     before do
-
       @dispatcher = RideShare::TripDispatcher.new
-      @trip_data = {
-        id: 8,
-        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678", status: :AVAILABLE),
-        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil
-      }
-      @trip = RideShare::Trip.new(@trip_data)
+      @first_passenger_request = @dispatcher.request_trip(1)
+      @second_passenger_request = @dispatcher.request_trip(2)
+      @last_passenger_request = @dispatcher.request_trip(300)
     end
 
     it "Create a new instance of Trip" do
-      @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+      @first_passenger_request.must_be_instance_of RideShare::Trip
+      @first_passenger_request.must_be_instance_of RideShare::Trip
     end
 
     it "Find the person requesting a trip" do
-      @dispatcher.request_trip(1).passenger.must_equal @dispatcher.find_passenger(1)
+      @first_passenger_request.passenger.must_equal @dispatcher.find_passenger(1)
+      @first_passenger_request.passenger.name.must_equal "Nina Hintz Sr."
+      @last_passenger_request.passenger.must_equal @dispatcher.find_passenger(300)
+      @last_passenger_request.passenger.name.must_equal "Miss Isom Gleason"
+    end
+
+    it "Raise ArgumentError if passenger id doesn't exist" do
+      proc{ @dispatcher.request_trip(400) }.must_raise ArgumentError
     end
 
     it "Automatically assign a driver to the trip" do
-      @dispatcher.request_trip(1).driver.must_be_instance_of RideShare::Driver
+      @first_passenger_request.driver.must_be_instance_of RideShare::Driver
+      @last_passenger_request.driver.must_be_instance_of RideShare::Driver
     end
 
-    it "Automatically assign a driver to the trip" do
-      @dispatcher.request_trip(1).driver.must_be_instance_of RideShare::Driver
-      @dispatcher.request_trip(1).driver.status.must_equal :AVAILABLE
+    it "Choose a driver whose status is :AVAILABLE" do
+      @first_passenger_request.driver.id.must_equal 2
+      @second_passenger_request.driver.id.must_equal 3
+      @last_passenger_request.driver.id.must_equal 6
     end
 
     it "Choose the first driver whose status is :AVAILABLE" do
-      @dispatcher.request_trip(1).driver.name.must_equal "Emory Rosenbaum"
+      @first_passenger_request.driver.name.must_equal "Emory Rosenbaum"
+      @second_passenger_request.driver.name.must_equal "Daryl Nitzsche"
+      @last_passenger_request.driver.name.must_equal "Mr. Hyman Wolf"
+    end
+
+    it "Returns nil if there are no drivers AVAILABLE" do
+      50.times {@first_passenger_request}
+      @first_passenger_request.driver.must_equal 0
+      @first_passenger_request.driver.must_equal nil
     end
 
     it "Use the current time for the start time" do
-      @dispatcher.request_trip(1).start_time.must_be_instance_of Time
-      (@dispatcher.request_trip(1).start_time.to_i - Time.now.to_i).must_equal 0
+      @first_passenger_request.start_time.must_be_instance_of Time
+      (@first_passenger_request.start_time.to_i - Time.now.to_i).must_equal 0
+      @last_passenger_request.start_time.must_be_instance_of Time
+      (@last_passenger_request.start_time.to_i - Time.now.to_i).must_equal 0
     end
 
     it "End date, cost and rating will all be nil
     " do
-    @dispatcher.request_trip(1).end_time.must_equal nil
-    @dispatcher.request_trip(1).cost.must_equal nil
-    @dispatcher.request_trip(1).rating.must_equal nil
+    @first_passenger_request.end_time.must_equal nil
+    @first_passenger_request.cost.must_equal nil
+    @first_passenger_request.rating.must_equal nil
+    @last_passenger_request.end_time.must_equal nil
+    @last_passenger_request.cost.must_equal nil
+    @last_passenger_request.rating.must_equal nil
   end
 
 end
