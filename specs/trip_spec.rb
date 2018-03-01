@@ -50,7 +50,6 @@ describe "Trip class" do
       }.must_raise ArgumentError
     end
 
-
   end
 
   describe "duration" do

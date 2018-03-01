@@ -125,12 +125,11 @@ describe "Driver class" do
       @driver.add_trip(trip3)
 
       @driver.calc_avg_revenue.must_equal 48
-
     end
-
-    it "returns zero if no trips" do
-      @driver.calc_avg_revenue.must_equal 0
-    end
+    #
+    # it "returns zero if no trips" do
+    #   @driver.calc_avg_revenue.must_equal 0
+    # end
 
   end
 

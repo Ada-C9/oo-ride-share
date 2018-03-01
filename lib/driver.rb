@@ -54,7 +54,13 @@ module RideShare
     end
 
     def calc_avg_revenue
-      avg_revenue = 0
+      total_duration = 0
+      @trips.each do |trip|
+        total_duration += trip.duration
+      end
+
+      avg_revenue = (((calc_revenue)*3600)/total_duration)
+
       return avg_revenue
     end
 
