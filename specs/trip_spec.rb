@@ -5,8 +5,6 @@ describe "Trip class" do
 
   describe "initialize" do
     before do
-      # start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      # end_time = start_time + 25 * 60 # 25 minutes
       start_time = '2015-05-20T12:14:00+00:00'
       end_time = '2015-05-20 12:39:00'
       @trip_data = {
@@ -43,9 +41,32 @@ describe "Trip class" do
 
     ## New Test
     it "raises an error for end_time that precedes start_time" do
-      current_time = Time.now
-      @trip_data[:start_time] = current_time.to_s
+      control_test_time = Time.now
+      @trip_data[:start_time] = control_test_time.to_s
       @trip_data[:end_time] = '2015-05-20 12:39:00'
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+    end
+    ##
+
+    ## New Test
+    it "must raise error if start_time or end_time are in the future." do
+      control_test_time = Time.now
+      @trip_data[:start_time] = (control_test_time + 1).to_s
+      @trip_data[:end_time] = (control_test_time + 1).to_s
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
+      @trip_data[:start_time] = (control_test_time - 1000).to_s
+      @trip_data[:end_time] = (control_test_time + 1).to_s
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
+      @trip_data[:start_time] = (control_test_time + 1).to_s
+      @trip_data[:end_time] = (control_test_time - 1000).to_s
       proc {
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
@@ -57,21 +78,48 @@ describe "Trip class" do
       @trip.start_time.must_be_kind_of Time
       @trip.end_time.must_be_kind_of Time
     end
-    # it "must raise error if start_time or end_time are in the future." do
-    #   current_time = Time.now
-    #   @trip.start_time = current_time
-    #   @trip.end_time = current_time
-    #
-    #   if @start_time >= Time.now || @end_time >= Time.now
-    #     must_raise ArgumentError ("Trips must occur in the past.")
-    #   end
-    # end
-    # it "must raise error if end_time precedes start_time" do
-    #   current_time = Time.now
-    #   @trip.start_time = current_time
-    #   initialize
-    #   raise ArgumentError ("Startimes must precede endtimes")
-    # end
     ##
   end
+  ## New Tests
+  describe 'trip class' do
+    before do
+      start_time = '2015-05-20T12:14:00+00:00'
+      end_time = '2015-05-20 12:39:00'
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+    it "returns an float for trip duration in seconds" do
+      trip_duration_in_seconds = @trip.duration
+      trip_duration_in_seconds.must_be_kind_of Float
+    end
+
+    it "trip duration: raises an error for end_time that precedes start_time" do
+      control_test_time = Time.now
+      @trip.start_time = control_test_time
+      @trip.end_time = Time.parse("2015-05-20 12:39:00")
+      proc {
+        @trip.duration
+      }.must_raise ArgumentError
+    end
+    it "returns an float for trip duration in seconds, even if trip is only 0 seconds long" do
+      control_test_time = Time.now
+      @trip.start_time = Time.parse("2015-05-20 12:39:00")
+      @trip.end_time = control_test_time
+      @trip.duration.must_be_kind_of Float
+
+      @trip.start_time = control_test_time
+      @trip.end_time = control_test_time
+      @trip.duration.must_be_kind_of Float
+      @trip.duration.must_equal 0.0
+    end
+  end
+  ##
 end
