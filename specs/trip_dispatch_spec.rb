@@ -104,7 +104,7 @@ describe "TripDispatcher class" do
       proc {@dispatcher.request_trip(0)}.must_raise ArgumentError
       proc {@dispatcher.request_trip("yay")}.must_raise ArgumentError
       proc {@dispatcher.request_trip(-1)}.must_raise ArgumentError
-      proc {@dispatcher.request_trip(0)}.must_raise ArgumentError
+      proc {@dispatcher.request_trip(nil)}.must_raise ArgumentError
     end
 
     it "inputs nil for end_time, cost, and rating" do
