@@ -102,8 +102,10 @@ describe "TripDispatcher class" do
     end
 
     it "should add the trip to the Dispatchers collection of trips" do
+      before_length = @dispatcher.trips.length
       new_trip = @dispatcher.request_trip(@passenger.id)
       @dispatcher.trips.must_include new_trip
+      @dispatcher.trips.length.must_equal before_length + 1
     end
 
     it "should automatically assign a driver to the trip" do
@@ -141,9 +143,13 @@ describe "TripDispatcher class" do
     end
 
     it "should add the trip to the passenger's list of trips" do
-      new_trip = @dispatcher.request_trip(@passenger.id)
-      new_trip_passenger = new_trip.passenger
-      new_trip_passenger.trips.must_include new_trip
+      passenger_id = 2
+      passenger1 = @dispatcher.passengers.find {|passenger| passenger.id == passenger_id}
+      before_length = passenger1.trips.length
+      new_trip = @dispatcher.request_trip(passenger_id)
+      
+      passenger1.trips.must_include new_trip
+      passenger1.trips.length.must_equal before_length + 1
     end
 
     it "should not yet affect the passenger's total cost calculation when starting a new trip" do
