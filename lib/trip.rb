@@ -14,8 +14,10 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
+      unless @rating == nil
+        if @rating > 5 || @rating < 1
+          raise ArgumentError.new("Invalid rating #{@rating}")
+        end
       end
 
       unless @end_time == nil || @start_time == nil
@@ -26,10 +28,10 @@ module RideShare
     end#end initialize method
 
     def calculate_duration()
-      unless @end_time == nil || @start_time == nil
+      # unless @end_time == nil || @start_time == nil
         difference = @end_time - @start_time
         return difference.to_i
-      end
+      # end
     end#end calculate_duration method
   end#end class Trip
 end#end module RideShare

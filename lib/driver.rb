@@ -66,5 +66,9 @@ module RideShare
       avg_rev = calculate_total_rev / total_time_in_hr
       return avg_rev
     end
+
+    def change_driver_status(driver)
+
+    end
   end
 end
