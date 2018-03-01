@@ -88,6 +88,7 @@ describe "Driver class" do
       result = @driver.total_revenue
       expected_revenue = 13.36
       result.must_equal expected_revenue
+      result.must_be_kind_of Float
     end
 
     it 'return 0 if the driver didnt have any trips ' do
@@ -116,19 +117,24 @@ describe "Driver class" do
       @start_time_2 = Time.parse('2016-08-08T16:01:00+00:00')
       @end_time_2 = @start_time_2 + 20*60
 
-      @trips = [RideShare::Trip.new({rating: 3, cost: 10, start_time: @start_time_1, end_time: @end_time_1}),
-        RideShare::Trip.new({rating: 5, cost: 10, start_time: @start_time_2, end_time: @end_time_2})]
+      @trips = [RideShare::Trip.new({rating: 3, cost: 10, start_time: @start_time_1,
+        end_time: @end_time_1}),
+        RideShare::Trip.new({rating: 5, cost: 10, start_time: @start_time_2,
+          end_time: @end_time_2})]
     end
 
     it 'returns the average_revenue_per_hr' do
-      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: @trips)
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV",
+        vin: "1C9EVBRM0YBC564DZ", trips: @trips)
       result = @driver.average_revenue_per_hr
       expected_ave_revenue = 13.36
       result.must_equal expected_ave_revenue
+      result.must_be_kind_of Float
     end
 
     it 'returns 0 if the driver has no trips' do
-      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [])
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV",
+        vin: "1C9EVBRM0YBC564DZ", trips: [])
       result = @driver.average_revenue_per_hr
       expected_ave_revenue = 0
       result.must_equal expected_ave_revenue

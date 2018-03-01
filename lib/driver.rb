@@ -59,7 +59,7 @@ module RideShare
       end
       sub_total = costs_array.sum
       total_revenue = (sub_total) *(PERCENT_DRIVER)
-      return total_revenue
+      return total_revenue.round(2)
 
     end
 
@@ -72,9 +72,9 @@ module RideShare
         end
         hours = (seconds_array.sum)/(3600)
         average_revenue_per_hr = total_revenue/hours
-        return average_revenue_per_hr
+        return average_revenue_per_hr.round(2)
       end
     end
-    
+
   end
 end
