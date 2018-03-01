@@ -22,15 +22,18 @@ module RideShare
       end
 
       if @end_time != nil
-        if @start_time > @end_time
-          raise ArgumentError.new("End time cannot be before the start time.")
-        end
+        raise ArgumentError.new("End time cannot be before the start time.") if @start_time > @end_time
       end
     end
 
     def duration_method
-      duration_of_ride = (@end_time.to_f - @start_time.to_f)
-      return duration_of_ride
+
+      if @end_time == nil
+        return nil
+      end
+
+      return (@end_time.to_f - @start_time.to_f)
+
     end
 
   end
