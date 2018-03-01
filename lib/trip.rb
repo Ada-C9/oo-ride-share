@@ -1,6 +1,5 @@
 require 'csv'
 require 'time'
-require 'pry'
 
 module RideShare
 
@@ -30,6 +29,7 @@ module RideShare
     return input_trips
   end
 
+
   class Trip
     attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
 
@@ -38,7 +38,7 @@ module RideShare
       @driver = input[:driver]
       @passenger = input[:passenger]
       @start_time = valid_time_or_error(input[:start_time])
-      @end_time = input[:end_time]#valid_time_or_error(input[:end_time])
+      @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = valid_rating_or_error(input[:rating])
       valid_trip_duration_or_error
@@ -54,9 +54,6 @@ module RideShare
 
     private
 
-    # def is_trip_in_progress?
-    #   return @end_time.nil?
-    # end
 
     def valid_rating_or_error(rating)
       if !is_in_progress? && (rating > 5 || rating < 1)
@@ -78,6 +75,23 @@ module RideShare
       return time
     end
 
+    def valid_driver_or_error(driver)
+      if driver.class != Driver
+        raise ArgumentError.new("Driver #{driver} must be a driver.")
+      end
+      assign_to_driver_or_error(driver)
+    end
+
+    def assign_to_driver_or_error(driver) # Test for this!
+      if is_in_progress? && @driver.trips.last != self
+
+        @driver.is_available? ? @driver.add_trip(self) : driver_unavailable_error
+      end
+    end
+
+    # def driver_unavailable_error
+    #   raise Argument
+    # end
 
   end
 end

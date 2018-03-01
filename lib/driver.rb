@@ -17,23 +17,23 @@ module RideShare
       @trips = input[:trips] == nil ? [] : RideShare.valid_trips_or_errors(input[:trips])
     end
 
-    def get_average_rating
-      return 0 if trips.length == 0
-      total_ratings = @trips.inject(0) { |total, trip| total + trip.rating }
-      return (total_ratings.to_f) / trips.length
+    def get_average_rating # TODO: TEST!! # test if only trip is incomplete
+      num_of_trips = get_num_of_completed_trips
+      return num_of_trips == 0 ? 0 : (get_ratings.to_f / num_of_trips)
     end
 
     def add_trip(trip)
+      # return if @trips.last == trip
       RideShare.return_valid_trip_or_error(trip)
-      check_and_update_status if trip.is_in_progress?
+      check_and_update_status(trip) if trip.is_in_progress?
       @trips << trip
     end
 
-    def get_total_revenue
-      return @trips.inject(0.0) { |total, trip| total + (trip.cost - 1.56) * 0.80 }
+    def get_total_revenue # TODO: TEST!!
+      return calculate_total_revenue #@trips.inject(0.0) { |total, trip| total + (trip.cost - 1.56) * 0.80 }
     end
 
-    def get_avg_revenue_per_hour
+    def get_avg_revenue_per_hour # TODO: TEST!! # test if only trip is incomplete
       return (get_total_revenue / get_all_trip_durations).round(2)
     end
 
@@ -57,7 +57,19 @@ module RideShare
     end
 
     def get_all_trip_durations
-      return @trips.inject(0) { |sum, trip| sum + trip.get_duration }.to_f / 120
+      return @trips.inject(0) do |sum, trip|
+        sum + trip.get_duration if !trip.is_in_progress?
+      end.to_f / 120
+    end
+
+    def get_ratings
+      return @trips.inject(0) do |sum, trip|
+        sum + trip.rating if !trip.is_in_progress?
+      end
+    end
+
+    def get_num_of_completed_trips
+      return @trips.count { |trip| !trip.is_in_progress? }
     end
 
   end
