@@ -45,11 +45,17 @@ module RideShare
       @trips << trip
     end
 
+    def completed_trips
+      completed_trips = []
+      @trips.each do |trip|
+        if trip.end_time != nil
+          completed_trips << trip
+        end
+      end
+      return completed_trips
+    end
+
     def total_revenue
-
-      #allows only completed trips to be counted:
-      completed_trips = @trips.map{ |trip| trip if trip != nil }
-
        total_rev = completed_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
        return total_rev
     end

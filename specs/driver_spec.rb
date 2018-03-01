@@ -116,7 +116,10 @@ describe "Driver class" do
         trip2 = RideShare::Trip.new({id: 10, driver: @driver, passenger: pass1, start_time: Time.parse("2016-04-05T14:09:00+00:00"),
           end_time: nil, cost: nil, rating: nil})
 
+        @driver.add_trip(trip2)
         @driver.total_revenue.must_equal 8.28
+        @driver.total_revenue.wont_be :>, 8.28
+
       end
 
     end
