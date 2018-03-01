@@ -94,6 +94,34 @@ module RideShare
       trips
     end
 
+    def request_trip(passenger_id)
+      driver_today = nil
+      @drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          driver_today = driver
+          break
+        end
+      end
+
+      passenger = find_passenger(passenger_id)
+
+      trip_details = {
+        driver: driver_today,
+        passenger: passenger_id,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+        }
+
+        trip = Trip.new(trip_details)
+        driver_today.add_current_trip(trip)
+        passenger.add_current_trip(trip)
+        @trips << trip
+
+        return trip
+    end
+
     private
 
     def check_id(id)

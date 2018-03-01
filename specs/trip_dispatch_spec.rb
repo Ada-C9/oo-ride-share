@@ -19,6 +19,27 @@ describe "TripDispatcher class" do
     end
   end
 
+  describe "request_trip" do
+    it "creates a new trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      trips_before = dispatcher.trips.count
+      trip = dispatcher.request_trip(1)
+
+      trip.driver.must_be_kind_of RideShare::Driver
+      trip.driver.id.must_equal 2
+      trip.driver.status.must_equal :UNAVAILABLE
+    end
+    
+    it "adds current trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      trips_before = dispatcher.trips.count
+
+      trip = dispatcher.request_trip(1)
+
+      dispatcher.trips.count.must_equal trips_before + 1
+    end
+  end
+
   describe "find_driver method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new

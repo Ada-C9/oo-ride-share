@@ -48,6 +48,7 @@ module RideShare
         end
       end
       total = (subtotal * take_home).round(2)
+      return total
     end
 
     def average_hourly_revenue
@@ -57,9 +58,10 @@ module RideShare
         if trip.end_time != nil
         trip_in_hours = trip.trip_duration / 3600
         total_hours += trip_in_hours
-        end 
+        end
       end
       average_hourly_revenue = self.total_revenue / total_hours
+      return average_hourly_revenue
       # return average_hourly_revenue
     end
 
@@ -67,8 +69,13 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
     end
+
+    def add_current_trip(trip)
+      @status = :UNAVAILABLE
+      @trips << trip
+    end
+
   end
 end

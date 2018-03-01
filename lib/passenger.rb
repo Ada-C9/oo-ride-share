@@ -32,7 +32,7 @@ module RideShare
       @trips.each do |trip|
         if trip.end_time != nil
         time_spent += trip.trip_duration
-        end 
+        end
       end
       return time_spent
     end
@@ -43,6 +43,10 @@ module RideShare
 
     def add_trip(trip)
       @trips << trip
+    end
+
+    def add_current_trip(trip)
+      @trips << trip 
     end
   end
 end
