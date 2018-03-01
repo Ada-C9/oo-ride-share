@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -92,23 +93,41 @@ module RideShare
 
     def request_trip(passenger_id)
       check_id(passenger_id)
-      selected_driver = @drivers.find { |driver| driver.status == :AVAILABLE }
+      passenger = find_passenger(passenger_id)
+      selected_driver = assign_driver
       if selected_driver == nil
         return nil
       end
 
-      trip_info = { id: (@trips.length + 1), driver: selected_driver, passenger: find_passenger(passenger_id), start_time: Time.now, end_time: nil, cost: nil, rating: nil }
+      trip_info = { id: (@trips.length + 1), driver: selected_driver, passenger: passenger, start_time: Time.now, end_time: nil, cost: nil, rating: nil }
       trip = RideShare::Trip.new(trip_info)
 
-
       driver_id = selected_driver.id
-      @drivers[driver_id - 1].add_trip(trip)
-      @drivers[driver_id - 1].set_status(:UNAVAILABLE)
-
-      @passengers[passenger_id - 1].add_trip(trip)
-
+      selected_driver.add_trip(trip)
+      selected_driver.set_status(:UNAVAILABLE)
+      passenger.add_trip(trip)
       @trips << trip
       return trip
+    end
+
+    def assign_driver
+      available_drivers = @drivers.find_all { |driver| driver.status == :AVAILABLE }
+
+      driver_end_times = []
+
+      available_drivers.each do |driver|
+        last_trip = driver.trips.max_by { |trip| trip.end_time }
+        if last_trip != nil
+          driver_end_times << { driver_id: driver.id, last_trip_time: last_trip.end_time }
+        end
+      end
+
+      if driver_end_times.length == 0
+        return nil
+      else
+        driver_end_time = driver_end_times.min_by { |entry| entry[:last_trip_time] }
+        return find_driver(driver_end_time[:driver_id])
+      end
     end
 
     private

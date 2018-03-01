@@ -93,10 +93,17 @@ describe "TripDispatcher class" do
 
   describe "request_trip" do
 
-    # Selected driver: 2,Emory Rosenbaum,1B9WEX2R92R12900E,AVAILABLE
+    # Selected driver: 14,Antwan Prosacco,KPLUTG0L6NW1A0ZRF,AVAILABLE
     # Passenger: 1,Nina Hintz Sr.,560.815.3059
+
+    # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+    # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
+    # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
+    # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+    # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
     before do
-      @selected_driver = RideShare::Driver.new(id: 2, name: "Emory Rosenbaum", vin: "1B9WEX2R92R12900E", status: :AVAILABLE, trips: [])
+      # @selected_driver = RideShare::Driver.new(id: 2, name: "Emory Rosenbaum", vin: "1B9WEX2R92R12900E", status: :AVAILABLE, trips: [])
+      @selected_driver = RideShare::Driver.new(id: 14, name: "Antwan Prosacco", vin: "KPLUTG0L6NW1A0ZRF")
       @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
       @trip_dispatcher = RideShare::TripDispatcher.new
     end
@@ -110,7 +117,7 @@ describe "TripDispatcher class" do
       trip = @trip_dispatcher.request_trip(1)
 
       trip.id.must_equal 601
-      trip.driver.id.must_equal 2
+      trip.driver.id.must_equal 14
       trip.passenger.id.must_equal 1
       trip.start_time.to_i.must_equal Time.now.to_i
       trip.end_time.must_be_nil
@@ -127,20 +134,20 @@ describe "TripDispatcher class" do
     end
 
     it "adds the new trip to the trips for that driver" do
-      orig_trip_length = @trip_dispatcher.drivers[2 - 1].trips.length
+      orig_trip_length = @trip_dispatcher.drivers[14 - 1].trips.length
 
       trip = @trip_dispatcher.request_trip(1)
 
-      @trip_dispatcher.drivers[2 - 1].trips.length.must_equal orig_trip_length + 1
-      @trip_dispatcher.drivers[2 - 1].trips.include?(trip).must_equal true
+      @trip_dispatcher.drivers[14 - 1].trips.length.must_equal orig_trip_length + 1
+      @trip_dispatcher.drivers[14 - 1].trips.include?(trip).must_equal true
     end
 
     it "sets the driver's status to :UNAVAILABLE" do
-      @trip_dispatcher.drivers[2 - 1].status.must_equal :AVAILABLE
+      @trip_dispatcher.drivers[14 - 1].status.must_equal :AVAILABLE
 
       @trip_dispatcher.request_trip(1)
 
-      @trip_dispatcher.drivers[2 - 1].status.must_equal :UNAVAILABLE
+      @trip_dispatcher.drivers[14 - 1].status.must_equal :UNAVAILABLE
     end
 
     it "adds the new trip to the trips for that passenger" do
