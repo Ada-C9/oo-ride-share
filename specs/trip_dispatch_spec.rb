@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -52,7 +53,6 @@ describe "TripDispatcher class" do
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
       dispatcher = RideShare::TripDispatcher.new
-
       first_driver = dispatcher.drivers.first
       last_driver = dispatcher.drivers.last
 
@@ -88,5 +88,20 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+  end
+
+  describe "request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "makes new trips and assigns a driver and passenger" do
+      new_ride = @dispatcher.request_trip(500)
+
+      new_ride.must_be_instance_of RideShare::Trip
+      new_ride.passenger.must_equal 500
+
+    end
+
   end
 end

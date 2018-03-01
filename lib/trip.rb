@@ -17,8 +17,10 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
+      unless @rating == nil
+        if @rating > 5 || @rating < 1
+          raise ArgumentError.new("Invalid rating #{@rating}")
+        end
       end
 
       convert_time
@@ -35,9 +37,11 @@ module RideShare
     end
 
     def check_time_validity
-      status = @start_time <=> @end_time
-      if status != -1
-        raise ArgumentError.new("Those are invalid times!")
+      unless @end_time == nil
+        status = @start_time <=> @end_time
+        if status > 0
+          raise ArgumentError.new("Those are invalid times!")
+        end
       end
     end
 

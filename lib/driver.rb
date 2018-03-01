@@ -4,14 +4,18 @@ require 'pry'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips, :total_rev, :driving_time
+    attr_reader :id, :name, :vehicle_id, :trips, :total_rev, :driving_time
+    attr_accessor :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
       end
-      if input[:vin] == nil || input[:vin].length != 17
+
+      unless input[:vin] == nil
+        if input[:vin].length != 17
         raise ArgumentError.new("VIN cannot be less than 17 characters.  (got #{input[:vin]})")
+        end
       end
 
       @id = input[:id]

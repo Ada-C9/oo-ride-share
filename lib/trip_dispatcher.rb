@@ -1,6 +1,7 @@
 require 'csv'
 require 'time'
 require 'pry'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -38,6 +39,13 @@ module RideShare
 
       return all_drivers
     end
+
+    def find_available
+      available = @drivers.find{ |i| i.status == :AVAILABLE}
+      available = available.name
+    end
+
+
 
     def find_driver(id)
       check_id(id)
@@ -88,10 +96,55 @@ module RideShare
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
+
+        @highest_id = 0
+        trips.each do |line|
+          if line.id > @highest_id
+            @highest_id = line.id
+          end
+        end
       end
 
       trips
     end
+
+    def request_trip(passenger)
+
+      driver = find_available
+      highest = @highest_id +1
+
+      trip_info = {
+        id: highest,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      another_trip = RideShare::Trip.new(trip_info)
+
+      # trips.each do |trip|
+      #   if trip.id == highest
+      #     trip.status = :UNAVAILABLE
+      #   end
+      # end
+      # binding.pry
+
+
+      # @drivers.each do |line|
+      #   if line.name == @driver
+      #     line.status == :UNAVAILABLE
+      #   end
+      # end
+
+      return another_trip
+
+
+    end
+
+
 
     # any method below private cannot be called to operate by other methods
     # this is because it's best practice to make things as private as possible by default
@@ -102,5 +155,17 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
+
   end
 end
+#
+# dispatcher = RideShare::TripDispatcher.new
+#
+# puts "********** Created dispatcher"
+# trip = dispatcher.request_trip(999)
+# puts "*********Requested Trip"
+# trip.driver.status = :UNAVAILABLE
+# puts dispatcher.find_driver(1).id
+#
+# new_pass = RideShare::Passenger.new(id: 999)
