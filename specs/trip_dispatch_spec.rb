@@ -97,6 +97,7 @@ describe "TripDispatcher class" do
 
     it "will create a new trip object" do
       @dispatcher.request_trip(2).must_be_instance_of RideShare::Trip
+
       @dispatcher.request_trip("r").must_be_nil
     end
 

@@ -25,10 +25,10 @@ module RideShare
     end # end of initialize
 
     def duration
-      if @end_time != nil
-        return duration = (@end_time - @start_time)
+      if @end_time == nil
+        raise ArgumentError.new("Ride is still in progress.")
       else
-        return nil
+        return duration = (@end_time - @start_time)
       end
     end
 
