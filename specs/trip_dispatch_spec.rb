@@ -99,12 +99,41 @@ describe "TripDispatcher class" do
 
       trip.start_time.must_be_kind_of Time
     end
+  end
 
-    it "012 ends trip if over 12 hours" do
+  describe 'Wave2 tests' do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    # # yet_trip =  dispatcher.request_trip(9)
+     #it "supplies an existing passenger id" do
+
+      # yet_trip = @dispatcher.request_trip(9)
+      # puts yet_trip
+      # puts passenger
+      #  yet_trip.passenger.id.must_equal 9
+     #end
+
+    # it "throws an error for a bad id" do
+    #   yet_trip = dispatcher.request_trip(0)
+    #    proc{ dispatcher.request_trip(0) }.must_raise ArgumentError
+    #
+    # end
+
+    it "creates an instance of a trip" do
+      dispatcher.request_trip(9).must_be_kind_of RideShare::Trip
     end
 
-    it "013 raises an error if no drivers are available" do
-    end 
+    # it " raises an error if no drivers are available" do
+    #   drivers = {
+    #     RideShare::Driver.new({id: 3, name: 'b', vehicle_id: 5555, status: :UNAVAILABLE, trips:[]}),
+    #     RideShare::Driver.new({id: 5, name: 'b', vehicle_id: 5555, status: :UNAVAILABLE, trips:[]})
+    # }
+    #   dispatcher = RideShare::TripDispatcher.new(drivers)
+    #   proc{ dispatcher.request_trip(1) }.must_raise ArgumentError
+    # end
+
+
 
   end
 end

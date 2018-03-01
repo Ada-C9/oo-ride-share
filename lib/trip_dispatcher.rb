@@ -102,8 +102,11 @@ module RideShare
 
 
     def request_trip(passenger_id)
+      check_id(passenger_id)
+      passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
 
       #Your code should automatically assign a driver to the trip
+      check_status(driver)
       driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
       passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
       puts passenger
@@ -153,6 +156,11 @@ module RideShare
       end
     end
 
+    def check_status
+      if @drivers.all?{ |driver| driver.status == :UNAVAILABLE}
+        raise ArgumentError.new("No available drivers")
+      end
+    end
 
   end
 end
