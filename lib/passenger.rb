@@ -24,15 +24,25 @@ module RideShare
     def total_spent
       total = 0
       @trips.each do |trip|
-        return trip.end_time == nil ?  nil :  (total +=  trip.cost)
+        if trip.end_time == nil
+          total += 0
+        else
+          total += trip.cost
+        end
       end
+      return total
     end
 
     def total_time_spent
       total_time = 0
       @trips.each do |trip|
-        return trip.end_time == nil ?  nil :  (total_time +=  trip.duration_method)
+        if trip.end_time == nil
+          total_time += 0
+        else
+          total_time += trip.duration_method
+        end
       end
+      return total_time
     end
   end
 end

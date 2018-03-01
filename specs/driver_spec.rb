@@ -98,6 +98,19 @@ describe "Driver class" do
 
       @driver.total_rev.must_equal cost
     end
+
+    it 'Ignores the trips that are still in progress' do
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = nil
+
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10})
+
+      @driver.add_trip(trip)
+
+      @driver.total_rev.must_equal 0
+    end
   end
 
   describe '#average_revenue' do

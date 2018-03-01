@@ -47,13 +47,23 @@ module RideShare
 
     def total_rev
       total_rev = 0
-      @trips.each {|trip| total_rev +=  (trip.cost - 1.65) * 0.8}
+      # @trips.each {|trip| total_rev +=  (trip.cost - 1.65) * 0.8}
+      # return total_rev
+
+      @trips.each do |trip|
+        if trip.end_time == nil
+          total_rev += 0
+        else
+          total_rev += ((trip.cost - 1.65) * 0.8)
+        end
+      end
       return total_rev
+
     end
 
     def average_revenue
       total_hours = 0
-      # fix other ones = its stopping the method if only one is nil
+
       @trips.each do |trip|
         if trip.end_time == nil
           total_hours += 0

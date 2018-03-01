@@ -111,7 +111,7 @@ describe "Passenger class" do
 
       passenger.add_trip(trip)
 
-      passenger.total_spent.must_equal nil
+      passenger.total_spent.must_equal 0
     end
   end
 
@@ -135,21 +135,22 @@ describe "Passenger class" do
       passenger.total_time_spent.must_equal duration_of_ride
 
     end
-  end
 
-  it 'Ignores the trips that are still in progress' do
-    start_time = Time.parse("2016-08-08T16:01:00+00:00")
-    end_time = nil
 
-    driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    it 'Ignores the trips that are still in progress' do
+      start_time = Time.parse("2016-08-08T16:01:00+00:00")
+      end_time = nil
 
-    trip = RideShare::Trip.new({id: 8, driver: driver, date: "2016-08-08", cost: 17.39, rating: 5, start_time: start_time, end_time: end_time })
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
-    passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      trip = RideShare::Trip.new({id: 8, driver: driver, date: "2016-08-08", cost: 17.39, rating: 5, start_time: start_time, end_time: end_time })
 
-    passenger.add_trip(trip)
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
 
-    passenger.total_time_spent.must_equal nil
+      passenger.add_trip(trip)
+
+      passenger.total_time_spent.must_equal 0
+    end
   end
 
 end
