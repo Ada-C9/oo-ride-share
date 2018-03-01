@@ -88,5 +88,33 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
   end # end of describe "loader methods"
+
+describe "find_available_driver method" do
+  it "finds the first driver who has an available status" do
+
+    dispatcher = RideShare::TripDispatcher.new
+    dispatcher.find_available_driver.must_equal 2
+  end
+end # end of find_available_driver
+
+describe "request_trip(passenger_id) method" do
+
+  it "throws an ArgumentError if passenger_id is invalid" do
+    proc {
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.request_trip(543)}.must_raise ArgumentError
+
+    end # end of throws an ArgumentError if passenger_id is invalid
+
+    it "finds the next appropriate trip id" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.find_next_trip_id.must_equal 601
+    end
+    #
+    # it "creates a new instance of Trip" do
+    # end
+
+  end # end of describe request_trip(passenger_id) method
 end # end of describe "TripDispatcher class"

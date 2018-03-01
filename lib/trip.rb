@@ -20,6 +20,6 @@ module RideShare
       if @end_time.to_f < @start_time.to_f
         raise ArgumentError.new("The end of the ride cannot be before the beginning of the ride. Start time given as #{start_time} and end time given as #{end_time}.")
       end
-    end
-  end
-end
+    end # end of initialize
+  end # end of Trip
+end # end of RideShare
