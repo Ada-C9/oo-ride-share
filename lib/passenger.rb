@@ -1,3 +1,5 @@
+
+require 'awesome_print'
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -20,5 +22,25 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_amount_of_money
+      total = 0.0
+      @trips.each do |trip|
+        total += trip.cost
+      end
+      return total
+
+    end
+
+    def total_amount_of_time
+      total_time = 0
+      @trips.each do |trip|
+        total_time += (trip.end_time - trip.start_time)
+
+      end
+      return total_time
+
+    end
+
   end
 end
