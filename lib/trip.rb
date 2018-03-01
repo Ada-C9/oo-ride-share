@@ -23,7 +23,8 @@ module RideShare
     end
 
     def trip_duration
-      duration = @end_time - @start_time
+       @end_time - @start_time
     end
+    
   end
 end

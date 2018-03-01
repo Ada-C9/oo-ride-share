@@ -28,7 +28,7 @@ module RideShare
       @trips << trip
     end
 
-    def passenger_spents?
+    def passenger_spents
       spents_array = @trips.collect {|trip| trip.cost}
       amount_spent = spents_array.sum
       return amount_spent

@@ -75,5 +75,6 @@ module RideShare
         return average_revenue_per_hr
       end
     end
+    
   end
 end
