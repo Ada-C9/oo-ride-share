@@ -20,14 +20,14 @@ module RideShare
     def add_trip(trip)
       @trips << trip
 
+    end
+
     def total_amount_of_money
       @trips.inject(0) { |total, trip| total + trip.cost }
     end
 
     def total_amount_of_time
       @trips.inject(0) { |total, trip| total + trip.duration }
-    end
-
     end
   end
 end

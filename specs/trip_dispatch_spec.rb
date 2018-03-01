@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-xdescribe "TripDispatcher class" do
+describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -19,7 +19,7 @@ xdescribe "TripDispatcher class" do
     end
   end
 
-  describe "find_driver method" do
+  xdescribe "find_driver method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
@@ -34,7 +34,7 @@ xdescribe "TripDispatcher class" do
     end
   end
 
-  describe "find_passenger method" do
+  xdescribe "find_passenger method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
@@ -49,7 +49,7 @@ xdescribe "TripDispatcher class" do
     end
   end
 
-  describe "loader methods" do
+  xdescribe "loader methods" do
     it "accurately loads driver information into drivers array" do
       dispatcher = RideShare::TripDispatcher.new
 
@@ -97,5 +97,20 @@ xdescribe "TripDispatcher class" do
       trip = dispatcher.trips.first
       trip.end_time.must_be_instance_of Time
     end
+
+    describe "request trip method" do
+      before do
+        @dispatcher = RideShare::TripDispatcher.new
+      end
+      it " creates a new trip" do
+        @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+      end # it
+
+    end # end of request trip method
+
+
+
+
+
   end
 end

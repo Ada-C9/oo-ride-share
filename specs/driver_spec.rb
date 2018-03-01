@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Driver class" do
+xdescribe "Driver class" do
   before do
     # 1,Bernardo Prosacco,WBWSS52P9NEYLVDE9,UNAVAILABLE
     # 1,1,54,2016-04-05T14:01:00+00:00,2016-04-05T14:09:00+00:00,17.39,3

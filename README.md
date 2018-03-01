@@ -160,7 +160,15 @@ Now that we have data for cost available for every trip, we can do some interest
 
 **All of these methods must have tests.**
 
-<!-- ### Wave 2
+describe "average_revenue per hour" do
+  it "calculates the driver average revenue" do
+    @driver.add_trip(@trip_1)
+    @driver.add_trip(@trip_2)
+    @driver.average_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8 / 2.round(2)
+  end
+end
+
+- ### Wave 2
 
 Our program needs a way to make new trips and appropriately assign a driver and passenger.
 

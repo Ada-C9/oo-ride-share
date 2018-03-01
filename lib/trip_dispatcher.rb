@@ -93,6 +93,22 @@ module RideShare
       trips
     end
 
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+      driver = @drivers.find { |d| d.status == :AVAILABLE }
+      new_trip = {
+        id: @trips.length + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      requested_trip = RideShare::Trip.new(new_trip)
+      return requested_trip
+    end
+
     private
 
     def check_id(id)
