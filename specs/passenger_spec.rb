@@ -78,14 +78,16 @@ describe "Passenger class" do
 
 
   describe "#total_money" do
-
+    before do
+      @start_time = Time.parse("2016-08-21T08:51:00+00:00")
+    end
     it "returns total spent in float" do
       pass = RideShare::Passenger.new({
         id: 89,
         trips: [
-          RideShare::Trip.new({rating:3,cost:27}),
-          RideShare::Trip.new({rating:3,cost:14.87}),
-          RideShare::Trip.new({rating:3,cost:4.95}),
+          RideShare::Trip.new({rating:3, cost:27, start_time: @start_time, end_time: @start_time + 25 * 60}),
+          RideShare::Trip.new({rating:3,cost:14.87, start_time: @start_time, end_time: @start_time + 25 * 60}),
+          RideShare::Trip.new({rating:3,cost:4.95, start_time: @start_time, end_time: @start_time + 25 * 60})
         ]
         })
       expected_total = 46.82

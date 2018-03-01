@@ -21,13 +21,17 @@ module RideShare
       @trips << trip
     end # add_trip
 
+    def completed_trips
+      @trips.find_all {|trip| trip.end_time != nil}
+    end
+
     def total_money
-      total = @trips.map {|trip| trip.cost}.sum
+      total = completed_trips.map {|trip| trip.cost}.sum
       return total
     end # total_spent
 
     def total_time
-      total = @trips.map {|trip| trip.duration}.sum
+      total = completed_trips.map {|trip| trip.duration}.sum
       return total
     end # total_time
 

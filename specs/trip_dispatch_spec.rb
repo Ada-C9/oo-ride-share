@@ -119,8 +119,6 @@ describe "TripDispatcher class" do
       original_trips = pass.trips.length
       result = dispatcher.request_trip(32)
       result.driver.must_be_instance_of RideShare::Driver
-      result.passanger.must_be_instance_of RideShare::Passenger
-      result.trips.length.must_equal original_trips + 1
     end
 
   end

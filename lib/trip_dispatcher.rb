@@ -90,6 +90,19 @@ module RideShare
       return trips
     end
 
+    def request_trip(pass_id)
+      pass = self.find_passenger(pass_id)
+      driver = self.drivers.detect do |driver|
+        driver.status == :AVAILABLE
+      end
+      data = {
+        passenger: pass,
+        driver: driver,
+        start_time: Time.now
+      }
+      new_trip = Trip.new(data)
+    end
+
     private
 
     def check_id(id)
@@ -97,5 +110,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end
