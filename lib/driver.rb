@@ -61,12 +61,11 @@ module RideShare
       @trips.each do |trip|
         tot_time += trip.duration
       end
+      return tot_time
     end
 
     def avg_total_rev # per hour
-      avg_total_rev = 0
-      # get total amount of time driven by driver
-      # divide total trip rev by tot_time_spent in hours
+      get_total_rev/(tot_drive_time/3600)
     end
 
   end
