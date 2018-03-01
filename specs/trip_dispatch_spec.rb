@@ -88,5 +88,5 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+  end # end of describe "loader methods"
+end # end of describe "TripDispatcher class"

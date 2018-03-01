@@ -110,7 +110,7 @@ describe "Passenger class" do
     end
   end # end of describe calculate_all_trips_cost
 
-  describe "calculate_total_trips_time" do
+  describe "calculate_total_trips_time_in_sec" do
     it "returns a sum of all times" do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
 
@@ -126,7 +126,7 @@ describe "Passenger class" do
 
       @passenger.add_trip(trip1)
 
-      @passenger.calculate_total_trips_time.must_equal 2700.0
+      @passenger.calculate_total_trips_time_in_sec.must_equal 2700.0
     end
 
     it "returns 0 when no trips" do
@@ -135,4 +135,6 @@ describe "Passenger class" do
     end
 
   end # end of describe "calculate_total_trips_time"
+
+  
 end # end of describe Passenger

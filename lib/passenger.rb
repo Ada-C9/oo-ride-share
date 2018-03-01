@@ -26,18 +26,18 @@ module RideShare
       @trips.each do |trip|
         total_cost += trip.cost
       end
-      return total_cost
+      return total_cost.to_f.round(2)
     end
 
-    def calculate_total_trips_time
+    def calculate_total_trips_time_in_sec
       trip_time_lengths = []
       @trips.each do |trip|
         trip_duration = trip.end_time.to_f - trip.start_time.to_f
         trip_time_lengths << trip_duration
       end
-      total_time = 0
-      total_time = trip_time_lengths.inject(:+)
-      return total_time
+      total_time_in_sec = 0
+      total_time_in_sec = trip_time_lengths.inject(:+)
+      return total_time_in_sec
     end
   end # end of Passenger
 end # end of RideShare

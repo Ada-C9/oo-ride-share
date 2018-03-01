@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require "pry"
 
 module RideShare
   class Driver
@@ -43,5 +44,44 @@ module RideShare
 
       @trips << trip
     end
-  end
-end
+
+    def calculate_total_revenue
+      total_revenue = 0
+      fee = 1.65
+      driver_take_home = 0.8
+      @trips.each do |trip|
+        subtotal = trip.cost - fee
+        subtotal *= driver_take_home
+        total_revenue += subtotal
+      end
+      return total_revenue.to_f.round(2)
+    end
+
+    def calculate_total_trips_time_in_hours
+        return 0 if trips.length == 0
+
+        trip_time_lengths = []
+        @trips.each do |trip|
+          trip_duration = trip.end_time.to_f - trip.start_time.to_f
+          trip_time_lengths << trip_duration
+        end
+        total_time_in_sec = 0
+        total_time_in_sec = trip_time_lengths.inject(:+)
+        total_time_in_hours = total_time_in_sec / (60 * 60)
+
+        return total_time_in_hours
+    end
+
+    def calculate_avg_revenue_per_hour
+
+      return 0 if self.calculate_total_revenue == 0
+
+      return 0 if self.calculate_total_trips_time_in_hours == 0
+
+      hourly_rate = self.calculate_total_revenue / self.calculate_total_trips_time_in_hours
+      hourly_rate = hourly_rate.round(2)
+      return hourly_rate
+    end
+
+  end # end of Driver
+end # end of RideShare
