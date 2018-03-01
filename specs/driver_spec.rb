@@ -41,7 +41,11 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +62,12 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -77,4 +86,77 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue method" do
+    it "returns drivers total revenue" do
+      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+
+      first_trip_data = {
+        id: 8,
+        driver: driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time: end_time,
+        cost: 100,
+        rating: 3
+      }
+      second_trip_data = {
+        id: 9,
+        driver: driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time: end_time,
+        cost: 100,
+        rating: 5
+      }
+
+      driver.add_trip(RideShare::Trip.new(first_trip_data))
+      driver.add_trip(RideShare::Trip.new(second_trip_data))
+
+      driver.total_revenue.must_equal 157.36
+    end
+  end
+
+  describe "average revenue per hour method" do
+    it "calculates driver's average revenue per hour spent driving" do
+      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 60 * 60 # 1 hour
+
+      first_trip_data = {
+        id: 8,
+        driver: driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time: end_time,
+        cost: 50,
+        rating: 3
+      }
+      second_trip_data = {
+        id: 9,
+        driver: driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time: end_time,
+        cost: 100,
+        rating: 5
+      }
+
+      driver.add_trip(RideShare::Trip.new(first_trip_data))
+      driver.add_trip(RideShare::Trip.new(second_trip_data))
+
+      driver.total_revenue_per_hour.must_equal 58.68
+
+
+    end
+  end
+
 end

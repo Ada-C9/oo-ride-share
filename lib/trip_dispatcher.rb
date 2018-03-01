@@ -1,5 +1,7 @@
 require 'csv'
 require 'time'
+require 'pry'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,8 +77,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -90,6 +92,29 @@ module RideShare
       trips
     end
 
+    def request_trip(passenger_id)
+
+      drivers_available = @drivers.reject { |driver| driver.status == :UNAVAILABLE }
+
+      trip_data = {
+        id: @trips.length + 1,
+        driver: drivers_available[0],
+        passenger: passenger_id,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+
+      new_trip = Trip.new(trip_data)
+      drivers_available[0].change_to_unavailable
+      drivers_available[0].add_trip(new_trip)
+      find_passenger(passenger_id).add_trip(new_trip)
+      trips << new_trip
+      return new_trip
+    end
+
+
     private
 
     def check_id(id)
@@ -97,5 +122,59 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end
+#
+### TESTING FOR REQUESTING TRIP ####
+dispatcher = RideShare::TripDispatcher.new
+
+passenger = dispatcher.find_passenger(3)
+actual_driver = dispatcher.find_driver(2)
+puts "original passenger trips #{passenger.trips.length}"
+puts "original driver trips : #{actual_driver.trips.length}"
+
+puts dispatcher.trips.length
+new_trip = dispatcher.request_trip(3)
+puts new_trip
+puts new_trip.class
+puts new_trip.id
+driver = new_trip.driver
+puts "Driver ID : #{driver.id}"
+puts "Driver Status: #{driver.status}"
+# passenger = new_trip.passenger
+# passenger = dispatcher.find_passenger(2)
+
+puts "Final passenger trips: #{passenger.trips.length}"
+puts "Final driver trips : #{actual_driver.trips.length}"
+
+##############################################################
+
+# puts "Passenger ID: #{passenger.id}"
+# puts dispatcher.trips.length
+# puts new_trip.driver.id
+# puts new_trip.passenger.id
+# puts new_trip.
+# driver = dispatcher.drivers[8]
+# #
+# puts driver.total_revenue
+#
+# driver.trips.each do |trip|
+#   times = trip.duration
+#   puts times
+# end
+# #
+# #
+# puts "Total revenue_per_hour: #{driver.total_revenue_per_hour}"
+# puts passenger.name
+# puts passenger.calculate_total_trips_duration
+
+# puts passenger.calculate_total_money_spent
+# # binding.pry
+# dispatcher = RideShare::TripDispatcher.new
+# puts dispatcher.load_passengers[0]
+# puts dispatcher.load_trips
+# puts dispatcher.trips[0].start_time
+# puts dispatcher.trips[0].start_time.class
+# puts dispatcher.trips[0].start_time.to_r
+# puts dispatcher.trips[0].class

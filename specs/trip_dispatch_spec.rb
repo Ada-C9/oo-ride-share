@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 
+
 describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
@@ -88,5 +89,67 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "stores start_time as instances of Time" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      all_start_times = dispatcher.trips.all? { |trips| trips.start_time.class == Time }
+
+      all_start_times.must_equal true
+
+
+    end
+
+    it "stores end_time as instances of Time" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      all_end_times = dispatcher.trips.all? { |trips| trips.end_time.class == Time }
+
+      all_end_times.must_equal true
+    end
+  end
+
+  describe "#request_trip(passenger_id)" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+
+      @new_trip = @dispatcher.request_trip(3)
+
+    end
+
+    it "creates new instance of Trip" do
+
+      @new_trip.must_be_kind_of RideShare::Trip
+
+    end
+
+    it "assigns the first driver with status available" do
+      @new_trip.driver.id.must_equal 2
+    end
+    #
+    it "adds the new Trip to the collection in TripDispatcher" do
+
+      @dispatcher.trips.length.must_equal 601
+
+    end
+
+    it "adds the new Trip to the collection of trips for Passenger" do
+      passenger = @dispatcher.find_passenger(3)
+      passenger.trips.length.must_equal 3
+    end
+
+    it "add the new Trip to the collection of trips for Driver" do
+      driver = @dispatcher.find_driver(2)
+      driver.trips.length.must_equal 9
+    end
+
+    it "changes drivers status to :UNAVAILABLE" do
+      driver = @dispatcher.find_driver(2)
+      driver.status.must_equal :UNAVAILABLE
+    end
+
+
+
+
   end
 end
