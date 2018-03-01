@@ -55,7 +55,11 @@ module RideShare
           end
         end
         total_revenue = (total_earning - 1.65) * 0.8
-        return total_revenue.round(2)
+        if total_revenue <= 0
+          return 0
+        else
+          return total_revenue.round(2)
+        end
       end
     end
 
