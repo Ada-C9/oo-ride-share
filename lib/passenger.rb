@@ -27,7 +27,9 @@ module RideShare
     def total_spent
       spent = 0
       @trips.each do |trip|
-        spent += trip.cost
+        if trip.cost != nil
+          spent += trip.cost
+        end
       end
       return spent.round(2)
     end
@@ -35,7 +37,9 @@ module RideShare
     def total_ride_time
       car_time = 0
       @trips.each do |trip|
-        car_time += (trip.duration/60).round(2) #in minutes
+        if trip.end_time != nil
+          car_time += (trip.duration/60).round(2) #in minutes
+        end
       end
       return car_time
     end

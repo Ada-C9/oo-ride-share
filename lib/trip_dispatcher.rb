@@ -113,7 +113,6 @@ module RideShare
         rating: nil
         })
 
-
       new_driver.add_trip(new_ride)
       new_rider.add_trip(new_ride)
       new_driver.status = :UNAVAILABLE

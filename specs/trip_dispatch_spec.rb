@@ -131,7 +131,7 @@ describe "TripDispatcher class" do
 
     it "throws an error if no drivers are available" do
       proc {
-        50.times do
+        100.times do
         @dispatcher.request_trip(1)
         end
         @dispatcher.request_trip(1)
