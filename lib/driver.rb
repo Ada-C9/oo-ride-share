@@ -39,6 +39,10 @@ module RideShare
 
     def add_trip(trip)
       if trip.class != Trip
+        # way we have it now is fragile
+        # can also do
+        # unless trip.class != Trip
+        # means that unless Trip variable is a Trip instance or subclass of trip then it is the wrong type of data. =! is very restrictive.
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 

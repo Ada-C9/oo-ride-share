@@ -127,28 +127,36 @@ module RideShare
 end
 #
 ### TESTING FOR REQUESTING TRIP ####
-dispatcher = RideShare::TripDispatcher.new
-
-passenger = dispatcher.find_passenger(3)
-actual_driver = dispatcher.find_driver(2)
-puts "original passenger trips #{passenger.trips.length}"
-puts "original driver trips : #{actual_driver.trips.length}"
-
-puts dispatcher.trips.length
-new_trip = dispatcher.request_trip(3)
-puts new_trip
-puts new_trip.class
-puts new_trip.id
-driver = new_trip.driver
-puts "Driver ID : #{driver.id}"
-puts "Driver Status: #{driver.status}"
-# passenger = new_trip.passenger
-# passenger = dispatcher.find_passenger(2)
-
-puts "Final passenger trips: #{passenger.trips.length}"
-puts "Final driver trips : #{actual_driver.trips.length}"
+# dispatcher = RideShare::TripDispatcher.new
+#
+# passenger = dispatcher.find_passenger(3)
+# actual_driver = dispatcher.find_driver(2)
+# puts "original passenger trips #{passenger.trips.length}"
+# puts "original driver trips : #{actual_driver.trips.length}"
+#
+# puts dispatcher.trips.length
+# new_trip = dispatcher.request_trip(3)
+# puts new_trip
+# puts new_trip.class
+# puts new_trip.id
+# driver = new_trip.driver
+# puts "Driver ID : #{driver.id}"
+# puts "Driver Status: #{driver.status}"
+# # passenger = new_trip.passenger
+# # passenger = dispatcher.find_passenger(2)
+#
+# puts "Final passenger trips: #{passenger.trips.length}"
+# puts "Final driver trips : #{actual_driver.trips.length}"
+#
 
 ##############################################################
+
+# dispatcher = RideShare::TripDispatcher.new
+#
+# trip = dispatcher.trips[1]
+# puts trip.start_time
+# puts trip.end_time
+# puts trip.duration
 
 # puts "Passenger ID: #{passenger.id}"
 # puts dispatcher.trips.length
