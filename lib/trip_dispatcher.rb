@@ -115,7 +115,7 @@ module RideShare
 
       new_driver.add_trip(new_ride)
       new_rider.add_trip(new_ride)
-      new_driver.status = :UNAVAILABLE
+      new_driver.unavailable
       @trips << new_ride
       return new_ride
     end

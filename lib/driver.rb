@@ -67,6 +67,9 @@ module RideShare
       return rate
     end
 
+    def unavailable
+      @status = :UNAVAILABLE
+    end
   end
 end
 
