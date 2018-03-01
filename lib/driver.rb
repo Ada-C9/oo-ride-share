@@ -55,13 +55,22 @@ module RideShare
           end
         end
         total_revenue = (total_earning - 1.65) * 0.8
-        return total_revenue
+        return total_revenue.round(2)
       end
-      # @trips.empty? ? 0 : (@trips.reduce(0) { |rev, trip| rev + trip.cost } - 1.65) * 0.8
     end
 
     def ave_rev_per_hr
-      @trips.empty? ?  0 : (total_revenue / @trips.length).round(2)
+      if @trips.empty?
+        return 0
+      else
+        total_duration = 0
+        @trips.each do |trip|
+          if !trip.ignore
+            total_duration += trip.duration
+          end
+        end
+        return (total_revenue / (total_duration / 3600.0)).round(2)
+      end
     end
 
     def set_status(status)
