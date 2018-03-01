@@ -6,31 +6,26 @@ module RideShare
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
     def initialize(input)
-      if input[:id] == nil || input[:id] <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
-      end
       if input[:vin] == nil || input[:vin].length != 17
         raise ArgumentError.new("VIN cannot be less than 17 characters.  (got #{input[:vin]})")
       end
 
-      @id = input[:id]
-      @name = input[:name]
+      @id = RideShare.return_valid_id_or_error(input[:id])
+      @name = RideShare.return_valid_name_or_error(input[:name])
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-      @trips = input[:trips] == nil ? [] : input[:trips]
+      @trips = input[:trips] == nil ? [] : RideShare.valid_trips_or_errors(input[:trips])
     end
 
-    def average_rating
+    def get_average_rating
       return 0 if trips.length == 0
       total_ratings = @trips.inject(0) { |total, trip| total + trip.rating }
       return (total_ratings.to_f) / trips.length
     end
 
     def add_trip(trip)
-      if trip.class != Trip
-        raise ArgumentError.new("Can only add trip instance to trip collection")
-      end
-      @status = :UNAVAILABLE if trip.end_time.nil? && is_available? 
+      RideShare.return_valid_trip_or_error(trip)
+      check_and_update_status if trip.is_in_progress?
       @trips << trip
     end
 
@@ -47,6 +42,19 @@ module RideShare
     end
 
     private
+
+    def check_and_update_status
+      if !is_available?
+        raise ArgumentError.new("Cannot add in-progress trip to unavailable driver.")
+      end
+      @status = :UNAVAILABLE
+    end
+
+    def calculate_total_revenue
+       return @trips.inject(0.0) do |total, trip|
+         total + (trip.cost - 1.56) * 0.80 if !trip.is_in_progress?
+       end
+    end
 
     def get_all_trip_durations
       return @trips.inject(0) { |sum, trip| sum + trip.get_duration }.to_f / 120

@@ -5,18 +5,18 @@ module RideShare
     attr_reader :id, :name, :phone_number, :trips
 
     def initialize(input)
-      @id = valid_id_or_error(input[:id])
-      @name = input[:name]
+      @id = RideShare.return_valid_id_or_error(input[:id])
+      @name = RideShare.return_valid_name_or_error(input[:name])
       @phone_number = input[:phone]
-      @trips = input[:trips] == nil ? [] : input[:trips]
+      @trips = input[:trips] == nil ? [] : RideShare.valid_trips_or_errors(input[:trips])
     end
 
     def get_drivers
-      @trips.map{ |t| t.driver }
+      @trips.map{ |trip| trip.driver }
     end
 
     def add_trip(trip)
-      @trips << trip
+      @trips << RideShare.return_valid_trip_or_error(trip)
     end
 
     def get_total_money_spent
@@ -29,12 +29,6 @@ module RideShare
 
     private
 
-    def valid_id_or_error(input_id)
-      if input_id == nil || input_id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero.")
-      end
-      return input_id
-    end
 
   end
 end

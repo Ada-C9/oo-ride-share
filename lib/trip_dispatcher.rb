@@ -90,10 +90,12 @@ module RideShare
     end
 
     def request_trip(passenger_id)
+      driver = find_available_driver
+      return if driver.nil?
       trip_id = @trips.empty? ? 1 : @trips.size
       new_trip_data = {
         id: trip_id,
-        driver: find_available_driver,
+        driver: driver,
         passenger: find_passenger(passenger_id),
         start_time: Time.now,
         end_time: nil,
