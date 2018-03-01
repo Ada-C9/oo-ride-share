@@ -46,20 +46,11 @@ module RideShare
     end
 
     def total_revenue
-      # with each loop:
-      # total_rev = 0
-      # @trips.each do |trip|
-      #   fee = 1.65
-      #   trip_rev = (trip.cost - fee) * 0.8
-      #   total_rev += trip_rev
-      # end
-      #return total_rev
 
-      # with map:
-      # trip_rev = @trips.map {|trip| (trip.cost - 1.65) * 0.8}
-      # total_rev = trip_rev.sum
+      #allows only completed trips to be counted:
+      completed_trips = @trips.map{ |trip| trip if trip != nil }
 
-       total_rev = @trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
+       total_rev = completed_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
        return total_rev
     end
 
