@@ -103,5 +103,13 @@ describe "TripDispatcher class" do
 
     end
 
+    # it "makes new trips and assigns a driver and passenger" do
+    #   new_ride = @dispatcher.request_trip(500)
+    #
+    #   new_ride.must_be_instance_of RideShare::Trip
+    #   new_ride.passenger.must_equal 500
+    #
+    # end
+
   end
 end

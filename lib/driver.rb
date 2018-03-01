@@ -77,5 +77,10 @@ module RideShare
 
       return average_rev
     end
+
+    def update_info(trip)
+      @status = :UNAVAILABLE
+      add_trip(trip)
+    end
   end
 end

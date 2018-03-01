@@ -38,5 +38,11 @@ module RideShare
 
       return total
     end
+
+    def update_info(trip)
+      
+      add_trip(trip)
+    end
+
   end
 end

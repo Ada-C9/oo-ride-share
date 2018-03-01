@@ -42,7 +42,7 @@ module RideShare
 
     def find_available
       available = @drivers.find{ |i| i.status == :AVAILABLE}
-      available = available.name
+      available = available.id
     end
 
 
@@ -74,6 +74,7 @@ module RideShare
 
     def load_trips
       trips = []
+      @highest_id = 0
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
 
       trip_data.each do |raw_trip|
@@ -97,7 +98,7 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
 
-        @highest_id = 0
+
         trips.each do |line|
           if line.id > @highest_id
             @highest_id = line.id
@@ -112,7 +113,6 @@ module RideShare
 
       driver = find_available
       highest = @highest_id +1
-
       trip_info = {
         id: highest,
         driver: driver,
@@ -125,24 +125,16 @@ module RideShare
 
       another_trip = RideShare::Trip.new(trip_info)
 
-      # trips.each do |trip|
-      #   if trip.id == highest
-      #     trip.status = :UNAVAILABLE
-      #   end
-      # end
-      # binding.pry
 
-
-      # @drivers.each do |line|
-      #   if line.name == @driver
-      #     line.status == :UNAVAILABLE
-      #   end
-      # end
+      CSV.open('support/trips.csv', 'a') do |csv|
+        csv << trip_info.values
+      end
 
       return another_trip
 
 
     end
+
 
 
 
@@ -159,8 +151,18 @@ module RideShare
 
   end
 end
-#
-# dispatcher = RideShare::TripDispatcher.new
+
+dispatcher = RideShare::TripDispatcher.new
+
+a_new_trip = dispatcher.request_trip(222)
+driver = a_new_trip.driver
+dispatcher.find_driver(driver).update_info(a_new_trip)
+
+
+second_trip = dispatcher.request_trip(444)
+driver = second_trip.driver
+dispatcher.find_driver(driver).update_info(second_trip)
+
 #
 # puts "********** Created dispatcher"
 # trip = dispatcher.request_trip(999)

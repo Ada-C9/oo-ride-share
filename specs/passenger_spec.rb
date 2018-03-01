@@ -107,4 +107,21 @@ describe "Passenger class" do
       @passenger.all_time.must_equal 60
     end
   end
+
+  describe "update_info" do
+
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: "2015-05-20T12:14:20+00:00", end_time: "2015-05-20T12:14:30+00:00", cost: 30.00, rating: 5})
+      @passenger.add_trip(trip)
+    end
+
+    it "adds new trip to passenger's collection of trips" do
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: "2015-05-20T12:14:20+00:00", end_time: "2015-05-20T12:14:30+00:00", cost: 30.00, rating: 5})
+      @passenger.update_info(trip2)
+      @passenger.all_time.must_equal 20
+    end
+  end
 end

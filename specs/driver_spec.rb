@@ -128,4 +128,17 @@ describe "Driver class" do
     end
   end
 
+  describe "reset_status" do
+    before do
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: "2015-05-20T08:15:00+00:00", end_time: "2015-05-20T09:15:00+00:00", cost: 20.00, rating: 5})
+      @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: "2015-06-20T07:15:00+00:00", end_time: "2015-06-20T08:15:00+00:00", cost: 25.00, rating: 5})
+    end
+
+    it "sets driver status to unavailable" do
+      @driver.update_info(@trip)
+      @driver.status.must_equal :UNAVAILABLE
+    end
+  end
 end
