@@ -35,7 +35,7 @@ module RideShare
 
     def initialize(input)
       @id = input[:id]
-      @driver = input[:driver]
+      @driver = valid_driver_or_error(input[:driver])
       @passenger = input[:passenger]
       @start_time = valid_time_or_error(input[:start_time])
       @end_time = input[:end_time]
@@ -79,18 +79,19 @@ module RideShare
       if driver.class != Driver
         raise ArgumentError.new("Driver #{driver} must be a driver.")
       end
-      assign_to_driver_or_error(driver)
+      return driver
+      # return assign_to_driver_or_error(driver)
     end
 
-    def assign_to_driver_or_error(driver) # Test for this!
-      if is_in_progress? && @driver.trips.last != self
-
-        @driver.is_available? ? @driver.add_trip(self) : driver_unavailable_error
-      end
-    end
+    # def assign_to_driver_or_error(driver) # Test for this!
+    #   if is_in_progress? && driver.trips.last != self
+    #     driver.is_available? ? driver.add_trip(self) : driver_unavailable_error
+    #   end
+    #   return driver
+    # end
 
     # def driver_unavailable_error
-    #   raise Argument
+    #   raise ArgumentError.new("Cannot add trip to unavailable driver")
     # end
 
   end

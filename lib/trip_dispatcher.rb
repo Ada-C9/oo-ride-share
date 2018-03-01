@@ -39,8 +39,9 @@ module RideShare
     end
 
     def find_driver(id)
-      check_id(id)
-      return @drivers.find{ |driver| driver.id == id }
+      return find_by_id(@drivers, id)
+      # check_id(id)
+      # return @drivers.find{ |driver| driver.id == id }
     end
 
     def load_passengers
@@ -57,8 +58,9 @@ module RideShare
 
 
     def find_passenger(id)
-      check_id(id)
-      return @passengers.find{ |passenger| passenger.id == id }
+      return find_by_id(@passengers, id)
+      # check_id(id)
+      # return @passengers.find{ |passenger| passenger.id == id }
     end
 
     def load_trips
@@ -67,8 +69,6 @@ module RideShare
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
-        # raw_trip[:driver] = driver
-
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
@@ -78,11 +78,6 @@ module RideShare
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
-        # trips << make_new_trip(raw_trip)
-        #
-        # trip = Trip.new(parsed_trip)
-        # driver.add_trip(trip)
-        # passenger.add_trip(trip)
         trips << make_new_trip(parsed_trip) #trip
       end
 
@@ -110,10 +105,10 @@ module RideShare
 
     private
 
-    def check_id(id)
-      if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
-      end
+    # Provided list_to_search must be a list of Drivers, Trips, or Passengers.
+    def find_by_id(list_to_search, id)
+      RideShare.return_valid_id_or_error(id)
+      return list_to_search.find{ |element| element.id == id }
     end
 
     def make_new_trip(new_trip_data)

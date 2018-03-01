@@ -7,7 +7,7 @@ module RideShare
 
     def initialize(input)
       if input[:vin] == nil || input[:vin].length != 17
-        raise ArgumentError.new("VIN cannot be less than 17 characters.  (got #{input[:vin]})")
+        raise ArgumentError.new("VIN cannot be less than 17 characters. (got #{input[:vin]})")
       end
 
       @id = RideShare.return_valid_id_or_error(input[:id])
@@ -23,9 +23,8 @@ module RideShare
     end
 
     def add_trip(trip)
-      # return if @trips.last == trip
       RideShare.return_valid_trip_or_error(trip)
-      check_and_update_status(trip) if trip.is_in_progress?
+      check_and_update_status if trip.is_in_progress?
       @trips << trip
     end
 
