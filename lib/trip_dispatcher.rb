@@ -92,6 +92,10 @@ module RideShare
 
     def find_available_driver
       available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
+      if available_driver == nil
+        raise ArgumentError.new("There are no available drivers")
+      end
+
       return available_driver
     end
 
@@ -131,6 +135,8 @@ module RideShare
 end
 
 # trip_dispatch = RideShare::TripDispatcher.new
+# trip_dispatch.drivers.clear
+# puts trip_dispatch.drivers
 #
 # puts "Dispatch trips before new request: #{trip_dispatch.trips.length}"
 # puts "Driver length before new request: #{trip_dispatch.find_available_driver.trips.length}"

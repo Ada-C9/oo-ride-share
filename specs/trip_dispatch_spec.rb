@@ -91,10 +91,11 @@ describe "TripDispatcher class" do
   end
 
   describe "find_available_driver" do
-    before do
-      @dispatcher = RideShare::TripDispatcher.new
-    end
+    # before do
+    # @dispatcher = RideShare::TripDispatcher.new
+    # end
     it "returns the first available driver from @drivers" do
+      @dispatcher = RideShare::TripDispatcher.new
       driver = @dispatcher.find_available_driver
       driver.must_be_instance_of(RideShare::Driver)
       driver.status.must_equal(:AVAILABLE)
@@ -102,7 +103,11 @@ describe "TripDispatcher class" do
     end
 
     it "raises an error when there are no available drivers" do
-      
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.drivers.clear
+      proc {
+        @dispatcher.find_available_driver
+      }.must_raise ArgumentError
     end
   end
 
@@ -133,7 +138,6 @@ describe "TripDispatcher class" do
       ending_ride_count = new_request.passenger.trips.length
       ending_ride_count.must_equal(starting_ride_count + 1)
     end
-
   end
 
 end
