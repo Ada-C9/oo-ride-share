@@ -82,7 +82,10 @@ module RideShare
     end
 
     def get_revenue_per_hour
-      self.get_revenue / self.get_total_time
+
+      return 0 if self.trips.empty?
+
+      (revenue_per_hour = self.get_revenue / self.get_total_time * 3600).round(2)
     end
 
   end

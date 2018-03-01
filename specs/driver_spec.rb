@@ -117,6 +117,30 @@ describe "Driver class" do
       @driver.add_trip(trip)
       @driver.get_revenue.must_equal 0
     end
-
   end
+
+  describe "get_revenue_per_hour method" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+    end
+
+    it "returns zero when no trips" do
+      @driver.get_revenue_per_hour.must_equal 0
+    end
+
+    it "calculates revenue per hour with one trip" do
+      @driver.add_trip(@trip)
+
+      @driver.get_revenue_per_hour.must_equal 25.63
+    end
+
+    it "calculates revenue per hour with many trips" do
+      10.times { @driver.add_trip(@trip) }
+      @driver.get_revenue_per_hour.must_equal 25.63
+    end
+  end
+
 end
