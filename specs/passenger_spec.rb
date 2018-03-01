@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require_relative '../lib/trip'
 
 describe "Passenger class" do
 
@@ -51,6 +52,19 @@ describe "Passenger class" do
       @passenger.trips.each do |trip|
         trip.passenger.id.must_equal 9
       end
+    end
+  end
+
+  describe "total_amount_of_money method" do
+     it "returns total amount of money" do
+       test_trip = RideShare::Trip.new({ :cost => 1.50, :rating => 3, :start_time => 1, :end_time => 2})
+
+       test_passenger = RideShare::Passenger.new( { :id => 1, :trips => [ test_trip ]  } )
+
+       test_total = test_passenger.get_total_money
+       test_total.must_equal 1.50
+
+      #it must return an accurate amount of money
     end
   end
 

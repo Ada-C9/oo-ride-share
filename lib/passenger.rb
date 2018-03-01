@@ -17,6 +17,14 @@ module RideShare
       @trips.map{ |t| t.driver }
     end
 
+    def get_total_money
+     total = 0
+     @trips.each do |trip|
+       total += trip.cost
+     end
+     return total
+    end
+
     def add_trip(trip)
       @trips << trip
     end

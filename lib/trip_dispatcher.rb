@@ -4,6 +4,7 @@ require 'time'
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
+#require_relative 'time'
 
 module RideShare
   class TripDispatcher
@@ -82,14 +83,34 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: Time.new(raw_trip[:start_time]),
-          end_time: Time.new(raw_trip[:end_time]),
+          start_time: raw_trip[:start_time],
+          end_time: raw_trip[:end_time],
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
-        trip = Trip.new(parsed_trip)
 
+        parsed_trip[:end_time] = Time.parse(parsed_trip[:end_time])
+        parsed_trip[:start_time] = Time.parse(parsed_trip[:start_time])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        trip = Trip.new(parsed_trip)
+        # this is what i changed
+        # start_time = Time.new(parsed_end_time)[:start_time]
+        # end_time = Time.new(parsed_end_time)[:end_time]
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip

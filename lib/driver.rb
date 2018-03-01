@@ -27,10 +27,10 @@ module RideShare
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if @trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / @trips.length
       end
 
       return average
