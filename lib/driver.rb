@@ -43,6 +43,14 @@ module RideShare
       @trips << trip
     end
 
+    def change_status
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
+      else
+        @status = :AVAILABLE
+      end
+    end
+
     def total_revenue
       total_revenue = 0
       trip_fee = 1.65
