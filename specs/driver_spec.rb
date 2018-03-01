@@ -85,5 +85,37 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
+
+  describe "Total Revenue" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25
+
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      trip_one = RideShare::Trip.new({id: 2, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, cost: 40, rating: 5})
+
+      trip_two = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, cost: 25, rating: 3})
+
+      @driver.add_trip(trip_one)
+      @driver.add_trip(trip_two)
+
+    end
+    it 'calculate total revenue from driver' do
+
+      @driver.total_revenue.must_be_kind_of Float
+      @driver.total_revenue.must_equal 49.36
+    end
+    it 'calculate the average total revenue from driver' do
+      @driver.average_revenue.must_be_kind_of Float
+      @driver.average_revenue.must_equal 24.68
+    end
+
+
+
+  end
+
+
+
   end
 end

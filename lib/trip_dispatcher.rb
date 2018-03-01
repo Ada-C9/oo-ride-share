@@ -102,6 +102,9 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
+    def request_trip(passenger_id)
+    end
   end
 end
 

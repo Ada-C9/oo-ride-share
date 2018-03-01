@@ -56,10 +56,10 @@ describe "Passenger class" do
     end
   end
 
-  describe 'passenger totals' do
+  describe 'Passenger Totals' do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60
+      end_time = start_time + 25
 
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
 
@@ -72,11 +72,10 @@ describe "Passenger class" do
 
         rider_total.must_equal 50
       end
-
     it 'can add the time per trip to total time spent' do
-        # rider_total = @passenger.total_time_spent
-        # rider_total.must_be_instance_of Time.new
-        # rider_total.must_equal
+        rider_total = @passenger.total_time_spent
+
+        rider_total.must_equal 1500 # converted in duration somewhere
     end
   end
 

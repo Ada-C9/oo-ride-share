@@ -1,12 +1,10 @@
 require 'time'
+require 'pry'
 
 module RideShare
 
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
-
-    @@total_amount_spent = 0
-    @@total_time_spent = 0
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -26,22 +24,24 @@ module RideShare
 
     def add_trip(trip)
       @trips << trip
-
-      total_time_spent += (trip.end_time - trip.start_time)
     end
 
+
     def total_amount_spent
-    #   total_amount = 0
-    #   if @trips.cost.nil?
-    #     return
-    #   else
-    #     @trips.cost += total_amount
-    #   end
-    #   return total_amount
-    # end
-    #
-    # def total_time_spent
-    #   return @@total_time_spent
+      total_amount = 0
+      @trips.each do |rides|
+          total_amount += rides.cost
+        end
+      return total_amount
+    end
+
+    def total_time_spent
+      total_duration = 0
+      @trips.each do |ride|
+        total_duration += ride.duration
+      # (ride.end_time - ride.start_time)
+      end
+      return total_duration
     end
 
   end
