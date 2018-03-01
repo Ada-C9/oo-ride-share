@@ -105,7 +105,7 @@ describe "Driver class" do
       before do
         @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
       end
-      it "gets drivers total revenue" do
+      it "gets drivers total drive time" do
         # Arrange/Given
         start_time = Time.parse('2015-05-20T12:14:00+00:00')
         end_time = start_time + 60 * 60 # 60 minutes
