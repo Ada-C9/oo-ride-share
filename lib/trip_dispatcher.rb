@@ -99,7 +99,7 @@ module RideShare
       return trips
     end
 
-    private
+    private # limited functionality, like a helper method, not to be used in other classes
 
     def check_id(id)
       if id == nil || id <= 0

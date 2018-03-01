@@ -27,9 +27,18 @@ module RideShare
     end # initialize
 
     def duration
-      time_diff = (end_time - start_time).to_f
+      time_diff = (end_time - start_time).to_i
       return time_diff
     end
 
   end # class
 end # module
+
+# can eliminate status if using this below.
+# def end_time
+#   @end_time = Time.now
+# end
+# boolean is returned below
+# def finished?
+#   return end_time != nil
+# end

@@ -79,7 +79,7 @@ describe "Passenger class" do
     end
   end
 
-  describe "total amount spent" do
+  describe "totals" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
@@ -92,6 +92,10 @@ describe "Passenger class" do
 
     it "returns the total amount spent on trips" do
       @passenger.total_money.must_equal 5.99
+    end
+
+    it "returns the total time of the trip" do
+      @passenger.total_time.must_equal 3000
     end
 
   end

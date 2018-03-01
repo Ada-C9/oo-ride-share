@@ -103,5 +103,9 @@ describe "Driver class" do
     it "returns the total revenue for a trip" do
       @driver.total_revenue.must_equal(12.04)
     end
+
+    it "returns the average revenue per hour for a trip" do
+      @driver.avg_revenue.must_equal(0.07)
+    end
   end
 end

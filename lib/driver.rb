@@ -20,6 +20,7 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
+      @total_revenue = total_revenue
     end
 
     def average_rating
@@ -60,5 +61,12 @@ module RideShare
       return total.to_f
     end
 
+    def avg_revenue
+      avg_revenue = (total_revenue/trips.length)
+      return avg_revenue_per_hr = (avg_revenue/60).round(2)
+    end
   end
 end
+
+# Add an instance method to Driver to calculate that driver's average revenue
+# per hour spent driving, using the above formula for revenue
