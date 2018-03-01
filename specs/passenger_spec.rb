@@ -36,7 +36,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-08-08",end_time: "2016-08-08T12:16:00+00:00", rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +58,8 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      # may need to change actual time to pass other tests later
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: "2016-08-08",end_time: "2016-08-08T12:16:00+00:00", rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -74,5 +75,36 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+
+    describe "amount_spent" do
+      before do
+        @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+        driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+        # may need to change actual time to pass other tests later
+        trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: "2016-08-08",end_time: "2016-08-08T12:16:00+00:00", rating: 5, cost: 0})
+
+        @passenger.add_trip(trip)
+      end
+      it "returns total amount passenger spent on rides" do
+
+        @passenger.amount_spent.must_be_kind_of Float
+
+      end
+    end
+    describe "total_time method" do
+      before do
+        @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+        driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+        # may need to change actual time to pass other tests later
+        trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-08-08T12:16:00+00:00"),end_time: Time.parse("2016-08-08T13:16:00+00:00"), rating: 5, cost: 34.12})
+
+        @passenger.add_trip(trip)
+      end
+      it "returns the total amount of time passenger spent on rides" do
+        @passenger.total_time.must_be_kind_of Float
+      end
+    end
+
+
   end
 end

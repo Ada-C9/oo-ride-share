@@ -43,5 +43,19 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      total_earnings = 0
+
+      @trips.each do |ride|
+        fee = 1.65
+        driver_earnings = 0.8
+        subtotal = ride.cost - fee
+        total_earnings += subtotal * driver_earnings
+      end
+      return total_earnings.to_f
+    end
+
+
   end
 end
