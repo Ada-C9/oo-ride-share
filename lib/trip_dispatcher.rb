@@ -96,16 +96,28 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      #assign first available driver to trip from @drivers
-      #set start_time as Time.now
-      #set end_date = nil
-      #set cost = nil
-      #set rating = nil
-      #create new instance of Trip (either in this method or elsewhere)
-      #call driver.additional_method that adds trip to drivers trips and sets driver.status to :unavailable
+      driver = self.find_available_driver
+      passenger = self.find_passenger(passenger_id)
+
+      trip_data = {
+        id: @trips.length + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      trip = Trip.new(trip_data)
+      assigned_driver = trip_data[:driver]
+      assigned_driver.trip_in_progress(trip)
+      passenger.trip_in_progress(trip)
+
+      @trips << trip
+
       #call passenger.additional_method that adds trip to passengers trips
-      #add this trip to @trips in TripDispatcher
-      #return this newly created trip
+      return trip
     end
 
 
@@ -120,7 +132,16 @@ module RideShare
 end
 
 # trip_dispatch = RideShare::TripDispatcher.new
-# trip_dispatch.load_drivers
-# trip_dispatch.load_passengers
-# trip_dispatch.load_trips
-# puts trip_dispatch.find_available_driver
+#
+# puts "Dispatch trips before new request: #{trip_dispatch.trips.length}"
+# puts "Driver length before new request: #{trip_dispatch.find_available_driver.trips.length}"
+# assigned_driver = trip_dispatch.find_available_driver
+# puts "Driver status before new request: #{assigned_driver.status}"
+#
+# #try to request a new trip
+# requested_trip = trip_dispatch.request_trip(298)
+# puts requested_trip
+# puts "Dispatch trips after new request: #{trip_dispatch.trips.length}"
+# puts "Driver length after new request: #{requested_trip.driver.trips.length}"
+# puts "Driver status after new request: #{assigned_driver.status}"
+# puts "Passenger lifetime rides after new request: #{requested_trip.passenger.trips.length}"

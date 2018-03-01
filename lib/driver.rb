@@ -1,6 +1,6 @@
 require 'csv'
 require_relative 'trip'
-require_relative 'passenger' #take this out later
+# require_relative 'passenger' #take this out later
 require 'time'
 
 module RideShare
@@ -46,6 +46,14 @@ module RideShare
       @trips << trip
     end
 
+    #Modify this selected driver using a new helper method in Driver:
+    #Add the new trip to the collection of trips for that Driver
+    #Set the driver's status to :UNAVAILABLE
+    def trip_in_progress(trip)
+      @status = :UNAVAILABLE
+      @trips << trip
+    end
+
     def total_revenue
       fee = 1.65
       driver_percent = 0.8
@@ -80,6 +88,8 @@ module RideShare
       total_drive_time_hours = total_drive_time_minutes / 60
       return total_drive_time_hours
     end
+
+
   end
 end
 

@@ -93,9 +93,6 @@ describe "TripDispatcher class" do
   describe "find_available_driver" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
-      @dispatcher.load_drivers
-      @dispatcher.load_passengers
-      @dispatcher.load_trips
     end
     it "returns the first available driver from @drivers" do
       driver = @dispatcher.find_available_driver
@@ -104,4 +101,34 @@ describe "TripDispatcher class" do
       driver.name.must_equal("Emory Rosenbaum")
     end
   end
+
+  describe "request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "creates a new instance of Trip" do
+      result = @dispatcher.request_trip(1)
+      result.must_be_instance_of(RideShare::Trip)
+    end
+
+    it "increments the driver's trips by 1" do
+      driver = @dispatcher.find_available_driver
+      starting_driver_trip_count = driver.trips.length
+      new_request = @dispatcher.request_trip(1)
+      ending_driver_trip_count = driver.trips.length
+      ending_driver_trip_count.must_equal(starting_driver_trip_count + 1)
+    end
+
+    it "increments the passenger's trips by 1" do
+      passenger_id = 298
+      passenger = @dispatcher.find_passenger(passenger_id)
+      starting_ride_count = passenger.trips.length
+      new_request = @dispatcher.request_trip(passenger_id)
+      ending_ride_count = new_request.passenger.trips.length
+      ending_ride_count.must_equal(starting_ride_count + 1)
+    end
+
+  end
+
 end
