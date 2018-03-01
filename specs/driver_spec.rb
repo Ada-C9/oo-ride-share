@@ -80,61 +80,61 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
+  end
 
     #For a given driver, calculate their total revenue for all trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
 
-    describe "get_total_rev" do
-      before do
-        @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
-      end
-      it "gets drivers total revenue" do
-        # Arrange/Given
-        start_time = Time.parse('2015-05-20T12:14:00+00:00')
-        end_time = start_time + 25 * 60 # 25 minutes
-        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 5.00})
-        trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 5.00})
-        # Act/When
-        @driver.add_trip(trip)
-        @driver.add_trip(trip2)
-        # Assert/Then
-        @driver.get_total_rev.must_equal 5.36
-      end
+  describe "get_total_rev" do
+    before do
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
     end
-
-    describe "tot_drive_time" do
-      before do
-        @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
-      end
-      it "gets drivers total drive time" do
-        # Arrange/Given
-        start_time = Time.parse('2015-05-20T12:14:00+00:00')
-        end_time = start_time + 60 * 60 # 60 minutes
-        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
-        trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
-        # Act/When
-        @driver.add_trip(trip)
-        @driver.add_trip(trip2)
-        # Assert/Then
-        @driver.tot_drive_time.must_equal 3600
-      end
+    it "gets drivers total revenue" do
+      # Arrange/Given
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 5.00})
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 5.00})
+      # Act/When
+      @driver.add_trip(trip)
+      @driver.add_trip(trip2)
+      # Assert/Then
+      @driver.get_total_rev.must_equal 5.36
     end
+  end
 
-    describe "avg_total_rev" do
-      before do
-        @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
-      end
-      it "gets drivers total revenue" do
-        # Arrange/Given
-        start_time = Time.parse('2015-05-20T12:14:00+00:00')
-        end_time = start_time + 60 * 60 # 60 minutes
-        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
-        trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
-        # Act/When
-        @driver.add_trip(trip)
-        @driver.add_trip(trip2)
-        # Assert/Then
-        @driver.ave_total_rev.must_equal 6.68
-      end
+  describe "tot_drive_time" do
+    before do
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
+    end
+    it "gets drivers total drive time" do
+      # Arrange/Given
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 60 * 60 # 60 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
+      # Act/When
+      @driver.add_trip(trip)
+      @driver.add_trip(trip2)
+      # Assert/Then
+      @driver.tot_drive_time.must_equal 3600
+    end
+  end
+
+  describe "avg_total_rev" do
+    before do
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
+    end
+    it "gets drivers total revenue" do
+      # Arrange/Given
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 60 * 60 # 60 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5, cost: 10.00})
+      # Act/When
+      @driver.add_trip(trip)
+      @driver.add_trip(trip2)
+      # Assert/Then
+      @driver.ave_total_rev.must_equal 6.68
     end
   end
 end
