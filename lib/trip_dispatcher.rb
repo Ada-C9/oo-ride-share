@@ -99,18 +99,24 @@ module RideShare
 
     def request_trip(passenger_id)
       driver = find_available_driver
+      passenger = find_passenger(passenger_id)
       parsed_trip = {
         id: @trips.length + 1,
-        passenger: find_passenger(passenger_id),
+        passenger: passenger,
         driver: driver,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
-        rating: nil,
+        rating: nil
       }
 
-      return Trip.new(parsed_trip)
+      new_trip = Trip.new(parsed_trip)
+      driver.new_ride(new_trip)
+      passenger.new_ride(new_trip)
+      @trips << new_trip
+      return new_trip
     end
+
 
     private
 

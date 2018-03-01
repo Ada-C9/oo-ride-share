@@ -119,4 +119,15 @@ describe "Driver class" do
       driver.avg_rev_per_hour.must_be_close_to 29.64,0.05
     end
   end
+
+  describe 'new_ride method' do
+    it 'can add a ride to driver trips' do
+      # test if instance of rides
+      #test trips.length
+    end
+
+    it 'can change driver status to unavailable' do
+      # check driver status
+    end
+  end
 end

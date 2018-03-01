@@ -67,8 +67,11 @@ module RideShare
       return avg_rev
     end
 
-    def change_driver_status(driver)
-
+    def new_ride(trip)
+      @status = :UNAVAILABLE
+      @trips << trip
     end
+
+
   end
 end

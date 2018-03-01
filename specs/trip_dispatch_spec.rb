@@ -119,9 +119,13 @@ describe "TripDispatcher class" do
 
     it 'end_time, cost, rating should all be nil for new trip' do
       trip = @dispatcher.request_trip(2)
-      trip.end_time.must_equal nil
-      trip.cost.must_equal nil
-      trip.rating.must_equal nil
+      trip.end_time.must_be_nil
+      trip.cost.must_be_nil
+      trip.rating.must_be_nil
+    end
+
+    it 'adds the new requested trip to list of trips' do
+      
     end
   end
 end
