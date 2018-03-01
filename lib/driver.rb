@@ -43,7 +43,7 @@ module RideShare
       take_home = 0.8
 
       @trips.each do |trip|
-        if trip.end_time != nil
+        if trip.cost != nil
           subtotal += trip.cost - fee
         end
       end
@@ -60,9 +60,8 @@ module RideShare
         total_hours += trip_in_hours
         end
       end
-      average_hourly_revenue = self.total_revenue / total_hours
+      average_hourly_revenue = total_revenue / total_hours
       return average_hourly_revenue
-      # return average_hourly_revenue
     end
 
     def add_trip(trip)
@@ -72,10 +71,8 @@ module RideShare
       @trips << trip
     end
 
-    def add_current_trip(trip)
+    def toggle_status
       @status = :UNAVAILABLE
-      @trips << trip
     end
-
   end
 end

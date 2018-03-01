@@ -54,6 +54,22 @@ describe "Driver class" do
 
       driver.total_revenue.must_equal 4.04
     end
+    it "doe not tally revenue for in-progress trips" do
+      trips = [
+        RideShare::Trip.new({cost: nil, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
+        RideShare::Trip.new({cost: nil, rating: 1, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
+        RideShare::Trip.new({cost: nil, rating: 5, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")})
+      ]
+      driver_details = {
+        id: 7,
+        vin: "WBWSS52P9NEYLVDE9",
+        name: 'test driver',
+        trips: trips
+      }
+      driver = RideShare::Driver.new(driver_details)
+
+      driver.total_revenue.must_equal 0
+    end
   end
 
   describe "average_hourly_revenue method" do

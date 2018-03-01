@@ -88,6 +88,18 @@ describe "Passenger class" do
 
       passenger.money_spent.must_equal 10.00
     end
+    it "does not tally spending on in-progress trips" do
+      trips = [
+        RideShare::Trip.new({cost: nil, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
+        RideShare::Trip.new({cost: nil, rating: 1, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
+        RideShare::Trip.new({cost: nil, rating: 5, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")})
+      ]
+      passenger_details = {id: 1, trips: trips}
+      passenger = RideShare::Passenger.new(passenger_details)
+
+      passenger.money_spent.must_equal 0.0
+
+    end
   end
 
   describe "time_spent method" do
@@ -103,7 +115,18 @@ describe "Passenger class" do
 
       passenger.time_spent.must_equal 1440
     end
-  end
+    it "does not tally time for in-progress trips" do
+      trips = [
+        RideShare::Trip.new({cost: 5, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: nil}),
+        RideShare::Trip.new({cost: 3, rating: 1, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: nil}),
+        RideShare::Trip.new({cost: 2, rating: 5, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: nil})
+      ]
 
+      passenger_details = {id: 1, trips: trips}
+      passenger = RideShare::Passenger.new(passenger_details)
+
+      passenger.time_spent.must_equal 0.0
+    end
+  end
 
 end

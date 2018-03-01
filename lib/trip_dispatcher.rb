@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -96,18 +97,32 @@ module RideShare
 
     def request_trip(passenger_id)
       driver_today = nil
-      @drivers.each do |driver|
-        if driver.status == :AVAILABLE
-          driver_today = driver
-          break
-        end
+
+      available_drivers = @drivers.select { |driver|
+        driver.status == :AVAILABLE}
+
+
+      if available_drivers.empty?
+        raise ArgumentError.new("There are no available drivers")
+      else
+        driver_today = available_drivers.first
       end
 
+
+      # @drivers.each do |driver|
+      #   if driver.status == :AVAILABLE
+      #     driver_today = driver
+      #     break
+      #   end
+      # end
+
       passenger = find_passenger(passenger_id)
+      id = @trips.length + 1
 
       trip_details = {
+        id: id,
         driver: driver_today,
-        passenger: passenger_id,
+        passenger: passenger,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
@@ -115,9 +130,13 @@ module RideShare
         }
 
         trip = Trip.new(trip_details)
-        driver_today.add_current_trip(trip)
-        passenger.add_current_trip(trip)
         @trips << trip
+        # trip.driver.toggle_status
+        # trip.driver.add_trip(trip)
+        # trip.passenger.add_trip(trip)
+        driver_today.toggle_status
+        driver_today.add_trip(trip)
+        passenger.add_trip(trip)
 
         return trip
     end

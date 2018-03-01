@@ -20,7 +20,7 @@ module RideShare
     def money_spent
       total = 0.0
       @trips.each do |trip|
-        if trip.end_time != nil
+        if trip.cost != nil
         total += trip.cost
         end
       end
@@ -45,8 +45,5 @@ module RideShare
       @trips << trip
     end
 
-    def add_current_trip(trip)
-      @trips << trip 
-    end
   end
 end
