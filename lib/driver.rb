@@ -53,19 +53,26 @@ module RideShare
 
     def average_revenue
       total_hours = 0
-      @trips.each {|trip| total_hours += trip.duration_method}
-      average_rev = total_rev / (total_hours/3600) #to hours
+      # fix other ones = its stopping the method if only one is nil
+      @trips.each do |trip|
+        if trip.end_time == nil
+          total_hours += 0
+        else
+          total_hours += trip.duration_method
+        end
+      end
 
-      return average_rev
+      if total_hours > 0
+        average_rev = total_rev / (total_hours/3600)
+        return average_rev
+      else
+        return 0
+      end
     end
 
     def change_status
       @status = :UNAVAILABLE
     end
-    # * Modify this selected driver using a new helper method in Driver:
-    #     * Add the new trip to the collection of trips for that Driver
-    #     * Set the driver's status to :UNAVAILABLE
-
 
   end
 end
