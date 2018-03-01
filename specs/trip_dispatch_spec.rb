@@ -45,9 +45,13 @@ describe "TripDispatcher class" do
 
     it "raises an argument error when no drivers are available" do
       dispatcher = RideShare::TripDispatcher.new
+      # dispatcher.drivers.each do |driver|
+      #   driver.toggle_status
+      # end
       dispatcher.drivers.each do |driver|
-        driver.toggle_status
+        driver.status = :UNAVAILABLE
       end
+
 
       proc{dispatcher.request_trip(1)}.must_raise ArgumentError
     end
