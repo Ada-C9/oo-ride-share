@@ -102,18 +102,8 @@ module RideShare
 
     def request_trip(passenger_id)
       return nil if passenger_id.class != Integer
-      # returns first available driver
-      # driver = @drivers.find {|driver| driver.status == :AVAILABLE}
-
-      # this creates an array of all available drivers
-      # available_drivers = drivers.find_all {|driver| driver.status == :AVAILABLE}
-      #
-      # if available_drivers.empty?
-      #   raise ArgumentError.new("No available drivers")
-      # end
 
       driver = available_drivers.sample # may need to change this to first instead of sample for 3rd Wave
-
       passenger = find_passenger(passenger_id)
 
       new_trip = {
