@@ -12,7 +12,7 @@ module RideShare
       @id = input[:id]
       @name = input[:name]
       @phone_number = input[:phone]
-      @trips = input[:trips] == nil ? [] : input[:trips]
+      @trips = (input[:trips] == nil) ? [] : input[:trips]
     end
 
     def get_drivers
@@ -21,6 +21,14 @@ module RideShare
 
     def add_trip(trip)
       @trips << trip
+    end
+
+    def trips_total
+      total = 0
+      @trips.each do |trip|
+        total += trip.cost
+      end
+      return total
     end
   end
 end
