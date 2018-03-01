@@ -49,6 +49,8 @@ module RideShare
 
     def total_revenue
       costs_array = @trips.collect do |trip|
+        #In case one of the trips cost is less than the fee charged,
+        #the cost of the trip will just be 0. To avoid negative revenues.
         if trip.cost < FEE_PER_TRIP
           0
         else
@@ -60,11 +62,18 @@ module RideShare
       return total_revenue
 
     end
-    # Add an instance method to Driver to calculate that driver's average revenue
-    # per hour spent driving, using the above formula for revenue
+
     def average_revenue_per_hr
-      #hours driving of each driver
-      total_revenue
+      if @trips == []
+        return 0
+      else
+        seconds_array = @trips.collect do |trip|
+          trip.trip_duration
+        end
+        hours = (seconds_array.sum)/(3600)
+        average_revenue_per_hr = total_revenue/hours
+        return average_revenue_per_hr
+      end
     end
   end
 end

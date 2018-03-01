@@ -81,7 +81,7 @@ describe "Driver class" do
   describe "total_revenue method" do
     it 'returns a total_revenue' do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ",
-        trips: [RideShare::Trip.new({rating: 3, cost: 10}), RideShare::Trip.new({rating: 5, cost: 10})])
+      trips: [RideShare::Trip.new({rating: 3, cost: 10}), RideShare::Trip.new({rating: 5, cost: 10})])
       result = @driver.total_revenue
       expected_revenue = 13.36
       result.must_equal expected_revenue
@@ -96,12 +96,35 @@ describe "Driver class" do
 
     it 'return 0 if the drivers trips costs less than the fee charged' do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ",
-        trips: [RideShare::Trip.new({rating: 3, cost: 1.5})])
+      trips: [RideShare::Trip.new({rating: 3, cost: 1.5})])
       result = @driver.total_revenue
       result = @driver.total_revenue
       expected_revenue = 0
       result.must_equal expected_revenue
     end
+  end
 
+  describe "average_revenue_per_hr method" do
+
+    it 'returns the average_revenue_per_hr' do
+      start_time_1 = Time.parse('2016-08-08T16:01:00+00:00')
+      end_time_1 = start_time_1 + 40*60
+      start_time_2 = Time.parse('2016-08-08T16:01:00+00:00')
+      end_time_2 = start_time_2 + 20*60
+
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ",
+      trips: [RideShare::Trip.new({rating: 3, cost: 10, start_time: start_time_1,
+        end_time: end_time_1}), RideShare::Trip.new({rating: 5, cost: 10, start_time: start_time_2, end_time: end_time_2})])
+      result = @driver.average_revenue_per_hr
+      expected_ave_revenue = 13.36
+      result.must_equal expected_ave_revenue
+    end
+
+    it 'returns 0 if the driver has no trips' do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [])
+      result = @driver.average_revenue_per_hr
+      expected_ave_revenue = 0
+      result.must_equal expected_ave_revenue
+    end
   end
 end
