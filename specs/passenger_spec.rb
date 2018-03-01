@@ -86,6 +86,7 @@ describe "Passenger class" do
       result = @passenger.passenger_spents
       expected_spent = 20
       result.must_equal expected_spent
+      result.must_be_kind_of Float
     end
 
     it 'returns 0 if the passenger has no trips' do
@@ -108,11 +109,12 @@ describe "Passenger class" do
         RideShare::Trip.new({rating: 5, start_time: @start_time_2, end_time: @end_time_2 })]
     end
 
-    it "returns amount of time (minutes) the passenger spent on their trip " do
+    it "returns amount of time the passenger spent on their trip " do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips: @trips})
-      result_minutes = @passenger.travel_time
+      result = @passenger.travel_time
       expected_time = 50*60
-      result_minutes.must_equal expected_time
+      result.must_equal expected_time
+      result.must_be_kind_of Float
     end
 
     it "returns 0 as amount of time if the passenger has no trips " do
@@ -120,6 +122,7 @@ describe "Passenger class" do
       result = @passenger.travel_time
       expected_time = 0
       result.must_equal expected_time
+      result.must_be_kind_of Float 
     end
   end
 end

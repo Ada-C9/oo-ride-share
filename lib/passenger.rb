@@ -36,7 +36,7 @@ module RideShare
 
     def travel_time
       time_array = @trips.collect {|trip| trip.trip_duration}
-      amount_time = time_array.sum
+      amount_time = (time_array.sum).to_f
       return amount_time
     end
   end
