@@ -115,18 +115,15 @@ describe "TripDispatcher class" do
     end
 
     it "returns nil if no driver is available" do
-      @dispatcher.drivers.map { |driver| driver.status = :UNAVAILABLE }
+      new_drivers = []
+      @dispatcher.drivers.each do |driver|
+        driver.status = :UNAVAILABLE
+        new_drivers << driver
+      end
+
       passenger_id = 150
       new_trip = @dispatcher.request_trip(passenger_id)
       new_trip.must_be_nil
-    end
-
-    it "only selects a driver who is available" do
-      passenger_id = 150
-      new_trip = @dispatcher.request_trip(passenger_id)
-      new_trip.driver.id.must_equal 2
-      new_trip.driver.name.must_equal "Emory Rosenbaum"
-      new_trip.driver.status.must_equal :AVAILABLE
     end
 
   end
