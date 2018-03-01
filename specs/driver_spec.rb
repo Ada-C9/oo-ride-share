@@ -64,7 +64,7 @@ describe "Driver class" do
     end
   end
 
-  describe "average_rating method" do
+  describe "get_average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV",
         vin: "1C9EVBRM0YBC564DZ")
@@ -76,11 +76,11 @@ describe "Driver class" do
     end
 
     it "returns a float" do
-      @driver.average_rating.must_be_kind_of Float
+      @driver.get_average_rating.must_be_kind_of Float
     end
 
     it "returns a float within range of 1.0 to 5.0" do
-      average = @driver.average_rating
+      average = @driver.get_average_rating
       average.must_be :>=, 1.0
       average.must_be :<=, 5.0
     end
@@ -88,7 +88,7 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV",
         vin: "1C9EVBRM0YBC564DZ")
-      driver.average_rating.must_equal 0
+      driver.get_average_rating.must_equal 0
     end
   end
 

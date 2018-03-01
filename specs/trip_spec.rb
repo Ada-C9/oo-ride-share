@@ -68,8 +68,8 @@ describe "Trip class" do
     # end
 
   end
-  describe "get_duration" do
 
+  describe "get_duration" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes
@@ -95,4 +95,9 @@ describe "Trip class" do
     end
 
   end
+
+  # describe "is_in_progress?" do
+  #   it '' do
+  # end
+
 end

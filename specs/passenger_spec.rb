@@ -32,11 +32,7 @@ describe "Passenger class" do
       @passenger.trips.must_be_kind_of Array
     end
   end
-#
-#   Add an instance method to Passenger that will return the total amount of
-#   money that passenger has spent on their trips
-# Add an instance method to Passenger that will return the total amount of time
-# that passenger has spent on their trips
+
 
   describe "get_total_money_spent" do
 
@@ -129,9 +125,11 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
          phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger,
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace",
+           vin: "12345678912345678")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-02T11:27:00+00:00"), rating: 5})
+        end_time: Time.parse("2018-01-02T11:27:00+00:00"), cost: 3.23, rating: 5})
 
       @passenger.add_trip(trip)
     end

@@ -108,43 +108,59 @@ describe "TripDispatcher class" do
   end
 
   describe "request_trip" do
-    it 'return a new trip' do
-      dispatcher = RideShare::TripDispatcher.new
-      expected_trip_id = dispatcher.trips.size
-      new_trip = dispatcher.request_trip(21)
-
-      new_trip.must_be_instance_of RideShare::Trip
-      new_trip.id.must_equal expected_trip_id
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @passenger_id = 21
+      @new_trip = @dispatcher.request_trip(@passenger_id)
     end
 
-    it 'adds the trip to passenger and driver trips' do
-      dispatcher = RideShare::TripDispatcher.new
-      new_trip = dispatcher.request_trip(22)
-
-      new_trip.passenger.must_be_instance_of RideShare::Passenger
-      new_trip.passenger.id.must_equal 22
-      new_trip.passenger.trips.last.must_equal new_trip
-      new_trip.passenger.trips.last.id.must_equal new_trip.id
-
-      new_trip.driver.must_be_instance_of RideShare::Driver
-      new_trip.driver.trips.last.must_equal new_trip
-      new_trip.driver.trips.last.id.must_equal new_trip.id
+    it "return a new trip" do
+      @new_trip.must_be_instance_of RideShare::Trip
+      @new_trip.id.must_equal @new_trip.id
     end
 
-    it 'add the trip to all trips' do
-      dispatcher = RideShare::TripDispatcher.new
-      size_before =  dispatcher.trips.size
-      dispatcher.request_trip(23)
-      dispatcher.trips.size.must_equal size_before + 1
+    it "sets nil values for end_time, cost, and rating" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
     end
 
-    it 'selects an available driver' do
-      dispatcher = RideShare::TripDispatcher.new
-      available_drivers_ids = dispatcher.drivers.map { |driver| driver.id if driver.is_available? }
-      new_trip = dispatcher.request_trip(24)
-      
-      available_drivers_ids.include?(new_trip.driver.id).must_equal true
-      new_trip.driver.status.must_equal :UNAVAILABLE
+    it "adds the trip to passenger's trips" do
+      trip_passenger = @new_trip.passenger
+      trip_passenger.must_be_instance_of RideShare::Passenger
+      trip_passenger.id.must_equal @passenger_id
+      trip_passenger.trips.last.must_equal @new_trip
+      trip_passenger.trips.last.id.must_equal @new_trip.id
+    end
+
+    it "adds the trip to driver's trips" do
+      trip_driver = @new_trip.driver
+      trip_driver.must_be_instance_of RideShare::Driver
+      trip_driver.trips.last.must_equal @new_trip
+      trip_driver.trips.last.id.must_equal @new_trip.id
+    end
+
+    it "add the trip to all trips" do
+      size_before =  @dispatcher.trips.size
+      @dispatcher.request_trip(23)
+      @dispatcher.trips.size.must_equal size_before + 1
+    end
+
+    it "selects an available driver" do
+      before_ids = @dispatcher.drivers.map { |driver| driver.id if driver.is_available? }
+      new_test_trip = @dispatcher.request_trip(24)
+      after_ids = @dispatcher.drivers.map { |driver| driver.id if driver.is_available? }
+
+      before_ids.include?(new_test_trip.driver.id).must_equal true
+      (before_ids - after_ids).must_equal [new_test_trip.driver.id]
+      new_test_trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "return nil if no drivers are available" do
+      while @dispatcher.drivers.count { |driver| driver.is_available? } > 0
+        @dispatcher.request_trip(27)
+      end
+      @dispatcher.request_trip(27).must_be_nil
     end
   end
 
