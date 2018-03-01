@@ -30,7 +30,7 @@ module RideShare
 
     def passenger_spents
       spents_array = @trips.collect {|trip| trip.cost}
-      amount_spent = spents_array.sum
+      amount_spent = (spents_array.sum).to_f
       return amount_spent
     end
 
