@@ -32,10 +32,7 @@ module RideShare
     end
 
     def trip_duration
-      end_time_secs = (@end_time.hour * 3600) + (@end_time.min * 60)
-      start_time_secs = (@start_time.hour * 3600) + (@start_time.min * 60)
-
-      return end_time_secs - start_time_secs
+      return @end_time.to_i - @start_time.to_i
     end
 
     private
