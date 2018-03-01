@@ -81,11 +81,14 @@ describe "Passenger class" do
   end
 
   describe "total_spend" do
-    it "accurately returns the total for a specific passenger's trips" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
       trips = [
-        RideShare::Trip.new({cost: 10.00, rating: 3}),
-        RideShare::Trip.new({cost: 10.00, rating: 3}),
-        RideShare::Trip.new({cost: 10.00, rating: 3})
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost:nil, rating: 3, start_time: start_time, end_time: nil})
       ]
       passenger_data = {
         id: 7,
@@ -93,8 +96,14 @@ describe "Passenger class" do
         phone_number: '555.555.5555',
         trips: trips
       }
-      passenger = RideShare::Passenger.new(passenger_data)
-      passenger.total_spend.must_equal(30.00)
+      @passenger = RideShare::Passenger.new(passenger_data)
+    end
+    it "accurately returns the total for a specific passenger's trips" do
+      @passenger.total_spend.must_equal(30.00)
+    end
+
+    it "does not include unfinished trips in the total spend" do
+      @passenger.total_spend.must_equal(30.00)
     end
   end
 

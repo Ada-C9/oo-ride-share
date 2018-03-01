@@ -58,6 +58,10 @@ describe "Driver class" do
     end
   end
 
+  describe "trip_in_progress method" do
+
+  end
+
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
@@ -99,6 +103,10 @@ describe "Driver class" do
 
       driver = RideShare::Driver.new(driver_data)
       driver.total_revenue.must_equal(20.04)
+    end
+
+    it "does not include unfinished trips in the total" do
+      
     end
   end
 

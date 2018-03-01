@@ -46,10 +46,7 @@ module RideShare
       @trips << trip
     end
 
-    #Modify this selected driver using a new helper method in Driver:
-    #Add the new trip to the collection of trips for that Driver
-    #Set the driver's status to :UNAVAILABLE
-    def trip_in_progress(trip)
+    def trip_in_progress(trip) #can I change status in a different method and just use add trip for in progress trips
       @status = :UNAVAILABLE
       @trips << trip
     end

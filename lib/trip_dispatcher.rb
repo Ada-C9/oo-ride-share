@@ -115,8 +115,6 @@ module RideShare
       passenger.trip_in_progress(trip)
 
       @trips << trip
-
-      #call passenger.additional_method that adds trip to passengers trips
       return trip
     end
 

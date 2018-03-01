@@ -100,6 +100,10 @@ describe "TripDispatcher class" do
       driver.status.must_equal(:AVAILABLE)
       driver.name.must_equal("Emory Rosenbaum")
     end
+
+    it "raises an error when there are no available drivers" do
+      
+    end
   end
 
   describe "request_trip" do
@@ -124,6 +128,7 @@ describe "TripDispatcher class" do
       passenger_id = 298
       passenger = @dispatcher.find_passenger(passenger_id)
       starting_ride_count = passenger.trips.length
+
       new_request = @dispatcher.request_trip(passenger_id)
       ending_ride_count = new_request.passenger.trips.length
       ending_ride_count.must_equal(starting_ride_count + 1)
