@@ -36,7 +36,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +58,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger,start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -100,9 +100,9 @@ describe "Passenger class" do
   describe "travel time method" do
     before do
       @start_time_1 = Time.parse('2016-08-08T16:01:00+00:00')
-      @end_time_1 = @start_time_1 + 30
+      @end_time_1 = @start_time_1 + 30*60
       @start_time_2 = Time.parse('2016-08-08T16:01:00+00:00')
-      @end_time_2 = @start_time_2 + 20
+      @end_time_2 = @start_time_2 + 20*60
 
       @trips = [RideShare::Trip.new({rating: 3, start_time: @start_time_1, end_time: @end_time_1 }),
         RideShare::Trip.new({rating: 5, start_time: @start_time_2, end_time: @end_time_2 })]
@@ -111,8 +111,8 @@ describe "Passenger class" do
     it "returns amount of time (minutes) the passenger spent on their trip " do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips: @trips})
       result_minutes = @passenger.travel_time
-      expected_time_minutes = 50
-      result_minutes.must_equal expected_time_minutes
+      expected_time = 50*60
+      result_minutes.must_equal expected_time
     end
 
     it "returns 0 as amount of time if the passenger has no trips " do
