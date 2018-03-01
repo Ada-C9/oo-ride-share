@@ -61,7 +61,11 @@ module RideShare
 
     def find_passenger(id)
       check_id(id)
-      @passengers.find{ |passenger| passenger.id == id }
+      if id > @passengers.last.id
+        raise ArgumentError.new
+      else
+        @passengers.find{ |passenger| passenger.id == id }
+      end
     end
 
     def load_trips
@@ -92,32 +96,10 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      #what if the passenger does not exist
+      #what if the passenger does not exist?
       if @drivers.any? { |driver| driver.status == :AVAILABLE }
-        #get available driver
-        driver = @drivers.find { |driver| driver.status == :AVAILABLE }
-        #get passenger
-        passenger = find_passenger(passenger_id)
-        #get start_time
-        start_time = Time.now
-        #make new Trip
-        trip_data = {
-          id: passenger_id,
-          driver: driver,
-          passenger: passenger,
-          start_time: start_time,
-          end_time: nil,
-          cost: nil,
-          rating: nil
-        }
-        new_trip = Trip.new(trip_data)
-
-        #call update_driver_info(new_trip)
-        new_trip.driver.update_driver_info(new_trip)
-        #call update_passenger_info(new_trip)
-        new_trip.passenger.add_trip(new_trip)
-        trips << new_trip
-        #return new_trip
+        new_trip = make_new_trip(passenger_id)
+        update_trips_arrays(new_trip)
         return new_trip
       else
         return nil
@@ -125,7 +107,32 @@ module RideShare
 
     end
 
+    def make_new_trip(passenger_id)
+      driver = @drivers.find { |driver| driver.status == :AVAILABLE }
+      passenger = find_passenger(passenger_id)
+      start_time = Time.now
+
+      trip_data = {
+        id: passenger_id,
+        driver: driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = Trip.new(trip_data)
+      return new_trip
+    end
+
     private
+
+    def update_trips_arrays(new_trip)
+      new_trip.driver.update_driver_info(new_trip)
+      new_trip.passenger.add_trip(new_trip)
+      trips << new_trip
+    end
 
     def check_id(id)
       if id == nil || id <= 0

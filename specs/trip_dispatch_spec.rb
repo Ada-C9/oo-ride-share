@@ -39,6 +39,10 @@ describe "TripDispatcher class" do
       proc{ @dispatcher.find_passenger(0) }.must_raise ArgumentError
     end
 
+    it "throws an argument error for an id > 300" do
+      proc{ @dispatcher.find_passenger(330) }.must_raise ArgumentError
+    end
+
     it "finds a passenger instance" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
