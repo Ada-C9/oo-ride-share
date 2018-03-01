@@ -100,6 +100,10 @@ module RideShare
         driver.status == :AVAILABLE
       end
 
+      if driver.nil?
+        raise StandardError.new("There are no more available drivers.")
+      end
+
       trip_info = {
         id: load_trips.length,
         passenger: passenger,

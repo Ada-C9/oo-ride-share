@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -112,7 +113,26 @@ describe "TripDispatcher class" do
       @result.driver.status.must_equal :UNAVAILABLE
     end
 
-    it "returns an error if there are no available drivers" do
+    it "raises an error if there are no available drivers" do
+      drivers = @dispatcher.drivers
+      available_drivers = drivers.select do |driver|
+        driver.status == :AVAILABLE
+      end
+      available_count = available_drivers.length
+
+      available_count.times do
+        trip = @dispatcher.request_trip(2)
+      end
+
+      trips_length = @dispatcher.trips.length
+
+      result = proc { @dispatcher.request_trip(2) }
+
+      updated_trips_length = @dispatcher.trips.length
+
+      result.must_raise StandardError
+      updated_trips_length.must_equal trips_length
+
     end
 
     it "uses the current time for the start time" do
