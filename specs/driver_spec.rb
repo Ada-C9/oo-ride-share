@@ -117,6 +117,14 @@ describe "Driver class" do
       @driver.total_revenue.must_be_instance_of Float
       @driver.total_revenue.must_be_within_delta 3.08
     end
+
+    it "returns total_revenue of 3.08 for trip with negative cost" do
+      trip2 = RideShare::Trip.new(
+        {id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), cost: -6.0, rating: 5}
+      )
+      @driver.add_trip(trip2)
+      @driver.total_revenue.must_be_within_delta 3.08
+      end
   end
 
   describe "rate" do
