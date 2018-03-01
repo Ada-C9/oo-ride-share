@@ -1,19 +1,14 @@
 require_relative 'spec_helper'
 
 describe "Passenger class" do
-
   before do
     # 1,Nina Hintz Sr.,560.815.3059
-    # 98,Ms. Winston Emard,1F9Z5CF13VV8041ND,AVAILABLE
-    # 17,Federico Bins V,W092FDPH6FNNK102M,AVAILABLE
     # 46,98,1,2016-06-28T06:39:00+00:00,2016-06-28T07:24:00+00:00,13.04,2
     # 272,17,1,2015-09-14T08:25:00+00:00,2015-09-14T09:23:00+00:00,24.25,4
     @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
-    @driver_1 = RideShare::Driver.new(id: 98, name: "Ms. Winston Emard", vin: "1F9Z5CF13VV8041ND", status: :AVAILABLE, trips: [])
-    @driver_2 = RideShare::Driver.new(id: 17, name: "Federico Bins V", vin: "W092FDPH6FNNK102M", status: :AVAILABLE, trips: [])
-    @trip_1 = RideShare::Trip.new(id: 46, driver: @driver_1, passenger: @passenger, start_time: Time.parse('2016-06-28T06:39:00+00:00'), end_time: Time.parse('2016-06-28T07:24:00+00:00'), cost: 13.04, rating: 2)
-    @trip_2 = RideShare::Trip.new(id: 272, driver: @driver_2, passenger: @passenger, start_time: Time.parse('2015-09-14T08:25:00+00:00'), end_time: Time.parse('2015-09-14T09:23:00+00:00'), cost: 24.25, rating: 4)
-    @in_progress_trip = RideShare::Trip.new(id: 601, driver: 101, passenger: 1, start_time: Time.now, end_time: nil , cost: 10.00, rating: nil)
+    @trip_1 = RideShare::Trip.new(id: 46, driver: 98, passenger: @passenger, start_time: Time.parse('2016-06-28T06:39:00+00:00'), end_time: Time.parse('2016-06-28T07:24:00+00:00'), cost: 13.04, rating: 2)
+    @trip_2 = RideShare::Trip.new(id: 272, driver: 17, passenger: @passenger, start_time: Time.parse('2015-09-14T08:25:00+00:00'), end_time: Time.parse('2015-09-14T09:23:00+00:00'), cost: 24.25, rating: 4)
+    @in_progress_trip = RideShare::Trip.new(id: 601, driver: 101, passenger: @passengerr, start_time: Time.now, end_time: Time.now + 600 , cost: 10.00, rating: nil)
   end
 
   describe "Passenger instantiation" do
@@ -113,9 +108,8 @@ describe "Passenger class" do
     it "calculates that passenger's total time spent on all trips" do
       @passenger.add_trip(@trip_1)
       @passenger.add_trip(@trip_2)
-      expected_total_time = @trip_1.duration + @trip_2.duration
 
-      @passenger.total_time.must_equal expected_total_time
+      @passenger.total_time.must_equal (@trip_1.duration + @trip_2.duration)
     end
 
     it "returns 0 if there is no trip for this passenger" do
@@ -126,10 +120,8 @@ describe "Passenger class" do
       @passenger.add_trip(@trip_1)
       @passenger.add_trip(@trip_2)
       @passenger.add_trip(@in_progress_trip)
-      expected_total_time = @trip_1.duration + @trip_2.duration
 
-      @passenger.total_time.must_equal expected_total_time
-
+      @passenger.total_time.must_equal (@trip_1.duration + @trip_2.duration)
     end
 
   end

@@ -1,16 +1,19 @@
 require_relative 'spec_helper'
 
-xdescribe "Driver class" do
+describe "Driver class" do
   before do
-    # 1,Bernardo Prosacco,WBWSS52P9NEYLVDE9,UNAVAILABLE
+    # Driver: 1,Bernardo Prosacco,WBWSS52P9NEYLVDE9,UNAVAILABLE
     # 1,1,54,2016-04-05T14:01:00+00:00,2016-04-05T14:09:00+00:00,17.39,3
     # 122,1,247,2015-12-24T04:57:00+00:00,2015-12-24T04:57:00+00:00,13.11,5
+    @driver = RideShare::Driver.new(id: 1, name: "Bernardo Prosacco", vin: "WBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: [])
+
     @trip_1 = RideShare::Trip.new(id: 1, driver: 1, passenger: 54, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 17.39, rating: 3)
     @duration_1 = @trip_1.duration / 3600.0
+
     @trip_2 = RideShare::Trip.new(id: 122, driver: 1, passenger: 247, start_time: Time.parse('2015-12-24T04:57:00+00:00'), end_time: Time.parse('2015-12-24T04:57:00+00:00'), cost: 13.11, rating: 5)
     @duration_2 = @trip_2.duration / 3600.0
-    @driver = RideShare::Driver.new(id: 1, name: "Bernardo Prosacco", vin: "WBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: [])
-    @in_progress_trip = RideShare::Trip.new(id: 601, driver: 1, passenger: 2, start_time: Time.now, end_time: nil, cost: 10.00, rating: nil)
+
+    @in_progress_trip = RideShare::Trip.new(id: 601, driver: 1, passenger: 2, start_time: Time.now, end_time: Time.now + 600, cost: 10.00, rating: nil)
   end
 
   describe "Driver instantiation" do

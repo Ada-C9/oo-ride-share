@@ -1,10 +1,6 @@
 require_relative 'spec_helper'
-require_relative '../lib/trip'
-require_relative '../lib/driver'
-require_relative '../lib/passenger'
-require_relative '../lib/trip_dispatcher'
 
-xdescribe "TripDispatcher class" do
+describe "TripDispatcher class" do
 
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
@@ -97,59 +93,46 @@ xdescribe "TripDispatcher class" do
 
   describe "request_trip" do
 
-    # Driver: 2,Emory Rosenbaum,1B9WEX2R92R12900E,AVAILABLE
-    # 118,2,234,2016-01-07T14:41:00+00:00,2016-01-07T14:56:00+00:00,28.95,5
-    # 140,2,206,2015-07-21T02:01:00+00:00,2015-07-21T02:11:00+00:00,19.69,2
+    # Selected driver: 2,Emory Rosenbaum,1B9WEX2R92R12900E,AVAILABLE
     # Passenger: 1,Nina Hintz Sr.,560.815.3059
-    # 46,98,1,2016-06-28T06:39:00+00:00,2016-06-28T07:24:00+00:00,13.04,2
-    # 272,17,1,2015-09-14T08:25:00+00:00,2015-09-14T09:23:00+00:00,24.25,4
     before do
-      @driver_trip_1 = RideShare::Trip.new(id: 118, driver: 2, passenger: 234, start_time: Time.parse('2016-01-07T14:41:00+00:00'), end_time: Time.parse('2016-01-07T14:56:00+00:00'), cost: 28.95, rating: 5)
-      @driver_trip_2 = RideShare::Trip.new(id: 140, driver: 2, passenger: 206, start_time: Time.parse('2015-07-21T02:01:00+00:00'), end_time: Time.parse('2015-07-21T02:11:00+00:00'), cost: 19.69, rating: 2)
-      @driver = RideShare::Driver.new(id: 2, name: "Emory Rosenbaum", vin: "1B9WEX2R92R12900E", status: :AVAILABLE, trips: [@driver_trip_1, @driver_trip_2])
-      @passenger_trip_1 = RideShare::Trip.new(id: 46, driver: 98, passenger: 1, start_time: Time.parse('2016-06-28T06:39:00+00:00'), end_time: Time.parse('2016-06-28T07:24:00+00:00'), cost: 13.04, rating: 2)
-      @passenger_trip_2 = RideShare::Trip.new(id: 272, driver: 17, passenger: 1, start_time: Time.parse('2015-09-14T08:25:00+00:00'), end_time: Time.parse('2015-09-14T09:23:00+00:00'), cost: 24.25, rating: 4)
-      @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [@passenger_trip_1, @passenger_trip_2])
+      @selected_driver = RideShare::Driver.new(id: 2, name: "Emory Rosenbaum", vin: "1B9WEX2R92R12900E", status: :AVAILABLE, trips: [])
+      @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
       @trip_dispatcher = RideShare::TripDispatcher.new
     end
 
     it "creates a new instance of Trip" do
-      @trip = @trip_dispatcher.request_trip(1)
-      @trip.must_be_instance_of RideShare::Trip
+      trip = @trip_dispatcher.request_trip(1)
+      trip.must_be_instance_of RideShare::Trip
     end
 
     it "returns the newly created trip" do
-      @trip = @trip_dispatcher.request_trip(1)
+      trip = @trip_dispatcher.request_trip(1)
 
-      @trip.id.must_equal 601
-      @trip.driver.id.must_equal 2
-      @trip.passenger.id.must_equal 1
-      @trip.start_time.to_i.must_equal Time.now.to_i
-      @trip.end_time.must_be_nil
-      @trip.cost.must_be_nil
-      @trip.rating.must_be_nil
+      trip.id.must_equal 601
+      trip.driver.id.must_equal 2
+      trip.passenger.id.must_equal 1
+      trip.start_time.to_i.must_equal Time.now.to_i
+      trip.end_time.must_be_nil
+      trip.cost.must_be_nil
+      trip.rating.must_be_nil
     end
 
     it "assigns a driver to the trip (use first AVAILABLE driver from the file)" do
-      @trip = @trip_dispatcher.request_trip(1)
+      trip = @trip_dispatcher.request_trip(1)
 
-      @trip.driver.id.must_equal @driver.id
-      @trip.driver.name.must_equal @driver.name
-      @trip.driver.vin.must_equal @driver.vin
-    end
-
-    it "uses the current time for the start_time" do
-      @trip = @trip_dispatcher.request_trip(1)
-
-      @trip.start_time.to_i.must_equal Time.now.to_i
+      trip.driver.id.must_equal @selected_driver.id
+      trip.driver.name.must_equal @selected_driver.name
+      trip.driver.vin.must_equal @selected_driver.vin
     end
 
     it "adds the new trip to the trips for that driver" do
       orig_trip_length = @trip_dispatcher.drivers[2 - 1].trips.length
 
-      @trip_dispatcher.request_trip(1)
+      trip = @trip_dispatcher.request_trip(1)
 
       @trip_dispatcher.drivers[2 - 1].trips.length.must_equal orig_trip_length + 1
+      @trip_dispatcher.drivers[2 - 1].trips.include?(trip).must_equal true
     end
 
     it "sets the driver's status to :UNAVAILABLE" do
@@ -163,17 +146,19 @@ xdescribe "TripDispatcher class" do
     it "adds the new trip to the trips for that passenger" do
       orig_trip_length = @trip_dispatcher.passengers[1 - 1].trips.length
 
-      @trip_dispatcher.request_trip(1)
+      trip = @trip_dispatcher.request_trip(1)
 
       @trip_dispatcher.passengers[1 - 1].trips.length.must_equal orig_trip_length + 1
+      @trip_dispatcher.passengers[1 - 1].trips.include?(trip).must_equal true
     end
 
     it "adds the new trip to the collection of all trips in TripDispatcher" do
       orig_trip_length = @trip_dispatcher.trips.length
 
-      @trip_dispatcher.request_trip(1)
+      trip = @trip_dispatcher.request_trip(1)
 
       @trip_dispatcher.trips.length.must_equal orig_trip_length + 1
+      @trip_dispatcher.trips.include?(trip).must_equal true
     end
 
     it "returns nil when there are no :AVAILABLE divers" do
