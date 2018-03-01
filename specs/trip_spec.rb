@@ -44,14 +44,14 @@ describe "Trip class" do
 
       proc {
         RideShare::Trip.new(@trip_data)
-      }.must_raise
+      }.must_raise ArgumentError
     end
   end
 
   describe "trip_duration method" do
     before do
       @start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      # 25 minutes added 
+      # 25 minutes added
       @end_time = @start_time + 25 * 60
       @trip_data = {
         id: 8,
@@ -65,10 +65,11 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
     end
     it 'calculates the duration of the trip in seconds' do
+      @trip.must_respond_to :trip_duration
+      @trip.trip_duration.must_be_kind_of Float
+
       result = @end_time - @start_time
-
       expected = @trip.trip_duration
-
       result.must_equal expected
     end
   end
