@@ -92,14 +92,28 @@ module RideShare
       #first driver who is available
       a_driver = drivers.detect{|driver|driver.status == :AVAILABLE}
       a_passenger = passengers.detect{|passenger|passenger.id == passenger_ID}
+      # a_driver = 0
+      # drivers.each do |driver|
+      #   if driver.status == :AVAILABLE
+      #     a_driver = driver
+      #     break
+      #   end
+      # end
+      # a_passenger = 0
+      # passengers.each do |passenger|
+      #   if passenger.id == passenger_ID
+      #     a_passenger = passenger
+      #     break
+      #   end
+      # end
       start_time = Time.now
-      end_time = nil
-      cost = nil
-      rating = nil
+      new_trip = RideShare::Trip.new({id:passenger_ID,driver:a_driver,passenger:a_passenger,start_time:start_time,end_time: :PENDING, rating: :PENDING,cost: 0})
+      a_driver.add_trip(new_trip)
+      a_driver.status = :UNAVAILABLE
+      a_passenger.trips << new_trip
+      trips << new_trip
 
-      new_trip = RideShare::Trip.new(id:passenger_ID,driver:a_driver,passenger:a_passenger,start_time:start_time,end_time:end_time,rating:rating,cost:cost)
-
-
+      return new_trip
     end
 
     private
