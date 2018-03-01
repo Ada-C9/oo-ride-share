@@ -91,8 +91,13 @@ module RideShare
     end
 
     def request_trip(passenger_id)
+      return nil if passenger_id.class != Integer
 
-      driver = @drivers.find {|driver| driver.status == :AVAILABLE}
+      #driver = @drivers.find {|driver| driver.status == :AVAILABLE}
+
+      available_drivers = @drivers.find_all {|driver| driver.status == :AVAILABLE}
+
+      driver = available_drivers.sample
 
       passenger = find_passenger(passenger_id)
 
@@ -105,7 +110,10 @@ module RideShare
         cost: nil,
         rating: nil
       }
+
       requested_trip = RideShare::Trip.new(new_trip)
+
+      # @trips << requested_trip
     end
 
 
