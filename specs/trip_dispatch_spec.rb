@@ -1,6 +1,10 @@
 require 'time'
+# require 'minitest'
+# require 'minitest/autorun'
 require_relative 'spec_helper'
-
+# require_relative '..lib/trip_dispatcher'
+#
+# Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
 describe "TripDispatcher class" do
 
@@ -115,9 +119,13 @@ describe "TripDispatcher class" do
 
     it "creates a trip ID number that is one higher than the current highest trip ID number" do
 
+      puts "*****Test-doc: MADE IT HERE ************"
       new_trip_id = @dispatcher_1.create_new_trip_id
-      new_trip_id.must_be_kind_of Symbol
+      puts "*********Test-doc: MADE IT HERE TOO *********"
+      new_trip_id.must_be_kind_of Integer
+      puts "********Test-doc: MADE IT HERE THREEE*************"
       new_trip_id.to_i.must_equal 601
+      puts "***********Test-doc: MADE IT HERE FOUR********"
 
     end
   end

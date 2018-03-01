@@ -140,6 +140,11 @@ PSEUDOCODE FOR (I), above:
     end
 
     def create_new_trip_id
+      puts "+++++PRODUCTION: I GOT HERE 1++++++"
+      highest_id = @trips.max_by(id)
+      puts "+++++PRODUCTION: I got here 2++++++++"
+      new_id = highest_id + 1
+      puts "+++++PRODUCTION: I got here 3++++++++"
     end
 
     private
