@@ -119,8 +119,8 @@ describe "TripDispatcher class" do
     end
 
     it "adds a trip to drivers trips" do
-      #@dispatcher.request_trip(2).driver.trips.length.must_equal 7
-      #hmmmm...not sure how to track a random driver
+      @dispatcher.request_trip(2).driver.trips.length.must_equal 9
+      @dispatcher.request_trip(3).driver.trips.length.must_equal 10
     end
 
     it "trip contains a nil end_time, cost, and rating" do

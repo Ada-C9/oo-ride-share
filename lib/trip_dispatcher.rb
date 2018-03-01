@@ -103,7 +103,7 @@ module RideShare
     def request_trip(passenger_id)
       return nil if passenger_id.class != Integer
 
-      driver = available_drivers.sample # may need to change this to first instead of sample for 3rd Wave
+      driver = available_drivers.first # use .sample for a random available driver instead of just the first available in list
       passenger = find_passenger(passenger_id)
 
       new_trip = {
