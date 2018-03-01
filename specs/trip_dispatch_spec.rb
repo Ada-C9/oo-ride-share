@@ -134,14 +134,11 @@ describe "TripDispatcher class" do
 
     it "throws an error if no drivers are available" do
       proc {
-        100.times do
-        @dispatcher.request_trip(1)
+        @dispatcher.drivers.each do |driver|
+          driver.unavailable
         end
         @dispatcher.request_trip(1)
       }.must_raise ArgumentError
-
-      # @dispatcher.drivers.each do |driver|
-      # end
     end
 
     it "updates dispatcher's number of rides" do
