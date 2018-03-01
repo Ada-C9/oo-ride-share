@@ -120,6 +120,8 @@ module RideShare
       driver.new_trip_change_status
       passenger.add_trip(trip)
 
+      @trips << trip
+
       return trip
     end
 

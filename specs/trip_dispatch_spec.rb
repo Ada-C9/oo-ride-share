@@ -124,6 +124,7 @@ describe "TripDispatcher class" do
     end
 
     it "updates the trips list" do
+      @dispatcher.trips.must_include @result
     end
 
     it "updates the trip list for the driver" do
