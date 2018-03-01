@@ -117,6 +117,7 @@ module RideShare
       new_rider.add_trip(new_ride)
       new_driver.unavailable
       @trips << new_ride
+
       return new_ride
     end
 

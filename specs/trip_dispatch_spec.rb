@@ -121,6 +121,9 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1).driver.id.must_equal 2
     end
 
+    it "PICKS THE DRIVER WITH THE OLDEST LAST TRIP" do
+    end
+
     it "changes driver's status to UNAVAILABLE" do
       @dispatcher.request_trip(1).driver.status.must_equal :UNAVAILABLE
     end
@@ -136,6 +139,9 @@ describe "TripDispatcher class" do
         end
         @dispatcher.request_trip(1)
       }.must_raise ArgumentError
+
+      # @dispatcher.drivers.each do |driver|
+      # end
     end
 
     it "updates dispatcher's number of rides" do
@@ -150,6 +156,7 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1)
       @dispatcher.passengers.first.trips.length.must_equal 3
     end
+
 
 
 

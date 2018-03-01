@@ -18,7 +18,7 @@ module RideShare
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      if end_time != nil && @start_time - @end_time > 0
+      if @end_time != nil && @start_time - @end_time > 0
         raise ArgumentError.new("Invalid time entries")
       end
     end
