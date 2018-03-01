@@ -22,6 +22,8 @@ module RideShare
     end
 
     def total_spent
+
+
       total = 0
       @trips.each {|trip| total +=  trip.cost}
       return total
@@ -29,10 +31,9 @@ module RideShare
 
     def total_time_spent
       total_time = 0
-      @trips.each {|trip| total_time +=  trip.duration_method}
-      return total_time
+      @trips.each do |trip|
+        return trip.end_time == nil ?  nil :  (total_time +=  trip.duration_method)
+      end
     end
-
-
   end
 end

@@ -121,4 +121,20 @@ describe "Passenger class" do
 
     end
   end
+
+  it 'Ignores the trips that are still in progress' do
+    start_time = Time.parse("2016-08-08T16:01:00+00:00")
+    end_time = nil
+
+    driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+    trip = RideShare::Trip.new({id: 8, driver: driver, date: "2016-08-08", cost: 17.39, rating: 5, start_time: start_time, end_time: end_time })
+
+    passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+    passenger.add_trip(trip)
+
+    passenger.total_time_spent.must_equal nil
+  end
+
 end
