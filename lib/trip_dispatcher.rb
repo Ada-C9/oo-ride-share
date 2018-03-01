@@ -90,19 +90,21 @@ module RideShare
       trips
     end
 
-    def request_trip(passenger)
+    def request_trip(passenger_id)
       new_trip_details = {
         id: get_next_trip_id,
         driver: get_driver,
-        passenger: passenger,
+        passenger: get_passenger(passenger_id),
         start_time: Time.now.to_s,
         end_time: nil,
         cost: nil,
         rating: nil
       }
       new_trip = Trip.new(new_trip_details)
-      passenger.add_trip(new_trip)
-      new_trip.driver.add_new_trip(new_trip)
+      target_passenger = get_passenger(passenger_id)
+      target_passenger.add_trip(new_trip)
+      new_trip.driver.add_trip(new_trip)
+      new_trip.driver.change_status
 
       return new_trip
     end
@@ -130,6 +132,13 @@ module RideShare
         raise ArgumentError.new("Unable to create a new trip, no available drivers")
       end
       return available_driver
+    end
+
+    def get_passenger(pass_id)
+      target_passenger = @passengers.find do |pass|
+        pass.id == pass_id
+      end
+      return target_passenger
     end
 
   end # class
