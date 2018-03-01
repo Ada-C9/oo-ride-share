@@ -17,7 +17,7 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
-  end
+  end # end of describe "Initializer"
 
   describe "find_driver method" do
     before do
@@ -32,7 +32,7 @@ describe "TripDispatcher class" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
     end
-  end
+  end # end of describe "find_driver method"
 
   describe "find_passenger method" do
     before do
@@ -47,7 +47,7 @@ describe "TripDispatcher class" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
     end
-  end
+  end # end of describe "find_passenger method"
 
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
@@ -88,5 +88,6 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+  end # end of describe "loader methods"
+  
+end # end of describe "TripDispatcher class"

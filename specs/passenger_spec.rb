@@ -33,7 +33,6 @@ describe "Passenger class" do
     end
   end # end of describe "Passenger instantiation"
 
-
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
@@ -77,8 +76,6 @@ describe "Passenger class" do
     end
   end # end of describe "get_drivers method"
 
-
-
   describe "money_spent" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
@@ -90,7 +87,7 @@ describe "Passenger class" do
     it "calculate the total amount of money the passenger spent" do
       @passenger.money_spent.must_equal 30
     end
-  end
+  end # end of describe "money_spent"
 
   describe "time_spent" do
     before do
@@ -114,6 +111,6 @@ describe "Passenger class" do
     it "calculate the total amount of time the passenger spent" do
       @passenger.time_spent.must_equal 1800
     end
-  end
+  end # end of describe "time_spent"
 
 end # end of describe "Passenger class"

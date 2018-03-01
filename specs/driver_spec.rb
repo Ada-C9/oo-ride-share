@@ -43,7 +43,7 @@ describe "Driver class" do
       @driver.vehicle_id.must_be_kind_of String
       @driver.status.must_be_kind_of Symbol
     end
-  end
+  end # end of describe "Driver instantiation"
 
   describe "add trip method" do
     before do
@@ -61,7 +61,7 @@ describe "Driver class" do
       @driver.add_trip(@trip)
       @driver.trips.length.must_equal previous + 1
     end
-  end
+  end # end of describe "add trip method"
 
   describe "average_rating method" do
     before do
@@ -84,7 +84,7 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
-  end
+  end # end of describe "average_rating method"
 
   describe "total_revenue" do
     it "calculate the total revenue" do
@@ -105,6 +105,29 @@ describe "Driver class" do
 
       driver.total_revenue.must_equal 12.04
     end
-  end
+  end # end of describe "total_revenue"
 
-end
+  describe "average_revenue" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 60
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 20.00,
+        rating: 3
+      }
+      trip = RideShare::Trip.new(trip_data)
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @driver.add_trip(trip)
+    end
+
+    it "calculate the average revenue per hour" do
+      @driver.average_revenue.must_equal 14.68
+    end
+  end # end of describe "average_revenue"
+
+end # end of describe "Driver class"

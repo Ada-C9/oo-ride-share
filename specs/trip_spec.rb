@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 
 describe "Trip class" do
-
   describe "initialize" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
@@ -43,11 +42,8 @@ describe "Trip class" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       @trip_data[:start_time] = start_time
       @trip_data[:end_time] = start_time - 25 * 60
-
       proc {RideShare::Trip.new(@trip_data)}.must_raise ArgumentError
-
     end
-
   end # end of describe "initialize"
 
   describe "duration" do
@@ -67,10 +63,8 @@ describe "Trip class" do
     end
 
     it "correctly calculates the calculate the duration of the trip in seconds" do
-
       @trip.duration.must_equal 1800
-
     end
-
   end # end of describe "duration"
+
 end # end of describe "Trip class"

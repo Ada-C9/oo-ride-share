@@ -107,8 +107,9 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-  end
-end
+    
+  end # end of TripDispatcher class
+end # end of RideShare module
 
 # testing_code = RideShare::TripDispatcher.new
 # puts testing_code
