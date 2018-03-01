@@ -15,7 +15,7 @@ describe "Driver class" do
 
     @in_progress_trip = RideShare::Trip.new(id: 601, driver: 1, passenger: 2, start_time: Time.now, end_time: Time.now + 600, cost: 10.00, rating: nil)
 
-    @trip_3 = RideShare::Trip.new(id: 602, driver: 1, passenger: 2, start_time: Time.now, end_time: Time.now + 60, cost: 1.00, rating: nil)
+    @trip_3 = RideShare::Trip.new(id: 602, driver: 1, passenger: 2, start_time: Time.now, end_time: Time.now + 600, cost: 1.00, rating: nil)
     @duration_3 = @trip_3.duration / 3600.0
   end
 
@@ -112,7 +112,6 @@ describe "Driver class" do
     end
 
     it "returns 0 if the driver earns less then 1.65" do
-      # TODO: implementation here
       @driver.add_trip(@trip_3)
 
       @driver.total_revenue.must_equal 0
@@ -139,6 +138,12 @@ describe "Driver class" do
       @driver.add_trip(@in_progress_trip)
 
       @driver.ave_rev_per_hr.must_equal ((17.39 + 13.11 - 1.65) * 0.8 / (@duration_1 + @duration_2)).round(2)
+    end
+
+    it "returns 0 if the driver earns less then 1.65" do
+      @driver.add_trip(@trip_3)
+
+      @driver.ave_rev_per_hr.must_equal 0
     end
 
   end

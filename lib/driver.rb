@@ -64,7 +64,7 @@ module RideShare
     end
 
     def ave_rev_per_hr
-      if @trips.empty?
+      if @trips.empty? || total_revenue == 0
         return 0
       else
         total_duration = 0
