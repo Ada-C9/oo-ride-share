@@ -59,9 +59,12 @@ module RideShare
         total_duration += trip.duration
       end
 
-      avg_revenue = (((calc_revenue)*3600)/total_duration)
+      if trips.length == 0
+        avg_revenue = 0
+      else
+        avg_revenue = (((calc_revenue)*3600)/total_duration)
+      end
 
-      return avg_revenue
     end
 
   end
