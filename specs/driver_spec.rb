@@ -41,7 +41,9 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      start_time = Time.parse("2016-05-02T09:06:00+00:00")
+      end_time = Time.parse("2016-05-02T09:56:00+00:00")
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +60,10 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      start_time = Time.parse("2016-05-02T09:06:00+00:00")
+      end_time = Time.parse("2016-05-02T09:56:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
+
       @driver.add_trip(trip)
     end
 
@@ -75,6 +80,28 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe "total revenue" do
+    before do
+      @trips = [
+        RideShare::Trip.new({cost: 5, rating: 3}),
+        RideShare::Trip.new({cost: 7, rating: 3}),
+        RideShare::Trip.new({cost: 8, rating: 3}),
+      ]
+      driver_data = {
+        id: 7,
+        vin: '12345678912345678',
+        name: 'test driver',
+        trips: @trips
+      }
+      @driver = RideShare::Driver.new(driver_data)
+
+    end
+
+    it "returns the total revenue for a trip" do
+      @driver.total_revenue.must_equal(12.04)
     end
   end
 end

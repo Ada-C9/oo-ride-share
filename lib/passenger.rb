@@ -20,5 +20,20 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def total_money
+      # total = @trips.inject {|sum, trip| sum + trip[@cost]} # why isn't this working!!!
+      total = 0
+
+      @trips.each do |trip|
+        total += trip.cost
+      end
+      return total
+    end
+
+    def total_time
+
+    end
+
   end
 end

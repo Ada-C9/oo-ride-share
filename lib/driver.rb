@@ -16,6 +16,7 @@ module RideShare
       @id = input[:id]
       @name = input[:name]
       @vehicle_id = input[:vin]
+      # if the input status is nil, make it available, otherwise keep the current status
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
@@ -38,10 +39,26 @@ module RideShare
 
     def add_trip(trip)
       if trip.class != Trip
+      # unless trip.class <= Trip # if Trip not a subclass of trip then not permissible
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 
       @trips << trip
     end
+
+    def total_revenue
+      # total_revenue = 0 replaced by trip.cost
+      fee = 1.65
+      driver_share = 0.8
+
+      subtotal = 0
+      @trips.each do |trip|
+        subtotal += trip.cost - fee
+      end
+
+      total = subtotal * driver_share
+      return total.to_f
+    end
+
   end
 end

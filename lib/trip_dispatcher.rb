@@ -20,14 +20,14 @@ module RideShare
 
       all_drivers = []
       my_file.each do |line|
-        input_data = {}
-        # Set to a default value
-        vin = line[2].length == 17 ? line[2] : "0" * 17
+        input_data = {} # turn each line to a hash. if this wasn't here, we could grab the data as if they're key value pairs
+
+        vin = line[2].length == 17 ? line[2] : "0" * 17 # checking for 17 num vin and puts zero if missing
 
         # Status logic
         status = line[3]
         status = status.to_sym
-
+        # this key name now equals the data at this location
         input_data[:vin] = vin
         input_data[:id] = line[0].to_i
         input_data[:name] = line[1]
@@ -39,8 +39,8 @@ module RideShare
     end
 
     def find_driver(id)
-      check_id(id)
-      @drivers.find{ |driver| driver.id == id }
+      check_id(id) # running check id method to ensure that no blanks or negatives accepted
+      @drivers.find{ |driver| driver.id == id } # calls instance var which holds load driver method
     end
 
     def load_passengers
@@ -68,26 +68,35 @@ module RideShare
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
 
       trip_data.each do |raw_trip|
-        driver = find_driver(raw_trip[:driver_id].to_i)
+        driver = find_driver(raw_trip[:driver_id].to_i) # getting driver id from array, and putting in method called find driver
+          # find_driver method searches the driver csv for matching driver
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
-          driver: driver,
+          driver: driver, # driver symbol is set to the driver variable defined above,
+          # which is calling find_driver method through an instance variable (containing method load drivers)
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
+        puts "before trip is set to trip variable #{start_time}"
+
         trip = Trip.new(parsed_trip)
+
+        puts "after trip is set to trip variable #{start_time}"
+
+        # Set up the relations
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
       end
 
-      trips
+      return trips
     end
 
     private
@@ -99,3 +108,6 @@ module RideShare
     end
   end
 end
+
+# tripx = RideShare::TripDispatcher
+# puts tripx.load_trips
