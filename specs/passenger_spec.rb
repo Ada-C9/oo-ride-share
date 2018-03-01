@@ -138,7 +138,7 @@ describe "Passenger class" do
       @passenger.add_trip(trip1)
       @passenger.add_trip(trip2)
       @passenger.add_trip(trip3)
-      
+
       @passenger.total_time.must_equal 0
     end
 

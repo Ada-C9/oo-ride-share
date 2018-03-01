@@ -77,4 +77,69 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "net_income" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    end
+
+    it "should calculate net income for all trips based on driver instance." do
+      default_time = Time.now
+      trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 30), rating: 5, cost: 76.20})
+
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 20), rating: 5, cost: 16.22})
+
+      trip3 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 39), rating: 5, cost: 44.23})
+
+      @driver.add_trip(trip1)
+      @driver.add_trip(trip2)
+      @driver.add_trip(trip3)
+
+      subtotal = (76.20 + 16.22 + 44.23)
+
+      @driver.net_income.must_equal((subtotal - 1.65) * 0.8)
+    end
+
+    it "return zero if driver has no trips" do
+      @driver.net_income.must_equal 0
+    end
+  end
+
+  describe "hourly_pay" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    end
+
+    it "should calculate hourly pay for all trips based on driver instance." do
+      default_time = Time.now
+      trip1 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 30), rating: 5, cost: 76.20})
+
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 20), rating: 5, cost: 16.22})
+
+      trip3 = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: default_time, end_time: default_time + (60 * 39), rating: 5, cost: 44.23})
+
+      @driver.add_trip(trip1)
+      @driver.add_trip(trip2)
+      @driver.add_trip(trip3)
+
+      subtotal = (76.20 + 16.22 + 44.23)
+      total_income = ((subtotal - 1.65) * 0.8)
+
+      driving_time_seconds = ((60 * 30) + (60 * 20) + (60 * 39))
+
+
+      driving_time_hours = (driving_time_seconds / 3600.0)
+
+
+      hour_pay = (total_income / driving_time_hours)
+
+      @driver.hourly_pay.must_equal(hour_pay)
+    end
+
+    it "return zero if driver has no trips" do
+      @driver.hourly_pay.must_equal 0
+    end
+  end
 end

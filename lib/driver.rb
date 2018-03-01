@@ -19,7 +19,6 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
@@ -44,6 +43,33 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def net_income
+      income = 0
+      @trips.each do |trip|
+        income += trip.cost
+      end
+      if income == 0
+        net_income = income
+      else
+        net_income = (income - 1.65) * 0.8
+      end
+      return net_income
+    end
+
+    def hourly_pay
+      driving_time_seconds = 0
+      @trips.each do |trip|
+        driving_time_seconds += trip.duration
+      end
+
+      if net_income != 0 && driving_time_seconds != 0
+        hourly_pay = (net_income / (driving_time_seconds / 3600.0))
+      else
+        hourly_pay = 0
+      end
+      return hourly_pay
     end
   end
 end
