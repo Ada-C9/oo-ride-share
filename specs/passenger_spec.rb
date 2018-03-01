@@ -123,6 +123,12 @@ describe "Passenger class" do
     end
 
     it "ignores in-progress trips" do
+      @passenger.add_trip(@trip_1)
+      @passenger.add_trip(@trip_2)
+      @passenger.add_trip(@in_progress_trip)
+      expected_total_time = @trip_1.duration + @trip_2.duration
+
+      @passenger.total_time.must_equal expected_total_time
 
     end
 

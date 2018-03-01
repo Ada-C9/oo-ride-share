@@ -32,7 +32,13 @@ module RideShare
     end
 
     def total_time
-      @trips.reduce(0) { |total, trip| total + trip.duration }
+      total_time = 0
+      @trips.each do |trip|
+        if !trip.ignore
+          total_time += trip.duration
+        end
+      end
+      return total_time
     end
 
   end
