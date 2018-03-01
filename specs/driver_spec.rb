@@ -116,7 +116,7 @@ describe "Driver class" do
       @driver.add_trip(trip)
       @driver.add_trip(trip2)
       # Assert/Then
-      @driver.tot_drive_time.must_equal 3600
+      @driver.tot_drive_time.must_equal 7200
     end
   end
 
