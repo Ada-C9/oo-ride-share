@@ -14,10 +14,6 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def update_passenger_info(new_trip)
-      add_trip(new_trip)
-    end
-
     def get_drivers
       @trips.map{ |t| t.driver }
     end

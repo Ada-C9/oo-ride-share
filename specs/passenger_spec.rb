@@ -41,7 +41,7 @@ describe "Passenger class" do
       trip1 = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: nil, cost: nil, rating: nil})
 
       initial_trips_length = passenger.trips.length
-      passenger.update_passenger_info(trip1)
+      passenger.add_trip(trip1)
       new_trips_length = passenger.trips.length
 
       new_trips_length.must_equal initial_trips_length + 1
