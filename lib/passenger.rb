@@ -40,7 +40,7 @@ module RideShare
       finished_trips.map{|trip| trip.duration}.inject(0, :+).round(1)
     end
 
-    def new_trip(trip)
+    def add_new_trip(trip)
       @trips << trip
     end
 

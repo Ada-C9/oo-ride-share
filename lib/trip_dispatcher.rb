@@ -92,13 +92,49 @@ module RideShare
       trips
     end
 
+    def match_trips
+      @trips.each do |trip|
+        @drivers.each do |driver|
+          if driver == trip.driver
+            driver.add_trip(trip)
+          end
+        end
+
+        @passengers.each do |passenger|
+          if passenger == trip.passenger
+            passengers.add_trip(trip)
+          end
+        end
+
+      end
+    end
+
+    def available_drivers
+      free_drivers = @drivers
+
+      free_drivers.reject { |driver| driver.status == :AVAILABLE}
+
+      return free_drivers
+    end
+
+    def next_driver
+      raise StandardError.new("No available driver") if available_drivers.empty?
+
+      first_driver = available_drivers.min_by{ |driver| driver.most_recent_trip.end_time }
+
+      return first_driver
+    end
+
     def request_trip(passenger_id)
+      match_trips
+
       new_trip_id = @trips.length + 1
       passenger = find_passenger(passenger_id)
-      # Q: if there is no available driver
-      request_driver = @drivers.find{|driver| driver.status == :AVAILABLE }
+      # puts passenger
 
-      raise StandardError "No available driver" if request_driver.nil?
+      request_driver = next_driver
+      # puts request_driver
+      # request_driver = @drivers.find{|driver| driver.status == :AVAILABLE }
 
       trip = {
         id: new_trip_id,
@@ -108,6 +144,7 @@ module RideShare
       }
 
       new_trip = RideShare::Trip.new(trip)
+
       @trips << new_trip
       # driver.new_trip(new_trip)
       return new_trip

@@ -72,9 +72,13 @@ module RideShare
       return (total_revenue / total_duration).round(2)
     end
 
-    def new_trip(trip)
+    def add_new_trip(trip)
       @trips << trip
       @status = :UNAVAILABLE
+    end
+
+    def most_recent_trip
+      finished_trips.max_by {|trip| trip.end_time}
     end
 
   end
