@@ -121,6 +121,9 @@ describe "TripDispatcher class" do
     end
 
     it "assigns end time, cost, and rating to nil" do
+      @result.end_time.must_be_nil
+      @cost.must_be_nil
+      @rating.must_be_nil
     end
 
     it "updates the trips list" do

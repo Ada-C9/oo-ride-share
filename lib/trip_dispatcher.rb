@@ -105,13 +105,9 @@ module RideShare
         passenger: passenger,
         driver: driver,
         start_time: Time.now,
-        # remember to change end_time to nil
-        # and update whatever gets broken in
-        # wave 1 as a result
-        # also change cost and rating to nil
-        end_time: Time.now + 25 * 60,
-        cost: 10.00,
-        rating: 5,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
       }
 
       trip = Trip.new(trip_info)
