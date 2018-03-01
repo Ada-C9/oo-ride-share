@@ -107,6 +107,8 @@ describe "TripDispatcher class" do
 
     it "changes chosen drivers status to UNAVAILABLE " do
       @dispatcher.request_trip(2).driver.status.must_equal :UNAVAILABLE
+      @dispatcher.request_trip(6).driver.status.wont_equal :AVAILABLE
+
     end
 
     it "adds a trip to passengers trips" do
@@ -116,8 +118,21 @@ describe "TripDispatcher class" do
     end
 
     it "adds a trip to drivers trips" do
-      @dispatcher.request_trip(2).driver.trips.length.must_equal 7
+      #@dispatcher.request_trip(2).driver.trips.length.must_equal 7
       #hmmmm...not sure how to track a random driver
+    end
+
+    it "trip contains a nil end_time, cost, and rating" do
+      @dispatcher.request_trip(2).end_time.must_be_nil
+      @dispatcher.request_trip(2).cost.must_be_nil
+      @dispatcher.request_trip(2).rating.must_be_nil
+    end
+
+    it "raises argument if no available drivers" do
+      47.times {@dispatcher.request_trip(1)}
+      # there are 47 available drivers in csv
+      # so adding an extra ride request should raise error
+      proc{@dispatcher.request_trip(4)}.must_raise ArgumentError
     end
 
   end

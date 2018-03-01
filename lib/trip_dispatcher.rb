@@ -92,17 +92,22 @@ module RideShare
 
     def request_trip(passenger_id)
       return nil if passenger_id.class != Integer
-
+      # this returns first available driver
       #driver = @drivers.find {|driver| driver.status == :AVAILABLE}
 
+      # this picks a random available driver
       available_drivers = @drivers.find_all {|driver| driver.status == :AVAILABLE}
+
+      if available_drivers.empty?
+        raise ArgumentError.new("No available drivers")
+      end
 
       driver = available_drivers.sample
 
       passenger = find_passenger(passenger_id)
 
       new_trip = {
-        id: @trips.length + 1,
+        id: trips.length + 1,
         driver: driver,
         passenger: passenger,
         start_time: Time.now,
@@ -113,7 +118,13 @@ module RideShare
 
       requested_trip = RideShare::Trip.new(new_trip)
 
-      # @trips << requested_trip
+      driver.status = :UNAVAILABLE
+      driver.add_trip(requested_trip)
+      passenger.add_trip(requested_trip)
+      trips << requested_trip
+
+      return requested_trip
+
     end
 
 
