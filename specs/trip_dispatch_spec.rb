@@ -160,22 +160,47 @@ describe "TripDispatcher class" do
       result.must_include @result
     end
 
-    it "returns an error when trying to compute the duration of the trip" do
-      result = proc { @result.duration }
-      result.must_raise StandardError
-    end
+    describe "pending trips excluded from calculations involving end_time, cost, and rating" do
+      before do
+        @passenger = @dispatcher.passengers.find do |passenger|
+          passenger.id == 54
+        end
+      end
 
-    it "is excluded from the calculation of the total amount of money the passenger has spent on all trips" do
-    end
+      it "raises an error when trying to compute the duration of the trip" do
+        result = proc { @result.duration }
+        result.must_raise StandardError
+      end
 
-    it "is excluded from the calculation of the total amount of time the passenger has spent on all trips" do
-    end
+      it "is excluded from the calculation of the total amount of money the passenger has spent on all trips" do
+        total_spent_before = @passenger.total_money_spent
 
-    it "is excluded from the total revenue calculation for the driver" do
-    end
+        new_trip = @dispatcher.request_trip(54)
 
-    it "is excluded from the average revenue per hour calculation for the driver" do
-    end
+        total_spent_after = @passenger.total_money_spent
+
+        total_spent_after.must_equal total_spent_before
+      end
+
+      it "is excluded from the calculation of the total amount of time the passenger has spent on all trips" do
+        total_time_before = @passenger.total_time_spent
+
+        new_trip = @dispatcher.request_trip(54)
+
+        total_time_after = @passenger.total_time_spent
+
+        total_time_after.must_equal total_time_before
+      end
+
+      it "is excluded from the total revenue calculation for the driver" do
+      end
+
+      it "is excluded from the average revenue per hour calculation for the driver" do
+      end
+
+      it "is excluded from the average rating calculation for the driver" do
+      end 
+    end # pending trips excluded
 
   end # describe TripDispatcher#request_trip(passenger_id)
 
