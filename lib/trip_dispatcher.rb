@@ -95,6 +95,11 @@ module RideShare
         raise ArgumentError.new("Invalid passenger id!")
       else
         new_rider = find_passenger(passenger_id)
+      end
+
+      if @drivers.select {|driver| driver.status == :AVAILABLE}.first == nil
+        raise ArgumentError.new("No drivers currently available!")
+      else
         new_driver = @drivers.select {|driver| driver.status == :AVAILABLE}.first
       end
 
@@ -112,6 +117,7 @@ module RideShare
       new_driver.add_trip(new_ride)
       new_rider.add_trip(new_ride)
       new_driver.status = :UNAVAILABLE
+      @trips << new_ride
       return new_ride
     end
 

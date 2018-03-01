@@ -102,6 +102,9 @@ describe "TripDispatcher class" do
 
     it "raises an ArgumentError for an invalid id" do
       proc {@dispatcher.request_trip(0)}.must_raise ArgumentError
+      proc {@dispatcher.request_trip("yay")}.must_raise ArgumentError
+      proc {@dispatcher.request_trip(-1)}.must_raise ArgumentError
+      proc {@dispatcher.request_trip(0)}.must_raise ArgumentError
     end
 
     it "inputs nil for end_time, cost, and rating" do
@@ -121,12 +124,31 @@ describe "TripDispatcher class" do
     it "changes driver's status to UNAVAILABLE" do
       @dispatcher.request_trip(1).driver.status.must_equal :UNAVAILABLE
     end
-    #
+
     it "correctly sets the start_time" do
       @dispatcher.request_trip(1).start_time.must_be_instance_of Time
     end
 
     it "throws an error if no drivers are available" do
+      proc {
+        50.times do
+        @dispatcher.request_trip(1)
+        end
+        @dispatcher.request_trip(1)
+      }.must_raise ArgumentError
+    end
+
+    it "updates dispatcher's number of rides" do
+      @dispatcher.trips.length.must_equal 600
+      @dispatcher.request_trip(1)
+      @dispatcher.trips.length.must_equal 601
+    end
+
+    it "updates passenger's number of rides" do
+      @dispatcher.passengers.first.id.must_equal 1
+      @dispatcher.passengers.first.trips.length.must_equal 2
+      @dispatcher.request_trip(1)
+      @dispatcher.passengers.first.trips.length.must_equal 3
     end
 
 
