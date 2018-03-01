@@ -41,7 +41,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +58,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -119,7 +119,7 @@ describe "Driver class" do
       @trips = [RideShare::Trip.new({rating: 3, cost: 10, start_time: @start_time_1, end_time: @end_time_1}),
         RideShare::Trip.new({rating: 5, cost: 10, start_time: @start_time_2, end_time: @end_time_2})]
     end
-    
+
     it 'returns the average_revenue_per_hr' do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: @trips)
       result = @driver.average_revenue_per_hr
