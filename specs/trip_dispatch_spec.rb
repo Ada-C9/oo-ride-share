@@ -99,6 +99,20 @@ describe "find_available_driver method" do
   end
 end # end of find_available_driver
 
+describe "find_next_trip_id" do
+  it "finds the next appropriate trip id" do
+    dispatcher = RideShare::TripDispatcher.new
+    dispatcher.find_next_trip_id.must_equal 601
+  end
+end # end of describe "find_next_trip_id"
+
+describe "get_new_start_time" do
+  it "creates an instance of time" do
+    dispatcher = RideShare::TripDispatcher.new
+    dispatcher.get_new_start_time.must_be_instance_of Time
+  end
+end # end of describe get_current_time
+
 describe "request_trip(passenger_id) method" do
 
   it "throws an ArgumentError if passenger_id is invalid" do
@@ -108,13 +122,8 @@ describe "request_trip(passenger_id) method" do
 
     end # end of throws an ArgumentError if passenger_id is invalid
 
-    it "finds the next appropriate trip id" do
-      dispatcher = RideShare::TripDispatcher.new
-      dispatcher.find_next_trip_id.must_equal 601
+    it "creates a new instance of Trip" do
     end
-    #
-    # it "creates a new instance of Trip" do
-    # end
 
   end # end of describe request_trip(passenger_id) method
 end # end of describe "TripDispatcher class"

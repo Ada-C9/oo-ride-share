@@ -106,6 +106,10 @@ module RideShare
       return new_id_num
     end
 
+    def get_new_start_time
+      start_time = Time.now
+    end
+
     def request_trip(passenger_id)
       if find_passenger(passenger_id) == nil
         raise ArgumentError.new("Passnger ID #{passenger_id} is not valid.")
