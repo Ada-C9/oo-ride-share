@@ -54,9 +54,11 @@ module RideShare
     def total_revenue
       fee = 1.65
       driver_percent = 0.8
-
       subtotal = 0
-      @trips.each do |trip|
+
+      finished_trips = @trips.select{ |trip| trip.end_time != nil }
+      finished_trips.each do |trip|
+      # @trips.each do |trip|
         subtotal += trip.cost - fee
       end
 
@@ -74,7 +76,10 @@ module RideShare
 
     def total_drive_time_seconds #refactor all this time stuff somewhere. trip?
       total_drive_time_seconds = 0
-      @trips.each do |trip|
+
+      finished_trips = @trips.select{ |trip| trip.end_time != nil }
+      finished_trips.each do |trip|
+      # @trips.each do |trip|
         total_drive_time_seconds += trip.calculate_duration
       end
       return total_drive_time_seconds
@@ -85,7 +90,6 @@ module RideShare
       total_drive_time_hours = total_drive_time_minutes / 60
       return total_drive_time_hours
     end
-
 
   end
 end

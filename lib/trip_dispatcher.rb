@@ -112,7 +112,8 @@ module RideShare
       trip = Trip.new(trip_data)
       assigned_driver = trip_data[:driver]
       assigned_driver.trip_in_progress(trip)
-      passenger.trip_in_progress(trip)
+      passenger.add_trip(trip)
+      # passenger.trip_in_progress(trip)
 
       @trips << trip
       return trip

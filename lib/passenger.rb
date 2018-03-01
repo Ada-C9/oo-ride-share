@@ -24,9 +24,9 @@ module RideShare
       @trips << trip
     end
 
-    def trip_in_progress(trip) #why not just use existing add_trip(trip) here?
-      @trips << trip
-    end
+    # def trip_in_progress(trip) #why not just use existing add_trip(trip) here?
+    #   @trips << trip
+    # end
 
     def total_spend
       finished_trips = @trips.select{ |trip| trip.end_time != nil}
