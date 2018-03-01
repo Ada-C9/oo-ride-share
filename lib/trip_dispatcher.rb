@@ -43,6 +43,19 @@ module RideShare
       @drivers.find{ |driver| driver.id == id }
     end
 
+    def available_driver
+      @drivers.select { |driver| driver.status == :AVAILABLE }
+    end
+
+    def request_trip(passenger_id)
+      Trip.new({
+        id: @trips.length + 1,
+        driver: self.available_driver,
+        passenger: self.find_passenger(passenger_id),
+        start_time: Time.now
+      })
+    end
+
     def load_passengers
       passengers = []
 
@@ -52,7 +65,7 @@ module RideShare
         input_data[:name] = line[1]
         input_data[:phone] = line[2]
 
-        passengers << Passenger.new(input_data)
+      passengers << Passenger.new(input_data)
       end
 
       return passengers
@@ -97,5 +110,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end

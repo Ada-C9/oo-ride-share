@@ -85,8 +85,6 @@ describe "Driver class" do
   describe "get_revenue method" do
     before do
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60 # 25 minutes
     end
 
     it "calculates revenue with one trip" do

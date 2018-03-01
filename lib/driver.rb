@@ -82,10 +82,12 @@ module RideShare
     end
 
     def get_revenue_per_hour
-
       return 0 if self.trips.empty?
+      (self.get_revenue / self.get_total_time * 3600).round(2)
+    end
 
-      (revenue_per_hour = self.get_revenue / self.get_total_time * 3600).round(2)
+    def self.available_driver
+      self.find {|driver| driver.status == :AVAILABLE}
     end
 
   end

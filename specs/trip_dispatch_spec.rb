@@ -89,4 +89,12 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "request_trip method" do
+    it "returns an instance of Trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+    end
+  end
+
 end
