@@ -28,8 +28,12 @@ module RideShare
 
     # should be unable to calc duration if end_time == nil
     def duration
-      time_in_seconds = @end_time - @start_time
-      time_in_hours = time_in_seconds / 3600
+      if @end_time.nil?
+        raise StandardError.new("Cannot calculate trip duration. Trip is still in progress.")
+      else
+        time_in_seconds = @end_time - @start_time
+        time_in_hours = time_in_seconds / 3600
+      end
     end
 
   end

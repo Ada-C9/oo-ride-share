@@ -159,6 +159,24 @@ describe "TripDispatcher class" do
       result = @result.passenger.trips
       result.must_include @result
     end
+
+    it "returns an error when trying to compute the duration of the trip" do
+      result = proc { @result.duration }
+      result.must_raise StandardError
+    end
+
+    it "is excluded from the calculation of the total amount of money the passenger has spent on all trips" do
+    end
+
+    it "is excluded from the calculation of the total amount of time the passenger has spent on all trips" do
+    end
+
+    it "is excluded from the total revenue calculation for the driver" do
+    end
+
+    it "is excluded from the average revenue per hour calculation for the driver" do
+    end
+
   end # describe TripDispatcher#request_trip(passenger_id)
 
 
