@@ -25,7 +25,11 @@ module RideShare
     end # end of initialize
 
     def duration
-      duration = (@end_time - @start_time)
+      if @end_time != nil
+        return duration = (@end_time - @start_time)
+      else
+        return nil
+      end
     end
 
 
