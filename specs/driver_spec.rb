@@ -37,11 +37,24 @@ describe "Driver class" do
     end
   end
 
+  describe "change_status method" do
+    it "changes status to unavailable if no status is given when driver is instantiated" do
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      @driver.status.must_equal :AVAILABLE
+      @driver.change_status.must_equal :UNAVAILABLE
+    end
+
+    it "changes status to available if initial status is unavailable" do
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678", status: :UNAVAILABLE)
+      @driver.change_status.must_equal :AVAILABLE
+    end
+  end
+
   describe "add trip method" do
     before do
-      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, date: "2016-08-08", rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do

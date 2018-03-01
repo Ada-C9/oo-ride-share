@@ -20,6 +20,14 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def add_trip(trip)
+      if trip.class != Trip
+        raise ArgumentError.new("Can only add trip instance to trip collection")
+      end
+
+      @trips << trip
+    end
+
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
@@ -33,14 +41,6 @@ module RideShare
       end
 
       return average
-    end
-
-    def add_trip(trip)
-      if trip.class != Trip
-        raise ArgumentError.new("Can only add trip instance to trip collection")
-      end
-
-      @trips << trip
     end
 
     def change_status
