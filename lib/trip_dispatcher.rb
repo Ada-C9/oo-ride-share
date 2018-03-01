@@ -51,14 +51,14 @@ module RideShare
         input_data[:id] = line[0].to_i
         input_data[:name] = line[1]
         input_data[:phone] = line[2]
-
+        #there is no trip list in here to start with
         passengers << Passenger.new(input_data)
       end
 
       return passengers
     end
 
-    def find_passenger(id)
+    def find_passenger(id) # <-- for the beginning of Wave 2
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
     end
@@ -67,27 +67,36 @@ module RideShare
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
 
+      # raw data from trips.CSV
       trip_data.each do |raw_trip|
+        #
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+
+        # Charles suggests we add this (from group review 28 Feb 2018)
+        if driver.nil? || passenger.nil?
+          raise "Could not find driver or passenger for trip ID #{raw_trip[:id]}"
+        end
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
         trip = Trip.new(parsed_trip)
+
+        # set up relations
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
       end
 
-      trips
+      return trips
     end
 
     private
@@ -96,6 +105,6 @@ module RideShare
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
-    end
-  end
-end
+    end # ends check_id
+  end # ends class TripDispatcher
+end # ends module RideShare

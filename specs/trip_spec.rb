@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Trip class" do
 
@@ -38,5 +39,27 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
-  end
-end
+
+
+    it "raises an error for invalid end time" do
+      # this is from "trips.csv" trip_id number 20, I reversed the start_time and end_time
+      @trip_data[:start_time] = Time.parse("2016-02-16T13:14:00+00:00")
+      @trip_data[:end_time] = Time.parse("2016-02-16T12:45:00+00:00")
+
+      # # or should it be like this:
+      # # start_time = @start_time[:start_time]
+      # start_time = @trip_data[:start_time]
+      # end_time = @trip_data[:end_time]
+      #
+      # start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      # end_time = start_time + 25 * 60 # 25 minutes
+
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+      
+    end # ends 'it "raises an error for invalid end time" do'
+
+
+  end # ends "describe "initialize" do"
+end # ends "describe "Trip class" do"

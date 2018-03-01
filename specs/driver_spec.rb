@@ -13,6 +13,13 @@ describe "Driver class" do
 
     it "throws an argument error with a bad ID value" do
       proc{ RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")}.must_raise ArgumentError
+      # Charles says to do this instead:
+      # begin
+    #   RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")}
+    #   fail
+    # rescue ArgumentError
+    #   pass
+    # end
     end
 
     it "throws an argument error with a bad VIN value" do
@@ -41,7 +48,7 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: "2016-08-08", end_time: "2016-08-08T16:01:00+00:00", rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +65,7 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", end_time: "2016-08-08T10:42:00+00:00", rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -75,6 +82,32 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
-    end
-  end
-end
+    end # ends 'it "returns zero if no trips" do'
+  end # ends 'describe "average_rating method" do'
+
+  # TODO work on this test - came from code that Dan wrote, sits in file named "total_revenue_driver.rb"
+  describe "total_revenue method" do
+    it "calculates the total revenue" do
+      # should "trips" here be "@trips"?
+      trips = [
+        RideShare::Trip.new({cost: 17.39, rating: 3, start_time: "2016-04-05T14:01:00+00:00", end_time: "2016-04-05T14:09:00+00:00"}),
+        RideShare::Trip.new({cost: 17.12, rating: 3, start_time: "2016-01-13T13:16:00+00:00", end_time: "2016-01-13T13:28:00+00:00"}),
+        RideShare::Trip.new({cost: 21.88, rating: 3, start_time: "2016-05-02T09:06:00+00:00", end_time: "2016-05-02T09:56:00+00:00"})
+      ]
+      # should "driver_data" be "@driver_data"?
+      driver_data = {
+        id: 7,
+        vin: 'a' * 17,
+        name: 'test driver',
+        trips: trips
+      }
+      # subtotal is 56.39 minus 1.65 fee equals 54.74,
+      # times 0.8 equals 43.792
+      driver = RideShare::Driver.new(driver_data)
+      driver.total_revenue.must_equal 41.152
+
+    end # ends 'it "calculates the total revenue" do'
+
+  end # ends 'describe "total_revenue method" do'
+
+end # ends 'describe "Driver class" do'

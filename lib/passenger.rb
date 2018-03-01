@@ -10,10 +10,20 @@ module RideShare
       @id = input[:id]
       @name = input[:name]
       @phone_number = input[:phone]
-      @trips = input[:trips] == nil ? [] : input[:trips]
+
+      # did whoever give us this input hash put any trip in it?
+      # you can also do this:
+      if input.keys.include? :trips
+        @trips = input[:trips]
+      else
+        @trips = []
+      end
+
+      # this was replaced by the above 5 lines of code
+      # @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def get_drivers
+    def get_drivers  # make this called "drivers"
       @trips.map{ |t| t.driver }
     end
 
