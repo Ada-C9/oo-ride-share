@@ -24,13 +24,24 @@ module RideShare
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
-        total_ratings += trip.rating
+        if trip.rating.nil?
+        else
+          total_ratings += trip.rating
+        end
       end
 
-      if trips.length == 0
+      trips_length = 0
+      @trips.each do |trip|
+        if trip.end_time.nil?
+        else
+          trips_length += 1
+        end
+      end
+
+      if trips_length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / trips_length
       end
 
       return average
@@ -47,7 +58,10 @@ module RideShare
     def total_revenue
       total_revenue = 0.0
       @trips.each do |trip|
-        total_revenue += trip.cost - 1.65
+        if trip.cost.nil?
+        else
+          total_revenue += trip.cost - 1.65
+        end
       end
       total_revenue *= 0.80
       return total_revenue
@@ -57,11 +71,13 @@ module RideShare
       return self.total_time_spent == 0.0 ? 0.00 : (self.total_revenue / self.total_time_spent).round(2)
     end
 
-    # make this helper method private
     def total_time_spent
       total_time_spent = 0.0
       @trips.each do |trip|
-        total_time_spent += trip.duration
+        if trip.end_time.nil?
+        else
+          total_time_spent += trip.duration
+        end
       end
       return total_time_spent
     end

@@ -193,13 +193,54 @@ describe "TripDispatcher class" do
       end
 
       it "is excluded from the total revenue calculation for the driver" do
+        next_available_driver = @dispatcher.drivers.find do |driver|
+          driver.id == 3
+        end
+
+        total_revenue_before = next_available_driver.total_revenue
+
+        new_trip = @dispatcher.request_trip(4)
+
+        driver = new_trip.driver
+
+        total_revenue_after = driver.total_revenue
+
+        total_revenue_after.must_equal total_revenue_before
+
       end
 
       it "is excluded from the average revenue per hour calculation for the driver" do
+        next_available_driver = @dispatcher.drivers.find do |driver|
+          driver.id == 3
+        end
+
+        average_revenue_before = next_available_driver.average_revenue
+
+        new_trip = @dispatcher.request_trip(4)
+
+        driver = new_trip.driver
+
+        average_revenue_after = driver.average_revenue
+
+        average_revenue_after.must_equal average_revenue_before
+
       end
 
       it "is excluded from the average rating calculation for the driver" do
-      end 
+        next_available_driver = @dispatcher.drivers.find do |driver|
+          driver.id == 3
+        end
+
+        average_rating_before = next_available_driver.average_rating
+
+        new_trip = @dispatcher.request_trip(4)
+
+        driver = new_trip.driver
+
+        average_rating_after = driver.average_rating
+
+        average_rating_after.must_equal average_rating_before
+      end
     end # pending trips excluded
 
   end # describe TripDispatcher#request_trip(passenger_id)
