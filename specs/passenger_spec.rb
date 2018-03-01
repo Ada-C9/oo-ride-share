@@ -1,3 +1,4 @@
+require 'pry'
 require_relative 'spec_helper'
 
 describe "Passenger class" do
@@ -36,7 +37,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: '2015-05-20T12:14:00+00:00', end_time: '2015-05-20 12:39:00', rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse("2015-05-20 12:14:00"), end_time: Time.parse("2015-05-20 12:39:00"), rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +59,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: '2015-05-20T12:14:00+00:00', end_time: '2015-05-20 12:39:00', rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2015-05-20 12:14:00"), end_time: Time.parse("2015-05-20 12:39:00"), rating: 5})
 
       @passenger.add_trip(trip)
     end

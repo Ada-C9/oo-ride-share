@@ -5,8 +5,8 @@ describe "Trip class" do
 
   describe "initialize" do
     before do
-      start_time = '2015-05-20T12:14:00+00:00'
-      end_time = '2015-05-20 12:39:00'
+      start_time = Time.parse("2015-05-20 12:14:00")
+      end_time = Time.parse("2015-05-20 12:39:00")
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -42,31 +42,8 @@ describe "Trip class" do
     ## New Test
     it "raises an error for end_time that precedes start_time" do
       control_test_time = Time.now
-      @trip_data[:start_time] = control_test_time.to_s
-      @trip_data[:end_time] = '2015-05-20 12:39:00'
-      proc {
-        RideShare::Trip.new(@trip_data)
-      }.must_raise ArgumentError
-    end
-    ##
-
-    ## New Test
-    it "must raise error if start_time or end_time are in the future." do
-      control_test_time = Time.now
-      @trip_data[:start_time] = (control_test_time + 1).to_s
-      @trip_data[:end_time] = (control_test_time + 1).to_s
-      proc {
-        RideShare::Trip.new(@trip_data)
-      }.must_raise ArgumentError
-
-      @trip_data[:start_time] = (control_test_time - 1000).to_s
-      @trip_data[:end_time] = (control_test_time + 1).to_s
-      proc {
-        RideShare::Trip.new(@trip_data)
-      }.must_raise ArgumentError
-
-      @trip_data[:start_time] = (control_test_time + 1).to_s
-      @trip_data[:end_time] = (control_test_time - 1000).to_s
+      @trip_data[:start_time] = control_test_time
+      @trip_data[:end_time] = control_test_time - 20
       proc {
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
@@ -81,10 +58,10 @@ describe "Trip class" do
     ##
   end
   ## New Tests
-  describe 'trip class' do
+  describe 'duration' do
     before do
-      start_time = '2015-05-20T12:14:00+00:00'
-      end_time = '2015-05-20 12:39:00'
+      start_time = Time.parse("2015-05-20 12:14:00")
+      end_time = Time.parse("2015-05-20 12:39:00")
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -96,29 +73,23 @@ describe "Trip class" do
       }
       @trip = RideShare::Trip.new(@trip_data)
     end
-    it "returns an float for trip duration in seconds" do
-      trip_duration_in_seconds = @trip.duration
-      trip_duration_in_seconds.must_be_kind_of Float
+
+    it "returns duration of 0 if start and end times are the same." do
+      control_test_time = Time.now
+
+      @trip_data[:end_time] = control_test_time
+      @trip_data[:start_time] = control_test_time
+
+      RideShare::Trip.new(@trip_data).duration.must_equal 0
     end
 
-    it "trip duration: raises an error for end_time that precedes start_time" do
+    it "returns exact duration in seconds between start and end times." do
       control_test_time = Time.now
-      @trip.start_time = control_test_time
-      @trip.end_time = Time.parse("2015-05-20 12:39:00")
-      proc {
-        @trip.duration
-      }.must_raise ArgumentError
-    end
-    it "returns an float for trip duration in seconds, even if trip is only 0 seconds long" do
-      control_test_time = Time.now
-      @trip.start_time = Time.parse("2015-05-20 12:39:00")
-      @trip.end_time = control_test_time
-      @trip.duration.must_be_kind_of Float
 
-      @trip.start_time = control_test_time
-      @trip.end_time = control_test_time
-      @trip.duration.must_be_kind_of Float
-      @trip.duration.must_equal 0.0
+      @trip_data[:end_time] = control_test_time + 23
+      @trip_data[:start_time] = control_test_time
+
+      RideShare::Trip.new(@trip_data).duration.must_equal 23
     end
   end
   ##
