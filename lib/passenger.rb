@@ -22,7 +22,13 @@ module RideShare
     end
 
     def total_cost
-      @trips.reduce(0) { |total, trip| total + trip.cost }
+      total_cost = 0
+      @trips.each do |trip|
+        if !trip.ignore
+          total_cost += trip.cost
+        end
+      end
+      return total_cost
     end
 
     def total_time

@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-xdescribe "Passenger class" do
+describe "Passenger class" do
 
   before do
     # 1,Nina Hintz Sr.,560.815.3059
@@ -13,6 +13,7 @@ xdescribe "Passenger class" do
     @driver_2 = RideShare::Driver.new(id: 17, name: "Federico Bins V", vin: "W092FDPH6FNNK102M", status: :AVAILABLE, trips: [])
     @trip_1 = RideShare::Trip.new(id: 46, driver: @driver_1, passenger: @passenger, start_time: Time.parse('2016-06-28T06:39:00+00:00'), end_time: Time.parse('2016-06-28T07:24:00+00:00'), cost: 13.04, rating: 2)
     @trip_2 = RideShare::Trip.new(id: 272, driver: @driver_2, passenger: @passenger, start_time: Time.parse('2015-09-14T08:25:00+00:00'), end_time: Time.parse('2015-09-14T09:23:00+00:00'), cost: 24.25, rating: 4)
+    @in_progress_trip = RideShare::Trip.new(id: 601, driver: 101, passenger: 1, start_time: Time.now, end_time: nil , cost: 10.00, rating: nil)
   end
 
   describe "Passenger instantiation" do
@@ -84,8 +85,6 @@ xdescribe "Passenger class" do
 
   end
 
-  # Ignore any in-progress trips (end_time is nil) for calculation
-  # Add new tests (driver_spec & passenger_spec) for this new situation (in-progress trip added)
   describe "total_cost" do
 
     it "calculates that passenger's total amount of money spent" do
@@ -99,7 +98,13 @@ xdescribe "Passenger class" do
       @passenger.total_cost.must_equal 0
     end
 
-    # it ""
+    it "ignores in-progress trips" do
+      @passenger.add_trip(@trip_1)
+      @passenger.add_trip(@trip_2)
+      @passenger.add_trip(@in_progress_trip)
+
+      @passenger.total_cost.must_equal (13.04 + 24.25)
+    end
 
   end
 
@@ -115,6 +120,10 @@ xdescribe "Passenger class" do
 
     it "returns 0 if there is no trip for this passenger" do
       @passenger.total_time.must_equal 0
+    end
+
+    it "ignores in-progress trips" do
+
     end
 
   end
