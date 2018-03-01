@@ -101,6 +101,7 @@ module RideShare
         rating: nil
       }
       new_trip = Trip.new(new_trip_details)
+      @trips << new_trip
       target_passenger = get_passenger(passenger_id)
       target_passenger.add_trip(new_trip)
       new_trip.driver.add_trip(new_trip)

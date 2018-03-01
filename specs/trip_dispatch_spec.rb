@@ -101,6 +101,11 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(@passenger.id).must_be_instance_of RideShare::Trip
     end
 
+    it "should add the trip to the Dispatchers collection of trips" do
+      new_trip = @dispatcher.request_trip(@passenger.id)
+      @dispatcher.trips.must_include new_trip
+    end
+
     it "should automatically assign a driver to the trip" do
       @dispatcher.request_trip(@passenger.id).driver.must_be_instance_of RideShare::Driver
     end
