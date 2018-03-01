@@ -45,10 +45,11 @@ module RideShare
     end
 
     def total_revenue
-      total_revenue = 0
+      total_revenue = 0.0
       @trips.each do |trip|
-        total_revenue += trip.cost
+        total_revenue += trip.cost - 1.65
       end
+      total_revenue *= 0.80
       return total_revenue
     end
 
@@ -56,6 +57,7 @@ module RideShare
       return self.total_time_spent == 0.0 ? 0.00 : (self.total_revenue / self.total_time_spent).round(2)
     end
 
+    # make this helper method private
     def total_time_spent
       total_time_spent = 0.0
       @trips.each do |trip|
@@ -69,7 +71,6 @@ module RideShare
     end
 
     def new_trip_change_status
-
       @status = :UNAVAILABLE
     end
 

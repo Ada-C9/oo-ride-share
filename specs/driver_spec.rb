@@ -109,7 +109,8 @@ describe "Driver class" do
       end
 
       it "returns the sum of the cost of each of the driver's trips" do
-        total_revenue = @trip_one.cost + @trip_two.cost + @trip_three.cost
+        total_revenue = @trip_one.cost + @trip_two.cost + @trip_three.cost - 1.65 * 3
+        total_revenue *= 0.80
 
         result = @driver.total_revenue
         result.must_equal total_revenue
@@ -137,7 +138,9 @@ describe "Driver class" do
 
         total_duration_in_hours = total_duration_in_seconds
 
-        total_revenue = @trip_one.cost + @trip_two.cost + @trip_three.cost
+        total_revenue = @trip_one.cost + @trip_two.cost + @trip_three.cost - 1.65 * 3
+
+        total_revenue *= 0.80
 
         average_revenue = total_revenue / total_duration_in_hours
 
