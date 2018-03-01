@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 
+# TODO: test is all ride's features are nil ONLY if ride is in progress
 
 describe "Driver class" do
 
@@ -58,18 +59,27 @@ describe "Driver class" do
     end
 
     it "increases the trip count by one" do
-      previous = @driver.trips.length
-      @driver.add_trip(@trip)
-      @driver.trips.length.must_equal previous + 1
+      test_driver = RideShare::Driver.new(id: 42, name: "Lovelace",
+        vin: "12345678912345678")
+
+      previous = test_driver.trips.length
+
+      new_trip = RideShare::Trip.new({id: 8, driver: test_driver,
+        passenger: @pass, start_time: Time.parse("2018-01-02T10:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"), rating: 5})
+
+      test_driver.add_trip(new_trip)
+      test_driver.trips.length.must_equal previous + 1
     end
 
     it "Does not add a trip if the driver is unavailable" do
-      @driver.status.must_equal :UNAVAILABLE
-      
-      proc { RideShare::Trip.new({id: 66, driver: @driver, passenger: @pass,
-        start_time: Time.parse("2018-01-02T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
-        rating: 5}) }.must_raise ArgumentError
+      test_driver = RideShare::Driver.new(id: 42, name: "Lovelace", status:
+        :UNAVAILABLE, vin: "12345678912345678")
+
+      proc { test_driver.add_trip(RideShare::Trip.new({id: 66,
+        driver: test_driver, passenger: @pass, start_time:
+        Time.parse("2018-01-02T10:42:00+00:00"), end_time: nil, cost: nil,
+        rating: nil})) }.must_raise ArgumentError
       # @driver.add_trip(@trip)
       # @driver.trips.length.must_equal previous + 1
     end

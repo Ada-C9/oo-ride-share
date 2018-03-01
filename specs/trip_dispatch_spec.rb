@@ -162,6 +162,11 @@ describe "TripDispatcher class" do
       end
       @dispatcher.request_trip(27).must_be_nil
     end
+
+    # it "finds the drivers' whose ride ended the longest ago" do
+    #   test_driver = RideShare::Driver
+    #   @dispatcher.
+    # end
   end
 
 end

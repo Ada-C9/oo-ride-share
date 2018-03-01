@@ -37,20 +37,29 @@ describe "Passenger class" do
   describe "get_total_money_spent" do
 
     before do
+      driver1 = RideShare::Driver.new(id: 3, name: "Lovelace",
+        vin: "12345678912345678")
+
+      driver2 = RideShare::Driver.new(id: 4, name: "Lovelace",
+        vin: "12345678912345678")
+
+      driver3 = RideShare::Driver.new(id: 8, name: "Lovelace",
+        vin: "12345678912345678")
+
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
          phone: "1-602-620-2330 x3723", trips: [])
 
-      @trip1 = RideShare::Trip.new({id: 3, driver: nil, passenger: @passenger,
+      @trip1 = RideShare::Trip.new({id: 3, driver: driver1, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:40:00+00:00"),
         end_time: Time.parse("2018-01-02T11:00:00+00:00"), cost: 20.45,
         rating: 5})
 
-      @trip2 = RideShare::Trip.new({id: 5, driver: nil, passenger: @passenger,
+      @trip2 = RideShare::Trip.new({id: 5, driver: driver2, passenger: @passenger,
         start_time: Time.parse("2018-01-04T10:45:00+00:00"),
         end_time: Time.parse("2018-01-4T11:15:00+00:00"), cost: 10.05,
         rating: 4})
 
-      @trip3 = RideShare::Trip.new({id: 22, driver: nil, passenger: @passenger,
+      @trip3 = RideShare::Trip.new({id: 22, driver: driver3, passenger: @passenger,
         start_time: Time.parse("2018-01-05T09:30:00+00:00"),
         end_time: Time.parse("2018-01-05T10:00:00+00:00"), cost: 11.0,
         rating: 2})
@@ -76,20 +85,29 @@ describe "Passenger class" do
   describe "calculates the total trips time" do
 
     before do
+      driver1 = RideShare::Driver.new(id: 3, name: "Lovelace",
+        vin: "12345678912345678")
+
+      driver2 = RideShare::Driver.new(id: 4, name: "Lovelace",
+        vin: "12345678912345678")
+
+      driver3 = RideShare::Driver.new(id: 8, name: "Lovelace",
+        vin: "12345678912345678")
+
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
          phone: "1-602-620-2330 x3723", trips: [])
 
-      @trip1 = RideShare::Trip.new({id: 3, driver: nil, passenger: @passenger,
+      @trip1 = RideShare::Trip.new({id: 3, driver: driver1, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:40:00+00:00"),
         end_time: Time.parse("2018-01-02T11:00:00+00:00"), cost: 20.45,
         rating: 5})
 
-      @trip2 = RideShare::Trip.new({id: 5, driver: nil, passenger: @passenger,
+      @trip2 = RideShare::Trip.new({id: 5, driver: driver2, passenger: @passenger,
         start_time: Time.parse("2018-01-04T10:45:00+00:00"),
         end_time: Time.parse("2018-01-4T11:15:00+00:00"), cost: 10.05,
         rating: 5})
 
-      @trip3 = RideShare::Trip.new({id: 22, driver: nil, passenger: @passenger,
+      @trip3 = RideShare::Trip.new({id: 22, driver: driver3, passenger: @passenger,
         start_time: Time.parse("2018-01-05T09:30:00+00:00"),
         end_time: Time.parse("2018-01-05T10:00:00+00:00"), cost: 11.0,
         rating: 5})
