@@ -97,6 +97,27 @@ describe "TripDispatcher class" do
 
     it "will create a new trip object" do
       @dispatcher.request_trip(2).must_be_instance_of RideShare::Trip
+      @dispatcher.request_trip("r").must_be_nil
+    end
+
+    it "will add a new trip to trips array" do
+     @dispatcher.request_trip(2)
+     @dispatcher.trips.length.must_equal 601
+    end
+
+    it "changes chosen drivers status to UNAVAILABLE " do
+      @dispatcher.request_trip(2).driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "adds a trip to passengers trips" do
+      @dispatcher.request_trip(2).passenger.trips.length.must_equal 2
+      @dispatcher.request_trip(2).passenger.trips.length.must_equal 3
+      @dispatcher.request_trip(2).passenger.trips.length.must_equal 4
+    end
+
+    it "adds a trip to drivers trips" do
+      @dispatcher.request_trip(2).driver.trips.length.must_equal 7
+      #hmmmm...not sure how to track a random driver
     end
 
   end
