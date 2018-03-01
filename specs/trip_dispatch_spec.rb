@@ -114,6 +114,56 @@ describe "TripDispatcher class" do
       last_trip.cost.must_equal 26.76
       last_trip.rating.must_equal 3
     end
-
   end
+
+  describe "#request_trip(passenger_id)" do
+    before do
+
+      @dispatcher = RideShare::TripDispatcher.new
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678", status: :AVAILABLE),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "Create a new instance of Trip" do
+      @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+    end
+
+    it "Find the person requesting a trip" do
+      @dispatcher.request_trip(1).passenger.must_equal @dispatcher.find_passenger(1)
+    end
+
+    it "Automatically assign a driver to the trip" do
+      @dispatcher.request_trip(1).driver.must_be_instance_of RideShare::Driver
+    end
+
+    it "Automatically assign a driver to the trip" do
+      @dispatcher.request_trip(1).driver.must_be_instance_of RideShare::Driver
+      @dispatcher.request_trip(1).driver.status.must_equal :AVAILABLE
+    end
+
+    it "Choose the first driver whose status is :AVAILABLE" do
+      @dispatcher.request_trip(1).driver.name.must_equal "Emory Rosenbaum"
+    end
+
+    it "Use the current time for the start time" do
+      @dispatcher.request_trip(1).start_time.must_be_instance_of Time
+      (@dispatcher.request_trip(1).start_time.to_i - Time.now.to_i).must_equal 0
+    end
+
+    it "End date, cost and rating will all be nil
+    " do
+    @dispatcher.request_trip(1).end_time.must_equal nil
+    @dispatcher.request_trip(1).cost.must_equal nil
+    @dispatcher.request_trip(1).rating.must_equal nil
+  end
+
+end
 end
