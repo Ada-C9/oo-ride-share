@@ -60,5 +60,13 @@ module RideShare
       return calculate_driver_revenue / @trips.length
     end
 
+    def change_driver_status
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
+      else
+        @status = :AVAILABLE
+      end
+    end
+
   end
 end

@@ -155,4 +155,16 @@ describe "Driver class" do
     end
   end
 
+  describe "change_driver_status" do
+    it "toggles the driver's status" do
+      driver_one = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
+      driver_one.change_driver_status
+      driver_one.status.must_equal :UNAVAILABLE
+
+      driver_two = RideShare::Driver.new(id: 2, name: "Gorges", vin: "11311131113111311", status: :UNAVAILABLE)
+      driver_two.change_driver_status
+      driver_two.status.must_equal :AVAILABLE
+    end
+  end
+
 end
