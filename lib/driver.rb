@@ -46,13 +46,7 @@ module RideShare
     end
 
     def completed_trips
-      completed_trips = []
-      @trips.each do |trip|
-        if trip.end_time != nil
-          completed_trips << trip
-        end
-      end
-      return completed_trips
+      trips.select {|trip| trip.end_time != nil}
     end
 
     def total_revenue
@@ -61,8 +55,7 @@ module RideShare
     end
 
     def average_revenue
-      ave_rev = total_revenue / @trips.length
-      #return ave_rev
+      ave_rev = total_revenue / completed_trips.length
     end
 
     def change_to_unavailable

@@ -153,4 +153,23 @@ describe "Driver class" do
         @driver.average_revenue.must_equal 9.48
       end
     end
+
+    describe 'completed_trips method' do
+      before do
+        @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
+        pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+        @trip = RideShare::Trip.new({id: 6, driver: @driver, passenger: pass, start_time: Time.parse("2016-04-05T14:09:00+00:00"),
+        end_time: Time.parse("2016-04-05T14:25:00+00:00"),
+        cost: 15.0,rating: 4})
+      end
+
+      it "returns an array" do
+      @driver.completed_trips.must_be_instance_of Array
+      end
+
+      it 'doesnt have trips with nil end_time' do
+      @driver.add_trip(@trip)
+      @driver.completed_trips[0].end_time.wont_be_nil
+      end
+    end
 end # end of "describe "Driver instantiation" do"
