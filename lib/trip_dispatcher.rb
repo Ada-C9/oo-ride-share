@@ -93,7 +93,7 @@ module RideShare
     def request_trip(passenger_id)
       new_trip_details = {
         id: get_next_trip_id,
-        driver: get_driver,
+        driver: get_oldest_driver,
         passenger: get_passenger(passenger_id),
         start_time: Time.now.to_s,
         end_time: nil,
@@ -110,6 +110,9 @@ module RideShare
       return new_trip
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 
@@ -125,19 +128,54 @@ module RideShare
       return sorted_ids.last + 1
     end
 
-    def get_driver
-      available_driver = @drivers.find do |driver|
-        driver.status == :AVAILABLE
+    # def get_driver
+    #   available_driver = @drivers.find do |driver|
+    #     driver.status == :AVAILABLE
+    #   end
+    #   if available_driver.nil?
+    #     raise ArgumentError.new("Unable to create a new trip, no available drivers")
+    #   end
+    #   return available_driver
+    # end
+
+    def get_oldest_driver
+      available_drivers = @drivers.select { |driver| driver.status == :AVAILABLE }
+
+      last_trips = get_last_trips(available_drivers)
+
+      if last_trips.any? {|trip| trip.class == Driver}
+        return last_trips.find {|trip| trip.class == Driver }
+      else
+        oldest_trip = last_trips.min_by {|trip| trip.end_time.to_i}
+        if oldest_trip.nil?
+          raise ArgumentError.new("Unable to create a new trip, no available drivers")
+        end
+        return oldest_trip.driver
       end
-      if available_driver.nil?
-        raise ArgumentError.new("Unable to create a new trip, no available drivers")
+    end
+
+    def get_last_trips(driver_array)
+      last_trips = []
+      driver_array.each do |driver|
+        if driver.trips.empty?
+          last_trips << driver
+        else
+          ended_trips = driver.trips.select { |trip| !trip.end_time.nil? }
+          end_times = ended_trips.map { |trip| trip.end_time }
+          newest_end_time = end_times.max
+          driver.trips.each do |trip|
+            if trip.end_time == newest_end_time
+              last_trips << trip
+            end
+          end
+        end
       end
-      return available_driver
+      return last_trips
     end
 
     def get_passenger(pass_id)
-      target_passenger = @passengers.find do |pass|
-        pass.id == pass_id
+      target_passenger = @passengers.find do |passenger|
+        passenger.id == pass_id
       end
       return target_passenger
     end

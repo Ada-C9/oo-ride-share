@@ -119,12 +119,12 @@ describe "TripDispatcher class" do
     end
 
     it "should not affect the driver's total revenue calculation when starting a new trip" do
-      driver2 = @dispatcher.drivers.find { |driver| driver.id == 2 }
+      driver2 = @dispatcher.drivers.find { |driver| driver.id == 100 }
       before_new_trip_revenue = driver2.total_revenue
-      before_new_trip_revenue.must_equal 103.58
+      before_new_trip_revenue.must_equal 0.0
       new_trip = @dispatcher.request_trip(@passenger.id)
       new_trip_driver = new_trip.driver
-      new_trip_driver.id.must_equal 2
+      new_trip_driver.id.must_equal 100
       new_trip_driver.total_revenue.must_equal before_new_trip_revenue
     end
 
@@ -135,8 +135,8 @@ describe "TripDispatcher class" do
     end
 
     it "should throw an error if there are no available drivers" do
-      no_available_drivers = @dispatcher.drivers.select{ |driver| driver.status == :AVAILABLE }.length
-      no_available_drivers.times do
+      available_drivers = @dispatcher.drivers.select{ |driver| driver.status == :AVAILABLE }.length
+      available_drivers.times do
         @dispatcher.request_trip(@passenger.id)
       end
       proc {@dispatcher.request_trip(@passenger.id)}.must_raise ArgumentError
@@ -147,7 +147,7 @@ describe "TripDispatcher class" do
       passenger1 = @dispatcher.passengers.find {|passenger| passenger.id == passenger_id}
       before_length = passenger1.trips.length
       new_trip = @dispatcher.request_trip(passenger_id)
-      
+
       passenger1.trips.must_include new_trip
       passenger1.trips.length.must_equal before_length + 1
     end
@@ -183,6 +183,19 @@ describe "TripDispatcher class" do
 
     it "should assign the new trip a new id" do
       @dispatcher.request_trip(@passenger.id).id.must_equal 601
+    end
+  end
+
+  describe "TripDispatcher#get_oldest_driver" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "it returns the driver who has not driven in the greatest amount of time" do
+      new_trip = @dispatcher.request_trip(2)
+      driver = new_trip.driver
+      name = "Minnie Dach"
+      driver.name.must_equal name
     end
   end
 end

@@ -35,6 +35,10 @@ module RideShare
       return @end_time.to_i - @start_time.to_i
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_rating(rating)
