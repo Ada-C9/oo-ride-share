@@ -125,7 +125,30 @@ module RideShare
 
       return requested_trip
     end
-    
+
+
+    def longest_wait_driver
+      #chooses driver with no trips made:
+      @drivers.each do |driver|
+        if driver.trips.length == 0
+          return driver
+        end
+      end
+
+      #some code that picks driver with oldest end_time
+      next_drivers = {}
+      available_drivers.each do |driver|
+        oldest_trip = driver.trips.find {|trip| trip.end_time.min}
+        next_drivers[driver] = oldest_trip
+        #this fills the next_drivers hash with key:drivers and value:oldest trip
+      end
+      #max_by returns an array and the 0 index is the key
+      winner = next_drivers.min_by{ |k,v| v }[0]
+
+      return winner
+    end
+
+
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end

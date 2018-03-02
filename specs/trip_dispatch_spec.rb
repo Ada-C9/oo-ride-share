@@ -135,7 +135,17 @@ describe "TripDispatcher class" do
       # so adding an extra ride request should raise error
       proc{@dispatcher.request_trip(4)}.must_raise ArgumentError
     end
+  end
 
+  describe "longest_wait_do" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    it 'selects driver with longest wait for ride' do
+      @dispatcher.longest_wait_driver.must_be_instance_of RideShare::Driver
+      @dispatcher.longest_wait_driver.must_be_instance_of RideShare::Driver
+      binding.pry
+    end
   end
 
 end
