@@ -72,6 +72,8 @@ module RideShare
     def unavailable
       @status = :UNAVAILABLE
     end
+
+
   end
 end
 

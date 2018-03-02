@@ -90,9 +90,36 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
-      b.must_be_instance_of Time
+      a.must_be_instance_of Time
       b.must_be_instance_of Time
     end
+  end
+
+  describe "pick_driver method" do
+    it "picks the driver with the oldest last trip" do
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.pick_driver.id.must_equal 14
+    end
+
+    it "accurately picks a new driver with the oldest last trip after the first one is called" do
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.request_trip(1).driver.id.must_equal 14
+      @dispatcher.request_trip(2).driver.id.must_equal 27
+      @dispatcher.request_trip(3).driver.id.must_equal 6
+      @dispatcher.request_trip(4).driver.id.must_equal 87
+      @dispatcher.request_trip(5).driver.id.must_equal 75
+    end
+
+    it "accurately raises an error when no drivers are available" do
+      @dispatcher = RideShare::TripDispatcher.new
+      proc {
+        @dispatcher.drivers.each do |driver|
+          driver.unavailable
+        end
+        @dispatcher.pick_driver(1)
+      }.must_raise ArgumentError
+    end
+
   end
 
   describe "request_trip method" do
@@ -118,10 +145,7 @@ describe "TripDispatcher class" do
     end
 
     it "assigns first AVAILABLE driver to the trip" do
-      @dispatcher.request_trip(1).driver.id.must_equal 2
-    end
-
-    it "PICKS THE DRIVER WITH THE OLDEST LAST TRIP" do
+      @dispatcher.request_trip(1).driver.id.must_equal 14
     end
 
     it "changes driver's status to UNAVAILABLE" do
@@ -132,7 +156,7 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1).start_time.must_be_instance_of Time
     end
 
-    it "throws an error if no drivers are available" do
+    it "raises an error if no drivers are available" do
       proc {
         @dispatcher.drivers.each do |driver|
           driver.unavailable
@@ -153,9 +177,6 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1)
       @dispatcher.passengers.first.trips.length.must_equal 3
     end
-
-
-
 
   end
 end

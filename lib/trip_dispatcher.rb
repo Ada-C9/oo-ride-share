@@ -1,6 +1,7 @@
 require 'csv'
 require 'time'
 require 'awesome_print'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -90,6 +91,61 @@ module RideShare
       trips
     end
 
+    # def request_trip(passenger_id)
+    #   if passenger_id == nil || passenger_id <= 0
+    #     raise ArgumentError.new("Invalid passenger id!")
+    #   else
+    #     new_rider = find_passenger(passenger_id)
+    #   end
+    #
+    #   if @drivers.select {|driver| driver.status == :AVAILABLE}.first == nil
+    #     raise ArgumentError.new("No drivers currently available!")
+    #   else
+    #     new_driver = @drivers.select {|driver| driver.status == :AVAILABLE}.first
+    #   end
+    #
+    #   new_ride = RideShare::Trip.new({
+    #     id: (@trips.last.id + 1),
+    #     driver: new_driver,
+    #     passenger: new_rider,
+    #     start_time: Time.now,
+    #     end_time: nil,
+    #     cost: nil,
+    #     rating: nil
+    #     })
+    #
+    #   new_driver.add_trip(new_ride)
+    #   new_driver.unavailable
+    #   new_rider.add_trip(new_ride)
+    #
+    #   @trips << new_ride
+    #
+    #   return new_ride
+    # end
+
+    def pick_driver
+      new_drivers = @drivers.select {|driver| driver.status == :AVAILABLE}
+
+      drivers_latest_trips = []
+
+
+      new_drivers.each do |driver|
+        if (driver.trips.max_by {|drive| drive.end_time}) != nil
+          last_trip = driver.trips.max_by {|drive| drive.end_time}
+          drivers_latest_trips << {driver_id: driver.id, end_time: last_trip.end_time}
+        end
+      end
+
+      if drivers_latest_trips.length == 0
+        raise ArgumentError.new("No drivers available currently!")
+      elsif
+        new_driver_data = drivers_latest_trips.min_by {|trip_hash| trip_hash[:end_time]}
+
+        new_driver = find_driver(new_driver_data[:driver_id])
+      end
+      return new_driver
+    end
+
     def request_trip(passenger_id)
       if passenger_id == nil || passenger_id <= 0
         raise ArgumentError.new("Invalid passenger id!")
@@ -97,15 +153,9 @@ module RideShare
         new_rider = find_passenger(passenger_id)
       end
 
-      if @drivers.select {|driver| driver.status == :AVAILABLE}.first == nil
-        raise ArgumentError.new("No drivers currently available!")
-      else
-        new_driver = @drivers.select {|driver| driver.status == :AVAILABLE}.first
-      end
-
       new_ride = RideShare::Trip.new({
         id: (@trips.last.id + 1),
-        driver: new_driver,
+        driver: pick_driver,
         passenger: new_rider,
         start_time: Time.now,
         end_time: nil,
@@ -113,21 +163,25 @@ module RideShare
         rating: nil
         })
 
-      new_driver.add_trip(new_ride)
-      new_driver.unavailable
+      new_ride.driver.add_trip(new_ride)
+      new_ride.driver.unavailable
       new_rider.add_trip(new_ride)
 
       @trips << new_ride
-
       return new_ride
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
 
     def check_id(id)
       if id == nil || id <= 0
-          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end
