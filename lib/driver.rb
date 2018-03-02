@@ -25,7 +25,11 @@ module RideShare
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
-        total_ratings += trip.rating
+        if trip.end_time != nil
+          total_ratings += trip.rating
+        else
+          total_ratings
+        end
       end
 
       if trips.length == 0

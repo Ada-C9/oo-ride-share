@@ -103,6 +103,46 @@ describe "TripDispatcher class" do
     end
   end
 
-  
+  describe "request trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "must find an available driver" do
+      trip_request = @dispatcher.request_trip(1)
+      trip_request.driver.must_be_kind_of Integer
+      trip_request.driver.must_equal 2
+    end
+
+    it "throws an argument error for a bad ID" do
+      proc{ @dispatcher.request_trip(0) }.must_raise ArgumentError
+    end
+
+    it "must return a time for the start time" do
+      trip_request = @dispatcher.request_trip(1)
+      trip_request.start_time.must_be_instance_of Time
+    end
+
+
+    # it "must change the drivers status to unavailable" do
+    #   driver.status.must_equal :AVAILABLE
+    #   trip_request = @dispatcher.request_trip(1)
+    #   driver.status.must_equal :UNAVAILABLE
+    # end
+
+    # it "accurately loads trip info and associates trips with drivers and passengers" do
+    #
+    # end
+    #
+    # it "adds the trip to the driver's list of trips" do
+    #
+    # end
+    #
+    # it "adds the trip to the passenger's list of trips" do
+    #
+    # end
+
+  end
+
 
 end
