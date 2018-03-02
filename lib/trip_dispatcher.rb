@@ -105,6 +105,7 @@ module RideShare
       return trips
     end
 
+    # this method goes through and finds the first driver with status that is :AVAILABLE
     def available_driver
       @drivers.each do |driver|
         if driver.status == :AVAILABLE
@@ -133,11 +134,9 @@ module RideShare
         cost: nil,
         rating: nil
       }
-      # binding.pry
-      # this setting up the instance of trip
+
       new_trip = Trip.new(trip)
-      # binding.pry
-      # Set up relations
+
       available_driver.add_trip(new_trip)
       passenger.add_trip(new_trip)
       trips << new_trip
@@ -160,5 +159,5 @@ module RideShare
   end # end of TripDispatcher class
 end # end of RideShare module
 
-testing_code = RideShare::TripDispatcher.new
-puts testing_code.request_trip(21)
+# testing_code = RideShare::TripDispatcher.new
+# puts testing_code.request_trip(21)

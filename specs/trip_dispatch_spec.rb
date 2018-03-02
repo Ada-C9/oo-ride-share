@@ -103,22 +103,24 @@ describe "TripDispatcher class" do
   end
 
   describe "request trip methods" do
-    it "accurately loads passenger information into passengers array" do
-      dispatcher = RideShare::TripDispatcher.new
-
-      first_passenger = dispatcher.passengers.first
-      last_passenger = dispatcher.passengers.last
+    it "accurately loads passenger information into the new trip" do
+      dispatcher_1 = RideShare::TripDispatcher.new.request_trip(1)
+      first_passenger = dispatcher_1.passenger
 
       first_passenger.name.must_equal "Nina Hintz Sr."
       first_passenger.id.must_equal 1
-      last_passenger.name.must_equal "Miss Isom Gleason"
-      last_passenger.id.must_equal 300
+
+      dispatcher_2 = RideShare::TripDispatcher.new.request_trip(21)
+      last_passenger = dispatcher_2.passenger
+
+      last_passenger.name.must_equal "Jovani Nienow"
+      last_passenger.id.must_equal 21
     end
 
     it "accurately loads trip info and associates trips with drivers and passengers" do
       dispatcher = RideShare::TripDispatcher.new
 
-      trip = dispatcher.trips.first
+      trip = dispatcher.request_trip(1)
       driver = trip.driver
       passenger = trip.passenger
 
