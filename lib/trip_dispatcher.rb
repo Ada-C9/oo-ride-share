@@ -90,6 +90,7 @@ module RideShare
       end
       trips
     end
+
     def find_first_available_driver
       @drivers.find { |driver|
         driver.status == :AVAILABLE
@@ -98,6 +99,8 @@ module RideShare
 
     def create_new_trip_id
       new_trip_id = (@trips.map(&:id).max + 1)
+      #If there's no available driver, I think I just want this to return nil.  I'll put the error downstream.
+      #
     end
 
     def request_trip(passenger_id)
@@ -110,32 +113,17 @@ module RideShare
         cost: nil,
         rating: nil,
       }
-
+      # THIS is where I want the error to be thrown if
+      # there's no driver available.  So it's after the
+      # driver-check method, but before the new trip
+      # is made here. Single responsibility, yo: A lack
+      # of a suitable driver should break the trip-generating 
+      # apparatus, not the searching apparatus.
       new_trip = RideShare::Trip.new(new_trip_data)
       @trips << new_trip
       find_first_available_driver.accept_new_trip_assignment(new_trip)
       find_passenger(passenger_id).log_newly_requested_trip(new_trip)
       return new_trip
-=begin
-
-PSEUDOCODE FOR (I), above:
-
-  1. Identify a driver instance by :AVAILABLE
-      .find
-  2. Create a new instance of Trip, populated with:
-      -the customer with the passed-in ID
-      -the driver you found
-      -a start_time of now
-      -a :trip_id that is one more than the highest one you can find.
-          .max_by
-      -an end-time of nil
-      -a cost of nil
-      -a rating of nil
-  3. Add the trip to TripDispatch's trips
-  4. Call .driver_helper to do the stuff in II
-  5. Call .passenger_helper to do the stuff in III
-
-=end
     end
 
     def inspect

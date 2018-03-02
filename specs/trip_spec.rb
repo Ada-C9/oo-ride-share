@@ -58,6 +58,9 @@ describe "Trip class" do
     end
   end
   describe "report_trip_duration" do
+    # Please see the comment in the method production code about
+    # why this is here.  Executive summary: I made up a requirement
+    # that didn't actually exist.
     it "reports the hours, minutes, and seconds in a trip in a readable string." do
       @trip.report_trip_duration.must_equal "1 hour(s), 6 minute(s), 0 second(s)."
     end

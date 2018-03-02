@@ -181,10 +181,5 @@ describe "TripDispatcher class" do
       @test_trip.passenger.trips.count.must_equal 5
       @test_trip.passenger.trips.find { |trip| trip.id == 601 }.wont_be_nil
     end
-
   end
 end
-
-=begin
-.log_newly_requested_trip(@newly_requested_trip)
-=end
