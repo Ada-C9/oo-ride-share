@@ -94,6 +94,53 @@ module RideShare
       trips
     end
 
+    # **W2: METHOD TO INSTITUE REQUEST TRIP METHOD-----------
+    def request_trip (passenger_id)
+      if passenger_id == nil || passenger_id <= 0
+        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{passenger_id})")
+      end
+      #   # Find my passenger associated with the passenger ID
+      passenger_info = @passengers.find {|passenger| passenger.id == passenger_id }
+      #
+      # Find a driver with an AVAILABLE STATUS (use enumerable that returns first thing that matches criteria)
+      driver_info = @drivers.find {|driver| driver.status == :AVAILABLE}
+      # Get start time (Time.now)
+      # Get end_time (nil)
+      start_time = Time.now
+      end_time = nil
+      # Get trip id
+      trip_id = @trips.length + 1
+      # assign price and rating
+      trip_cost = 12.00
+      trip_rate = 4
+      # Make a trip (with above info)
+      # RideShare::Trip.new
+      fresh_trip = {
+        id: trip_id,
+        driver: driver_info,
+        passenger: passenger_info,
+        start_time: start_time,
+        end_time: end_time,
+        cost: trip_cost,
+        rating: trip_rate
+      }
+      new_trip = RideShare::Trip.new(fresh_trip)
+
+      #update Dispatch with newest trip
+      @trips << new_trip
+      return new_trip
+
+      # Include this trip in Driver's overall Trips
+      # Update Driver Status to UNAVAILABLE
+      #
+      # Include this trip in Passenger's overall Trips
+      #
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
@@ -101,9 +148,5 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-
-    # **W2: METHOD TO INSTITUE REQUEST TRIP METHOD-----------
-    # def request_trip (passenger_id)
-    # end
   end
 end

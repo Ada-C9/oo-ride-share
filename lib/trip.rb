@@ -14,7 +14,7 @@ module RideShare
       @rating = input[:rating]
 
       # **W1:RAISES ERROR ON INITIALIZATION FOR END TIME BEFORE START TIME------
-      if @end_time < @start_time
+      if @end_time != nil && @end_time < @start_time
         raise ArgumentError.new("end time cannot be before the start time. (got #{[@end_time]})")
       end
       # **W1:RAISES ERROR ON INITIALIZATION FOR END TIME BEFORE START TIME------
@@ -26,6 +26,9 @@ module RideShare
     def duration
       duration = @end_time - @start_time
       return duration
+    end
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
     # **W1:MAKE INSTANCE METHOD TO CALCULATE DURATION OF TRIP IN SECONDS----------
   end
