@@ -53,7 +53,9 @@ describe "Driver class" do
   describe "add trip method" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 13.5, rating: 5})
     end
 
@@ -62,16 +64,18 @@ describe "Driver class" do
     end
 
     it "increases the trip count by one" do
-      previous = @driver.trips.length
+      previous_length = @driver.trips.length
       @driver.add_trip(@trip)
-      @driver.trips.length.must_equal previous + 1
+      @driver.trips.length.must_equal previous_length + 1
     end
   end
 
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 12.5, rating: 5})
+
       @driver.add_trip(trip)
     end
 
@@ -87,6 +91,7 @@ describe "Driver class" do
 
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
       driver.average_rating.must_equal 0
     end
   end
@@ -111,7 +116,7 @@ describe "Driver class" do
         @driver.total_revenue.must_equal 0
       end
 
-      it "returns a float > 0 if there are any trips" do
+      it "returns a float if there are any trips" do
         @driver.add_trip(@trip1)
         total1 = (@driver.trips[0].cost - @fee) * 0.8
         @driver.total_revenue.must_equal total1
@@ -130,7 +135,7 @@ describe "Driver class" do
         @driver.total_revenue.must_equal total1
       end
 
-      it "returns 0 if trip.cost < 0" do
+      it "returns 0 if trip.cost < $1.65" do
         @driver.add_trip(@short_trip)
         @driver.total_revenue.must_equal 0
       end
@@ -149,7 +154,6 @@ describe "Driver class" do
 
         @driver.add_trip(@trip2)
         @driver.avg_revenue_per_hour.must_be :> , (total1 / time1)
-
         @driver.avg_revenue_per_hour.must_be_kind_of Float
       end
 
