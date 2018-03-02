@@ -123,24 +123,51 @@ module RideShare
     #   return new_ride
     # end
 
+    # def pick_driver
+    #   new_drivers = @drivers.select {|driver| driver.status == :AVAILABLE}
+    #
+    #
+    #   drivers_latest_trips = []
+    #
+    #   new_drivers.each do |driver|
+    #     if (driver.trips.max_by {|drive| drive.end_time}) != nil
+    #       #make new_driver of first nil driver, nest if-else as needed
+    #       last_trip = driver.trips.max_by {|drive| drive.end_time}
+    #       drivers_latest_trips << {driver_id: driver.id, end_time: last_trip.end_time}
+    #     end
+    #   end
+    #
+    #   if drivers_latest_trips.length == 0
+    #     raise ArgumentError.new("No drivers available currently!")
+    #   else
+    #     new_driver_data = drivers_latest_trips.min_by {|trip_hash| trip_hash[:end_time]}
+    #
+    #     new_driver = find_driver(new_driver_data[:driver_id])
+    #   end
+    #   return new_driver
+    # end
+
     def pick_driver
-      new_drivers = @drivers.select {|driver| driver.status == :AVAILABLE}
+      available_drivers = @drivers.select {|driver| driver.status == :AVAILABLE}
+      newbie_drivers = available_drivers.select {|driver| driver.trips == []}
 
       drivers_latest_trips = []
 
-
-      new_drivers.each do |driver|
-        if (driver.trips.max_by {|drive| drive.end_time}) != nil
+      available_drivers.each do |driver|
+        if driver.trips.max_by {|drive| drive.end_time} != nil
           last_trip = driver.trips.max_by {|drive| drive.end_time}
           drivers_latest_trips << {driver_id: driver.id, end_time: last_trip.end_time}
         end
       end
 
-      if drivers_latest_trips.length == 0
+      if drivers_latest_trips.length == 0 && newbie_drivers.length == 0
         raise ArgumentError.new("No drivers available currently!")
-      elsif
-        new_driver_data = drivers_latest_trips.min_by {|trip_hash| trip_hash[:end_time]}
 
+      elsif newbie_drivers.length != 0
+        new_driver_data = newbie_drivers.first
+        new_driver = find_driver(new_driver_data.id)
+      else
+        new_driver_data = drivers_latest_trips.min_by {|trip_hash| trip_hash[:end_time]}
         new_driver = find_driver(new_driver_data[:driver_id])
       end
       return new_driver
