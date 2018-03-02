@@ -1,3 +1,6 @@
+# QUESTION better to call public methods that call private methods or to call the
+# private methods directly?
+
 require 'csv'
 require_relative 'trip'
 
@@ -6,15 +9,11 @@ module RideShare
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
     def initialize(input)
-      if input[:vin] == nil || input[:vin].length != 17
-        raise ArgumentError.new("VIN cannot be less than 17 characters. (got #{input[:vin]})")
-      end
-
       @id = RideShare.return_valid_id_or_error(input[:id])
       @name = RideShare.return_valid_name_or_error(input[:name])
-      @vehicle_id = input[:vin]
+      @vehicle_id = return_valid_vin_or_error(input[:vin])
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-      @trips = input[:trips] == nil ? [] : RideShare.return_valid_trips_or_errors(input[:trips])
+      @trips = RideShare.return_valid_trips_or_errors(input[:trips])
     end
 
     def get_average_rating # TODO: TEST!! # test if only trip is incomplete
@@ -33,20 +32,23 @@ module RideShare
 
     # Returns the total revenue of all completed trips.
     def get_total_revenue # TODO: TEST!!
-      return calculate_total_revenue #@trips.inject(0.0) { |total, trip| total + (trip.cost - 1.56) * 0.80 }
+      return calculate_total_revenue
     end
 
     # Returns the total revenue of all completed trips.
     def get_avg_revenue_per_hour # TODO: TEST!! # test if only trip is incomplete
-      return (get_total_revenue / get_all_trip_durations).round(2)
+      return (get_total_revenue / get_total_trip_durations_in_hours).round(2)
     end
 
+    # Returns 'true' if status is available and 'false' otherwise.
     def is_available?
       return @status == :AVAILABLE
     end
 
     private
 
+    # Throws ArgumentError if status is unavailable. Otherwise, sets status to
+    # 'UNAVAILABLE'.
     def check_and_update_status
       if !is_available?
         raise ArgumentError.new("Driver unavailable for in-progress trip.")
@@ -60,7 +62,8 @@ module RideShare
        end
     end
 
-    def get_all_trip_durations
+    # Returns the trip durations in hours.
+    def get_total_trip_durations_in_hours
       RideShare.get_all_trip_durations_in_seconds(trips).to_f / 120
     end
 
@@ -75,6 +78,13 @@ module RideShare
     def get_num_of_completed_trips
       return @trips.length - 1 if !@trips.empty? && @trips.last.is_in_progress?
       return @trips.length
+    end
+
+    def return_valid_vin_or_error(input_vin)
+      if input_vin.class != String || input_vin.length != 17
+        raise ArgumentError.new("VIN #{input_vin} must be an int with length 17")
+      end
+      return input_vin
     end
 
   end
