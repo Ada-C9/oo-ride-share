@@ -78,5 +78,15 @@ module RideShare
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
+
+    # **W2: HELPER METHOD TO UPDATE DRIVER TRIPS
+    def update_driver(new_trip)
+      add_trip(new_trip)
+      if @status != :AVAILABLE
+        raise ArgumentError.new("The driver being assigned must be AVAILABLE")
+      end
+      # UPDATE THE STATUS OF NEWLY ASSIGNED DRIVER
+      @status = :UNAVAILABLE
+    end
   end
 end

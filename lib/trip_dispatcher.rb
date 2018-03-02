@@ -128,12 +128,17 @@ module RideShare
 
       #update Dispatch with newest trip
       @trips << new_trip
-      return new_trip
 
+      # HELPER METHOD IN DRVIER:
       # Include this trip in Driver's overall Trips
       # Update Driver Status to UNAVAILABLE
+      driver_info.update_driver(new_trip)
       #
+      # UTILIZE A PREVIOUS METHOD TO ADD NEW TRIP TO PASSENGER:
       # Include this trip in Passenger's overall Trips
+      #passenger_info.add_trip(new_trip)
+
+      return new_trip
       #
     end
 
