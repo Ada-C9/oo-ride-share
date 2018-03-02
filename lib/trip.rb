@@ -1,4 +1,5 @@
 require 'csv'
+require 'time'
 
 module RideShare
   class Trip
@@ -12,6 +13,7 @@ module RideShare
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
+
       # Group review with Charles added this below but he suggests instead we put it as a method down below all this
       # @duration = (@end_time - @start_time).to_i
 
@@ -23,22 +25,33 @@ module RideShare
       if @start_time > @end_time
         raise ArgumentError.new("The #{@end_time} is before the #{@start_time}")
       end
+    end # ends initialize method
 
-      # Charles suggested to add this - for first part of Wave 2
-      # def finish_trip!
-      #   @end_time = Time.now
-      # end
-
-      # Charles suggested to add this - for first part of Wave 2
-      # def finished?
-      #   return end_time != nil
-      # end
-
-      # Group review with Charles added this below - to replace the "@duration" instance variable
-      # def duration
-      #   (@end_time - @start_time).to_i
-      # end
-
+    # Charles suggested to add this - for first part of Wave 2
+    def finish_trip!
+      @end_time = Time.now
     end
-  end
-end
+
+    # Charles suggested to add this - for first part of Wave 2
+    def finished?
+      return end_time != nil
+    end
+
+    # Group review with Charles added this below - to replace the "@duration" instance variable
+    def duration
+      (@end_time - @start_time).to_i
+    end
+
+    # Add an instance method to the Trip class to calculate the duration of the trip in seconds, and a corresponding test
+    # This was my 'duration' method idea
+    # def duration
+    #   (Time.parse(@end_time) - Time.parse(@start_time)).to_i
+    # end # ends duration method
+
+    # Dee/Charles suggested to add this via Slack post
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
+  end # ends class Trip
+end # ends module RideShare

@@ -61,6 +61,7 @@ module RideShare
       unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
+      @status = :UNAVAILABLE
       @trips << trip
     end # ends "def add_trip"
 

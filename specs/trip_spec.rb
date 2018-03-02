@@ -57,9 +57,25 @@ describe "Trip class" do
       proc {
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
-      
+
     end # ends 'it "raises an error for invalid end time" do'
 
 
   end # ends "describe "initialize" do"
+
+  describe "duration" do
+    it "tests duration of trip in seconds between end and start times" do
+      # this is from "trips.csv" trip_id number 10, I reversed the start_time and end_time
+      start_time = Time.parse("2015-12-14T12:55:00+00:00")
+      end_time = Time.parse("2015-12-14T13:04:00+00:00")
+
+      (end_time - start_time).must_equal 540
+
+
+
+    end # ends "tests duration... do"
+
+
+  end # ends "describe "duration" do"
+
 end # ends "describe "Trip class" do"
