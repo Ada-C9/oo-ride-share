@@ -82,5 +82,21 @@ describe "Trip class" do
       @trip.trip_length.must_equal 12 * 60
     end
 
+    it "returns 0 of in progress trips" do
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2016-01-13T13:16:00+00:00'),
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      trip = RideShare::Trip.new(trip_data)
+
+      trip.trip_length.must_equal 0
+    end
+
   end
 end

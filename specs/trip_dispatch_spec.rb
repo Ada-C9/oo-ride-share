@@ -101,6 +101,29 @@ describe "TripDispatcher class" do
     end
   end
 
+  describe "find available driver" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @driver = @dispatcher.find_driver(100)
+      @passenger = @dispatcher.find_passenger(1)
+      @driver_before_trips = @driver.trips.length
+      @passenger_before_trips = @passenger.trips.length
+    end
+
+    it "chooses drivers with no trips first" do
+      @dispatcher.find_available_driver.name.must_equal "Minnie Dach"
+    end
+
+    it "assigns the available driver with the longest time since their last trip to trip" do
+      @dispatcher.request_trip(1).driver.name.must_equal "Minnie Dach"
+      @dispatcher.request_trip(1).driver.name.must_equal "Antwan Prosacco"
+      @dispatcher.request_trip(1).driver.name.must_equal "Nicholas Larkin"
+      @dispatcher.request_trip(1).driver.name.must_equal "Mr. Hyman Wolf"
+      @dispatcher.request_trip(1).driver.name.must_equal "Jannie Lubowitz"
+    end
+
+  end
+
   describe "request trip" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
@@ -131,22 +154,7 @@ describe "TripDispatcher class" do
     it "returns a new instance of trip" do
       @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
     end
-
-    it "assigns the available driver with the longest time since their last trip to trip" do
-      @dispatcher.request_trip(1).driver.name.must_equal "Minnie Dach"
-      @dispatcher.request_trip(1).driver.name.must_equal "Antwan Prosacco"
-      @dispatcher.request_trip(1).driver.name.must_equal "Nicholas Larkin"
-      @dispatcher.request_trip(1).driver.name.must_equal "Mr. Hyman Wolf"
-      @dispatcher.request_trip(1).driver.name.must_equal "Jannie Lubowitz"
-    end
-
-    it "changes the driver status from available to unavailable" do
-      @driver.status.must_equal :AVAILABLE
-      @dispatcher.request_trip(1)
-      @driver.status.must_equal :UNAVAILABLE
-
-    end
-
+    
     it "throws an error if there are no available drivers" do
       proc {
         101.times do
@@ -167,7 +175,6 @@ describe "TripDispatcher class" do
 
     it "adds a new trip to driver" do
       @dispatcher.request_trip(1)
-
       @driver_before_trips.must_equal @driver.trips.length - 1
     end
 
@@ -176,7 +183,7 @@ describe "TripDispatcher class" do
       @passenger_before_trips.must_equal @passenger.trips.length - 1
     end
 
-    it "adds a new trip to trips array" do
+    it "adds a new trip to Trip Dispatcher trips array" do
       before = @dispatcher.trips.length
       @dispatcher.request_trip(1)
       before.must_equal @dispatcher.trips.length - 1
