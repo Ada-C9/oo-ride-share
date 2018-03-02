@@ -96,13 +96,13 @@ module RideShare
     def request_trip(passenger_id)
       # assign a driver to the trip
       # driver must be the first driver with the status :AVAILABLE
-      driver = @drivers.find{  |d| d.status == :AVAILABLE} #return first driver
-      # passenger =
+      driver = drivers.find{  |d| d.status == :AVAILABLE} #return first driver
+      # driver.find_available_drivers
 
       trip = {
-        passenger: passenger_id,
-        id: driver.id,
-        driver: driver.status,
+        passenger: find_passenger(passenger_id),
+        id: trips.last.id + 1,
+        driver: driver,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
@@ -113,6 +113,8 @@ module RideShare
       driver.add_trip(request_trip)
       # passenger.add_trip(request_trip)
       @trips << request_trip
+
+      driver.change_status
       return request_trip
     end
 

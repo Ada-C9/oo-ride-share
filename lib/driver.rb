@@ -76,7 +76,10 @@ module RideShare
     end # available_drivers
 
     def change_status
-      
-    end
+      if trip.status == :incomplete
+        driver = driver.status == :UNAVAILABLE
+      end
+      return driver
+    end # change_status
   end # class
 end # module

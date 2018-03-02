@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -104,9 +105,12 @@ describe "TripDispatcher class" do
 
       # Act
       new_request = dispatcher.request_trip(passenger_id)
+      # binding.pry
       # Assert
       new_request.must_be_instance_of RideShare::Trip
-      # driver.status.must_equal :AVAILABLE
+      new_request.driver.status.must_equal :UNAVAILABLE
+      # driver.trip.must_include trip
+      # passenger.trip.must_include trip
 
     end # driver AVAILABLE
   end # request_trip method
