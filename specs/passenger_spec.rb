@@ -56,37 +56,83 @@ describe "Passenger class" do
   end
 
   describe "total_amount_of_money method" do
-     it "returns total amount of money" do
-       test_trip = RideShare::Trip.new({ :cost => 1.50, :rating => 3, :start_time => 1, :end_time => 2})
+    it "returns total amount of money" do
 
-       test_passenger = RideShare::Passenger.new( { :id => 1, :trips => [ test_trip ]  } )
+      start_time = Time.parse("2018-03-01 07:45:16 -080")
+      end_time = Time.parse("2018-03-01 09:45:16 -080")
 
-       test_total = test_passenger.get_total_money
-       test_total.must_equal 1.50
+      test_trip = RideShare::Trip.new({ :cost => 1.50, :rating => 3, :start_time => start_time, :end_time => end_time})
 
-      #it must return an accurate amount of money
+      test_passenger = RideShare::Passenger.new( { :id => 1, :trips => [ test_trip ]  } )
+
+      test_total = test_passenger.get_total_money
+      # this should be total amount of money
+      test_total.must_equal 1.50
     end
   end
 
-  describe "get_drivers method" do
-    before do
-      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
-      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.new("2016-08-08"), end_time: Time.new("2016-08-09"), rating: 5})
+  describe "total_amount_of_money" do
+      it "returns zero amount of money" do
 
-      @passenger.add_trip(trip)
+      #  start_time = Time.parse("2018-03-01 07:45:16 -080")
+      #  end_time = Time.parse("2018-03-01 07:45:16 -080")
+       #
+      #  test_trip = RideShare::Trip.new({ :cost => 1.50, :rating => 3, :start_time => start_time, :end_time => end_time})
+       #
+       test_passenger = RideShare::Passenger.new({ :id => 1, :trips => [ ]  } )
+
+       test_total = test_passenger.get_total_money
+           # this should be total amount of money
+       test_total.must_equal 0
+         end
+       end
+
+  #it must return an accurate amount of money
+
+
+
+
+
+    describe "total amount of time" do
+      it "returns total ride time" do
+        start_time = Time.parse("2018-03-01 07:45:16 -080")
+        end_time = Time.parse("2018-03-01 09:45:16 -080")
+        test_trip = RideShare::Trip.new({:start_time => start_time, :rating => 4, :end_time => end_time})
+        test_passenger = RideShare::Passenger.new({ :id =>5, :trips => [test_trip]})
+        test_time = test_passenger.total_time
+
+        test_time.must_equal 7.2 * 1000
+      end
     end
 
-    it "returns an array" do
-      drivers = @passenger.get_drivers
-      drivers.must_be_kind_of Array
-      drivers.length.must_equal 1
+    describe "total amount of time" do
+      it "returns no time" do
+      test_passenger = RideShare::Passenger.new({ :id =>5, :trips => []})
+      end
     end
 
-    it "all items in array are Driver instances" do
-      @passenger.get_drivers.each do |driver|
-        driver.must_be_kind_of RideShare::Driver
+
+
+
+    describe "get_drivers method" do
+      before do
+        @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+        driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+        trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.new("2016-08-08"), end_time: Time.new("2016-08-09"), rating: 5})
+
+        @passenger.add_trip(trip)
+      end
+
+      it "returns an array" do
+        drivers = @passenger.get_drivers
+        drivers.must_be_kind_of Array
+        drivers.length.must_equal 1
+      end
+
+      it "all items in array are Driver instances" do
+        @passenger.get_drivers.each do |driver|
+          driver.must_be_kind_of RideShare::Driver
+        end
       end
     end
   end
-end
