@@ -96,17 +96,45 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
-  
+
   describe 'request_trip method' do
     before do
       @dispatcher = RideShare::TripDispatcher.new
       @result = @dispatcher.request_trip(10)
     end
     it 'was created properly' do
-      dispatcher = RideShare::TripDispatcher.new
-      result = dispatcher.request_trip(10)
-      result.must_be_instance_of RideShare::Trip
+      @result.must_be_kind_of RideShare::Trip
     end
+
+    it 'returns a new trip' do
+      first_available_driver_id_file = 2
+      last_trip_id_file = 600
+      expected_trip_id = last_trip_id_file + 1
+
+      @result.id.must_equal expected_trip_id
+      @result.driver.id.must_equal first_available_driver_id_file
+      @result.passenger.id.must_equal 10
+
+    end
+
+    it 'uses current time for start_time when new trip is created' do
+      @result.start_time.to_s.must_equal Time.now.to_s
+    end
+
+    it 'assigns end_time, costs, and rating into nil for the new trip'do
+      @result.rating.must_be_nil
+      @result.cost.must_be_nil
+      @result.end_time.must_be_nil
+    end
+
+    it 'returns error when requested a trip with an invalid or none passenger ID' do
+      proc {@dispatcher.request_trip()
+      }.must_raise StandardError
+
+      proc {@dispatcher.request_trip(500)
+      }.must_raise StandardError
+    end
+
     it 'updated the trip list for the driver' do
       result = @result.driver.trips
       result.must_include @result
@@ -117,29 +145,34 @@ describe "TripDispatcher class" do
       result.must_include @result
 
     end
-    it 'assigns the first driver available' do
-      first_available_driver_id = 2
-      @result.driver.id.must_equal first_available_driver_id
-    end
 
-    it 'updated the trip list' do
-      @dispatcher.trips.must_include @result
+    it 'assigns the first driver available from the csv' do
+      expected_first_available_driver_id = 2
+      expected_first_available_driver = 'Emory Rosenbaum'
+      @result.driver.id.must_equal expected_first_available_driver_id
+      @result.driver.name.must_equal expected_first_available_driver
+
     end
 
     it 'returns error when no drivers are available' do
-
+      @dispatcher.drivers.map {|driver| driver.unavailable}
+      proc {@dispatcher.request_trip(10)
+      }.must_raise StandardError
     end
-    it 'turns the status to unavailable for the driver selected' do
+
+    it 'changes the status to unavailable for the driver selected' do
       @result.driver.status.must_equal :UNAVAILABLE
     end
-    it 'end_time, costs, and rating are nil'do
-      @rating.must_be_nil
-      @cost.must_be_nil
-      @result.end_time.must_be_nil
+
+    it 'adds the new trip to the collection of all trips' do
+      @dispatcher.trips.must_include @result
+
+      trips_length = @dispatcher.trips.length
+      expected_new_trips_length = trips_length + 1
+      @dispatcher.request_trip(5)
+      @dispatcher.trips.length.must_equal expected_new_trips_length
     end
 
-    it 'uses current time for start_time' do
-
-    end
   end
+
 end

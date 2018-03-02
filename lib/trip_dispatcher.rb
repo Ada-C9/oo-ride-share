@@ -92,10 +92,14 @@ module RideShare
       return trips
     end
     def request_trip(passenger_id)
+      driver = @drivers.find {|driver| driver.status == :AVAILABLE}
+      passenger = self.find_passenger(passenger_id)
+      new_id = 1 + gets_new_trip_id
 
-      trip_data = {id: load_trips.length + 1,
-        driver: @drivers.detect {|driver| driver.status == :AVAILABLE},
-        passenger: self.find_passenger(passenger_id),
+
+      trip_data = {id: new_id,
+        driver: driver,
+        passenger: passenger,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
@@ -104,10 +108,28 @@ module RideShare
 
       trip = Trip.new(trip_data)
 
+      if trip_data[:driver].nil?
+        raise StandardError.new("Sorry, currently no available drivers")
+      end
+
+      if trip_data[:passenger].nil?
+        raise StandardError.new("Ride cannot be processed, passenger not registered")
+      end
+
+      passenger.add_trip(trip)
+      driver.add_trip(trip)
+      driver.unavailable
+
       @trips << trip
 
       return trip
 
+    end
+
+    #helper method to calculate the next new id
+    def gets_new_trip_id
+      next_id = @trips.max_by {|trip| trip.id}
+      return next_id.id
     end
 
     def inspect
