@@ -91,6 +91,16 @@ describe "TripDispatcher class" do
     end
   end # describe loader methods
 
+  describe "find_most_recent_trip(trips) method" do
+    it "finds the time for the most recent trip from a list of trips" do
+      dispatcher = RideShare::TripDispatcher.new
+      first_driver_most_recent_trip_time = Time.parse("2016-12-16T09:53:00+00:00")
+      trips = dispatcher.drivers.first.trips
+      result = dispatcher.find_most_recent_trip(trips)
+      result.to_a.must_equal first_driver_most_recent_trip_time.to_a
+    end
+  end
+
   describe "request_trip(passenger_id) method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
@@ -101,12 +111,63 @@ describe "TripDispatcher class" do
       @result.must_be_kind_of RideShare::Trip
     end
 
-    it "assigns the first driver with available status" do
-      first_available_driver_id = 2
-      second_available_driver_id = 3
-      @result.driver.id.must_equal first_available_driver_id
-      result = @dispatcher.request_trip(1)
-      result.driver.id.must_equal second_available_driver_id
+    it "selects a driver with a status of AVAILABLE" do
+      # binding.pry
+      next_available_driver = @dispatcher.find_suitable_driver
+
+      next_available_driver.id.must_equal 27
+      next_available_driver_id = next_available_driver.id
+      result = @dispatcher.request_trip(5)
+
+      result.driver.id.must_equal next_available_driver_id
+
+    end
+
+    it "selects a driver who doesn't have any trips with an end-time of nil" do
+      next_available_driver = @dispatcher.drivers.find do |driver|
+        driver.status == :AVAILABLE
+      end
+      nil_end_time = false
+      next_available_driver.trips.each do |trip|
+        nil_end_time = trip.end_time.nil?
+      end
+
+      nil_end_time.must_equal false
+    end
+
+    it "assigns the first driver with available status whose most recent trip is the earliest in time" do
+
+      first_driver = @dispatcher.drivers.find do |driver|
+        driver.id == 14
+      end
+
+      second_driver = @dispatcher.drivers.find do |driver|
+        driver.id == 27
+      end
+
+      third_driver = @dispatcher.drivers.find do |driver|
+        driver.id == 6
+      end
+
+      fourth_driver = @dispatcher.drivers.find do |driver|
+        driver.id == 87
+      end
+
+      fifth_driver = @dispatcher.drivers.find do |driver|
+        driver.id == 75
+      end
+
+      @result.driver.id.must_equal first_driver.id
+
+      result = @dispatcher.request_trip(6)
+      result.driver.id.must_equal second_driver.id
+      result = @dispatcher.request_trip(7)
+      result.driver.id.must_equal third_driver.id
+      result = @dispatcher.request_trip(8)
+      result.driver.id.must_equal fourth_driver.id
+      result = @dispatcher.request_trip(9)
+      result.driver.id.must_equal fifth_driver.id
+
     end
 
     it "sets the selected driver's status to unavailable" do
@@ -116,7 +177,7 @@ describe "TripDispatcher class" do
     it "raises an error if there are no available drivers" do
       drivers = @dispatcher.drivers
       available_drivers = drivers.select do |driver|
-        driver.status == :AVAILABLE
+        driver.status == :AVAILABLE && !driver.trips.empty?
       end
       available_count = available_drivers.length
 
@@ -194,12 +255,14 @@ describe "TripDispatcher class" do
 
       it "is excluded from the total revenue calculation for the driver" do
         next_available_driver = @dispatcher.drivers.find do |driver|
-          driver.id == 3
+          driver.id == 27
         end
+
 
         total_revenue_before = next_available_driver.total_revenue
 
         new_trip = @dispatcher.request_trip(4)
+
 
         driver = new_trip.driver
 
@@ -211,7 +274,7 @@ describe "TripDispatcher class" do
 
       it "is excluded from the average revenue per hour calculation for the driver" do
         next_available_driver = @dispatcher.drivers.find do |driver|
-          driver.id == 3
+          driver.id == 27
         end
 
         average_revenue_before = next_available_driver.average_revenue
@@ -228,7 +291,7 @@ describe "TripDispatcher class" do
 
       it "is excluded from the average rating calculation for the driver" do
         next_available_driver = @dispatcher.drivers.find do |driver|
-          driver.id == 3
+          driver.id == 27
         end
 
         average_rating_before = next_available_driver.average_rating
@@ -244,6 +307,5 @@ describe "TripDispatcher class" do
     end # pending trips excluded
 
   end # describe TripDispatcher#request_trip(passenger_id)
-
 
 end # describe TripDispatcher

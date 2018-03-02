@@ -92,16 +92,19 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      # check passenger_id here 
+      # check passenger_id here
 
       passenger = @passengers.find do |passenger|
         passenger.id == passenger_id
       end
 
+      # binding.pry
 
-      driver = @drivers.find do |driver|
-        driver.status == :AVAILABLE
-      end
+      # driver = @drivers.find do |driver|
+      #   driver.status == :AVAILABLE
+      # end
+      driver = find_suitable_driver
+
 
       if driver.nil?
         raise StandardError.new("There are no more available drivers.")
@@ -128,6 +131,83 @@ module RideShare
       return trip
     end
 
+    def find_most_recent_trip(trips)
+      most_recent_trip_end_time = trips.first.end_time
+      trips.each do |trip|
+        trip_end_time = trip.end_time
+        if trip_end_time > most_recent_trip_end_time
+          most_recent_trip_end_time = trip_end_time
+        end
+      end
+      return most_recent_trip_end_time
+    end
+
+    def find_suitable_driver
+      # step 1 look through drivers
+      # step 2 select drivers with available status
+      available_drivers = @drivers.select do |driver|
+        # exclude available drivers who have completed no trips at all
+        driver.status == :AVAILABLE && !driver.trips.empty?
+      end
+
+      # step 3 look at each driver's trips
+      # step 4 create pool of drivers if end_time.nil? is false
+      # exclude driver if any of their trips has end_time == nil
+      available_drivers_not_in_progress = available_drivers.map do |driver|
+        driver.trips.each do |trip|
+          trip.end_time != nil
+        end
+        driver
+      end
+
+      # binding.pry
+
+      # step 6 select the first driver
+      first_driver = available_drivers_not_in_progress.first
+
+      # step 6b loop through trips of first driver
+      first_driver_trips = first_driver.trips
+      # # step 6c find most recent trip
+      # most_recent_trip_end_time = Time.new
+      # first_driver_trips.each do |trip|
+      #   trip_end_time = trip.end_time
+      #   if trip_end_time > most_recent_trip_end_time
+      #     most_recent_trip_end_time = trip_end_time
+      # end
+
+      most_recent_trip_end_time = find_most_recent_trip(first_driver_trips)
+
+      selected_driver = first_driver
+
+
+      # step 5 loop through final pool of drivers
+      # get current driver
+      available_drivers_not_in_progress.each do |driver|
+        # look at current driver's trips
+        driver_trips = driver.trips
+
+        # find most recent trip
+        current_driver_most_recent_trip_end_time = find_most_recent_trip(driver_trips)
+
+        # binding.pry
+
+        # compare current driver's most recent trip to last driver's most recent trip
+        # if former is earlier in time, reset most recent trip to current driver's most recent trip
+        # reassign driver to current driver
+        if current_driver_most_recent_trip_end_time < most_recent_trip_end_time
+          most_recent_trip_end_time = current_driver_most_recent_trip_end_time
+          selected_driver = driver
+        end
+        # if latter is earlier in time, do nothing
+        # end comparison
+        # end loop
+      end
+
+      return selected_driver
+
+      # return driver
+    end
+
     private
 
     def check_id(id)
@@ -139,6 +219,7 @@ module RideShare
   end # TripDispatcher
 
 end # RideShare
+
 
 # dispatcher = RideShare::TripDispatcher.new
 # puts dispatcher.request_trip(1)
