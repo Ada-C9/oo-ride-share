@@ -122,7 +122,26 @@ describe "Passenger class" do
       @passenger.total_time.must_equal 1500
       @passenger.total_time.wont_equal 0
     end
+  end
 
+  describe 'completed_trips method' do
+    before do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334"})
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+      @trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-04-05T12:14:00+00:00"),
+      end_time: Time.parse("2016-04-05T12:39:00+00:00"),cost: 10.0,  rating: 5})
+    end
+
+    it "returns an array" do
+    @passenger.completed_trips.must_be_instance_of Array
+    end
+
+    it 'doesnt have trips with nil end_time' do
+    @passenger.add_trip(@trip)
+    @passenger.completed_trips[0].end_time.wont_be_nil
+    end
   end
 
 

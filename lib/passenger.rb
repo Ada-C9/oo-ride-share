@@ -15,40 +15,24 @@ module RideShare
     end
 
     def get_drivers
-      @trips.map{ |t| t.driver }
+      trips.map{ |t| t.driver }
     end
 
     def add_trip(trip)
-      @trips << trip
+      trips << trip
+    end
+
+    def completed_trips
+      trips.select {|trip| trip.end_time != nil}
     end
 
     def total_spent
-      #if time, try to convert this to an enumerable
-      # total_spent = 0
-      # @trips.each do |trip|
-      #   total_spent += trip.cost
-      # end
-      # return total_spent
-
-      # trip_cost = @trips.map {|trip| trip.cost}
-      # total_rev = trip_cost.sum
-
-      total_spent = @trips.inject(0) { |sum, trip| sum + trip.cost }
+      total_spent = completed_trips.inject(0) { |sum, trip| sum + trip.cost }
     end
 
 
     def total_time
-      # total_time = 0
-      # @trips.each do |trip|
-      #   total_time += trip.duration
-      # end
-      # return total_time
-      # trip_durations = @trips.map {|trip| trip.duration}
-      # total_time = trip_durations.sum
-
-
-      total_time = @trips.inject(0) {|sum, trip| sum + trip.duration}
-
+      completed_trips.inject(0) {|sum, trip| sum + trip.duration}
     end
 
 
