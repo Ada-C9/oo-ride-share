@@ -23,7 +23,9 @@ module RideShare
       #is nil if empty array, otherwise trips
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
     #for driver/trip
     def average_rating
       total_ratings = 0

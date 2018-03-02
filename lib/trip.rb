@@ -28,7 +28,9 @@ module RideShare
       end
 
     end
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
     #returnst
     def length
       trip_length =  @end_time - @start_time

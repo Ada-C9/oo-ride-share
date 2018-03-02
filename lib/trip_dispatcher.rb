@@ -16,7 +16,9 @@ module RideShare
       @passengers = load_passengers
       @trips = load_trips
     end
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
 
@@ -105,21 +107,44 @@ module RideShare
 
     def find_available_driver
 
-       check_status
+      check_status
 
-
-       available_drivers = drivers.select {|driver|
+      available_drivers = drivers.select {|driver|
         driver.status == :AVAILABLE }
 
         #will check the first condition, not get to the last
         #for new drivers
-      available_drivers.select {|driver| driver.trips == []  || driver.trips.last.end_time != nil}
+        new_drivers = available_drivers.select {|driver| driver.trips == []  || driver.trips.last.end_time != nil}
 
+        # first_driver = available_drivers.first
 
-       first_driver = available_drivers.first
+        first_driver = compare_oldest_trip(available_drivers)
 
-      #@drivers.find{ |driver| driver.status == :AVAILABLE }
-      return first_driver
+        return first_driver
+
+    end
+
+    def compare_oldest_trip(available_drivers)
+
+      #make this priority later
+      new_drivers = available_drivers.select {|driver| driver.trips.length == 0}
+
+      if new_drivers.length>0
+        return new_drivers.first
+      end
+
+      older = available_drivers.first
+      available_drivers.each do |driver|
+        # older = driver.trips.last.end_time
+        comparison = (older.trips.last.end_time <=> driver.trips.last.end_time)
+
+        puts comparison
+        if comparison > 0
+          older = driver
+          ap older
+        end
+      end
+      return older
     end
 
     def request_trip(passenger_id)
@@ -178,7 +203,12 @@ module RideShare
 
   end
 end
-#
+
+# trips.each do
+# puts trips.driver.id
+# puts trips.end_time
+
+
 # #puts trips.length
 # dispatcher = RideShare::TripDispatcher.new
 # puts dispatcher.trips

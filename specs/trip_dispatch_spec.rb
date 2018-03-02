@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'awesome_print'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -185,7 +186,12 @@ describe "TripDispatcher class" do
     it "has no drivers whose last trip is nil" do
       driver = @dispatcher.find_available_driver
 
-      driver.trips.last.end_time.wont_be_nil
+      if driver.trips.length == 0
+          driver.status.must_equal :AVAILABLE
+      else
+        driver.trips.last.end_time.wont_be_nil
+        driver.status.must_equal :AVAILABLE
+      end
     end
 
     it "drivers that have had no trips are available" do
@@ -200,6 +206,23 @@ describe "TripDispatcher class" do
        trip = @dispatcher.request_trip(9)
       #
        trip.driver.id.must_equal 100
+
+    end
+
+    it "prioritizes drivers who have the oldest most recent trip" do
+      @dispatcher.request_trip(9).driver.id.must_equal 100
+     @dispatcher.request_trip(10).driver.id.must_equal 77
+     @dispatcher.request_trip(11).driver.id.must_equal 27
+     @dispatcher.request_trip(12).driver.id.must_equal 6
+     @dispatcher.request_trip(13).driver.id.must_equal 87
+     @dispatcher.request_trip(9).driver.id.must_equal 75
+
+
+    end
+
+
+    it "prioritizes drivers that have had no trips" do
+     @dispatcher.request_trip(9).driver.id.must_equal 100
 
     end
   end

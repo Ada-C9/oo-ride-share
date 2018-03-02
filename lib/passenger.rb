@@ -24,7 +24,9 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
     #here
     def total_spent
 
