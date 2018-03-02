@@ -143,8 +143,34 @@ describe "TripDispatcher class" do
     end
     it 'selects driver with longest wait for ride' do
       @dispatcher.longest_wait_driver.must_be_instance_of RideShare::Driver
-      @dispatcher.longest_wait_driver.must_be_instance_of RideShare::Driver
-      binding.pry
+
+      # driver = @dispatcher.longest_wait_driver
+      #
+      # trip_data = {
+      #   id: 8,
+      #   driver: driver,
+      #   passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+      #   start_time: Time.now,
+      #   end_time: Time.now,
+      #   cost: 4.00,
+      #   rating: 3
+      # }
+      #
+      # trip = RideShare::Trip.new(trip_data)
+      #
+      # driver.add_trip(trip)
+      #
+      # @dispatcher.longest_wait_driver
+
+      #binding.pry
+    end
+
+    xit 'selects new driver for each ride' do
+      @dispatcher = RideShare::TripDispatcher.new
+
+      dispatcher.request_trip(2).driver
+      #binding.pry
+
     end
   end
 

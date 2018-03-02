@@ -106,6 +106,8 @@ module RideShare
       driver = available_drivers.first # use .sample for a random available driver instead of just the first available in list
       passenger = find_passenger(passenger_id)
 
+      #driver = longest_wait_driver
+
       new_trip = {
         id: trips.length + 1,
         driver: driver,
@@ -142,8 +144,10 @@ module RideShare
         next_drivers[driver] = oldest_trip
         #this fills the next_drivers hash with key:drivers and value:oldest trip
       end
+      #binding.pry
       #max_by returns an array and the 0 index is the key
       winner = next_drivers.min_by{ |k,v| v }[0]
+      # binding.pry
 
       return winner
     end
