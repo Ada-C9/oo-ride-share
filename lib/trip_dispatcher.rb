@@ -112,11 +112,14 @@ module RideShare
 
       new_trip = Trip.new(parsed_trip)
       driver.new_ride(new_trip)
-      passenger.new_ride(new_trip)
+      passenger.add_trip(new_trip)
       @trips << new_trip
       return new_trip
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 

@@ -102,11 +102,4 @@ describe "Passenger class" do
       @passenger.total_ride_time.must_equal 3000
     end
   end
-
-  describe 'new_ride method' do
-    it 'can add a trip to list of passenger trips' do
-      #length
-      #is instance of trip
-    end
-  end
 end

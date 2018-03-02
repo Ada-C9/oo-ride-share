@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class Driver
@@ -43,8 +44,13 @@ module RideShare
       @trips << trip
     end
 
+    def ignores_incomplete_rides()
+      complete_rides = @trips.select { |trip| trip.end_time != nil }
+      return complete_rides
+    end
+
     def calculate_total_rev()
-      total_rev = @trips.inject(0) do |total, trip|
+      total_rev = ignores_incomplete_rides.inject(0.to_f) do |total, trip|
         trip_cost = trip.cost
         trip_cost > 1.65 ? trip_cost -= 1.65 : trip_cost
         total + trip_cost
@@ -53,7 +59,7 @@ module RideShare
     end
 
     def total_drive_time()
-      total_time = @trips.inject(0) do |total, trip|
+      total_time = ignores_incomplete_rides.inject(0) do |total, trip|
          total + trip.calculate_duration
       end
       return total_time
@@ -69,9 +75,7 @@ module RideShare
 
     def new_ride(trip)
       @status = :UNAVAILABLE
-      @trips << trip
+      add_trip(trip)
     end
-
-
   end
 end

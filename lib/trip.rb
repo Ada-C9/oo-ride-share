@@ -33,5 +33,9 @@ module RideShare
         return difference.to_i
       # end
     end#end calculate_duration method
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
   end#end class Trip
 end#end module RideShare
