@@ -187,6 +187,16 @@ describe "TripDispatcher class" do
   end
 
   describe 'select_the_right_driver' do
+
+
+    # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+    # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
+    # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
+    # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+    # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+  end
+
+  describe 'better_request_new_trip' do
     before do
       @trip_disp = RideShare::TripDispatcher.new()
       # Request new trip:
@@ -243,14 +253,6 @@ describe "TripDispatcher class" do
 
       find_new_trip_in_passanger.must_equal @new_trip
     end
-
-    # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-    # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
-    # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
-    # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
-    # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
-
-
-
   end
+
 end

@@ -145,8 +145,13 @@ module RideShare
     def select_the_right_driver
       # Find the first available driver:
       @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
+
+      
     end
 
+    def better_request_new_trip(passenger_id)
+
+    end
 
     def inspect
       # Fix testing bug:
