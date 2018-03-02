@@ -82,7 +82,6 @@ module RideShare
           rating: raw_trip[:rating].to_i
         }
 
-        # binding.pry
         trip = Trip.new(parsed_trip)
         driver.add_trip(trip)
         passenger.add_trip(trip)
@@ -102,31 +101,30 @@ module RideShare
 
         @passengers.each do |passenger|
           if passenger == trip.passenger
-            passengers.add_trip(trip)
+            passenger.add_trip(trip)
           end
         end
 
-      end
-    end
+      end # @trips loop ends
+    end # match_trips ends
 
     def available_drivers
       free_drivers = @drivers
 
-      free_drivers.reject { |driver| driver.status == :AVAILABLE}
-
+      free_drivers.reject! { |driver| driver.status == :UNAVAILABLE || driver.most_recent_trip.nil?}
       return free_drivers
     end
 
     def next_driver
       raise StandardError.new("No available driver") if available_drivers.empty?
-
+      # there are drivers who has no trip at all
       first_driver = available_drivers.min_by{ |driver| driver.most_recent_trip.end_time }
 
       return first_driver
     end
 
     def request_trip(passenger_id)
-      match_trips
+      self.match_trips
 
       new_trip_id = @trips.length + 1
       passenger = find_passenger(passenger_id)
@@ -151,6 +149,9 @@ module RideShare
     end
 
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 
