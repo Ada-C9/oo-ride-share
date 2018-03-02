@@ -8,6 +8,7 @@ describe "TripDispatcher class" do
   before do
 
     unavailable_drivers = [
+      # All names in this test data set beginwith "X", as do all vins, so as to distinguish this purpose-built dummy set from the production set. For the same reason, all driver ids are > 700.
       RideShare::Driver.new(id: 701, name: "Xernardo Xrosacco", vin: "XBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: nil),
 
       RideShare::Driver.new(id: 702, name: "Xmory Xosenbaum", vin: "XB9WEX2R92R12900E", status: :UNAVAILABLE, trips: nil),
@@ -129,7 +130,7 @@ describe "TripDispatcher class" do
     end
 
     it "returns nil when there are no drivers with available status" do
-      #The two assertions below just tests the test:
+      #The two assertions below just test the test:
       @dispatcher_2_unavail.drivers.count.must_equal 5
       @dispatcher_2_unavail.drivers.find { |driver| driver.id == 701}.wont_be_nil
       #The assertion below is the actual test of the production code.
@@ -150,7 +151,6 @@ describe "TripDispatcher class" do
 
     before do
       @test_trip = @dispatcher_1.request_trip(232)
-  #    binding.pry
     end
 
     it "creates a new instance of Trip" do
@@ -203,6 +203,12 @@ describe "TripDispatcher class" do
     it "adds the new trip to the passenger's collection" do
       @test_trip.passenger.trips.count.must_equal 5
       @test_trip.passenger.trips.find { |trip| trip.id == 601 }.wont_be_nil
+    end
+
+    it "raises an error if there are no drivers with available status" do
+
+      proc{ @dispatcher_2_unavail.request_trip(232)}.must_raise StandardError
+
     end
   end
 end

@@ -123,6 +123,11 @@ module RideShare
       # of a suitable driver should break the trip-generating
       # apparatus, not the searching apparatus.
       new_trip = RideShare::Trip.new(new_trip_data)
+      if new_trip.driver == nil
+        # puts "+++++++++++++I'm in the error-raising loop woooo+++"
+        raise StandardError.new("Alas, no drivers are available at this time. Please try again later.")
+      end
+
       @trips << new_trip
       find_first_available_driver.accept_new_trip_assignment(new_trip)
       find_passenger(passenger_id).log_newly_requested_trip(new_trip)
