@@ -19,6 +19,8 @@ describe "Driver class" do
   @driver_a.add_trip(trip_2)
   @driver_a.add_trip(trip_3)
 
+  @trip_now_ongoing = RideShare::Trip.new({id: 801, driver: "driver_TBD", passenger: "passenger_TBD", start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+
   end
 
   describe "Driver instantiation" do

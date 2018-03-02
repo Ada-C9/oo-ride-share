@@ -102,7 +102,7 @@ module RideShare
 
     def create_new_trip_id
       new_trip_id = (@trips.map(&:id).max + 1)
-      #If there's no available driver, I think I just want this to return nil.  I'll put the error downstream.
+      #If there's no available driver, I think I just want this to return nil.  I'll put the error downstream, in request_trip(passenger_id)
       #
     end
 
