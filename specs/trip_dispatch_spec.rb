@@ -171,5 +171,20 @@ describe "TripDispatcher class" do
       @test_trip.driver.trips.count.must_equal 9
       @test_trip.driver.trips.find { |trip| trip.id == 601 }.wont_be_nil
     end
+
+    it "adds the new trip to the driver's collection" do
+      @test_trip.driver.trips.count.must_equal 9
+      @test_trip.driver.trips.find { |trip| trip.id == 601 }.wont_be_nil
+    end
+
+    it "adds the new trip to the passenger's collection" do
+      @test_trip.passenger.trips.count.must_equal 5
+      @test_trip.passenger.trips.find { |trip| trip.id == 601 }.wont_be_nil
+    end
+
   end
 end
+
+=begin
+.log_newly_requested_trip(@newly_requested_trip)
+=end

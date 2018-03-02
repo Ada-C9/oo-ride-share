@@ -19,6 +19,8 @@ describe "Passenger class" do
   @passenger_a.add_trip(trip_2)
   @passenger_a.add_trip(trip_3)
 
+  @newly_requested_trip = RideShare::Trip.new({id: 10, driver: "Meret Oppenheim", passenger: @passenger_a, start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+
   end
 
   describe "Passenger instantiation" do
@@ -98,17 +100,13 @@ describe "Passenger class" do
 
   describe "log_newly_reqested_trip(trip)" do
     before do
-      @requested_trip = RideShare::Trip.new({id: 10, driver: "Meret Oppenheim", passenger: @passenger_a, start_time: Time.now, end_time: nil, cost: nil, rating: nil})
-
-      @passenger_a.log_newly_requested_trip(@requested_trip)
+      @passenger_a.log_newly_requested_trip(@newly_requested_trip)
     end
 
     it "adds the requested trip to the passenger's collection" do
       @passenger_a.trips.count.must_equal 4
-      @passenger_a.trips.must_include @requested_trip
+      @passenger_a.trips.must_include @newly_requested_trip
     end
-
-
   end
 
   describe "total_ride_time" do
