@@ -128,7 +128,13 @@ describe "TripDispatcher class" do
       name.must_equal "Emory Rosenbaum"
     end
 
-
+    it "returns nil when there are no drivers with available status" do
+      #The two assertions below just tests the test:
+      @dispatcher_2_unavail.drivers.count.must_equal 5
+      @dispatcher_2_unavail.drivers.find { |driver| driver.id == 701}.wont_be_nil
+      #The assertion below is the actual test of the production code.
+      @dispatcher_2_unavail.find_first_available_driver.must_be_nil
+    end
   end
 
   describe "create_new_trip_id" do
