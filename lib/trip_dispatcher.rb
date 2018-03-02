@@ -91,7 +91,7 @@ module RideShare
     end
 
     def available_drivers
-       available_drivers = drivers.find_all {|driver| driver.status == :AVAILABLE}
+      available_drivers = drivers.find_all {|driver| driver.status == :AVAILABLE}
 
       if available_drivers.empty?
         raise ArgumentError.new("No available drivers")
@@ -124,6 +124,10 @@ module RideShare
       trips << requested_trip
 
       return requested_trip
+    end
+    
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
