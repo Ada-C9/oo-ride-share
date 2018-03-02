@@ -124,10 +124,7 @@ module RideShare
       trips << requested_trip
 
       return requested_trip
-
     end
-
-
 
     private
 
