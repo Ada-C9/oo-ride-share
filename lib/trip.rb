@@ -28,11 +28,11 @@ module RideShare
     end
 
     def duration
-      return @end_time - @start_time
+      @end_time - @start_time
     end
 
     def is_finished?
-      return @end_time != nil
+      @end_time != nil
     end
 
     def inspect

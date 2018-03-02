@@ -55,7 +55,7 @@ describe "Driver class" do
     before do
       passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -72,12 +72,12 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), rating: 5})
       @driver.add_trip(trip)
     end
 
     it "returns a float" do
-      @driver.average_rating.must_be_kind_of Float
+      @driver.average_rating.must_be_kind_of Numeric
     end
 
     it "returns a float within range of 1.0 to 5.0" do
@@ -181,15 +181,15 @@ describe "Driver class" do
     end
   end
 
-  describe "get_completed_trips method" do
+  describe "completed_trips method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
       @driver_2 = @dispatcher.find_driver(2)
     end
 
     it "returns an array of trips" do
-      @driver_2.get_completed_trips.must_be_kind_of Array
-      @driver_2.get_completed_trips.each do |trip|
+      @driver_2.completed_trips.must_be_kind_of Array
+      @driver_2.completed_trips.each do |trip|
         trip.must_be_instance_of RideShare::Trip
       end
     end
@@ -197,13 +197,13 @@ describe "Driver class" do
     it "does not include incomplete trips" do
       new_trip = @dispatcher.request_trip(1)
       @driver_2.trips.must_include new_trip
-      @driver_2.get_completed_trips.wont_include new_trip
+      @driver_2.completed_trips.wont_include new_trip
     end
 
     it "returns an empty array if the driver has no trips" do
       new_driver = RideShare::Driver.new(id: 101, name: "Caroline Nardi", vin: "1C9EVBRM0YBC564DZ")
-      new_driver.get_completed_trips.must_be_kind_of Array
-      new_driver.get_completed_trips.must_be_empty
+      new_driver.completed_trips.must_be_kind_of Array
+      new_driver.completed_trips.must_be_empty
     end
   end
 end

@@ -82,18 +82,18 @@ describe "Passenger class" do
 
     it "returns a number" do
       @passenger.must_respond_to :total_cost
-      @passenger.total_cost.must_be_kind_of Numeric
+      @passenger.total_cost.must_be_kind_of Float
     end
 
     it "returns zero if the passenger has no trips" do
-      @passenger.total_cost.must_equal 0
+      @passenger.total_cost.must_equal 0.0
     end
 
     it "returns the sum cost of the passenger's trips" do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, cost: 10.15, rating: 3})
-      trip_2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, cost: 7, rating: 5})
+      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:14:10+00:00'), cost: 10.15, rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:14:08+00:00'), cost: 7, rating: 5})
       @passenger.add_trip(trip_1)
       @passenger.add_trip(trip_2)
 
@@ -108,11 +108,11 @@ describe "Passenger class" do
 
     it "returns a number" do
       @passenger.must_respond_to :total_time
-      @passenger.total_time.must_be_kind_of Numeric
+      @passenger.total_time.must_be_kind_of Float
     end
 
     it "returns zero if the passenger has no trips" do
-      @passenger.total_time.must_equal 0
+      @passenger.total_time.must_equal 0.0
     end
 
     it "returns the sum duration of the passenger's trips" do
@@ -127,15 +127,15 @@ describe "Passenger class" do
     end
   end
 
-  describe "get_completed_trips method" do
+  describe "completed_trips method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
       @passenger_1 = @dispatcher.find_passenger(1)
     end
 
     it "returns an array of trips" do
-      @passenger_1.get_completed_trips.must_be_kind_of Array
-      @passenger_1.get_completed_trips.each do |trip|
+      @passenger_1.completed_trips.must_be_kind_of Array
+      @passenger_1.completed_trips.each do |trip|
         trip.must_be_instance_of RideShare::Trip
       end
     end
@@ -143,13 +143,13 @@ describe "Passenger class" do
     it "does not include incomplete trips" do
       new_trip = @dispatcher.request_trip(1)
       @passenger_1.trips.must_include new_trip
-      @passenger_1.get_completed_trips.wont_include new_trip
+      @passenger_1.completed_trips.wont_include new_trip
     end
 
     it "returns an empty array if the passenger has no trips" do
       new_passenger = RideShare::Passenger.new(id: 301, name: "Caroline Nardi", phone: "1-602-620-2330")
-      new_passenger.get_completed_trips.must_be_kind_of Array
-      new_passenger.get_completed_trips.must_be_empty
+      new_passenger.completed_trips.must_be_kind_of Array
+      new_passenger.completed_trips.must_be_empty
     end
   end
 end

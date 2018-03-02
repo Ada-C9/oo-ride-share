@@ -22,26 +22,15 @@ module RideShare
     end
 
     def total_cost
-      total_cost = 0
-      @trips.each do |trip|
-        total_cost += trip.cost
-      end
-      return total_cost
+      completed_trips.map { |trip| trip.cost }.reduce(0.0,:+)
     end
 
     def total_time
-      total_time = 0
-      @trips.each do |trip|
-        total_time += trip.duration
-      end
-      return total_time
+      completed_trips.map { |trip| trip.duration }.reduce(0.0,:+)
     end
 
-    def get_completed_trips
-      completed_trips = @trips.select do |trip|
-        trip.is_finished?
-      end
-      return completed_trips
+    def completed_trips
+      @trips.select { |trip| trip.is_finished? }
     end
   end
 end
