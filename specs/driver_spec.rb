@@ -158,7 +158,6 @@ describe "Driver class" do
       driver_data = {id: 3, name: "Lovelace", vin: "12345678912345678"}
       driver = RideShare::Driver.new(driver_data)
 
-
       start_time_1 = Time.parse('2015-05-20T12:14:00+00:00')
       end_time_1 = start_time_1 + 30 * 60
       trip_1 = {
@@ -188,6 +187,5 @@ describe "Driver class" do
       driver.calculate_average_revenue.must_equal 82.67
     end
   end
-
 
 end

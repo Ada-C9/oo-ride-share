@@ -1,6 +1,5 @@
 require 'csv'
 require 'time'
-require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -91,23 +90,6 @@ module RideShare
       trips
     end
 
-    def match_trips
-      @trips.each do |trip|
-        @drivers.each do |driver|
-          if driver == trip.driver
-            driver.add_trip(trip)
-          end
-        end
-
-        @passengers.each do |passenger|
-          if passenger == trip.passenger
-            passenger.add_trip(trip)
-          end
-        end
-
-      end # @trips loop ends
-    end # match_trips ends
-
     def available_drivers
       free_drivers = @drivers
 
@@ -117,22 +99,17 @@ module RideShare
 
     def next_driver
       raise StandardError.new("No available driver") if available_drivers.empty?
-      # there are drivers who has no trip at all
+
       first_driver = available_drivers.min_by{ |driver| driver.find_most_recent_trip.end_time }
 
       return first_driver
     end
 
     def request_trip(passenger_id)
-      self.match_trips
-
       new_trip_id = @trips.length + 1
       passenger = find_passenger(passenger_id)
-      # puts passenger
 
       request_driver = next_driver
-      # puts request_driver
-      # request_driver = @drivers.find{|driver| driver.status == :AVAILABLE }
 
       trip = {
         id: new_trip_id,
@@ -144,14 +121,15 @@ module RideShare
       new_trip = RideShare::Trip.new(trip)
 
       @trips << new_trip
-      # driver.new_trip(new_trip)
+      request_driver.add_new_trip(new_trip)
+      passenger.add_trip(new_trip)
       return new_trip
     end
 
 
-    # def inspect
-    #   "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    # end
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 

@@ -9,8 +9,8 @@ module RideShare
       @id = input[:id]
       @driver = input[:driver]
       @passenger = input[:passenger]
-      @start_time = input[:start_time].class == Time ? input[:start_time] : Time.parse(input[:start_time]) # instance of Time
-      @end_time = input[:end_time] == nil ? nil : input[:end_time] # instance of Time
+      @start_time = input[:start_time].class == Time ? input[:start_time] : Time.parse(input[:start_time])
+      @end_time = input[:end_time] == nil ? nil : input[:end_time]
       @cost = input[:cost] == nil ? nil : input[:cost]
       @rating = input[:rating] == nil ? nil : input[:rating]
 
@@ -27,9 +27,9 @@ module RideShare
       @end_time - @start_time
     end
 
-    # def inspect
-    #   "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    # end
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
   end
 end

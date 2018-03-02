@@ -3,7 +3,7 @@ require_relative 'spec_helper'
 describe "Trip class" do
   before do
     start_time = Time.parse('2015-05-20T12:14:00+00:00')
-    end_time = start_time + 25 * 60 # 25 minutes
+    end_time = start_time + 25 * 60
     @trip_data = {
       id: 8,
       driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -13,7 +13,6 @@ describe "Trip class" do
       cost: 23.45,
       rating: 3
     }
-    # binding.pry
     @trip = RideShare::Trip.new(@trip_data)
   end
 
@@ -49,13 +48,12 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
-  end  # initializer ends
+  end
 
   describe "duration method" do
     it "returns the duration time of a trip" do
       @trip.duration.must_equal 25 * 60.to_f
     end
   end
-
 
 end

@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require "pry"
 
 describe "Passenger class" do
 
@@ -32,7 +31,6 @@ describe "Passenger class" do
       @passenger.trips.must_be_kind_of Array
     end
   end
-
 
   describe "trips property" do
     before do

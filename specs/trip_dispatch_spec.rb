@@ -106,19 +106,21 @@ describe "TripDispatcher class" do
 
       new_trip = trip_dispatcher.request_trip(passenger_id)
 
-      new_trip.passenger.add_new_trip(new_trip)
       new_trip.passenger.trips.must_include new_trip
 
-      new_trip.driver.add_new_trip(new_trip)
       new_trip.driver.trips.must_include new_trip
     end
 
     it "returns the status of chosen driver" do
       passenger_id = 10
       trip_dispatcher = RideShare::TripDispatcher.new
+      first_driver_id = 14
+      first_driver = trip_dispatcher.find_driver(first_driver_id)
+
+      first_driver.status.must_equal :AVAILABLE
+
       new_trip = trip_dispatcher.request_trip(passenger_id)
 
-      new_trip.driver.status.must_equal :AVAILABLE
     end
 
     it "can return the first driver who is available" do
@@ -143,19 +145,10 @@ describe "TripDispatcher class" do
       passenger_id_5 = 50
 
       new_trip_1 = trip_dispatcher.request_trip(passenger_id_1)
-      new_trip_1.driver.add_new_trip(new_trip_1)
-
       new_trip_2 = trip_dispatcher.request_trip(passenger_id_2)
-      new_trip_2.driver.add_new_trip(new_trip_2)
-
       new_trip_3 = trip_dispatcher.request_trip(passenger_id_3)
-      new_trip_3.driver.add_new_trip(new_trip_3)
-
       new_trip_4 = trip_dispatcher.request_trip(passenger_id_4)
-      new_trip_4.driver.add_new_trip(new_trip_4)
-
       new_trip_5 = trip_dispatcher.request_trip(passenger_id_5)
-      new_trip_5.driver.add_new_trip(new_trip_5)
 
       new_trip_1.driver.must_equal first_driver
       new_trip_2.driver.must_equal second_driver
