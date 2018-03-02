@@ -99,7 +99,10 @@ module RideShare
         return nil
       end
 
-      trip_info = { id: (@trips.length + 1), driver: selected_driver, passenger: passenger, start_time: Time.now, end_time: nil, cost: nil, rating: nil }
+      max_id_trip = @trips.max_by { |trip| trip.id }
+      max_id = max_id_trip.id
+
+      trip_info = { id: max_id + 1, driver: selected_driver, passenger: passenger, start_time: Time.now, end_time: nil, cost: nil, rating: nil }
       trip = RideShare::Trip.new(trip_info)
 
       driver_id = selected_driver.id
@@ -107,6 +110,7 @@ module RideShare
       selected_driver.set_status(:UNAVAILABLE)
       passenger.add_trip(trip)
       @trips << trip
+      
       return trip
     end
 
