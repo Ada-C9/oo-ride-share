@@ -97,6 +97,7 @@ module RideShare
     def request_trip(passenger_id)
       passenger = find_passenger(passenger_id)
       driver = find_trip_driver(:AVAILABLE)
+      driver.set_status_unavailable
 
       new_trip = {
         id: (trips.last.id + 1),
@@ -109,6 +110,9 @@ module RideShare
       }
 
       trip = Trip.new(new_trip)
+      driver.add_trip(trip)
+      passenger.add_trip(trip)
+
       return trip
     end
 
