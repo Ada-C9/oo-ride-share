@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -17,6 +18,27 @@ describe "TripDispatcher class" do
       dispatcher.trips.must_be_kind_of Array
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
+    end
+  end
+
+  describe "request_trip" do
+    ##############################
+    it "can return a new requested trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      temp_ride_status = :PENDING
+
+      new_trip = dispatcher.request_trip(1)
+      new_trip.must_be_instance_of RideShare::Trip
+      new_trip.id.must_equal 1
+      new_trip.passenger.must_be_instance_of RideShare::Passenger
+      new_trip.driver.must_be_instance_of RideShare::Driver
+      new_trip.start_time.must_be_instance_of Time
+      new_trip.end_time.must_equal temp_ride_status
+      new_trip.cost.must_equal 0
+      new_trip.rating.must_equal temp_ride_status
+    end
+
+    it "will return XYZ for an empty passenger ID" do
     end
   end
 
@@ -90,5 +112,20 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "must be an instant of the Time class for start_time as read in by the CSV" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.trips.each do |a_trip|
+        a_trip.start_time.must_be_instance_of Time
+      end
+    end
+
+    it "must be an instant of the Time class for end_time as read in by the CSV" do
+        dispatcher = RideShare::TripDispatcher.new
+        dispatcher.trips.each do |a_trip|
+          a_trip.end_time.must_be_instance_of Time
+        end
+    end
   end
+
 end
