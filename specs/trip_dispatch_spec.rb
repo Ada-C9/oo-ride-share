@@ -92,17 +92,16 @@ describe "TripDispatcher class" do
 
   describe "request_trip" do
     before do
-      dispatcher = RideShare::TripDispatcher.new
-      passenger_id = dispatcher.passengers.first.id
-      @new_trip = dispatcher.request_trip(passenger_id)
+      @dispatcher = RideShare::TripDispatcher.new
+      @new_trip = @dispatcher.request_trip(25)
     end
 
     it "creates a new trip instance" do
       @new_trip.must_be_instance_of RideShare::Trip
     end
 
-    it "assigns the first available driver to the trip" do
-      @new_trip.driver.status.must_equal :AVAILABLE
+    it "Changes the driver's status to unavailable" do
+      @new_trip.driver.status.must_equal :UNAVAILABLE
     end
 
     it "sets the current time as the start_time" do
@@ -116,5 +115,8 @@ describe "TripDispatcher class" do
       @new_trip.rating.must_be_nil
     end
 
+    it "updates the driver's trip list" do
+      @new_trip.driver.trips.must_include @new_trip
+    end
   end
 end

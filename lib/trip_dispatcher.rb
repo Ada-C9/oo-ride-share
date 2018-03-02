@@ -71,43 +71,53 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
-          parsed_trip = {
-            id: raw_trip[:id].to_i,
-            driver: driver,
-            passenger: passenger,
-            start_time: Time.parse(raw_trip[:start_time]),
-            end_time: Time.parse(raw_trip[:end_time]),
-            cost: raw_trip[:cost].to_f,
-            rating: raw_trip[:rating].to_i
-          }
+        parsed_trip = {
+          id: raw_trip[:id].to_i,
+          driver: driver,
+          passenger: passenger,
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
+          cost: raw_trip[:cost].to_f,
+          rating: raw_trip[:rating].to_i
+        }
 
-          trip = Trip.new(parsed_trip)
-          driver.add_trip(trip)
-          passenger.add_trip(trip)
-          trips << trip
+        trip = Trip.new(parsed_trip)
+        driver.add_trip(trip)
+        passenger.add_trip(trip)
+        trips << trip
       end
 
       trips
     end
 
     def request_trip(passenger_id)
-      # find first available driver
-      driver = @drivers.find{ |driver| driver.status == :AVAILABLE}
-
       # load data for new trip argument
-      new_trip = {
-        id: passenger_id,
+      driver = drivers.find{ |driver| driver.status == :AVAILABLE}
+      trip_id = trips.length + 1
+      passenger = find_passenger(passenger_id)
+
+      trip_data = {
+        id: trip_id,
         driver: driver,
-        passenger: find_passenger(passenger_id),
+        passenger: passenger,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
-        rating: nil
+        rating: nil,
       }
 
       # call new trip
-      RideShare::Trip.new(new_trip)
+      new_trip = Trip.new(trip_data)
+      trips << new_trip
+      # update driver status and trip list
+      driver.add_trip(new_trip)
+      driver.change_driver_status
 
+      return new_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
