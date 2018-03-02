@@ -132,18 +132,22 @@ module RideShare
 
     def next_chosen_driver
 
+      available_drivers.each do |driver|
+        if driver.trips.length == 0
+          return driver
+        end
+      end
+      # first choose any driver that has no previous rides.
+
       all_last_trips = [] #trips with oldest end_time per driver
       available_drivers.each do |driver|
-        if driver.trips.length != 0
-          #for now this just removes Minnie (the driver with no rides) from the pool of drivers to be chosen.)
-          last_trip = driver.trips[0]
-          driver.trips.each do |trip|
-            if trip.end_time > last_trip.end_time
-              last_trip = trip
-            end
+        last_trip = driver.trips[0]
+        driver.trips.each do |trip|
+          if trip.end_time > last_trip.end_time
+            last_trip = trip
           end
-          all_last_trips << last_trip
         end
+        all_last_trips << last_trip
       end
 
       oldest_trip_taken = all_last_trips[0]
@@ -177,18 +181,3 @@ module RideShare
     end
   end
 end
-
-
-
-####################################
-
-#all_drivers_trips = []
-# available_drivers.each do |driver|
-#   shortest_trip = driver.trips[0]
-#   driver.trips.each do |trip|
-#     if trip.end_time < shortest_trip.end_time
-#       shortest_trip = trip
-#     end
-#   end
-#   return shortest_trip
-# end

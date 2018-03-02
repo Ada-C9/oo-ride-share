@@ -151,22 +151,22 @@ describe "TripDispatcher class" do
     it 'selects driver with longest wait for ride' do
       @dispatcher.next_chosen_driver.must_be_instance_of RideShare::Driver
 
-      @dispatcher.next_chosen_driver.name.must_equal "Antwan Prosacco"
+      @dispatcher.next_chosen_driver.name.must_equal "Minnie Dach"
     end
 
     it 'selects correct new driver for each ride' do
-      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher2 = RideShare::TripDispatcher.new
 
-      @dispatcher.request_trip(1).driver.name.must_equal "Antwan Prosacco"
-      @dispatcher.request_trip(2).driver.name.must_equal "Nicholas Larkin"
-      @dispatcher.request_trip(3).driver.name.must_equal "Mr. Hyman Wolf"
-      @dispatcher.request_trip(3).driver.name.must_equal "Jannie Lubowitz"
-      @dispatcher.request_trip(3).driver.name.must_equal "Mohammed Barrows"
+      @dispatcher2.request_trip(10).driver.name.must_equal "Minnie Dach"
 
-
-      #binding.pry
-
+      @dispatcher2.request_trip(1).driver.name.must_equal "Antwan Prosacco"
+      @dispatcher2.request_trip(2).driver.name.must_equal "Nicholas Larkin"
+      @dispatcher2.request_trip(3).driver.name.must_equal "Mr. Hyman Wolf"
+      @dispatcher2.request_trip(4).driver.name.must_equal "Jannie Lubowitz"
+      @dispatcher2.request_trip(5).driver.name.must_equal "Mohammed Barrows"
     end
+
+
   end
 
 end
