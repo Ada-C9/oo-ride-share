@@ -42,7 +42,7 @@ module RideShare
         if trip.end_time == nil
           total_time += 0
         else
-          total_time += trip.duration_method
+          total_time += trip.trip_duration
         end
       end
       return total_time

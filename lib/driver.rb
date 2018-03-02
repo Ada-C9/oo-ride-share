@@ -47,7 +47,7 @@ module RideShare
     def total_time_in_trips
       # Calculates the total hours of all trips, ignoring the in-progress ones:
       total_hours = 0
-      @trips.each {|trip| trip.end_time == nil ? total_hours += 0 : total_hours += trip.duration_method}
+      @trips.each {|trip| trip.end_time == nil ? total_hours += 0 : total_hours += trip.trip_duration}
       return total_hours
     end
 

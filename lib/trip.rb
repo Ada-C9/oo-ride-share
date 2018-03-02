@@ -14,41 +14,19 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      # -----------------
-      # For the trips that are in_progress use:
-      #change the rest of the current code to use it
-      # def finish_trip!
-      #   @end_time = Time.now
-      # end
-      #
-      # def finished?
-      #   return end_time !=nil
-      # end
-
-      # -----------------
-
       if @rating != nil
-        if @rating > 5 || @rating < 1
-          raise ArgumentError.new("Invalid rating #{@rating}")
-        end
+        raise ArgumentError.new("Invalid rating #{@rating}")  if @rating > 5 || @rating < 1
       end
 
-      if @end_time != nil
-        raise ArgumentError.new("End time cannot be before the start time.") if @start_time > @end_time
-      end
+      raise ArgumentError.new("End time cannot be before the start time.") if @start_time > @end_time if @end_time != nil
     end
 
-    def duration_method
-      #change this name! haha
-
-      if @end_time == nil
-        return nil
-      end
-
-      return (@end_time.to_f - @start_time.to_f)
+    def trip_duration
+      return @end_time == nil ? nil : (@end_time.to_f - @start_time.to_f)
     end
 
     def inspect
+      # Fix testing bug:
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
   end

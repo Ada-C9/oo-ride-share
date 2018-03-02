@@ -95,29 +95,25 @@ module RideShare
     end
 
     def select_driver_available
-
+      # Find the first available driver:
       @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
-      # @drivers.find{ |driver| driver.status == :AVAILABLE }
     end
 
 
     def request_trip(passenger_id)
+      # Initiate a new trip:
 
       passenger = find_passenger(passenger_id)
 
-      if passenger == nil
-        raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.")
-      end
-
+      raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.") if passenger == nil
 
       select_driver_available
-
 
       in_progress_trip = {
         id: (@trips.size + 1),
         driver: select_driver_available,
         passenger: passenger,
-        start_time: Time.now, #Your code should use the current time for the start time
+        start_time: Time.now,
         end_time: nil,
         cost: nil,
         rating: nil,
@@ -146,19 +142,15 @@ module RideShare
       return trip_in_progress
     end
 
-    # def self.ignore_in_progress_trips(end_time_this)
-    #   if end_time_this == nil
-    #     return nil
-    #   end
-    # end
-
     def inspect
+      # Fix testing bug:
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
 
     def check_id(id)
+      # Check if it is a valid ID
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end

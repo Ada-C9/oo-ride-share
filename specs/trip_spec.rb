@@ -58,7 +58,7 @@ describe "Trip class" do
     end
   end
 
-  describe '#duration_method' do
+  describe '#trip_duration' do
     it 'calculate the duration of the trip in seconds' do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 1 * 60 # + 1 minute
@@ -74,7 +74,7 @@ describe "Trip class" do
       }
       @trip = RideShare::Trip.new(@trip_data)
 
-      @trip.duration_method.must_equal 60
+      @trip.trip_duration.must_equal 60
     end
 
     it 'Ignores the trips that are still in progress' do
@@ -92,7 +92,7 @@ describe "Trip class" do
       }
       @trip = RideShare::Trip.new(@trip_data)
 
-      @trip.duration_method.must_equal nil
+      @trip.trip_duration.must_equal nil
     end
   end
 end
