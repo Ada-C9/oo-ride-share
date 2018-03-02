@@ -150,6 +150,35 @@ describe "Driver class" do
     end
   end
 
+  describe "drivers_most_recent_trip method" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
+    end
+
+    it "provides drivers_most_recent_trip with one trip" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+      @driver.add_trip(trip)
+
+      @driver.drivers_most_recent_trip.must_equal trip
+    end
+
+    it "provides drivers_most_recent_trip with multiple trips" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip_one = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+      @driver.add_trip(trip_one)
+
+      start_time = Time.parse('2017-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip_two = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+      @driver.add_trip(trip_two)
+
+      @driver.drivers_most_recent_trip.must_equal trip_two
+    end
+  end
+
   describe "available? method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
@@ -189,6 +218,63 @@ describe "Driver class" do
 
       @driver.accept_trip(trip)
       @driver.trips.wont_be_nil
+    end
+  end
+
+  describe "drivers_completed_trips method" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
+    end
+
+    it "returns empty array if no trips completed" do
+      @driver.drivers_completed_trips.empty?.must_equal true
+    end
+
+    it "returns empty array if only one trip and it's in
+    progress" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, cost: 15.00, rating: 5})
+      @driver.add_trip(trip)
+
+      @driver.drivers_completed_trips.empty?.must_equal true
+    end
+
+    it "returns trip if only one trip and it's completed" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+
+      @driver.add_trip(trip)
+
+      @driver.drivers_completed_trips.length.must_equal 1
+      @driver.drivers_completed_trips[0].must_equal trip
+    end
+
+    it "returns multiple trips if multiple are completed" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+
+      10.times { @driver.add_trip(trip) }
+
+      @driver.drivers_completed_trips.length.must_equal 10
+    end
+
+    it "returns appropriate trips when some are in progress and some are completed" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      completed_trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, cost: 15.00, rating: 5})
+
+      2.times { @driver.add_trip(completed_trip) }
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      in_progress_trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, cost: 15.00, rating: 5})
+
+      @driver.add_trip(in_progress_trip)
+
+      @driver.drivers_completed_trips.length.must_equal 2
+      @driver.drivers_completed_trips[0].must_equal completed_trip
+      @driver.drivers_completed_trips[1].must_equal completed_trip
     end
   end
 

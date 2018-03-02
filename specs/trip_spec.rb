@@ -86,7 +86,7 @@ describe "Trip class" do
     end
   end
 
-  describe "self.total_time method" do
+  describe "self.total_time(trip_list) method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes
@@ -118,6 +118,100 @@ describe "Trip class" do
       10.times { trip_list << @trip }
       RideShare::Trip.total_time(trip_list).must_equal 15000.0
     end
-
   end
+
+  describe "trip_complete? method" do
+    before do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "returns false if no trips taken" do
+      @trip.trip_complete?.must_equal false
+    end
+
+    it "returns false if trip is in progress" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @trip_data[:start_time] = start_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.trip_complete?.must_equal false
+    end
+
+    it "returns true if trip has an end time" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.trip_complete?.must_equal true
+    end
+  end
+
+  describe "trip_in_progress? method" do
+    before do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "returns false if no trips taken" do
+      @trip.trip_in_progress?.must_equal false
+    end
+
+    it "returns true if trip is in progress" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @trip_data[:start_time] = start_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.trip_in_progress?.must_equal true
+    end
+
+    it "returns false if trip has an end time" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.trip_in_progress?.must_equal false
+    end
+  end
+
+  describe "time_since_trip method" do
+    before do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "returns nil if end_time is nil" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @trip_data[:start_time] = start_time
+
+      @trip.time_since_trip.must_equal nil
+    end
+
+    it "returns a length of time if end_time present" do
+      start_time = Time.parse('2018-2-27T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data[:start_time] = start_time
+      @trip_data[:end_time] = end_time
+      @trip = RideShare::Trip.new(@trip_data)
+
+      @trip.time_since_trip.must_be_instance_of Float
+    end
+  end
+
 end

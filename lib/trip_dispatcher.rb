@@ -44,23 +44,30 @@ module RideShare
     end
 
     def available_driver
-      ##################
+      @drivers.find{ |driver| driver.available? }
     end
 
-    # # Wave 1
-    # def available_driver
-    #   @drivers.find{ |driver| driver.available? }
-    # end
-
-    # # Wave 1 Alternative 1
+    # # Alternative 1
     # def available_driver
     #   @drivers.find(&:available?)
     # end
 
     def request_trip(passenger_id)
 
-      selected_driver = self.available_driver
-      raise StandardError.new("There are no available drivers.") if selected_driver == nil
+      available_drivers = @drivers.select {|driver| driver.available? }
+
+      raise StandardError.new("There are no available drivers.") if available_drivers == nil
+
+      available_drivers_not_on_trip = available_drivers.select {|driver| !driver.on_trip_now? }
+
+      raise StandardError.new("There are no available drivers not on a trip.") if available_drivers_not_on_trip == nil
+
+      selected_driver = available_drivers_not_on_trip.find {|driver| driver.trips.empty? }
+
+      if selected_driver.nil?
+        selected_driver = available_drivers_not_on_trip.max_by { |driver|
+        driver.drivers_most_recent_trip.time_since_trip }
+      end
 
       requesting_passenger = self.find_passenger(passenger_id)
 
@@ -69,15 +76,39 @@ module RideShare
         driver: selected_driver,
         passenger: requesting_passenger,
         start_time: Time.now
-      })
+        })
 
-      selected_driver.accept_trip(trip)
-      requesting_passenger.accept_trip(trip)
+        selected_driver.accept_trip(trip)
+        requesting_passenger.accept_trip(trip)
 
-      @trips << trip
+        @trips << trip
 
-      return trip
-    end
+        return trip
+
+      end
+
+    # # WAVE 1
+    # def request_trip(passenger_id)
+    #
+    #   selected_driver = self.available_driver
+    #   raise StandardError.new("There are no available drivers.") if selected_driver == nil
+    #
+    #   requesting_passenger = self.find_passenger(passenger_id)
+    #
+    #   trip = Trip.new({
+    #     id: @trips.length + 1,
+    #     driver: selected_driver,
+    #     passenger: requesting_passenger,
+    #     start_time: Time.now
+    #   })
+    #
+    #   selected_driver.accept_trip(trip)
+    #   requesting_passenger.accept_trip(trip)
+    #
+    #   @trips << trip
+    #
+    #   return trip
+    # end
 
     def load_passengers
       passengers = []

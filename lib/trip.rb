@@ -51,5 +51,18 @@ module RideShare
     #   trip_list.map { |trip| trip.get_duration }.compact.inject(0, :+)
     # end
 
+    def trip_complete?
+      self.end_time != nil ? true : false
+    end
+
+    def trip_in_progress?
+      (self.start_time != nil && self.end_time == nil) ? true : false
+    end
+
+    # returns time in seconds
+    def time_since_trip
+      (Time.now - self.end_time) if self.end_time != nil
+    end
+
   end
 end
