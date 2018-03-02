@@ -148,6 +148,7 @@ describe "Driver class" do
       @driver.set_status_unavailable
       # Then
       @driver.status.must_equal :UNAVAILABLE
+      @driver.must_be_kind_of RideShare::Driver
     end
   end
 end
