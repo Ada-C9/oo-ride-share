@@ -128,16 +128,6 @@ module RideShare
       return sorted_ids.last + 1
     end
 
-    # def get_driver
-    #   available_driver = @drivers.find do |driver|
-    #     driver.status == :AVAILABLE
-    #   end
-    #   if available_driver.nil?
-    #     raise ArgumentError.new("Unable to create a new trip, no available drivers")
-    #   end
-    #   return available_driver
-    # end
-
     def get_oldest_driver
       available_drivers = @drivers.select { |driver| driver.status == :AVAILABLE }
 

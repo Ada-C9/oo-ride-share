@@ -41,7 +41,7 @@ describe "Trip class" do
 
     it "throws an argument error if a trip end time is before the start time" do
       start_time = '2015-05-20T12:14:00+00:00'
-      end_time = '2015-05-20T12:00:00+00:00' # 25 minutes
+      end_time = '2015-05-20T12:00:00+00:00'
       test_details = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
