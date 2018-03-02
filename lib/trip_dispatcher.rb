@@ -95,7 +95,18 @@ module RideShare
       trips
     end
 
-    def is_driver_available
+    def request_trip(passenger_id)
+      if any_drivers_available
+        available_drivers = removes_unavailable_drivers
+        new_trip = make_new_trip(passenger_id, available_drivers)
+        update_trips_arrays(new_trip)
+        return new_trip
+      else
+        return nil
+      end
+    end
+
+    def any_drivers_available
       @drivers.any? {|driver| driver.status == :AVAILABLE} ? true : false
     end
 
@@ -105,7 +116,8 @@ module RideShare
     end
 
     def make_new_trip(passenger_id, available_drivers)
-      driver = available_drivers.find { |d| d.status == :AVAILABLE }
+      driver = find_new_driver(available_drivers)
+      # driver = available_drivers.find { |d| d.status == :AVAILABLE }
       passenger = find_passenger(passenger_id)
       start_time = Time.now
 
@@ -123,22 +135,34 @@ module RideShare
       return new_trip
     end
 
+    def find_new_driver(available_drivers)
+      selected_driver = available_drivers.first
+      time_passed = 0
+
+      available_drivers.each do |driver|
+        all_trips = driver.trips
+        if all_trips.length != 0
+          sorted_trips = all_trips.sort { |x,y| x.end_time <=> y.end_time }
+          most_recent_trip = sorted_trips.last
+          time_difference = (Time.now - most_recent_trip.end_time)
+          if time_difference > time_passed
+            selected_driver = driver
+            time_passed = time_difference
+          end
+        else
+          selected_driver =  driver
+          break
+        end
+      end
+
+      return selected_driver
+    end
+
     def update_trips_arrays(new_trip)
       new_trip.driver.update_driver_info(new_trip)
       new_trip.driver.add_trip(new_trip)
       new_trip.passenger.add_trip(new_trip)
       trips << new_trip
-    end
-
-    def request_trip(passenger_id)
-      if is_driver_available
-        available_drivers = removes_unavailable_drivers
-        new_trip = make_new_trip(passenger_id, available_drivers)
-        update_trips_arrays(new_trip)
-        return new_trip
-      else
-        return nil
-      end
     end
 
     def inspect

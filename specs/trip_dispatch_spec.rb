@@ -128,21 +128,32 @@ describe "TripDispatcher class" do
       new_trip = @dispatcher.request_trip(passenger_id)
       new_trip.must_be_nil
     end
+
+    it "returns correct first driver" do
+      passenger_id = 5
+      initial_trips_length = @dispatcher.trips.length
+      new_trip = @dispatcher.request_trip(passenger_id)
+
+      new_trip.driver.id.must_equal 100
+      new_trip.driver.name.must_equal "Minnie Dach"
+      @dispatcher.trips.length.must_equal initial_trips_length + 1
+    end
+
+    it "returns correct fifth driver" do
+      passenger_id = 10
+      4.times do
+        @dispatcher.request_trip(passenger_id)
+      end
+      fifth_trip = @dispatcher.request_trip(passenger_id)
+      fifth_trip.driver.id.must_equal 87
+      fifth_trip.driver.name.must_equal "Jannie Lubowitz"
+    end
   end
 
   describe "#find_new_driver" do
     it "returns a Driver instance" do
       all_drivers = @dispatcher.drivers
       @dispatcher.find_new_driver(all_drivers).must_be_kind_of RideShare::Driver
-    end
-
-    it "returns correct driver" do
-      #Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-
-      available_drivers = @dispatcher.removes_unavailable_drivers
-      new_driver = @dispatcher.find_new_driver(available_drivers)
-      new_driver.id.must_equal 14
-      new_driver.name.must_equal "Antwan Prosacco"
     end
   end
 
