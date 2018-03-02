@@ -21,9 +21,11 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def driver_status
+    def driver_status_change
       if @status == :AVAILABLE
-
+        @status = :UNAVAILABLE
+      end
+      return @status
     end
 
     def average_rating

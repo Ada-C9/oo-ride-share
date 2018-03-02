@@ -96,7 +96,7 @@ describe "request_trip method" do
   it "returns a trip" do
     dispatcher = RideShare::TripDispatcher.new
     passenger = 4
-    dispatcher.request_trip(passenger).must_return RideShare::Trip.new
+    dispatcher.request_trip(passenger).must_be_instance_of RideShare::Trip
   end
 end
 

@@ -116,15 +116,20 @@ describe "Driver class" do
       @driver.avg_hourly_pay.must_be_kind_of Float
     end
 
-    describe " Driver # driver_status" do
+    describe " Driver # driver_status_change" do
       before do
-        @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+        dispatcher = RideShare::TripDispatcher.new
+        trip = dispatcher.request_trip
+        driver = trip[driver]
+
         trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", end_time: "2016-08-08T12:16:00+00:00", cost: 17.56, rating: 5})
         @driver.add_trip(trip)
       end
 
       it "changes driver status from available to unavailable" do
+        # driver.status
 
       end
+    end
   end
 end

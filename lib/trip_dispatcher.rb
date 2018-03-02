@@ -93,6 +93,7 @@ module RideShare
     def available_driver
       @drivers.each do |driver|
         if driver.status == :AVAILABLE
+          driver.driver_status_change
           return driver.id
         # else
         #   raise ArgumentError("No Driver is available!")
@@ -113,7 +114,6 @@ module RideShare
       trip[:rating] = nil
 
       # pass = :passenger
-
       new_trip = Trip.new(trip)
 
       return new_trip
