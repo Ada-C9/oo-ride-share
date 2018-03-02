@@ -144,11 +144,17 @@ describe "Driver class" do
 
   describe "total_revenue" do
 
-
     it "returns an accurate report of the driver's total revenue" do
 
       driver_total_take_home = @driver_a.total_revenue
       driver_total_take_home.must_be_within_delta 20.35, 0.003
+
+    end
+
+    it "functions properly when the driver has a trip in progress" do
+
+      @driver_a.add_trip(@trip_now_ongoing)
+      @driver_a.total_revenue.mst_be_within_delta 20.35, 0.003
 
     end
 
