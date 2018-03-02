@@ -80,6 +80,7 @@ describe "TripDispatcher class" do
     it "010 accurately loads trip info and associates trips with drivers and passengers" do
       dispatcher = RideShare::TripDispatcher.new
 
+
       trip = dispatcher.trips.first
       driver = trip.driver
       passenger = trip.passenger
@@ -103,37 +104,75 @@ describe "TripDispatcher class" do
 
   describe 'Wave2 tests' do
     before do
-      @dispatcher = RideShare::TripDispatcher.new
+      # drivers =
+      @dispatcher = RideShare::TripDispatcher.new()
     end
     # # yet_trip =  dispatcher.request_trip(9)
-     #it "supplies an existing passenger id" do
-
-      # yet_trip = @dispatcher.request_trip(9)
-      # puts yet_trip
-      # puts passenger
-      #  yet_trip.passenger.id.must_equal 9
-     #end
-
-    # it "throws an error for a bad id" do
-    #   yet_trip = dispatcher.request_trip(0)
-    #    proc{ dispatcher.request_trip(0) }.must_raise ArgumentError
-    #
-    # end
-
-    it "creates an instance of a trip" do
-      @dispatcher.request_trip(9).must_be_kind_of RideShare::Trip
+    it "supplies an existing passenger id" do
+      yet_trip = @dispatcher.request_trip(9)
+      yet_trip.passenger.id.must_equal 9
     end
 
-    # it " raises an error if no drivers are available" do
-    #   drivers = {
-    #     RideShare::Driver.new({id: 3, name: 'b', vehicle_id: 5555, status: :UNAVAILABLE, trips:[]}),
-    #     RideShare::Driver.new({id: 5, name: 'b', vehicle_id: 5555, status: :UNAVAILABLE, trips:[]})
-    # }
-    #   dispatcher = RideShare::TripDispatcher.new(drivers)
-    #   proc{ dispatcher.request_trip(1) }.must_raise ArgumentError
-    # end
+    it "throws an error for a bad passenger id" do
+      proc{@dispatcher.request_trip(0)}.must_raise ArgumentError
+    end
 
+    it "creates an instance of a trip" do
+      trip1 = @dispatcher.request_trip(9)
+      trip1.must_be_kind_of RideShare::Trip
+    end
 
+    it " raises an error if no drivers are available" do
 
+      drivers = @dispatcher.drivers
+
+      drivers.each do |driver|
+        driver.available?(false)
+      end
+
+      proc{
+        @dispatcher.request_trip(2)
+      }.must_raise ArgumentError
+    end
+
+    it "creates a valid id for the trip" do
+
+      previous = @dispatcher.trips.length
+      new_trip = @dispatcher.request_trip(2)
+
+      @dispatcher.trips.length.must_equal previous +1
+    end
+
+    it "updated the driver list of trips correctly" do
+      driver = @dispatcher.find_driver(9)
+      previous = driver.trips.length
+
+      @dispatcher.drivers.each { |driver| driver.available?(false)}
+
+      working_driver = @dispatcher.drivers.find { |driver| driver.id == 9 }
+      working_driver.available?(true)
+      @dispatcher.request_trip(9)
+      #array of driver objects
+      working_driver.trips.length.must_equal previous + 1
+
+    end
+
+      it "updated the passenger's trips correctly" do
+      passenger = @dispatcher.find_passenger(9)
+      previous = passenger.trips.length
+      @dispatcher.request_trip(9)
+      passenger.trips.length.must_equal previous + 1
+    end
+    #
+    it "updates all trips correctly" do
+      trips = @dispatcher.trips
+      previous = trips.length
+      @dispatcher.request_trip(6)
+
+      trips.length.must_equal previous + 1
+    end
+
+    #it "returns all unfinished trips"
+    #end
   end
 end

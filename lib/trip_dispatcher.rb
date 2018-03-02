@@ -1,6 +1,7 @@
 require 'csv'
 require 'time'
 require 'awesome_print'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -99,31 +100,26 @@ module RideShare
       trips
     end
 
+    def find_available_driver
 
+       check_status
+
+       available_drivers = trips.select {|trip|
+        trip.driver.status == :AVAILABLE}
+
+       first_driver = available_drivers.first.driver
+      #find the first avaialbe driver
+      #@drivers.find{ |driver| driver.status == :AVAILABLE }
+      return first_driver
+    end
 
     def request_trip(passenger_id)
-      check_id(passenger_id)
-      passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
+      passenger = find_passenger(passenger_id)
+      driver = find_available_driver
+      trip_id = trips.length + 1
 
-      #Your code should automatically assign a driver to the trip
-      check_status# (driver)
-      driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
-      passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
-      puts passenger
-
-      #For this initial version, choose the first driver whose status is :AVAILABLE
-      #goes through drivers and finds one who is available alldrivers.each do |status|
-      #if status == :AVAILABLE
-      #IS DRIVER
-      #end
-      #this needs to be able to change- how will it change, to pick the driver with the least trips eg
-
-      #Your code should use the current time for the start time
-
-      #The end date, cost and rating will all be nil
-      #instance of trip- calling it in dispatcher
       in_progress_data = {
-        id: 0,
+        id: trip_id,
         driver: driver,
         passenger: passenger,
         start_time: Time.now,
@@ -131,17 +127,27 @@ module RideShare
         cost:nil,
         rating:nil,
       }
-      #call an instance of trip in dispatcher
 
       unfinished_trip = RideShare::Trip.new(in_progress_data)
 
-      driver.avaialable?(false)
-      driver.add_trip(unfinished_trip)
-      passenger.add_trip(unfinished_trip)
+      driver.available?(false)
+
       trips.push(unfinished_trip)
-      #passenger.add_trip(unfinished_trip)
+
+      driver.add_trip(unfinished_trip)
+
+      passenger.add_trip(unfinished_trip)
+
+
+
       #how do these instances not write over each other?
       return unfinished_trip
+    end
+
+    def check_status
+      if @drivers.all?{ |driver| driver.status == :UNAVAILABLE}
+        raise ArgumentError.new("No available drivers")
+      end
     end
 
     private
@@ -152,23 +158,22 @@ module RideShare
 
     def check_id(id)
       if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        raise ArgumentError.new("ID cannot be blank or less than zero.(got #{id})")
       end
     end
 
-    def check_status
-      if @drivers.all?{ |driver| driver.status == :UNAVAILABLE}
-        raise ArgumentError.new("No available drivers")
-      end
-    end
 
   end
 end
 #
 # #puts trips.length
 # dispatcher = RideShare::TripDispatcher.new
-# yet_trip =  dispatcher.request_trip(9)
+# puts dispatcher.trips
+#yet_trip =  dispatcher.request_trip(9)
+
+
 #
+# #puts dispatcher.drivers.status.to_s
 #
 # puts yet_trip.id
 # puts yet_trip.driver
@@ -181,4 +186,3 @@ end
 # puts yet_trip.driver.trips
 # puts "*********"
 # puts yet_trip.passenger.trips
-# #puts yet_trip.length

@@ -5,6 +5,8 @@ module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
+
+
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
@@ -44,7 +46,6 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
     end
 
@@ -73,12 +74,12 @@ module RideShare
       return average
     end
 
-    def avaialable?(available)
+    def available?(available)
       if available == false
         @status = :UNAVAILABLE
-      elsif input
-
+      elsif available == true
+        @status = :AVAILABLE
       end
     end
   end
-end 
+end
