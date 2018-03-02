@@ -90,6 +90,45 @@ module RideShare
       trips
     end
 
+    def available_driver
+      @drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          return driver.id
+        # else
+        #   raise ArgumentError("No Driver is available!")
+        end
+      end
+    end
+
+    def request_trip(passenger_id)
+
+      trip = {}
+
+      trip[:driver] = available_driver
+      trip[:id] = @trips.length + 2
+      trip[:passenger] =find_passenger(passenger_id)
+      trip[:start_time] = Time.now
+      trip[:end_time]= nil
+      trip[:cost] = nil
+      trip[:rating] = nil
+
+      # pass = :passenger
+
+      new_trip = Trip.new(trip)
+
+      return new_trip
+
+    end
+
+    def add_requested_trip
+      trips << request_trip
+      return trips
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
