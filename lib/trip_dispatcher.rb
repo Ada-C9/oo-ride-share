@@ -7,7 +7,7 @@ require_relative 'trip'
 
 module RideShare
   class TripDispatcher
-    attr_reader :drivers, :passengers, :trips
+    attr_reader :drivers, :passengers, :trips,
 
     def initialize
       @drivers = load_drivers
@@ -141,11 +141,17 @@ PSEUDOCODE FOR (I), above:
 
     def create_new_trip_id
       puts "+++++PRODUCTION: I GOT HERE 1++++++"
-      highest_id = @trips.max_by(id)
+      highest_current_id =@trips.map(&:id).max
+      binding.pry
       puts "+++++PRODUCTION: I got here 2++++++++"
-      new_id = highest_id + 1
+      new_id = highest_current_id + 1
       puts "+++++PRODUCTION: I got here 3++++++++"
     end
+
+
+    # def inspect
+    #   "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    # end
 
     private
 
