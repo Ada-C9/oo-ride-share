@@ -47,6 +47,8 @@ module RideShare
       return total_passenger_time
     end
 
+    
+
   end # end of Passenger class
 end # end of RideShare module
 

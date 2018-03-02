@@ -107,9 +107,9 @@ module RideShare
 
     # this method goes through and finds the first driver with status that is :AVAILABLE
     def available_driver
-      @drivers.each do |driver|
+      @drivers.find do |driver|
         if driver.status == :AVAILABLE
-          return driver
+        return driver
         end
       end
       raise ArgumentError.new("There are no drivers available at this time")

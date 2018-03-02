@@ -27,7 +27,7 @@ module RideShare
         end
       end
 
-      unless input[:end_time] == nil
+      unless @end_time == nil
         if input[:start_time] > input[:end_time]
           raise ArgumentError.new("End time: #{input[:end_time]} cannot be earlier than Start time: #{input[:start_time]}")
         end
