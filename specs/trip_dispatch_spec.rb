@@ -118,6 +118,12 @@ describe "TripDispatcher class" do
       result.must_be_instance_of(RideShare::Trip)
     end
 
+    it "creates an id for trip (trip.id) accurately" do
+      existing_number_of_trips = @dispatcher.trips.length
+      new_trip = @dispatcher.request_trip(55)
+      new_trip.id.must_equal(existing_number_of_trips + 1)
+    end
+
     it "increments the driver's trips by 1" do
       driver = @dispatcher.find_available_driver
       starting_driver_trip_count = driver.trips.length

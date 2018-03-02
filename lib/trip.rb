@@ -40,10 +40,3 @@ module RideShare
 
   end
 end
-#
-# trip_start_time = Time.new(2017, 04, 05, 8, 0, 1, "-00:00")
-# trip_end_time = Time.new(2017, 04, 05, 9, 0, 1, "-00:00")
-# trip_input = {id: 1,driver: 12, passenger: 13, start_time: trip_start_time, end_time: trip_end_time, cost: 20.00, rating: 5}
-# # trip_input = {id: 1,driver: 12, passenger: 13, start_time: "2017-04-05T08:01:00+00:00", end_time: "2017-04-05T09:01:00+00:00", cost: 20.00, rating: 5}
-# my_trip = RideShare::Trip.new(trip_input)
-# puts my_trip.calculate_duration

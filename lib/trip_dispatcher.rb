@@ -17,7 +17,7 @@ module RideShare
     end
 
     def load_drivers
-      my_file = CSV.open('support/drivers.csv', headers: true) #change this back to /support
+      my_file = CSV.open('support/drivers.csv', headers: true)
 
       all_drivers = []
       my_file.each do |line|
@@ -98,36 +98,22 @@ module RideShare
       all_available_drivers.each do |driver|
         most_recent_trip = driver.trips.first
         driver.trips.each do |trip|
-          if trip.end_time > most_recent_trip.end_time #this isn't working like I would think it would. getting multiple trips back for the same driver
+          if trip.end_time > most_recent_trip.end_time
             most_recent_trip = trip
           end
           recent_trips_of_available_drivers << most_recent_trip
         end
-        # trips_of_available_drivers << driver.trips
       end
 
       sorted_trips = recent_trips_of_available_drivers.flatten.sort {|trip_1, trip_2| trip_2.end_time <=> trip_1.end_time } #this puts the oldest correct drivers as the last 5
 
       oldest_trips = sorted_trips.uniq{ |trip| trip.driver } #using uniq to get rid of dupe trips for drivers
-      # oldest_trips.each do |trip|
-      #   puts "id: #{trip.id}. #{trip.end_time} ended and driver: #{trip.driver.name}"
-      # end
-
-      #drivers who haven't had a trip complete recently are at the end of oldest_trips array
 
       if oldest_trips.empty?
         raise ArgumentError.new("There are no available drivers")
       end
 
       available_driver = oldest_trips.last.driver
-
-############## stuff for wave 2 that worked below
-      # available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE } #wave 2 version
-
-      # if available_driver == nil
-      #   raise ArgumentError.new("There are no available drivers")
-      # end
-
       return available_driver
     end
 
@@ -149,7 +135,6 @@ module RideShare
       assigned_driver = trip_data[:driver]
       assigned_driver.trip_in_progress(trip)
       passenger.add_trip(trip)
-      # passenger.trip_in_progress(trip)
 
       @trips << trip
       return trip
@@ -169,20 +154,3 @@ module RideShare
     end
   end
 end
-
-# trip_dispatch = RideShare::TripDispatcher.new
-# trip_dispatch.drivers.clear
-# puts trip_dispatch.drivers
-#
-# puts "Dispatch trips before new request: #{trip_dispatch.trips.length}"
-# puts "Driver length before new request: #{trip_dispatch.find_available_driver.trips.length}"
-# assigned_driver = trip_dispatch.find_available_driver
-# puts "Driver status before new request: #{assigned_driver.status}"
-#
-# #try to request a new trip
-# requested_trip = trip_dispatch.request_trip(298)
-# puts requested_trip
-# puts "Dispatch trips after new request: #{trip_dispatch.trips.length}"
-# puts "Driver length after new request: #{requested_trip.driver.trips.length}"
-# puts "Driver status after new request: #{assigned_driver.status}"
-# puts "Passenger lifetime rides after new request: #{requested_trip.passenger.trips.length}"
