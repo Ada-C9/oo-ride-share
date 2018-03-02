@@ -20,11 +20,13 @@ module RideShare
     end
 
     def get_total_money_spent
-      return @trips.inject(0.0) { |total, trip| total + trip.cost if !trip.is_in_progress? }
+      return @trips.inject(0.0) { |sum, trip| sum + trip.cost if
+        !trip.is_in_progress? }
     end
 
     def get_total_time
-      return @trips.inject(0) { |total, trip| total + trip.get_duration }
+      return @trips.inject(0) { |sum, trip| sum + trip.get_duration if
+        !trip.is_in_progress?}
     end
 
     private

@@ -34,7 +34,7 @@ module RideShare
     attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
 
     def initialize(input)
-      @id = input[:id]
+      @id = RideShare.return_valid_id_or_error(input[:id])
       @driver = valid_driver_or_error(input[:driver])
       @passenger = input[:passenger]
       @start_time = valid_time_or_error(input[:start_time])
@@ -45,7 +45,7 @@ module RideShare
     end
 
     def get_duration
-      return (@end_time - @start_time).to_i
+      return (@end_time - @start_time).to_i if !is_in_progress?
     end
 
     def is_in_progress?
@@ -53,7 +53,6 @@ module RideShare
     end
 
     private
-
 
     def valid_rating_or_error(rating)
       if !is_in_progress? && (rating > 5 || rating < 1)
@@ -82,17 +81,6 @@ module RideShare
       return driver
       # return assign_to_driver_or_error(driver)
     end
-
-    # def assign_to_driver_or_error(driver) # Test for this!
-    #   if is_in_progress? && driver.trips.last != self
-    #     driver.is_available? ? driver.add_trip(self) : driver_unavailable_error
-    #   end
-    #   return driver
-    # end
-
-    # def driver_unavailable_error
-    #   raise ArgumentError.new("Cannot add trip to unavailable driver")
-    # end
 
   end
 end
