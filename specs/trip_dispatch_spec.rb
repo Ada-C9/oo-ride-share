@@ -188,19 +188,88 @@ describe "TripDispatcher class" do
 
   describe 'select_the_right_driver' do
 
+    it 'selects' do
+      trip_dispatcher = RideShare::TripDispatcher.new()
 
-    # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-    # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
-    # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
-    # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
-    # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+      driver1_id = 100
+      driver1_name = "Minnie Dach"
+      test_driver1 = trip_dispatcher.select_the_right_driver
+      test_driver1.id.must_equal driver1_id
+      test_driver1.name.must_equal driver1_name
+      #
+      # driver1_id = 14
+      # driver1_name = "Antwan Prosacco "
+      # test_driver1 = trip_dispatcher.select_the_right_driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
+      #
+      # driver1_id = 27
+      # driver1_name = "Nicholas Larkin "
+      # test_driver1 = trip_dispatcher.select_the_right_driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
+      #
+      # driver1_id = 6
+      # driver1_name = "Mr. Hyman Wolf"
+      # test_driver1 = trip_dispatcher.select_the_right_driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
+      #
+      # driver1_id = 87
+      # driver1_name = "Jannie Lubowitz"
+      # test_driver1 = trip_dispatcher.select_the_right_driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
+    end
   end
 
   describe 'better_request_new_trip' do
     before do
       @trip_disp = RideShare::TripDispatcher.new()
       # Request new trip:
-      @new_trip = @trip_disp.select_the_right_driver(1)
+      @new_trip = @trip_disp.better_request_new_trip(1)
+    end
+
+    it "Selects the right driver" do
+      driver1_id = 100
+      driver1_name = "Minnie Dach"
+      # new_trip1 = @trip_disp.better_request_new_trip(1)
+      new_trip1 = @new_trip
+      test_driver1 = new_trip1.driver
+      puts "SPEC new_trip1 #{new_trip1}"
+      puts "SPEC test_driver1 = #{test_driver1}"
+      test_driver1.id.must_equal driver1_id
+      test_driver1.name.must_equal driver1_name
+puts"\n"
+      new_trip2 = @trip_disp.better_request_new_trip(2)
+      puts "SPEC new_trip2 #{new_trip2}"
+      driver2_id = 14
+      driver2_name = "Antwan Prosacco "
+      test_driver2 = new_trip2.driver
+      puts "SPEC test_driver2 = #{test_driver2}"
+      test_driver2.id.must_equal driver2_id
+      test_driver2.name.must_equal driver2_name
+      # #
+      # # @new_trip = @trip_disp.better_request_new_trip(1)
+      # driver1_id = 27
+      # driver1_name = "Nicholas Larkin "
+      # test_driver1 = @trip_disp.better_request_new_trip(1).driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
+      # #
+      # # @new_trip = @trip_disp.better_request_new_trip(1)
+      # driver1_id = 6
+      # driver1_name = "Mr. Hyman Wolf"
+      # test_driver1 = @trip_disp.better_request_new_trip(1).driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
+      # #
+      # # @new_trip = @trip_disp.better_request_new_trip(1)
+      # driver1_id = 87
+      # driver1_name = "Jannie Lubowitz"
+      # test_driver1 = @trip_disp.better_request_new_trip(1).driver
+      # test_driver1.id.must_equal driver1_id
+      # test_driver1.name.must_equal driver1_name
     end
 
     it 'Selects an AVAILABLE driver' do
@@ -217,21 +286,21 @@ describe "TripDispatcher class" do
 
     it 'Returns an exeption if there are no AVAILABLE drivers' do
       @trip_disp.drivers.each {|driver| driver.change_status}
-      proc {@trip_disp.select_the_right_driver(1)}.must_raise StandardError
+      proc {@trip_disp.better_request_new_trip(1)}.must_raise StandardError
     end
 
-    it 'Updates the length of trip list in @trip_dispatcher:' do
+    it 'Updates the length of trip list in @trip_disp:' do
       initial_list_length = @trip_disp.trips.length
 
       # Request new trip:
-      @trip_disp.select_the_right_driver(1)
+      @trip_disp.better_request_new_trip(1)
 
       final_list_length = @trip_disp.trips.length
 
       final_list_length.must_equal initial_list_length + 1
     end
 
-    it 'Can find new trip in the trip list in @trip_dispatcher' do
+    it 'Can find new trip in the trip list in @trip_disp' do
       exists = false
       @trip_disp.trips.each{ |trip| exists = true if trip == @new_trip}
 
