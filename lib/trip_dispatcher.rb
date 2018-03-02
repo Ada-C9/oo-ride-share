@@ -120,6 +120,10 @@ module RideShare
     end
 
     private
+
+
+
+
      # this checks id if the id does not exist or the id is less than or equal to zero.
     def check_id(id)
       if id == nil || id <= 0
