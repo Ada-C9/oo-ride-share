@@ -95,26 +95,10 @@ module RideShare
       trips
     end
 
-    def request_trip(passenger_id)
-      if is_driver_available
-
-        available_drivers = removes_unavailable_drivers
-
-        new_trip = make_new_trip(passenger_id, available_drivers)
-
-        update_trips_arrays(new_trip)
-
-        return new_trip
-      else
-        return nil
-      end
-    end
-
     def is_driver_available
       @drivers.any? {|driver| driver.status == :AVAILABLE} ? true : false
     end
 
-    #this takes care of trips with end_times = nil
     def removes_unavailable_drivers
       available_drivers = @drivers.delete_if { |driver| driver.status == :UNAVAILABLE }
       return available_drivers
@@ -144,6 +128,17 @@ module RideShare
       new_trip.driver.add_trip(new_trip)
       new_trip.passenger.add_trip(new_trip)
       trips << new_trip
+    end
+
+    def request_trip(passenger_id)
+      if is_driver_available
+        available_drivers = removes_unavailable_drivers
+        new_trip = make_new_trip(passenger_id, available_drivers)
+        update_trips_arrays(new_trip)
+        return new_trip
+      else
+        return nil
+      end
     end
 
     def inspect

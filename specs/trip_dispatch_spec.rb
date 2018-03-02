@@ -51,9 +51,7 @@ describe "TripDispatcher class" do
 
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
-
       first_driver = @dispatcher.drivers.first
-      # binding.pry
       last_driver = @dispatcher.drivers.last
 
       first_driver.name.must_equal "Bernardo Prosacco"
@@ -133,12 +131,9 @@ describe "TripDispatcher class" do
   end
 
   describe "#removes_unavailable_drivers" do
-    before do
-      @dispatcher = RideShare::TripDispatcher.new
-    end
-
     it "accurately removes_unavailable_drivers" do
       available_drivers = @dispatcher.removes_unavailable_drivers
+      available_drivers.must_be_kind_of Array
       available_drivers.length.must_equal 47
     end
   end

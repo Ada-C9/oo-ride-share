@@ -77,7 +77,6 @@ describe "Trip class" do
   end
 
   describe "duration" do
-
     before do
       @trip_data = {
         id: 8,
@@ -109,6 +108,6 @@ describe "Trip class" do
       in_progress_trip = RideShare::Trip.new(@in_progress_trip_data)
       in_progress_trip.duration_in_seconds.must_equal 0
     end
-
   end
+
 end

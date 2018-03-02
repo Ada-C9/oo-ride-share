@@ -48,14 +48,6 @@ describe "Driver class" do
       @driver.update_driver_info(@trip)
       @driver.status.must_equal :UNAVAILABLE
     end
-
-    it "updates trips array with new_trip" do
-      initial_trips_length = @driver.trips.length
-      @driver.update_driver_info(@trip)
-      new_trips_length = @driver.trips.length
-
-      new_trips_length.must_equal initial_trips_length + 1
-    end
   end
 
   describe "add trip method" do
@@ -100,7 +92,6 @@ describe "Driver class" do
   end
 
   describe "revenue methods" do
-
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
 
@@ -163,5 +154,6 @@ describe "Driver class" do
         @driver.avg_revenue_per_hour.must_equal (total1 / time1)
       end
     end
+    
   end
 end
