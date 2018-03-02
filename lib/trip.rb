@@ -48,7 +48,7 @@ module RideShare
 
     # # Alternative 1
     # def self.total_time(trip_list)
-    #   trip_list.map {|trip| trip.get_duration != nil ? trip.get_duration : 0}.inject(0, :+)
+    #   trip_list.map { |trip| trip.get_duration }.compact.inject(0, :+)
     # end
 
   end

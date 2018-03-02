@@ -51,7 +51,7 @@ module RideShare
       subtotal = 0
 
       @trips.each do |trip|
-        unless trip.cost <= EMPLOYER_FEE
+        unless trip.cost.nil? || trip.cost <= EMPLOYER_FEE
           subtotal += trip.cost - EMPLOYER_FEE
         end
       end
@@ -82,12 +82,32 @@ module RideShare
     end
 
     def get_revenue_per_hour
-      return 0 if self.trips.empty?
+      total_time = self.get_total_time
+      return 0 if self.get_total_time == 0
       (self.get_revenue / self.get_total_time * 3600).round(2)
     end
 
-    def self.available_driver
-      self.find {|driver| driver.status == :AVAILABLE}
+    def driver_least_recent_trip
+      least_recent_trip = @trips[0].end_time unless @trips.empty?
+
+      @trips.each { |trip|
+        unless trip.end_time.nil?
+          least_recent_time == trip.end_time if trip.end_time < least_recent_time
+        end
+         }
+    end
+
+    def available?
+      @status == :AVAILABLE
+    end
+
+    def make_driver_unavailable
+      @status = :UNAVAILABLE
+    end
+
+    def accept_trip(trip)
+      self.make_driver_unavailable
+      self.add_trip(trip)
     end
 
   end

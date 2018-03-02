@@ -44,16 +44,39 @@ module RideShare
     end
 
     def available_driver
-      @drivers.select { |driver| driver.status == :AVAILABLE }
+      ##################
     end
 
+    # # Wave 1
+    # def available_driver
+    #   @drivers.find{ |driver| driver.available? }
+    # end
+
+    # # Wave 1 Alternative 1
+    # def available_driver
+    #   @drivers.find(&:available?)
+    # end
+
     def request_trip(passenger_id)
-      Trip.new({
+
+      selected_driver = self.available_driver
+      raise StandardError.new("There are no available drivers.") if selected_driver == nil
+
+      requesting_passenger = self.find_passenger(passenger_id)
+
+      trip = Trip.new({
         id: @trips.length + 1,
-        driver: self.available_driver,
-        passenger: self.find_passenger(passenger_id),
+        driver: selected_driver,
+        passenger: requesting_passenger,
         start_time: Time.now
       })
+
+      selected_driver.accept_trip(trip)
+      requesting_passenger.accept_trip(trip)
+
+      @trips << trip
+
+      return trip
     end
 
     def load_passengers
@@ -101,6 +124,10 @@ module RideShare
       end
 
       trips
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

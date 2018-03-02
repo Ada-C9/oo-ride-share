@@ -90,11 +90,51 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "request_trip method" do
-    it "returns an instance of Trip" do
-      dispatcher = RideShare::TripDispatcher.new
-      dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+  describe "available_driver method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @driver = @dispatcher.available_driver
+
     end
+
+    it "returns an instance of driver" do
+      @driver.must_be_instance_of RideShare::Driver
+    end
+
+    it "the driver is available" do
+      @driver.status.must_equal :AVAILABLE
+    end
+
+    it "the driver is the first available driver" do
+      @driver.id.must_equal 2
+      # 2,Emory Rosenbaum,1B9WEX2R92R12900E,AVAILABLE
+    end
+  end
+
+  describe "request_trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "returns an instance of Trip" do
+      @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+    end
+
+    it "assigns the expected passenger" do
+      new_trip = @dispatcher.request_trip(1)
+      new_trip.passenger.id.must_equal 1
+      new_trip.passenger.name.must_equal "Nina Hintz Sr."
+    end
+
+    it "assigns the expected driver" do
+      new_trip = @dispatcher.request_trip(1)
+      new_trip.driver.id.must_equal 2
+      new_trip.driver.name.must_equal "Emory Rosenbaum"
+    end
+
+    # it "raises error if there aren't any available drivers" do
+    #   @dispatcher
+    # end
   end
 
 end

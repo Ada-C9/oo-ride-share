@@ -16,9 +16,14 @@ module RideShare
 
     end
 
-    def get_total
-      @trips.map { |trip| trip.cost }.inject(0, :+)
+    def get_total_spent
+      @trips.map { |trip| trip.cost != nil ? trip.cost : 0}.inject(0, :+)
     end
+
+    # # Alternative 1
+    # def get_total
+    #   @trips.map { |trip| trip.cost }.compact.inject(0, :+)
+    # end
 
     def get_drivers
       @trips.map { |t| t.driver }
@@ -30,6 +35,10 @@ module RideShare
 
     def get_total_time
       Trip.total_time(@trips)
+    end
+
+    def accept_trip(trip)
+      self.add_trip(trip)
     end
 
   end
