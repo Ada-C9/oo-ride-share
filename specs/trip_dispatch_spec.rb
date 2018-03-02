@@ -184,12 +184,6 @@ describe "TripDispatcher class" do
     it "should assign the new trip a new id" do
       @dispatcher.request_trip(@passenger.id).id.must_equal 601
     end
-  end
-
-  describe "TripDispatcher#get_oldest_driver" do
-    before do
-      @dispatcher = RideShare::TripDispatcher.new
-    end
 
     it "it returns the driver who has not driven in the greatest amount of time" do
 
@@ -202,4 +196,5 @@ describe "TripDispatcher class" do
       end
     end
   end
+
 end
