@@ -14,17 +14,20 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
-      ## elsif if the trip is in_progress, then rating can be nil
-              
+
+      unless @rating == nil
+        if @rating > 5 || @rating < 1
+          raise ArgumentError.new("Invalid rating #{@rating}")
+        end
       end
 
       return true if @end_time == nil || @start_time == nil
 
-      if @end_time < @start_time
-        puts "inside initialize start #{@start_time} and end #{@end_time}"
-        raise ArgumentError.new("Invalid start (#{@start_time}) or end time (#{@end_time})")
+      unless @end_time == nil
+        if @end_time < @start_time
+          puts "inside initialize start #{@start_time} and end #{@end_time}"
+          raise ArgumentError.new("Invalid start (#{@start_time}) or end time (#{@end_time})")
+        end
       end
     end # initialize
 
@@ -40,10 +43,6 @@ module RideShare
   end # class
 end # module
 
-# can eliminate status if using this below.
-# def end_time
-#   @end_time = Time.now
-# end
 # boolean is returned below
 # def finished?
 #   return end_time != nil

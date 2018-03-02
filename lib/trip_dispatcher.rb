@@ -95,27 +95,31 @@ module RideShare
       return trips
     end
 
-    def request_trip()
+    def request_trip(passenger_id)
       # helper method for in_progress
       trip_id = (trips.last.id) + 1
       available_driver = @drivers.find {|driver| driver.status == :AVAILABLE}
       start_time =  Time.now
       # if driver is available then return their id # && make them UNAVAILABLE
+      passenger = find_passenger(passenger_id)
+
 
       data = {
         id: trip_id,
         driver: available_driver,
-        passenger: find_passenger(3),
+        passenger: passenger,
         start_time: start_time,
         end_time: nil,
         cost: nil,
-        rating: nil, # OK TO BE NILL?
+        rating: nil,
         }
 
-        trip = Trip.new(data) # New instance of trip created, shoveled to trips csv or parsed array?
-        driver.add_trip(trip)
+        trip = Trip.new(data)
+        available_driver.add_trip(trip)
+        available_driver.status = :UNAVAILABLE
         passenger.add_trip(trip)
-        trips.trips << trip # attempt to shovel new trip to trips array in load_trips method
+
+        @trips << trip # trip added to instance variable @trips
 
         return data # nilclass being returned for the trip rating
       end
