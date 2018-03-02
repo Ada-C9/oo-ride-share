@@ -106,7 +106,6 @@ module RideShare
 
       if drivers_latest_trips.length == 0 && newbie_drivers.length == 0
         raise ArgumentError.new("No drivers available currently!")
-
       elsif newbie_drivers.length != 0
         new_driver_data = newbie_drivers.first
         new_driver = find_driver(new_driver_data.id)
@@ -137,7 +136,6 @@ module RideShare
       new_ride.driver.add_trip(new_ride)
       new_ride.driver.unavailable
       new_rider.add_trip(new_ride)
-
       @trips << new_ride
       return new_ride
     end
@@ -147,7 +145,6 @@ module RideShare
     end
 
     private
-
     def check_id(id)
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")

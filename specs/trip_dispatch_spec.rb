@@ -96,11 +96,6 @@ describe "TripDispatcher class" do
   end
 
   describe "pick_driver method" do
-    it "picks the driver with the oldest last trip" do
-      @dispatcher = RideShare::TripDispatcher.new
-      @dispatcher.pick_driver.id.must_equal 100
-    end
-
     it "accurately picks driver with no trips first" do
       @dispatcher = RideShare::TripDispatcher.new
       @dispatcher.request_trip(1).driver.id.must_equal 100
@@ -126,7 +121,7 @@ describe "TripDispatcher class" do
       }.must_raise ArgumentError
     end
   end
-  
+
   describe "request_trip method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
@@ -137,6 +132,8 @@ describe "TripDispatcher class" do
       proc {@dispatcher.request_trip("yay")}.must_raise ArgumentError
       proc {@dispatcher.request_trip(-1)}.must_raise ArgumentError
       proc {@dispatcher.request_trip(nil)}.must_raise ArgumentError
+      proc {@dispatcher.request_trip()}.must_raise ArgumentError
+
     end
 
     it "inputs nil for end_time, cost, and rating" do
@@ -157,7 +154,7 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1).driver.status.must_equal :UNAVAILABLE
     end
 
-    it "correctly sets the start_time" do
+    it "correctly sets the start_time to instance of Time" do
       @dispatcher.request_trip(1).start_time.must_be_instance_of Time
     end
 
@@ -182,5 +179,13 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1)
       @dispatcher.passengers.first.trips.length.must_equal 3
     end
+
+    it "updates driver's number of rides" do
+      driver = @dispatcher.find_driver(100)
+      driver.trips.length.must_equal 0
+      @dispatcher.request_trip(1)
+      driver.trips.length.must_equal 1
+    end
+
   end
 end
