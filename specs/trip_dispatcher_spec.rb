@@ -92,10 +92,9 @@ describe "TripDispatcher class" do
   end
 
   describe "request_trip" do
-
-    # Selected driver: 14,Antwan Prosacco,KPLUTG0L6NW1A0ZRF,AVAILABLE
-    # Passenger: 1,Nina Hintz Sr.,560.815.3059
     before do
+      # Selected driver: 14,Antwan Prosacco,KPLUTG0L6NW1A0ZRF,AVAILABLE
+      # Passenger: 1,Nina Hintz Sr.,560.815.3059
       @selected_driver = RideShare::Driver.new(id: 14, name: "Antwan Prosacco", vin: "KPLUTG0L6NW1A0ZRF")
       @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
       @trip_dispatcher = RideShare::TripDispatcher.new
@@ -127,37 +126,37 @@ describe "TripDispatcher class" do
     end
 
     it "adds the new trip to the trips for that driver" do
-      orig_trip_length = @trip_dispatcher.drivers[14 - 1].trips.length
+      orig_length = @trip_dispatcher.find_driver(14).trips.length
 
       trip = @trip_dispatcher.request_trip(1)
 
-      @trip_dispatcher.drivers[14 - 1].trips.length.must_equal orig_trip_length + 1
-      @trip_dispatcher.drivers[14 - 1].trips.include?(trip).must_equal true
+      @trip_dispatcher.find_driver(14).trips.length.must_equal orig_length + 1
+      @trip_dispatcher.find_driver(14).trips.include?(trip).must_equal true
     end
 
     it "sets the driver's status to :UNAVAILABLE" do
-      @trip_dispatcher.drivers[14 - 1].status.must_equal :AVAILABLE
+      @trip_dispatcher.find_driver(14).status.must_equal :AVAILABLE
 
       @trip_dispatcher.request_trip(1)
 
-      @trip_dispatcher.drivers[14 - 1].status.must_equal :UNAVAILABLE
+      @trip_dispatcher.find_driver(14).status.must_equal :UNAVAILABLE
     end
 
     it "adds the new trip to the trips for that passenger" do
-      orig_trip_length = @trip_dispatcher.passengers[1 - 1].trips.length
+      orig_length = @trip_dispatcher.find_passenger(1).trips.length
 
       trip = @trip_dispatcher.request_trip(1)
 
-      @trip_dispatcher.passengers[1 - 1].trips.length.must_equal orig_trip_length + 1
-      @trip_dispatcher.passengers[1 - 1].trips.include?(trip).must_equal true
+      @trip_dispatcher.find_passenger(1).trips.length.must_equal orig_length + 1
+      @trip_dispatcher.find_passenger(1).trips.include?(trip).must_equal true
     end
 
     it "adds the new trip to the collection of all trips in TripDispatcher" do
-      orig_trip_length = @trip_dispatcher.trips.length
+      orig_length = @trip_dispatcher.trips.length
 
       trip = @trip_dispatcher.request_trip(1)
 
-      @trip_dispatcher.trips.length.must_equal orig_trip_length + 1
+      @trip_dispatcher.trips.length.must_equal orig_length + 1
       @trip_dispatcher.trips.include?(trip).must_equal true
     end
 

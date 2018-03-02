@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe "Passenger class" do
   before do
-    # 1,Nina Hintz Sr.,560.815.3059
+    # Passenger: 1,Nina Hintz Sr.,560.815.3059
     # 46,98,1,2016-06-28T06:39:00+00:00,2016-06-28T07:24:00+00:00,13.04,2
     # 272,17,1,2015-09-14T08:25:00+00:00,2015-09-14T09:23:00+00:00,24.25,4
     @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
