@@ -44,7 +44,7 @@ module RideShare
 
     def check_and_update_status
       if !is_available?
-        raise ArgumentError.new("Cannot add in-progress trip to unavailable driver.")
+        raise ArgumentError.new("Driver unavailable for in-progress trip.")
       end
       @status = :UNAVAILABLE
     end
