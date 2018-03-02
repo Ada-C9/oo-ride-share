@@ -122,5 +122,9 @@ describe "TripDispatcher class" do
     it "updates the passenger's trip list" do
       @new_trip.passenger.trips.must_include @new_trip
     end
+
+    it "updates the total trips" do
+      @dispatcher.trips.must_include @new_trip
+    end
   end
 end
