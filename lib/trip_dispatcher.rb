@@ -94,32 +94,32 @@ module RideShare
       #wave 3 would need to modify this From the Drivers that remain, select the one whose most recent trip ended the longest time ago
       all_available_drivers = @drivers.select{ |driver| driver.status == :AVAILABLE }
       #oldest trip available driver
-      trips_of_available_drivers = []
+      recent_trips_of_available_drivers = []
       all_available_drivers.each do |driver|
-        trips_of_available_drivers << driver.trips #do I need to get rid of ones with no end time here?
+        most_recent_trip = driver.trips.first
+        #need to loop through each available driver and only select their most recent completed trip
+        driver.trips.each do |trip|
+          if trip.end_time > most_recent_trip.end_time
+            most_recent_trip = trip
+          end
+          recent_trips_of_available_drivers << most_recent_trip
+        end
+        # trips_of_available_drivers << driver.trips
       end
 
-      sorted_trips = trips_of_available_drivers.flatten.sort {|trip_1,trip_2| trip_1.end_time <=> trip_2.end_time }
-      puts sorted_trips
+      sorted_trips = recent_trips_of_available_drivers.flatten.sort {|trip_1,trip_2| trip_1.end_time <=> trip_2.end_time }
+
       sorted_trips.each do |trip|
         puts "#{trip.end_time} ended and driver: #{trip.driver.name} and driver status: #{trip.driver.status}"
       end
 
-      no_nils_end_times_trips = []
-      sorted_trips.each do |trip|
-        unless trip.end_time == nil
-          no_nils_end_times_trips << trip
-        end
-      end
-
-
-      oldest_trip_driver = no_nils_end_times_trips[0].driver
+      oldest_trip_driver = sorted_trips[0].driver
       puts oldest_trip_driver.name
       jeralds_trips = oldest_trip_driver.trips
       jeralds_trips.each do |trip|
         puts "start_time: #{trip.start_time} and end_time: #{trip.end_time}"
       end
-##############
+############## stuff for wave 2 that worked below
       available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
 
       if available_driver == nil
