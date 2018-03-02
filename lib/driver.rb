@@ -55,9 +55,9 @@ module RideShare
 
     def total_revenue
       total = trips.inject(0) do |sum, trip|
-        (trip.cost != nil) ? sum += (trip.cost - FEE) * PERCENT_TAKEHOME : sum += 0
+        (trip.cost != nil && trip.cost > 1.65) ? sum += (trip.cost - FEE) * PERCENT_TAKEHOME : sum += 0
       end
-      return total < 0 ? 0 : total
+      return total
     end
 
     def avg_revenue_per_hour
