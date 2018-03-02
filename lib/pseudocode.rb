@@ -4,23 +4,47 @@
 # # this would be
 # # Pseudocode: total Revenue for Driver
 #
-fee = 1.65
-subtotal = 0
-driver_takehome = 0.8
+# fee = 1.65
+# subtotal = 0
+# driver_takehome = 0.8
+#
+# @trips.each do |trip|
+#   # Question: what if the cost is less than the fee
+#   if trip.cost < fee
+#     subtotal += trip.cost
+#   end
+#   if trip.cost >= fee
+#     subtotal += (trip.cost - fee)
+#   end
+#   must_respond_to
+#
+#   total = subtotal * driver_takehome
+#   return total
+# end
 
-@trips.each do |trip|
-  # Question: what if the cost is less than the fee
-  if trip.cost < fee
-    subtotal += trip.cost
-  end
-  if trip.cost >= fee
-    subtotal += (trip.cost - fee)
-  end
-  must_respond_to
-
-  total = subtotal * driver_takehome
-  return total
+def finish_trip!
+  @end_time = Time.now
 end
+
+def finished?
+  return @end_time != nil
+end
+
+def passengers
+  passengers = []
+  trips.each do |trip|
+    passengers << trip.passsenger
+  end
+  return passengers.uniq
+end
+
+# Map style
+passengers = trips.map do |trip|
+  trip.passenger
+end.uniq
+
+return passengers
+
 
 # # Test 1: two trips
 #

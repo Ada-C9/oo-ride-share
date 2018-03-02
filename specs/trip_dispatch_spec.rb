@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -89,4 +90,34 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "Driver Status" do
+    it 'checks the status of a driver' do
+      # Arrange
+      dispatcher = RideShare::TripDispatcher.new
+      # Act
+      driver = dispatcher.select_available_driver
+      # Assert
+      driver.id.must_equal 2
+      driver.status.must_equal :AVAILABLE
+    end
+  end
+
+  describe 'Request Trip' do
+    it 'will raise an ArgumentError when the passenger ID when nothing is entered' do
+        dispatcher = RideShare::TripDispatcher.new
+        proc{ dispatcher.request_trip() }.must_raise ArgumentError
+    end
+    it 'will raise an ArgumentError when the ID is invalid' do
+        dispatcher = RideShare::TripDispatcher.new
+        proc{ dispatcher.request_trip(301) }.must_raise ArgumentError
+    end
+    it '' do
+      
+    end
+
+  end
+
+
+
 end

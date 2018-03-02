@@ -1,6 +1,7 @@
 require 'csv'
 require 'time'
 require 'awesome_print'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -72,7 +73,7 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
-      parsed_trip = {
+        parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
@@ -82,7 +83,6 @@ module RideShare
           rating: raw_trip[:rating].to_i
         }
 
-
         trip = Trip.new(parsed_trip)
 
         # Set up relations
@@ -91,11 +91,8 @@ module RideShare
 
         trips << trip
       end
-
       return trips
     end
-
-    private
 
     def check_id(id)
       if id == nil || id <= 0
@@ -103,10 +100,60 @@ module RideShare
       end
     end
 
-    def request_trip(passenger_id)
+    def select_available_driver
+      @drivers.find do |driver|
+        if driver.status == :AVAILABLE
+          return driver
+        end
+      end
+      raise ArgumentError("No Driver Available.")
     end
+
+    def request_trip(passenger_id)
+      # raise argument if nothing is entered
+      if passenger_id.nil? || passenger_id == ''
+        raise ArgumentError ("Can\'t find passenger ID")
+      end
+
+      new_trip = {}
+      # create a new ID
+      num = @trips.length
+      new_trip[:id] = num + 1
+
+      # check for the available driver
+      new_trip[:driver] = select_available_driver
+
+      # confirm passenger id is valid
+      passenger = find_passenger(passenger_id)
+      if passenger.nil?
+          raise ArgumentError("Invalid ID")
+        else
+          new_trip[:passenger] = passenger
+      end
+
+      new_trip[:start_time] = Time.now
+      new_trip[:end_time] = nil
+      new_trip[:cost] = nil
+      new_trip[:rating] = nil
+
+      active_trip = Trip.new(new_trip)
+
+      driver.add_trip(active_trip)
+      passenger.add_trip(active_trip)
+
+    end
+
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
+    private
+
   end
 end
 
 
-# CSV will give you an array of each string
+# dispatcher = RideShare::TripDispatcher.new
+# #
+# dispatcher.request_trip(1)
