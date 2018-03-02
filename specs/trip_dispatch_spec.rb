@@ -130,11 +130,33 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "#removes_unavailable_drivers" do
-    it "accurately removes_unavailable_drivers" do
+  describe "#find_new_driver" do
+    it "returns a Driver instance" do
+      all_drivers = @dispatcher.drivers
+      @dispatcher.find_new_driver(all_drivers).must_be_kind_of RideShare::Driver
+    end
+
+    it "returns correct driver" do
+      #Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+
       available_drivers = @dispatcher.removes_unavailable_drivers
-      available_drivers.must_be_kind_of Array
-      available_drivers.length.must_equal 47
+      new_driver = @dispatcher.find_new_driver(available_drivers)
+      new_driver.id.must_equal 14
+      new_driver.name.must_equal "Antwan Prosacco"
+    end
+  end
+
+  describe "#removes_unavailable_drivers" do
+    before do
+      @available_drivers = @dispatcher.removes_unavailable_drivers
+    end
+
+    it "accurately removes_unavailable_drivers" do
+      @available_drivers.must_be_kind_of Array
+    end
+
+    it "returns an array" do
+      @available_drivers.length.must_equal 47
     end
   end
 end
