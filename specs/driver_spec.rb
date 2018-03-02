@@ -121,6 +121,7 @@ describe "Driver class" do
         end_time: @end_time_1}),
         RideShare::Trip.new({rating: 5, cost: 10, start_time: @start_time_2,
           end_time: @end_time_2})]
+
     end
 
     it 'returns the average_revenue_per_hr' do
@@ -137,6 +138,20 @@ describe "Driver class" do
         vin: "1C9EVBRM0YBC564DZ", trips: [])
       result = @driver.average_revenue_per_hr
       expected_ave_revenue = 0
+      result.must_equal expected_ave_revenue
+    end
+
+    it 'the average_revenue_per_hr NOT considers trips in progress' do
+      trips = [RideShare::Trip.new({rating: 3, cost: 10, start_time: @start_time_1,
+        end_time: @end_time_1}),
+        RideShare::Trip.new({rating: nil, cost: nil, start_time: Time.now,
+          end_time: nil})]
+
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV",
+        vin: "1C9EVBRM0YBC564DZ", trips: trips)
+
+      result = @driver.average_revenue_per_hr
+      expected_ave_revenue = 10.02
       result.must_equal expected_ave_revenue
     end
   end
