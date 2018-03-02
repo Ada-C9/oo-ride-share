@@ -76,5 +76,9 @@ module RideShare
       end
     end
 
+    # helper method to modify his status 
+    def unavailable
+      @status = :UNAVAILABLE
+    end
   end
 end
