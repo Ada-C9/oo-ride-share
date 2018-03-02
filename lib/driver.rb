@@ -22,7 +22,11 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
-    end
+    end # initialize
+
+    def completed_trips
+      @trips.find_all {|trip| trip.end_time != nil}
+    end # completed_trips
 
     def average_rating
       total_ratings = 0

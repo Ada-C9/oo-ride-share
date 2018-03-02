@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -9,10 +10,17 @@ module RideShare
   class TripDispatcher
     attr_reader :drivers, :passengers, :trips
 
-    def initialize
-      @drivers = load_drivers
-      @passengers = load_passengers
-      @trips = load_trips
+    def initialize(drivers = [], passengers = [], trips = [])
+      @drivers = drivers
+      @passengers = passengers
+      @trips = trips
+      self.load_everything
+    end
+
+    def load_everything
+      @drivers += load_drivers
+      @passengers += load_passengers
+      @trips += load_trips
     end
 
     def load_drivers
@@ -90,11 +98,41 @@ module RideShare
       return trips
     end
 
+    def next_driver
+      # Array of available drivers
+      all_available = @drivers.find_all do |driver|
+        # Minnie (ID 100) is avail, and no current trips,
+        # but assignment doesnt want us to choose her.
+        driver.trips.length > 0 && driver.status == :AVAILABLE
+      end
+
+      # None Available
+      return nil if all_available == []
+
+      # Array of last trips
+      last_trips = all_available.map do |driver|
+        driver.trips.min_by do |trip|
+          Time.now - trip.end_time
+        end
+      end
+
+      # The oldest trip
+      oldest_trip = last_trips.max_by do |trip|
+        Time.now - trip.end_time
+      end
+
+      # The driver that gets the trip
+      chosen_driver = oldest_trip.driver
+      return chosen_driver
+
+    end
+
     def request_trip(pass_id)
       pass = self.find_passenger(pass_id)
-      driver = self.drivers.detect do |driver|
-        driver.status == :AVAILABLE
-      end
+      driver = self.next_driver
+      puts "Driver selected: "
+      puts driver
+      puts
 
       if pass == nil
         raise ArgumentError.new("Sorry: Unregistred customers cannot request ride.")
@@ -130,3 +168,33 @@ module RideShare
 
   end
 end
+
+# disp = RideShare::TripDispatcher.new
+# antwan = disp.find_driver(14)
+#
+# puts "Current status, before method: #{antwan.status}"
+# puts "Antwan's trips before method: #{antwan.trips}"
+#
+# result =  disp.request_trip(5)
+# puts result.driver.name
+# puts result.driver.id
+# puts "Current status, AFTER method: #{antwan.status}"
+# puts "Antwan's trips AFTER method: #{antwan.trips}"
+#
+# avail = disp.drivers.find_all do |driver|
+#   driver.status == :AVAILABLE
+# end
+# ap avail
+#
+# puts
+#
+# puts
+# puts
+# puts "My find driver method gets me: "
+# puts "#{disp.next_driver.name}"
+# puts
+# puts
+# new_one = disp.request_trip(26)
+#
+# puts new_one.driver.name
+# puts new_one.driver.id

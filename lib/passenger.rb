@@ -23,16 +23,14 @@ module RideShare
 
     def completed_trips
       @trips.find_all {|trip| trip.end_time != nil}
-    end
+    end # completed_trips
 
     def total_money
-      total = completed_trips.map {|trip| trip.cost}.sum
-      return total
+      completed_trips.map {|trip| trip.cost}.sum
     end # total_spent
 
     def total_time
-      total = completed_trips.map {|trip| trip.duration}.sum
-      return total
+      completed_trips.map {|trip| trip.duration}.sum
     end # total_time
 
   end # Class Passenger

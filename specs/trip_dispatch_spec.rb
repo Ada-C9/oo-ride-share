@@ -156,5 +156,24 @@ describe "TripDispatcher class" do
       result.driver.status.must_equal :UNAVAILABLE
     end
 
+    it "assigns the driver who's last trip was the longest time ago" do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(53)
+      result.driver.id.must_equal 14
+      result.driver.name.must_equal "Antwan Prosacco"
+      second_result = dispatcher.request_trip(23)
+      second_result.driver.id.must_equal 27
+      second_result.driver.name.must_equal "Nicholas Larkin"
+      third_result = dispatcher.request_trip(15)
+      third_result.driver.id.must_equal 6
+      third_result.driver.name.must_equal "Mr. Hyman Wolf"
+      fourth_result = dispatcher.request_trip(8)
+      fourth_result.driver.id.must_equal 87
+      fourth_result.driver.name.must_equal "Jannie Lubowitz"
+      fifth_result = dispatcher.request_trip(34)
+      fifth_result.driver.id.must_equal 75
+      fifth_result.driver.name.must_equal "Mohammed Barrows"
+    end
+
   end # Describbe #request_trip
 end  # Describe TripDispatcher class
