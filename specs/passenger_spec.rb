@@ -105,7 +105,7 @@ describe "Passenger class" do
 
     it "adds the requested trip to the passenger's collection" do
       @passenger_a.trips.count.must_equal 4
-    # @passenger_a.trips.must_include @assigned_trip
+      @passenger_a.trips.must_include @requested_trip
     end
 
 

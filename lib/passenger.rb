@@ -25,7 +25,7 @@ module RideShare
     end
 
     def log_newly_requested_trip(trip)
-      # @trips << trip
+       @trips << trip
     end
 
     def total_ride_time
