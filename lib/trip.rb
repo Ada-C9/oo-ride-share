@@ -10,7 +10,7 @@ module RideShare
       @passenger = input[:passenger]
       @start_time = input[:start_time]
       @end_time = input[:end_time]
-      @cost = input[:cost].to_f
+      @cost = input[:cost]
       @rating = input[:rating]
 
       if @rating != nil && (@rating > 5 || @rating < 1)
@@ -23,8 +23,11 @@ module RideShare
     end
 
     def trip_duration
-      return nil if @end_time == nil
-      return @end_time - @start_time
+      if @end_time == nil
+        return 0
+      else
+        return @end_time - @start_time
+      end 
     end
 
     def inspect

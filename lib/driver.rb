@@ -51,11 +51,15 @@ module RideShare
       costs_array = @trips.collect do |trip|
         #In case one of the trips cost is less than the fee charged,
         #the cost of the trip will just be 0. To avoid negative revenues.
-        if trip.cost < FEE_PER_TRIP
+
+        if trip.cost == nil
+          0
+        elsif trip.cost < FEE_PER_TRIP
           0
         else
           trip.cost - FEE_PER_TRIP
         end
+
       end
       sub_total = costs_array.sum
       total_revenue = (sub_total) *(PERCENT_DRIVER)
@@ -76,7 +80,7 @@ module RideShare
       end
     end
 
-    # helper method to modify his status 
+    # helper method to modify his status
     def unavailable
       @status = :UNAVAILABLE
     end
