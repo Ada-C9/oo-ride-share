@@ -94,7 +94,24 @@ module RideShare
       trips
     end
 
-    
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+      driver = find_trip_driver(:AVAILABLE)
+
+      new_trip = {
+        id: (trips.last.id + 1),
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      trip = Trip.new(new_trip)
+      return trip
+    end
+
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end

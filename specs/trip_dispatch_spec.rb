@@ -104,5 +104,32 @@ describe "TripDispatcher class" do
     end
   end
 
-  
+  describe "request_trip(passenger_id)" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    it "creates a new trip" do
+      # Given => use csv data
+      # When
+      # Then
+      @dispatcher.request_trip(5).must_be_kind_of RideShare::Trip
+    end
+
+    it "selects the first AVAILABLE driver" do
+      # Given => use csv data
+      # When
+      # Then
+      @dispatcher.request_trip(5).driver.id.must_equal 2
+      @dispatcher.request_trip(5).driver.name.must_equal "Emory Rosenbaum"
+    end
+
+    it "sets trip end_time, cost, and rating to nil" do
+      # Given => use csv data
+      # When
+      # Then
+      @dispatcher.request_trip(5).end_time.must_equal nil
+      @dispatcher.request_trip(5).cost.must_equal nil
+      @dispatcher.request_trip(5).cost.must_equal nil
+    end
+  end
 end
