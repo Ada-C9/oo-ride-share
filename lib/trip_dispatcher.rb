@@ -92,7 +92,7 @@ module RideShare
       return trips
     end
     def request_trip(passenger_id)
-      driver = @drivers.find {|driver| driver.status == :AVAILABLE}
+      driver = drivers.find {|driver| driver.status == :AVAILABLE}
       passenger = self.find_passenger(passenger_id)
       new_id = 1 + gets_new_trip_id
 
@@ -136,6 +136,24 @@ module RideShare
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
+    # Pseudocode for Wave 3
+    # 1. Create method to select the driver with oldest recent trip.
+    # named driver_selection
+
+    # 2. Find all drivers with status available and with end_times != nil
+
+    # 3. Get the last trip of each of the drivers available and make an array
+    # of hashes {driver_id, end_time_of_last_trip}
+    # oldest_trips = [last trips of all the available drivers]
+
+    # 4. To select the driver, find the minimum value of oldest_trips array.
+    # This will be the oldest one.
+
+    # 5. Get the driver_id of the oldest trip
+
+    # Need to refactor method request_trip so that the data of the new trip assigns
+    # as driver what the method driver_selection returns.
+    
     private
 
     def check_id(id)
