@@ -112,6 +112,8 @@ module RideShare
       # update driver status and trip list
       driver.add_trip(new_trip)
       driver.change_driver_status
+      # update passenger trip list
+      passenger.add_trip(new_trip)
 
       return new_trip
     end
