@@ -69,7 +69,7 @@ module RideShare
 
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i) # getting driver id from array, and putting in method called find driver
-          # find_driver method searches the driver csv for matching driver
+        # find_driver method searches the driver csv for matching driver
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
 
@@ -84,11 +84,7 @@ module RideShare
           rating: raw_trip[:rating].to_i
         }
 
-        puts "before trip is set to trip variable #{start_time}"
-
         trip = Trip.new(parsed_trip)
-
-        puts "after trip is set to trip variable #{start_time}"
 
         # Set up the relations
         driver.add_trip(trip)
@@ -99,15 +95,41 @@ module RideShare
       return trips
     end
 
-    private # limited functionality, like a helper method, not to be used in other classes
+    def request_trip()
+      # helper method for in_progress
+      trip_id = (trips.last.id) + 1
+      available_driver = @drivers.find {|driver| driver.status == :AVAILABLE}
+      start_time =  Time.now
+      # if driver is available then return their id # && make them UNAVAILABLE
 
-    def check_id(id)
-      if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+      data = {
+        id: trip_id,
+        driver: available_driver,
+        passenger: find_passenger(3),
+        start_time: start_time,
+        end_time: nil,
+        cost: nil,
+        rating: nil, # OK TO BE NILL?
+        }
+
+        trip = Trip.new(data) # New instance of trip created, shoveled to trips csv or parsed array?
+        driver.add_trip(trip)
+        passenger.add_trip(trip)
+        trips.trips << trip # attempt to shovel new trip to trips array in load_trips method
+
+        return data # nilclass being returned for the trip rating
+      end
+
+      def inspect
+        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+      end
+
+      private # limited functionality, like a helper method, not to be used in other classes
+
+      def check_id(id)
+        if id == nil || id <= 0
+          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        end
       end
     end
   end
-end
-
-# tripx = RideShare::TripDispatcher
-# puts tripx.load_trips

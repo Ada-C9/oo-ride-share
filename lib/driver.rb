@@ -67,6 +67,3 @@ module RideShare
     end
   end
 end
-
-# Add an instance method to Driver to calculate that driver's average revenue
-# per hour spent driving, using the above formula for revenue

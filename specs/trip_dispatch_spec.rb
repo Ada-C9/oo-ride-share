@@ -89,4 +89,49 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "adds new trips" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    # it "instantiates a new trip" do
+    # end
+    #
+    # it "assigns new trip id" do # refactor to eliminate hard coded number
+    #   # Act
+    #   new_id = @dispatcher.request_trip
+    #   # Assert
+    #   new_id.must_equal(601)
+    # end
+
+    # it "retrieves the first available driver" do
+    #   # Act
+    #   driver = @dispatcher.request_trip
+    #   # Assert
+    #   driver.status.must_equal(:AVAILABLE)
+    #   driver.id.must_equal(2)
+    # end
+
+    # it "verifies the passenger is in the system" do
+    #   # Act
+    #     passenger = @dispatcher.request_trip
+    #   # Assert
+    #     passenger.id.must_equal(3)
+    # end
+
+    # it "returns the start time" do
+    #   # the start time should initiate a trip and subsequest actors
+    #   trip = @dispatcher.request_trip
+    #   trip[:start_time].must_equal(Time.now())
+    # end
+
+    it "returns the first available driver" do
+      trip = @dispatcher.request_trip
+      trip[:id].must_equal(601)
+      trip[:driver].id.must_equal(2)
+      trip[:passenger].id.must_equal(3)
+      trip[:start_time].must_be_instance_of(Time)
+    end
+
+  end
 end

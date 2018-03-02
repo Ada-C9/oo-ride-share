@@ -16,6 +16,8 @@ module RideShare
 
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
+      ## elsif if the trip is in_progress, then rating can be nil
+              
       end
 
       return true if @end_time == nil || @start_time == nil
@@ -29,6 +31,10 @@ module RideShare
     def duration
       time_diff = (end_time - start_time).to_i
       return time_diff
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
   end # class
