@@ -104,7 +104,22 @@ describe "TripDispatcher class" do
       dispatcher = RideShare::TripDispatcher.new
       proc {
         dispatcher.request_trip()
-      }.must_raise
+      }.must_raise ArgumentError
+    end
+
+    it "raises argument error if inappropriate passenger id provided" do
+      dispatcher = RideShare::TripDispatcher.new
+      proc {
+        dispatcher.request_trip(892)
+      }.must_raise ArgumentError
+    end
+
+    it "raises argument error if no drivers are available" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.drivers.each {|driver| driver.turn_off} 
+      proc {
+        dispatcher.request_trip(14)
+      }.must_raise ArgumentError
     end
 
     it "returns instance of trip" do

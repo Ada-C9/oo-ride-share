@@ -115,7 +115,7 @@ module RideShare
       driver.status_switch
 
       return new_trip
-    end
+    end # request_trip
 
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"

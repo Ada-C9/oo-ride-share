@@ -78,12 +78,15 @@ module RideShare
     end
 
     def status_switch
-      if @status = :AVAILABLE
+      if @status == :AVAILABLE
         @status = :UNAVAILABLE
       else
         @status = :AVAILABLE
       end
+    end
 
+    def turn_off  # FOR TESTING PURPOSES ONLY
+      @status = :UNAVAILABLE
     end
 
 
