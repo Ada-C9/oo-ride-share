@@ -56,12 +56,13 @@ module RideShare
 
       available_drivers = @drivers.select {|driver| driver.available? }
 
-      raise StandardError.new("There are no available drivers.") if available_drivers == nil
+      raise StandardError.new("There are no available drivers.") if available_drivers.empty?
 
-      available_drivers_not_on_trip = available_drivers.select {|driver| !driver.on_trip_now? }
+      available_drivers_not_on_trip = available_drivers.select {|driver| !driver.on_trip_now?}
 
-      raise StandardError.new("There are no available drivers not on a trip.") if available_drivers_not_on_trip == nil
+      raise StandardError.new("There are no available drivers not on a trip.") if available_drivers_not_on_trip.empty?
 
+      # if code reaches this point, an appropriate selected_driver will be assigned here or in the subsequent if block
       selected_driver = available_drivers_not_on_trip.find {|driver| driver.trips.empty? }
 
       if selected_driver.nil?

@@ -118,6 +118,7 @@ describe "TripDispatcher class" do
 
     it "returns an instance of Trip" do
       @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+
     end
 
     it "assigns the expected passenger" do
@@ -126,22 +127,50 @@ describe "TripDispatcher class" do
       new_trip.passenger.name.must_equal "Nina Hintz Sr."
     end
 
-    it "assigns the expected driver" do
-      first_new_trip = @dispatcher.request_trip(1)
-      first_new_trip.driver.id.must_equal 100
-      first_new_trip.driver.name.must_equal "Minnie Dach"
+    it "assigns the expected driver first 5 iterations" do
+      created_trips = []
+
+      5.times {created_trips << @dispatcher.request_trip(1)}
+
+      created_trips[0].driver.id.must_equal 100
+      created_trips[0].driver.name.must_equal "Minnie Dach"
+
+      created_trips[1].driver.id.must_equal 14
+      created_trips[1].driver.name.must_equal "Antwan Prosacco"
+
+      created_trips[2].driver.id.must_equal 27
+      created_trips[2].driver.name.must_equal "Nicholas Larkin"
+
+      created_trips[3].driver.id.must_equal 6
+      created_trips[3].driver.name.must_equal "Mr. Hyman Wolf"
+
+      created_trips[4].driver.id.must_equal 87
+      created_trips[4].driver.name.must_equal "Jannie Lubowitz"
+
     end
 
+    it "raises error if there aren't any available drivers" do
+      @dispatcher.drivers.each {|driver| driver.make_driver_unavailable}
 
-# Driver 100: Minnie Dach (no last trips)
-# Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-# Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
-# Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
-# Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+      proc{ @dispatcher.request_trip(1) }.must_raise StandardError
+    end
 
-    # it "raises error if there aren't any available drivers" do
-    #   @dispatcher
-    # end
+    it "raises error if there aren't any available drivers who are not on a trip" do
+      @dispatcher.drivers.each {|driver| driver.make_driver_unavailable unless driver.id == 2}
+
+      driver = @dispatcher.drivers.find {|driver| driver.id == 2}
+
+      start_time = Time.parse('2018-2-27T12:14:00+00:00')
+      trip_data = {
+        id: 8,
+        driver: driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"), start_time: start_time
+      }
+      trip = RideShare::Trip.new(trip_data)
+      driver.add_trip(trip)
+
+      proc{ @dispatcher.request_trip(1) }.must_raise StandardError
+    end
   end
 
 end

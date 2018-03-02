@@ -64,5 +64,9 @@ module RideShare
       (Time.now - self.end_time) if self.end_time != nil
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
   end
 end
