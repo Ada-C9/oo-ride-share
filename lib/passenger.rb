@@ -39,7 +39,7 @@ module RideShare
 
     def get_completed_trips
       completed_trips = @trips.select do |trip|
-        trip.is_finished? == true
+        trip.is_finished?
       end
       return completed_trips
     end

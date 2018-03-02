@@ -180,4 +180,30 @@ describe "Driver class" do
       @driver.revenue_per_hour.must_be_within_delta 52.08, 0.01
     end
   end
+
+  describe "get_completed_trips method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @driver_2 = @dispatcher.find_driver(2)
+    end
+
+    it "returns an array of trips" do
+      @driver_2.get_completed_trips.must_be_kind_of Array
+      @driver_2.get_completed_trips.each do |trip|
+        trip.must_be_instance_of RideShare::Trip
+      end
+    end
+
+    it "does not include incomplete trips" do
+      new_trip = @dispatcher.request_trip(1)
+      @driver_2.trips.must_include new_trip
+      @driver_2.get_completed_trips.wont_include new_trip
+    end
+
+    it "returns an empty array if the driver has no trips" do
+      new_driver = RideShare::Driver.new(id: 101, name: "Caroline Nardi", vin: "1C9EVBRM0YBC564DZ")
+      new_driver.get_completed_trips.must_be_kind_of Array
+      new_driver.get_completed_trips.must_be_empty
+    end
+  end
 end

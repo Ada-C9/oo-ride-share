@@ -144,7 +144,12 @@ describe "Passenger class" do
       new_trip = @dispatcher.request_trip(1)
       @passenger_1.trips.must_include new_trip
       @passenger_1.get_completed_trips.wont_include new_trip
-      (@passenger_1.trips.length - @passenger_1.get_completed_trips.length).must_equal 1
+    end
+
+    it "returns an empty array if the passenger has no trips" do
+      new_passenger = RideShare::Passenger.new(id: 301, name: "Caroline Nardi", phone: "1-602-620-2330")
+      new_passenger.get_completed_trips.must_be_kind_of Array
+      new_passenger.get_completed_trips.must_be_empty
     end
   end
 end

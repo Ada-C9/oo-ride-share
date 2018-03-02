@@ -65,19 +65,32 @@ module RideShare
     end
 
     def total_time
-      total_time = 0
-      @trips.each do |trip|
-        total_time += trip.duration
+      completed_trips = get_completed_trips
+      trip_durations = completed_trips.map do |trip|
+        trip.duration
       end
+      total_time = trip_durations.reduce(0,:+)
       return total_time
+      # total_time = 0
+      # @trips.each do |trip|
+      #   total_time += trip.duration
+      # end
+      # return total_time
     end
 
     def revenue_per_hour
-      return 0 if @trips.empty? || total_time == 0
+      return 0 if get_completed_trips.empty? || total_time == 0
       seconds_per_hr = 3600.0
       total_revenue_hrs = total_time / seconds_per_hr
       revenue_per_hour = total_revenue / total_revenue_hrs
       return revenue_per_hour
+    end
+
+    def get_completed_trips
+      completed_trips = @trips.select do |trip|
+        trip.is_finished?
+      end
+      return completed_trips
     end
   end
 end
