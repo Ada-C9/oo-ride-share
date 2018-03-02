@@ -91,9 +91,6 @@ describe "TripDispatcher class" do
   end
 
   describe "find_available_driver" do
-    # before do
-    # @dispatcher = RideShare::TripDispatcher.new
-    # end
     it "returns the first available driver from @drivers" do
       @dispatcher = RideShare::TripDispatcher.new
       driver = @dispatcher.find_available_driver

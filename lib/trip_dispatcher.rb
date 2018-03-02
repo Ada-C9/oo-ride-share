@@ -16,7 +16,7 @@ module RideShare
     end
 
     def load_drivers
-      my_file = CSV.open('support/drivers.csv', headers: true) #change this back to /support
+      my_file = CSV.open('../support/drivers.csv', headers: true) #change this back to /support
 
       all_drivers = []
       my_file.each do |line|
@@ -46,7 +46,7 @@ module RideShare
     def load_passengers
       passengers = []
 
-      CSV.read('support/passengers.csv', headers: true).each do |line|
+      CSV.read('../support/passengers.csv', headers: true).each do |line|
         input_data = {}
         input_data[:id] = line[0].to_i
         input_data[:name] = line[1]
@@ -65,7 +65,7 @@ module RideShare
 
     def load_trips
       trips = []
-      trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
+      trip_data = CSV.open('../support/trips.csv', 'r', headers: true, header_converters: :symbol)
       #header_converters gives you a hash when you use :symbol so you can use headers as keys
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
@@ -91,7 +91,37 @@ module RideShare
     end
 
     def find_available_driver
+      #wave 3 would need to modify this From the Drivers that remain, select the one whose most recent trip ended the longest time ago
+      all_available_drivers = @drivers.select{ |driver| driver.status == :AVAILABLE }
+      #oldest trip available driver
+      trips_of_available_drivers = []
+      all_available_drivers.each do |driver|
+        trips_of_available_drivers << driver.trips #do I need to get rid of ones with no end time here?
+      end
+
+      sorted_trips = trips_of_available_drivers.flatten.sort {|trip_1,trip_2| trip_1.end_time <=> trip_2.end_time }
+      puts sorted_trips
+      sorted_trips.each do |trip|
+        puts "#{trip.end_time} ended and driver: #{trip.driver.name} and driver status: #{trip.driver.status}"
+      end
+
+      no_nils_end_times_trips = []
+      sorted_trips.each do |trip|
+        unless trip.end_time == nil
+          no_nils_end_times_trips << trip
+        end
+      end
+
+
+      oldest_trip_driver = no_nils_end_times_trips[0].driver
+      puts oldest_trip_driver.name
+      jeralds_trips = oldest_trip_driver.trips
+      jeralds_trips.each do |trip|
+        puts "start_time: #{trip.start_time} and end_time: #{trip.end_time}"
+      end
+##############
       available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
+
       if available_driver == nil
         raise ArgumentError.new("There are no available drivers")
       end
@@ -134,13 +164,13 @@ module RideShare
   end
 end
 
-# trip_dispatch = RideShare::TripDispatcher.new
+trip_dispatch = RideShare::TripDispatcher.new
 # trip_dispatch.drivers.clear
 # puts trip_dispatch.drivers
 #
 # puts "Dispatch trips before new request: #{trip_dispatch.trips.length}"
 # puts "Driver length before new request: #{trip_dispatch.find_available_driver.trips.length}"
-# assigned_driver = trip_dispatch.find_available_driver
+assigned_driver = trip_dispatch.find_available_driver
 # puts "Driver status before new request: #{assigned_driver.status}"
 #
 # #try to request a new trip
