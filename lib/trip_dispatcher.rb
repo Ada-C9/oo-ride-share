@@ -129,28 +129,66 @@ module RideShare
     end
 
 
-    def longest_wait_driver
+    def next_chosen_driver
       #chooses driver with no trips made:
-      @drivers.each do |driver|
-        if driver.trips.length == 0
-          return driver
-        end
-      end
+      # @drivers.each do |driver|
+      #   if driver.trips.length == 0
+      #     return drivers
+      #   end
+      # end
 
       #some code that picks driver with oldest end_time
-      next_drivers = {}
+      # next_drivers = {}
+      # available_drivers.each do |driver|
+      #   oldest_trip = driver.trips.find {|trip| trip.end_time.min}
+      #   next_drivers[driver] = oldest_trip
+      #   #this fills the next_drivers hash with key:drivers and value:oldest trip
+      # end
+      #
+      #
+      # #min_by returns an array and the 0 index is the key
+      #  # sorted_drivers = next_drivers.min_by{ |k,v| v }
+      #
+      #
+      # oldest_trip = next_drivers.values.first
+      # next_drivers.values.each do |trip|
+      #   # UGHHHHH here trip is only where trip is in memory not the actual trip object WHYYYY.
+      #   if trip.end_time < oldest_trip.end_time
+      #     oldest_trip = trip
+      #   end
+      # end
+      #
+      # # binding.pry
+      # #return next_drivers.values[0] #this returns a trip object
+      #
+      # return next_drivers.key(oldest_trip)
+      all_last_trips = [] #trips with oldest end_time per driver
       available_drivers.each do |driver|
-        oldest_trip = driver.trips.find {|trip| trip.end_time.min}
-        next_drivers[driver] = oldest_trip
-        #this fills the next_drivers hash with key:drivers and value:oldest trip
+        last_trip = driver.trips[0]
+        driver.trips.each do |trip|
+          if trip.end_time < last_trip.end_time
+            last_trip = trip
+          end
+        end
+        all_last_trips << last_trip
       end
-      #binding.pry
-      #max_by returns an array and the 0 index is the key
-      winner = next_drivers.min_by{ |k,v| v }[0]
-      # binding.pry
 
-      return winner
-    end
+
+      oldest_trip_taken = all_last_trips[0]
+      last_trip_end_time = all_last_trips[0].end_time #instance of time
+
+      # all_last_trips.each do |trip|
+      #   if trip.end_time < last_trip_end_time
+      #     last_trip_end_time = trip.end_time
+      #     oldest_trip_taken = trip
+      #   end
+      # end
+
+      
+
+      return all_last_trips[1].end_time
+
+    end #end of next_chosen_driver
 
 
     def inspect
@@ -166,3 +204,18 @@ module RideShare
     end
   end
 end
+
+
+
+####################################
+
+#all_drivers_trips = []
+# available_drivers.each do |driver|
+#   shortest_trip = driver.trips[0]
+#   driver.trips.each do |trip|
+#     if trip.end_time < shortest_trip.end_time
+#       shortest_trip = trip
+#     end
+#   end
+#   return shortest_trip
+# end
