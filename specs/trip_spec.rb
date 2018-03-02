@@ -52,7 +52,7 @@ describe "Trip class" do
   describe "duration" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 30
+      end_time = start_time + 30 * 60
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),

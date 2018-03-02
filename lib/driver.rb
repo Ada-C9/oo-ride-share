@@ -17,7 +17,6 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
@@ -37,10 +36,12 @@ module RideShare
     end
 
     def add_trip(trip)
-      if trip.class != Trip
+      unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
+      if trip.end_time == nil
+        @status = :UNAVAILABLE
+      end
       @trips << trip
     end
 

@@ -102,7 +102,7 @@ describe "Driver class" do
   describe "average_revenue" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 60
+      end_time = start_time + 60 * 60
       trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),

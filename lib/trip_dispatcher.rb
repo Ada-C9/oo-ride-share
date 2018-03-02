@@ -19,6 +19,7 @@ module RideShare
       my_file = CSV.open('support/drivers.csv', headers: true)
 
       all_drivers = []
+
       my_file.each do |line|
         input_data = {}
         # Set to a default value
@@ -71,6 +72,10 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+        if driver.nil? || passenger.nil?
+          raise "Could not find driver or passengerfot trip ID #{raw_trip[:id]}"
+        end
+
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
@@ -88,6 +93,34 @@ module RideShare
       end
 
       return trips
+    end
+
+    def request_trip(passenger_id)
+
+      passenger = find_passenger(passenger_id)
+      avalable_driver = drivers.find {|driver| driver.status == :AVAILABLE }
+      next_id = trips.map {|trip| trip.id}.max
+
+      parsed_trip = {
+        id: next_id + 1,
+        driver: avalable_driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      trip = Trip.new(parsed_trip)
+      avalable_driver.add_trip(trip)
+      passenger.add_trip(trip)
+      trips << trip
+
+      return trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
