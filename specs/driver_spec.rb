@@ -107,23 +107,39 @@ describe "Driver class" do
   end
 
   describe 'avg_rev_per_hour method' do
-    it 'can return average driver revenue per hour driving' do
+    before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes 24.7
-      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5})
-      trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: end_time, driver: driver, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3})
-      driver.add_trip(trip1)
-      driver.add_trip(trip2)
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: @driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5})
+      @trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: end_time, driver: @driver, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3})
+      @driver.add_trip(@trip1)
+    end
+    it 'can return average driver revenue per hour driving' do
+      @driver.add_trip(@trip2)
+      @driver.avg_rev_per_hour.must_be_kind_of Float
+      @driver.avg_rev_per_hour.must_be_close_to 29.64,0.05
+    end
 
-      driver.avg_rev_per_hour.must_be_close_to 29.64,0.05
+    it 'can disregard incomplete rides' do
+
     end
   end
 
   describe 'new_ride method' do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes 24.7
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: @driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5})
+      @trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: end_time, driver: @driver, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3})
+    end
+
     it 'can add a ride to driver trips' do
-      # test if instance of rides
-      #test trips.length
+      old_length = @driver.trips.length
+      new_trip = @driver.new_ride(@trip2)
+      new_trip.must_be_instance_of RideShare::Trip
+      (@driver.trips.length - 1).must_equal old_length
     end
 
     it 'can change driver status to unavailable' do

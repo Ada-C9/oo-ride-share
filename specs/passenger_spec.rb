@@ -103,4 +103,10 @@ describe "Passenger class" do
     end
   end
 
+  describe 'new_ride method' do
+    it 'can add a trip to list of passenger trips' do
+      #length
+      #is instance of trip
+    end
+  end
 end

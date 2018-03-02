@@ -125,7 +125,10 @@ describe "TripDispatcher class" do
     end
 
     it 'adds the new requested trip to list of trips' do
-      
+      old_length = @dispatcher.trips.length
+      @dispatcher.request_trip(2)
+
+      (@dispatcher.trips.length - 1).must_equal old_length
     end
   end
 end
