@@ -87,11 +87,13 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time,cost: 4, rating: 5})
       trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.50, rating: 5})
+      trip2_in_progress = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: nil, cost: 35.34, rating: 5})
 
       @driver.add_trip(trip)
       @driver.add_trip(trip1)
+      @driver.add_trip(trip2_in_progress)
     end
-    it "returns driver's total revenue across all their trips" do
+    it "returns driver's total revenue across all their trips and ignores in-progress trips" do
       @driver.total_revenue.must_equal 4.16
       @driver.total_revenue.must_be_instance_of Float
     end
@@ -104,11 +106,13 @@ describe "Driver class" do
         @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
         trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time,cost: 4, rating: 5})
         trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.50, rating: 5})
+        trip2_in_progress = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: nil, cost: 35.34, rating: 5})
 
         @driver.add_trip(trip)
         @driver.add_trip(trip1)
+        @driver.add_trip(trip2_in_progress)
       end
-      it "returns the driver's average revenue per hour spent driving" do
+      it "returns the driver's average revenue per hour spent driving and ignores in-progress trips" do
         @driver.average_revenue_per_hour.must_equal 1.04
         @driver.average_revenue_per_hour.must_be_instance_of Float
     end

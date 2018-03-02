@@ -158,9 +158,8 @@ describe "TripDispatcher class" do
     end
 
     it "Returns nil if there are no drivers AVAILABLE" do
-      50.times {@first_passenger_request}
-      @first_passenger_request.driver.must_equal 0
-      @first_passenger_request.driver.must_equal nil
+      50.times {@dispatcher.request_trip(1)}
+      @dispatcher.request_trip(1).must_equal nil
     end
 
     it "Use the current time for the start time" do
@@ -170,8 +169,7 @@ describe "TripDispatcher class" do
       (@last_passenger_request.start_time.to_i - Time.now.to_i).must_equal 0
     end
 
-    it "End date, cost and rating will all be nil
-    " do
+    it "End date, cost and rating will all be nil" do
     @first_passenger_request.end_time.must_equal nil
     @first_passenger_request.cost.must_equal nil
     @first_passenger_request.rating.must_equal nil

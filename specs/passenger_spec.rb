@@ -86,18 +86,20 @@ describe "Passenger class" do
         end_time = Time.parse('2015-05-20T12:16:00+00:00')
         @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
         trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 27.456, rating: 5})
+        trip1 = RideShare::Trip.new({id: 9, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 45.34, rating: 5})
 
-        trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 45.34, rating: 5})
-
+        trip2_in_progress = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: nil, cost: 35.34, rating: 5})
 
         @passenger.add_trip(trip)
         @passenger.add_trip(trip1)
+        @passenger.add_trip(trip2_in_progress)
       end
 
-      it "return the total amount of money that passenger has spent on their trips" do
+      it "returns the total amount of money that passenger has spent on their trips and ignores in-progress trips" do
         @passenger.total_money_spent.must_equal 72.8
         @passenger.total_money_spent.must_be_instance_of Float
       end
+
     end
 
     describe "#total_time_spent" do
@@ -106,18 +108,18 @@ describe "Passenger class" do
         end_time = Time.parse('2015-05-20T14:16:23+00:00')
         @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
         trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 27, rating: 5})
-
         trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 45, rating: 5})
 
+        trip2_in_progress = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: nil, cost: 35.34, rating: 5})
 
         @passenger.add_trip(trip)
         @passenger.add_trip(trip1)
+        @passenger.add_trip(trip2_in_progress)
       end
 
-      it "return the total amount of time that passenger has spent on their trips" do
+      it "return the total amount of time that passenger has spent on their trips and ignores the in-progress trips" do
         @passenger.total_time_spent.must_equal 14686
         @passenger.total_time_spent.must_be_instance_of Integer
-
       end
     end
 

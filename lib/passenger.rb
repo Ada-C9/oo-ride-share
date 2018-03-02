@@ -25,7 +25,7 @@ module RideShare
       # @trips.each{|trip|
       #   total_time_spent += trip.duration}
       # return total_time_spent.round
-      return @trips.reduce(0) { |total_time, trip| total_time + trip.duration if !trip.end_time.nil? }.round
+      return @trips.reduce(0) { |total_time, trip| total_time + (trip.end_time.nil? ? 0 : trip.duration) }.round
     end
 
     def get_drivers

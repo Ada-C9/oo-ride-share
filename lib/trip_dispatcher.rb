@@ -117,6 +117,10 @@ module RideShare
         return trip
       end
 
+      def inspect
+        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+      end
+
       private
 
       def check_id(id)
@@ -126,5 +130,5 @@ module RideShare
       end
     end
   end
-  dispatcher = RideShare::TripDispatcher.new
-  puts dispatcher.find_passenger(1)
+  # dispatcher = RideShare::TripDispatcher.new
+  # puts dispatcher.find_passenger(1)
