@@ -1,6 +1,7 @@
 require 'time'
 require_relative 'spec_helper'
 
+
 describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
@@ -89,5 +90,66 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+  end
+
+  ## NEW
+  describe "request_trip" do
+
+    before do
+      @test_dispatcher = RideShare::TripDispatcher.new
+      @count_control_trips = @test_dispatcher.trips.count
+      @test_trip = @test_dispatcher.request_trip(5)
+      @test_drivers = @test_dispatcher.available_drivers
+    end
+
+    describe "available_driver" do
+
+      it "returns array of instances of driver" do
+        @test_drivers.must_be_kind_of Array
+        @test_drivers[2].must_be_instance_of RideShare::Driver
+        @test_drivers[2].status.must_equal :AVAILABLE
+      end
+
+      it "returns empty array if there are no available drivers" do
+        @test_drivers.must_be_kind_of Array
+        # @test_drivers.count.must_equal 0
+      end
+    end
+
+    # Modify this selected driver using a new helper method in Driver:
+    # Add the new trip to the collection of trips for that Driver
+    # Set the driver's status to :UNAVAILABLE
+    # Modify the passenger for the trip using a new helper method in Passenger:
+    # Add the new trip to the collection of trips for the Passenger
+    # Add the new trip to the collection of all Trips in TripDispatcher
+    # Return the newly created trip
+
+    # it "returns string telling user no drivers available when there are no available drivers" do
+    #   test_trip.must_equal("No available drivers")
+    # end
+
+    it "trips must increase by 1 everytime request_trip is called" do
+      count_test_trips = @test_dispatcher.trips.count
+      count_test_trips.must_equal (@count_control_trips + 1)
+    end
+
+    it "creates a new instance of trip" do
+      @test_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "trip start_time is an instance of Time" do
+      @test_trip.start_time.must_be_kind_of Time
+    end
+
+    it "assigns driver who is available" do
+      @test_trip.driver.status.must_equal :AVAILABLE
+    end
+
+    it "end_time, trip cost and rating must be equal to nil" do
+      @test_trip.end_time.must_equal nil
+      @test_trip.cost.must_equal nil
+      @test_trip.rating.must_equal nil
+    end
+    ##
   end
 end

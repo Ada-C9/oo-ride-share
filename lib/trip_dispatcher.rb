@@ -61,8 +61,15 @@ module RideShare
     end
 
     def find_passenger(id)
+      found_passenger = nil
       check_id(id)
-      @passengers.find{ |passenger| passenger.id == id }
+
+      @passengers.find do |passenger|
+        if passenger.id == id
+          found_passenger = passenger
+        end
+      end
+      return found_passenger
     end
 
     def load_trips
@@ -89,7 +96,49 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
+    end
+
+    def available_drivers
+      available_drivers = []
+      @drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          available_drivers << driver
+        end
+      end
+      return available_drivers
+    end
+
+    def request_trip(passenger_id)
+      start_time = Time.now
+      new_trip = Hash.new
+      newly_added_trip = "No available drivers"
+
+      new_trip[:id] = @trips.length
+
+      drivers = available_drivers
+      if drivers.count > 1
+        driver = drivers[0]
+        new_trip[:driver] = driver
+
+        new_trip[:passenger] = find_passenger(passenger_id)
+
+        new_trip[:start_time] = start_time
+
+        new_trip[:end_time] = nil
+        new_trip[:cost] = nil
+        new_trip[:rating] = nil
+
+        newly_added_trip = RideShare::Trip.new(new_trip)
+
+        @trips << newly_added_trip
+      end
+
+      return newly_added_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
