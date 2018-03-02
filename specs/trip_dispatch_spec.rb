@@ -131,24 +131,28 @@ describe "TripDispatcher class" do
       @driver_status_before.must_equal :AVAILABLE
       @new_trip.driver.status.must_equal :UNAVAILABLE
     end
+  end
 
+  describe "new_trip_id method" do
+    it "creates a trips with a new id" do
+      dispatcher = RideShare::TripDispatcher.new
+      initial_trip_ids = dispatcher.trips.map { |trip| trip.id }
+      new_trip = dispatcher.request_trip(2)
+      initial_trip_ids.wont_include new_trip.id
+    end
+  end
+
+  describe "find_available_driver method" do
     it "raises an error if all drivers are unavailable" do
-      @dispatcher.drivers.each do |driver|
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.drivers.each do |driver|
         if driver.status == :AVAILABLE
           driver.change_status
         end
         driver.status.must_equal :UNAVAILABLE
       end
 
-      proc { @dispatcher.request_trip(2) }.must_raise StandardError
+      proc { dispatcher.request_trip(3) }.must_raise StandardError
     end
-  end
-
-  describe "find_available_driver method" do
-
-  end
-
-  describe "new_trip_id method" do
-
   end
 end
