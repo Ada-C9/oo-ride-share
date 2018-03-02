@@ -41,7 +41,6 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
     end
 
@@ -74,13 +73,23 @@ module RideShare
 
     def calculate_avg_revenue_per_hour
 
-      return 0 if self.calculate_total_revenue == 0
+      return 0 if calculate_total_revenue == 0
 
-      return 0 if self.calculate_total_trips_time_in_hours == 0
+      return 0 if calculate_total_trips_time_in_hours == 0
 
-      hourly_rate = self.calculate_total_revenue / self.calculate_total_trips_time_in_hours
+      hourly_rate = calculate_total_revenue / calculate_total_trips_time_in_hours
       hourly_rate = hourly_rate.round(2)
       return hourly_rate
+    end
+
+    def add_new_trip(new_trip)
+      trips << new_trip
+    end
+
+    def change_status
+      if status == :AVAILABLE
+        status = :UNAVAILABLE
+      end
     end
 
   end # end of Driver

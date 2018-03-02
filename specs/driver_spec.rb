@@ -166,7 +166,7 @@ describe "Driver class" do
 
     it "returns an appropriate statement if no hours worked" do
 
-  @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
 
       @driver.calculate_avg_revenue_per_hour.must_equal 0
     end
@@ -179,5 +179,44 @@ describe "Driver class" do
     end
 
   end # end of describe calculate_avg_revenue_per_hour
+
+  describe "add_new_trip" do
+    before do
+      start_time = Time.parse("2016-11-21T18:43:00+00:00")
+      end_time = Time.parse("2016-11-21T19:31:00+00:00")
+
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip = RideShare::Trip.new({id: 62, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, cost: 5.70, rating: 5})
+
+      @driver.add_trip(trip)
+
+      start_time1 = Time.parse("2015-12-14T05:19:00+00:00")
+      end_time1 = Time.parse("2015-12-14T05:31:00+00:00")
+
+      trip1 = RideShare::Trip.new({id: 62, driver: @driver, passenger: nil, start_time: start_time1, end_time: end_time1, cost: 23, rating: 4})
+      @driver.add_trip(trip1)
+    end
+
+    it "new trip has been added" do
+      @driver.trips.length.must_equal 2
+
+      trip2 = RideShare::Trip.new({id: 78, driver: @driver, passenger: 45, start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+      @driver.add_new_trip(trip2)
+
+      @driver.trips.length.must_equal 3
+    end
+
+  end# end of describe add_new_trip
+
+  # describe "change_status" do
+  #   before do
+  #     @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
+  #   end
+  #
+  #   it "changes status from :AVAILABLE to :UNAVAILABLE" do
+  #
+  #   end
+  #
+  # end # end of describe change_status
 
 end # end of describe Driver class
