@@ -26,12 +26,12 @@ module RideShare
     end
 
     def duration
-      return nil if @end_time == nil
-      hours = 24
-      minutes = 60
-      seconds = 60
-      return_val = @end_time - @start_time
-      return return_val
+      if @end_time == nil
+        return 0
+      else
+        return @end_time - @start_time
+      end
+
     end # duration
 
   end # Class Trip

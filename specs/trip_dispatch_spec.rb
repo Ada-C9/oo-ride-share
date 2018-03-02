@@ -113,7 +113,7 @@ describe "TripDispatcher class" do
       result.must_be_instance_of RideShare::Trip
     end
 
-    it "the trip returned must have correct data" do
+    it "the returned trip has correct data" do
       dispatcher = RideShare::TripDispatcher.new
       pass = dispatcher.find_passenger(32)
       original_trips = pass.trips.length
@@ -124,5 +124,19 @@ describe "TripDispatcher class" do
       result.end_time.must_be_nil
     end
 
-  end
+    it "updates the passanger appropriately" do
+      dispatcher = RideShare::TripDispatcher.new
+      pass = dispatcher.find_passenger(24)
+      original_trips = pass.trips.length
+      result = dispatcher.request_trip(24)
+      result.passenger.trips.length.must_equal original_trips + 1
+    end
+
+    it "updates the driver appropriately" do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(98)
+      result.driver.status.must_equal :UNAVAILABLE
+    end
+
+  end # Describbe #request_trip
 end  # Describe TripDispatcher class

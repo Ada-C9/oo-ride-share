@@ -77,6 +77,15 @@ module RideShare
       return average.round(2)
     end
 
+    def status_switch
+      if @status = :AVAILABLE
+        @status = :UNAVAILABLE
+      else
+        @status = :AVAILABLE
+      end
+
+    end
+
 
   end # Class Driver
 end # Module RideShare
