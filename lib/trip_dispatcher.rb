@@ -15,13 +15,13 @@ module RideShare
       @passengers = passengers
       @trips = trips
       self.load_everything
-    end
+    end # Initialize
 
     def load_everything
       @drivers += load_drivers
       @passengers += load_passengers
       @trips += load_trips
-    end
+    end # load_everything
 
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
@@ -44,12 +44,12 @@ module RideShare
       end
 
       return all_drivers
-    end
+    end # load_drivers
 
     def find_driver(id)
       check_id(id)
-      @drivers.find{ |driver| driver.id == id }
-    end
+      @drivers.find {|driver| driver.id == id }
+    end # find_driver
 
     def load_passengers
       passengers = []
@@ -64,12 +64,12 @@ module RideShare
       end
 
       return passengers
-    end
+    end # load_passengers
 
     def find_passenger(id)
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
-    end
+    end # find_passenger
 
     def load_trips
       trips = []
@@ -96,7 +96,7 @@ module RideShare
       end
 
       return trips
-    end
+    end # load_trips
 
     def next_driver
       # Array of available drivers
@@ -106,33 +106,33 @@ module RideShare
         driver.trips.length > 0 && driver.status == :AVAILABLE
       end
 
-      # None Available
       return nil if all_available == []
 
-      # Array of last trips
       last_trips = all_available.map do |driver|
         driver.trips.min_by do |trip|
           Time.now - trip.end_time
         end
       end
 
-      # The oldest trip
       oldest_trip = last_trips.max_by do |trip|
         Time.now - trip.end_time
       end
 
-      # The driver that gets the trip
       chosen_driver = oldest_trip.driver
-      return chosen_driver
 
+      return chosen_driver
+    end # next_driver
+
+    def next_id
+      ids = @trips.map {|trip| trip.id}
+      return ids.max
     end
 
     def request_trip(pass_id)
+
+      id = self.next_id
       pass = self.find_passenger(pass_id)
       driver = self.next_driver
-      puts "Driver selected: "
-      puts driver
-      puts
 
       if pass == nil
         raise ArgumentError.new("Sorry: Unregistred customers cannot request ride.")
@@ -141,12 +141,13 @@ module RideShare
       end
 
       data = {
-        id: @trips.length + 1,
+        id: id,
         passenger: pass,
         driver: driver,
         start_time: Time.now
       }
       new_trip = Trip.new(data)
+
       pass.add_trip(new_trip)
       driver.add_trip(new_trip)
       driver.status_switch
@@ -156,7 +157,7 @@ module RideShare
 
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    end
+    end # inspect
 
     private
 
@@ -164,10 +165,10 @@ module RideShare
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
-    end
+    end # check_id
 
-  end
-end
+  end # Class TripDispatcher
+end # Module RideShare
 
 # disp = RideShare::TripDispatcher.new
 # antwan = disp.find_driver(14)
