@@ -13,9 +13,17 @@ module RideShare
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
-      #@start_time.class != Symbol && @end_time.class != Symbol
-      if @start_time != :PENDING && @end_time != :PENDING && @start_time  > @end_time
-        raise ArgumentError.new('invald time input')
+
+      if @start_time == nil || @end_time == nil
+        raise ArgumentError.new('nil value for time is not accepted.')
+      end
+
+      if @start_time.class != Time
+        raise ArgumentError.new('Time must a Time class object')
+      end
+
+      if @end_time != :PENDING && @start_time  > @end_time
+        raise ArgumentError.new('invalid time input')
       end
 
       if @rating != :PENDING && (@rating > 5 || @rating < 1)
@@ -24,11 +32,16 @@ module RideShare
     end
 
     def trip_in_seconds
-      if end_time == :PENDING && start_time = :PENDING
-        return PENDING_TRIP
-      else
-      return (end_time.to_i - start_time.to_i)
+      if end_time == :PENDING
+        difference =  PENDING_TRIP
+      end
+      #passing with integers.
+      return   end_time - start_time
+
     end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
   end
