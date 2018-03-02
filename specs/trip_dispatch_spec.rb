@@ -97,6 +97,24 @@ describe "TripDispatcher class" do
     end
   end
 
+  describe 'select_driver_available' do
+    it 'Selects an AVAILABLE driver' do
+
+      @trip_disp = RideShare::TripDispatcher.new()
+      # Request new trip:
+      @new_trip = @trip_disp.request_trip(1)
+
+      initial_drivers_list = @trip_disp.load_drivers
+      # Find the status for this driver in the initial list from file:
+
+      index = @new_trip.driver.id - 1
+      initial_status = initial_drivers_list[index].status
+
+      # Assert:
+      initial_status.must_equal :AVAILABLE
+    end
+  end
+
   describe '#request_trip' do
 
     before do
@@ -104,6 +122,7 @@ describe "TripDispatcher class" do
       # Request new trip:
       @new_trip = @trip_disp.request_trip(1)
     end
+
     it 'Updates the length of trip list in @trip_dispatcher:' do
       initial_list_length = @trip_disp.trips.length
 
@@ -165,5 +184,73 @@ describe "TripDispatcher class" do
 
 
     end
+  end
+
+  describe 'select_the_right_driver' do
+    before do
+      @trip_disp = RideShare::TripDispatcher.new()
+      # Request new trip:
+      @new_trip = @trip_disp.select_the_right_driver(1)
+    end
+
+    it 'Selects an AVAILABLE driver' do
+
+      initial_drivers_list = @trip_disp.load_drivers
+      # Find the status for this driver in the initial list from file:
+
+      index = @new_trip.driver.id - 1
+      initial_status = initial_drivers_list[index].status
+
+      # Assert:
+      initial_status.must_equal :AVAILABLE
+    end
+
+    it 'Returns an exeption if there are no AVAILABLE drivers' do
+      @trip_disp.drivers.each {|driver| driver.change_status}
+      proc {@trip_disp.select_the_right_driver(1)}.must_raise StandardError
+    end
+
+    it 'Updates the length of trip list in @trip_dispatcher:' do
+      initial_list_length = @trip_disp.trips.length
+
+      # Request new trip:
+      @trip_disp.select_the_right_driver(1)
+
+      final_list_length = @trip_disp.trips.length
+
+      final_list_length.must_equal initial_list_length + 1
+    end
+
+    it 'Can find new trip in the trip list in @trip_dispatcher' do
+      exists = false
+      @trip_disp.trips.each{ |trip| exists = true if trip == @new_trip}
+
+      exists.must_equal true
+    end
+
+    it 'Updates the drivers trip list:' do
+      driver_for_new_trip = @new_trip.driver
+
+      find_new_trip_in_driver = driver_for_new_trip.trips.find{ |trip|  trip == @new_trip }
+
+      find_new_trip_in_driver.must_equal @new_trip
+    end
+
+    it 'Updates the passangers trip list:' do
+      passenger_for_new_trip = @new_trip.passenger
+
+      find_new_trip_in_passanger = passenger_for_new_trip.trips.find{ |trip|  trip == @new_trip }
+
+      find_new_trip_in_passanger.must_equal @new_trip
+    end
+
+    # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+    # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
+    # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
+    # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+    # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+
+
+
   end
 end

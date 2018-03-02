@@ -99,7 +99,6 @@ module RideShare
       @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
     end
 
-
     def request_trip(passenger_id)
       # Initiate a new trip:
 
@@ -142,6 +141,13 @@ module RideShare
       return trip_in_progress
     end
 
+
+    def select_the_right_driver
+      # Find the first available driver:
+      @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
+    end
+
+
     def inspect
       # Fix testing bug:
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
@@ -157,3 +163,7 @@ module RideShare
     end
   end
 end
+
+# The Driver must have a status of AVAILABLE
+# The Driver must not have any in-progress trips (end time of nil)
+# From the Drivers that remain, select the one whose most recent trip ended the longest time ago
