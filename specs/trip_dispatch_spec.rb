@@ -109,47 +109,87 @@ describe "TripDispatcher class" do
     end
   end
 
+  describe "#assign_driver" do
+
+    it "returns the first driver with the status available" do
+      dispatcher = RideShare::TripDispatcher.new
+      initial_driver_status = dispatcher.find_driver(2).status
+      new_trip = dispatcher.request_trip(3)
+
+      # Assertions
+      new_trip.driver.must_be_kind_of RideShare::Driver
+      initial_driver_status.must_equal :AVAILABLE
+      #first driver id in CSV file with AVAILABLE status
+      new_trip.driver.id.must_equal 2
+
+    end
+
+    it "raises error if there are no drivers available" do
+      dispatcher = RideShare::TripDispatcher.new
+      # 47 drivers originally available
+      passenger_id = 1
+      47.times do |request_trip|
+        passenger_id += 1
+        dispatcher.request_trip(passenger_id)
+      end
+      proc {dispatcher.request_trip(62)}.must_raise ArgumentError
+    end
+  end
+
   describe "#request_trip(passenger_id)" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
+      @passenger = @dispatcher.find_passenger(3)
+      @driver = @dispatcher.find_driver(2)
+
+      @initial_trips_length = @dispatcher.trips.length
+      @initial_passenger_trips_length = @passenger.trips.length
+      @initial_driver_trips_length = @driver.trips.length
 
       @new_trip = @dispatcher.request_trip(3)
 
     end
 
-    it "creates new instance of Trip" do
+    it "returns/creates new instance of Trip" do
 
       @new_trip.must_be_kind_of RideShare::Trip
 
     end
 
     it "assigns the first driver with status available" do
+      @new_trip.driver.must_be_kind_of RideShare::Driver
       @new_trip.driver.id.must_equal 2
     end
     #
-    it "adds the new Trip to the collection in TripDispatcher" do
-
-      @dispatcher.trips.length.must_equal 601
-
+    it "adds the new Trip to the collection of trips in TripDispatcher" do
+      @dispatcher.trips.length.must_equal @initial_trips_length + 1
     end
 
     it "adds the new Trip to the collection of trips for Passenger" do
-      passenger = @dispatcher.find_passenger(3)
-      passenger.trips.length.must_equal 3
+      @passenger.trips.length.must_equal @initial_passenger_trips_length + 1
     end
 
-    it "add the new Trip to the collection of trips for Driver" do
-      driver = @dispatcher.find_driver(2)
-      driver.trips.length.must_equal 9
+    it "adds the new Trip to the collection of trips for Driver" do
+      @driver.trips.length.must_equal @initial_driver_trips_length + 1
     end
 
     it "changes drivers status to :UNAVAILABLE" do
-      driver = @dispatcher.find_driver(2)
-      driver.status.must_equal :UNAVAILABLE
+      @driver.status.must_equal :UNAVAILABLE
     end
 
+    it "assigns new and unique trip id (trip ids in dispatcher are in consecutive order)" do
+      @new_trip.id.must_equal 601
+    end
 
+    it "makes the start time and instance of time" do
+      @new_trip.start_time.must_be_kind_of Time
+    end
 
+    it "assigns end_time, cost, and rating of trip to 'nil' as it is in progress" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
+    end
 
   end
 end

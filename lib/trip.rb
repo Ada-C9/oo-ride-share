@@ -24,11 +24,6 @@ module RideShare
         raise ArgumentError.new("Invalid end time #{@end_time}")
       end
 
-      # if @start_time > @end_time
-      #   raise ArgumentError.new("Invalid end time #{@end_time}")
-      # end
-
-
     end
 
     # anytime we care to know status we can call method
@@ -43,5 +38,10 @@ module RideShare
     def duration
       return (end_time - start_time).to_i
     end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
   end
 end

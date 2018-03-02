@@ -92,28 +92,48 @@ module RideShare
       trips
     end
 
-    def request_trip(passenger_id)
-
+    def assign_driver
       drivers_available = @drivers.reject { |driver| driver.status == :UNAVAILABLE }
 
-      trip_data = {
-        id: @trips.length + 1,
-        driver: drivers_available[0],
-        passenger: passenger_id,
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil,
-      }
-
-      new_trip = Trip.new(trip_data)
-      drivers_available[0].change_to_unavailable
-      drivers_available[0].add_trip(new_trip)
-      find_passenger(passenger_id).add_trip(new_trip)
-      trips << new_trip
-      return new_trip
+      if drivers_available.length == 0
+        raise ArgumentError.new("There are no drivers available.")
+      else
+        return drivers_available.first
+      end
     end
 
+    def request_trip(passenger_id)
+
+      check_id(passenger_id)
+      passenger = find_passenger(passenger_id)
+
+      if passenger == nil
+        raise ArgumentError.new("Passenger ID #{passenger_id} not valid.")
+      else
+        driver = assign_driver
+
+        trip_data = {
+          id: @trips.length + 1,
+          driver: driver,
+          passenger: passenger,
+          start_time: Time.now,
+          end_time: nil,
+          cost: nil,
+          rating: nil,
+        }
+
+        new_trip = Trip.new(trip_data)
+        driver.change_to_unavailable
+        driver.add_trip(new_trip)
+        passenger.add_trip(new_trip)
+        trips << new_trip
+        return new_trip
+      end
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 
@@ -126,10 +146,20 @@ module RideShare
   end
 end
 #
+
+# dispatcher = RideShare::TripDispatcher.new
+# dispatcher.request_trip(23532492)
 ### TESTING FOR REQUESTING TRIP ####
 # dispatcher = RideShare::TripDispatcher.new
-#
-# passenger = dispatcher.find_passenger(3)
+# # puts dispatcher.assign_driver.length
+# first_driver = dispatcher.find_driver(2)
+# # puts first_driver.trips.length
+# puts "Drivers count before #{first_driver.trips.length}"
+# new_trip = dispatcher.request_trip(3)
+# driver = new_trip.driver
+# puts driver.id
+# puts "Drivers count after: #{driver.trips.length}"
+
 # actual_driver = dispatcher.find_driver(2)
 # puts "original passenger trips #{passenger.trips.length}"
 # puts "original driver trips : #{actual_driver.trips.length}"
@@ -142,8 +172,8 @@ end
 # driver = new_trip.driver
 # puts "Driver ID : #{driver.id}"
 # puts "Driver Status: #{driver.status}"
-# # passenger = new_trip.passenger
-# # passenger = dispatcher.find_passenger(2)
+# passenger = new_trip.passenger
+# passenger = dispatcher.find_passenger(2)
 #
 # puts "Final passenger trips: #{passenger.trips.length}"
 # puts "Final driver trips : #{actual_driver.trips.length}"
