@@ -68,5 +68,9 @@ module RideShare
       get_total_rev/(tot_drive_time/3600)
     end
 
+    def set_status_unavailable
+      @status = :UNAVAILABLE
+    end
+
   end
 end

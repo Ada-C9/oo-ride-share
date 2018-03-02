@@ -137,4 +137,17 @@ describe "Driver class" do
       @driver.avg_total_rev.must_equal 6.68
     end
   end
+
+  describe "set_status_unavailable" do
+    before do
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
+    end
+    it "sets the selected driver's staus to UNAVAILABLE" do
+      # Given => see before statement
+      # When
+      @driver.set_status_unavailable
+      # Then
+      @driver.status.must_equal :UNAVAILABLE
+    end
+  end
 end
