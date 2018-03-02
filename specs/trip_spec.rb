@@ -5,7 +5,7 @@ describe "Trip class" do
   describe "initialize" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60 # 25 minutes
+      end_time = start_time + 25 * 60 # 25 minutes later
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -53,6 +53,19 @@ describe "Trip class" do
       }
       proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
     end
+
+    it "allows nil values for end_time, cost, and rating" do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      @trip = RideShare::Trip.new(@trip_data).must_be_instance_of RideShare::Trip
+    end
   end
 
   describe "duration method" do
@@ -90,6 +103,36 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
 
       @trip.duration.must_equal 0.0
+    end
+  end
+
+  describe "finished_trip? method" do
+    it "accurately reflects if a trip is not finished" do
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      trip = RideShare::Trip.new(trip_data)
+      trip.is_finished?.must_equal false
+    end
+
+    it "accurately reflects if a trip is finished" do
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T12:14:00+00:00') + 25 * 60,
+        cost: 12.34,
+        rating: 4
+      }
+      trip = RideShare::Trip.new(trip_data)
+      trip.is_finished?.must_equal true
     end
   end
 end

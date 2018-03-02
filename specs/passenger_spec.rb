@@ -126,4 +126,25 @@ describe "Passenger class" do
       @passenger.total_time.must_equal 1200
     end
   end
+
+  describe "get_completed_trips method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @passenger_1 = @dispatcher.find_passenger(1)
+    end
+
+    it "returns an array of trips" do
+      @passenger_1.get_completed_trips.must_be_kind_of Array
+      @passenger_1.get_completed_trips.each do |trip|
+        trip.must_be_instance_of RideShare::Trip
+      end
+    end
+
+    it "does not include incomplete trips" do
+      new_trip = @dispatcher.request_trip(1)
+      @passenger_1.trips.must_include new_trip
+      @passenger_1.get_completed_trips.wont_include new_trip
+      (@passenger_1.trips.length - @passenger_1.get_completed_trips.length).must_equal 1
+    end
+  end
 end

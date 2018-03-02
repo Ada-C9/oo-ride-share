@@ -30,5 +30,13 @@ module RideShare
     def duration
       return @end_time - @start_time
     end
+
+    def is_finished?
+      return @end_time != nil
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
   end
 end

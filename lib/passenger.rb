@@ -14,7 +14,7 @@ module RideShare
     end
 
     def get_drivers
-      @trips.map{ |t| t.driver }
+      @trips.map{ |trip| trip.driver }
     end
 
     def add_trip(trip)
@@ -35,6 +35,13 @@ module RideShare
         total_time += trip.duration
       end
       return total_time
+    end
+
+    def get_completed_trips
+      completed_trips = @trips.select do |trip|
+        trip.is_finished? == true
+      end
+      return completed_trips
     end
   end
 end
