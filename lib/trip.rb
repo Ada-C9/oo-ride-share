@@ -14,13 +14,17 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @rating > 5 || @rating < 1
+      if @rating != nil && (@rating > 5 || @rating < 1)
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      if @end_time != nil && @end_time - @start_time < 0
+      if @end_time != nil && (@end_time - @start_time < 0)
         raise ArgumentError.new("Invalid end_time #{@end_time}")
       end
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     def duration_in_seconds

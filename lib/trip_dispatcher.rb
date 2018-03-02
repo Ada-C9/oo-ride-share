@@ -1,6 +1,7 @@
 require 'csv'
 require 'time'
 require 'pry'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -14,6 +15,10 @@ module RideShare
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     def load_drivers
@@ -35,7 +40,6 @@ module RideShare
         input_data[:status] = status
         all_drivers << Driver.new(input_data)
       end
-
       return all_drivers
     end
 
@@ -89,6 +93,18 @@ module RideShare
       end
 
       trips
+    end
+
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+
+      available_driver = @drivers.find { |driver| driver.status == :AVAILABLE }
+
+      start_time = Time.now
+
+      new_trip = Trip.new(id: @trips.length + 1, passenger: passenger, driver: available_driver, start_time: start_time, end_time: nil, cost: nil, rating: nil)
+
+      return new_trip
     end
 
     private

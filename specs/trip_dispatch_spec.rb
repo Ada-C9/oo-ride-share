@@ -91,4 +91,48 @@ describe "TripDispatcher class" do
     end
 
   end
+
+  describe "request_trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "creates a new instance of trip" do
+      requested_trip = @dispatcher.request_trip(1)
+
+      requested_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "updates trip lists for driver, passenger, and tripdispatcher" do
+
+    end
+
+    it "supplies a passenger id as parameter" do
+      requested_trip = @dispatcher.request_trip(1)
+
+      requested_trip.passenger.must_be_instance_of RideShare::Passenger
+    end
+
+    it "automatically assigns first available driver" do
+      requested_trip = @dispatcher.request_trip(1)
+
+      requested_trip.driver.must_be_instance_of RideShare::Driver
+      requested_trip.driver.status.must_equal :AVAILABLE
+    end
+
+    it "uses current time for the start time" do
+      requested_trip = @dispatcher.request_trip(1)
+
+      requested_trip.start_time.must_be_instance_of Time
+    end
+
+    it "end time, cost, and rating should be nil" do
+      requested_trip = @dispatcher.request_trip(1)
+
+      requested_trip.end_time.must_be_nil
+      requested_trip.cost.must_be_nil
+      requested_trip.rating.must_be_nil
+    end
+
+  end
 end

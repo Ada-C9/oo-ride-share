@@ -160,7 +160,7 @@ Now that we have data for cost available for every trip, we can do some interest
 
 **All of these methods must have tests.**
 
-<!-- ### Wave 2
+### Wave 2
 
 Our program needs a way to make new trips and appropriately assign a driver and passenger.
 
@@ -169,7 +169,7 @@ This logic will be handled by our `TripDispatcher` in a new instance method: `Tr
 - Your code should automatically assign a driver to the trip
   - For this initial version, choose the first driver whose status is `:AVAILABLE`
 - Your code should use the current time for the start time
-- The end date, cost and rating will all be `nil`
+- The end time, cost and rating will all be `nil`
   - The trip hasn't finished yet!
 
 You should use this information to:
