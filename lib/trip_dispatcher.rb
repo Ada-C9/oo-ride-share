@@ -113,6 +113,7 @@ module RideShare
 
       new_trip = RideShare::Trip.new(new_trip_data)
       @trips << new_trip
+
       return new_trip
 =begin
 
@@ -136,11 +137,7 @@ PSEUDOCODE FOR (I), above:
 =end
     end
 
-
-
-
     def inspect
-
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 

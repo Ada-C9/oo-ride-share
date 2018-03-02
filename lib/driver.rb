@@ -48,8 +48,8 @@ module RideShare
     end
 
     def accept_new_trip_assignment(trip)
-      # add_trip(trip)
-      # @status = :UNAVAILABLE
+      add_trip(trip)
+      @status = :UNAVAILABLE
     end
 
     def total_revenue

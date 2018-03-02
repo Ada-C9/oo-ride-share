@@ -83,7 +83,7 @@ describe "Driver class" do
 
     it "adds the specified trip to the driver's collection" do
         @driver_a.trips.must_include @assigned_trip
-        @driver_a.trips.count.must_equal 601
+        @driver_a.trips.count.must_equal 4
     end
 
     it "changes the driver's status to UNAVAILABLE" do
