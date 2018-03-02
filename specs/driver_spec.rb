@@ -169,4 +169,12 @@ describe "Driver class" do
       @driver.rate.must_be_within_delta 71.4
     end
   end
+
+  describe "unavailble method" do
+    it "changes a driver's status to :UNAVAILABLE when invoked" do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @driver.unavailable
+      @driver.status.must_equal :UNAVAILABLE
+    end
+  end
 end
