@@ -95,7 +95,7 @@ module RideShare
     def find_available_driver
       @drivers.each do |driver|
         if driver.status == :AVAILABLE
-          return driver.id
+          return driver
         end
       end
       raise StandardError.new("There aren't any available drivers at this time.")
@@ -112,16 +112,17 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      if find_passenger(passenger_id) == nil
+      passenger = find_passenger(passenger_id)
+      if passenger == nil
         raise ArgumentError.new("Passnger ID #{passenger_id} is not valid.")
       end
 
-      available_driver_id = find_available_driver
+      available_driver = find_available_driver
 
       new_trip_data = {
         id: find_next_trip_id,
-        driver: find_available_driver,
-        passenger: passenger_id,
+        driver: available_driver,
+        passenger: passenger,
         start_time: get_new_start_time,
         end_time: nil,
         cost: nil,
@@ -129,6 +130,9 @@ module RideShare
       }
 
       new_trip = RideShare::Trip.new(new_trip_data)
+
+      available_driver.add_trip(new_trip)
+      passenger.add_trip(new_trip)
 
       return new_trip
 
@@ -140,10 +144,10 @@ module RideShare
 
     private
 
-      def check_id(id)
-        if id == nil || id <= 0
-          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
-        end
+    def check_id(id)
+      if id == nil || id <= 0
+        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
   end
+end

@@ -84,11 +84,14 @@ module RideShare
 
     def add_new_trip(new_trip)
       trips << new_trip
+
+      change_status
+
     end
 
     def change_status
-      if status == :AVAILABLE
-        status = :UNAVAILABLE
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
       end
     end
 

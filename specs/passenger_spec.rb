@@ -120,9 +120,9 @@ describe "Passenger class" do
 
       @passenger.add_trip(trip)
 
-      start_time = Time.parse("2016-05-25T23:04:00+00:00")
-      end_time = Time.parse("2016-05-25T23:49:00+00:00")
-      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 23, rating: 5})
+      start_time1 = Time.parse("2016-05-25T23:04:00+00:00")
+      end_time1 = Time.parse("2016-05-25T23:49:00+00:00")
+      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time1, end_time: end_time1, cost: 23, rating: 5})
 
       @passenger.add_trip(trip1)
 
@@ -136,5 +136,4 @@ describe "Passenger class" do
 
   end # end of describe "calculate_total_trips_time"
 
-  
 end # end of describe Passenger

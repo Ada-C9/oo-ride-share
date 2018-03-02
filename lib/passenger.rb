@@ -39,5 +39,6 @@ module RideShare
       total_time_in_sec = trip_time_lengths.inject(:+)
       return total_time_in_sec
     end
+
   end # end of Passenger
 end # end of RideShare

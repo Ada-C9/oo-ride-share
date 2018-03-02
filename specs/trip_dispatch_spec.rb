@@ -95,7 +95,7 @@ describe "find_available_driver method" do
   it "finds the first driver who has an available status" do
 
     dispatcher = RideShare::TripDispatcher.new
-    dispatcher.find_available_driver.must_equal 2
+    dispatcher.find_available_driver.must_be_instance_of RideShare::Driver
   end
 end # end of find_available_driver
 
@@ -124,7 +124,7 @@ describe "request_trip(passenger_id) method" do
 
     it "creates a new instance of Trip" do
       dispatcher = RideShare::TripDispatcher.new
-      dispatcher.request_trip(5).must_be_instance_of RideShare::Trip      
+      dispatcher.request_trip(5).must_be_instance_of RideShare::Trip
     end
 
   end # end of describe request_trip(passenger_id) method
