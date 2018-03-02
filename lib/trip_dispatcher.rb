@@ -140,6 +140,12 @@ PSEUDOCODE FOR (I), above:
     end
 
     def create_new_trip_id
+      new_trip_id = (@trips.map(&:id).max + 1)
+    end
+
+    def inspect
+
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

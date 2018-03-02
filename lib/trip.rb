@@ -32,5 +32,9 @@ module RideShare
       trip_sec_remdr = ((@duration_seconds % 3600) % 60)
       @duration_string = "#{trip_hrs_round} hour(s), #{trip_min_remdr_round} minute(s), #{trip_sec_remdr} second(s)."
     end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
   end
 end

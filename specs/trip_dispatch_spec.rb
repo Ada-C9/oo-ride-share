@@ -116,7 +116,7 @@ describe "TripDispatcher class" do
     it "creates a trip ID number that is one higher than the current highest trip ID number" do
 
       new_trip_id = @dispatcher_1.create_new_trip_id
-      new_trip_id.must_be_kind_of Symbol
+      new_trip_id.must_be_kind_of Integer
       new_trip_id.to_i.must_equal 601
 
     end
