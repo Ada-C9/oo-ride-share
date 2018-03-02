@@ -147,6 +147,8 @@ module RideShare
 end
 #
 
+passenger = RideShare::Passenger.new({id: -23, name: "Smithy", phone: "353-533-5334"})
+puts passenger
 # dispatcher = RideShare::TripDispatcher.new
 # dispatcher.request_trip(23532492)
 ### TESTING FOR REQUESTING TRIP ####

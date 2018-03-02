@@ -209,7 +209,7 @@ describe "Driver class" do
       in_progress_trip_data = {
         id: 10,
         driver: @driver,
-        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        passenger: @passenger,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
@@ -223,7 +223,6 @@ describe "Driver class" do
       @driver.total_revenue_per_hour.must_equal 58.68
 
     end
-
 
   end
 

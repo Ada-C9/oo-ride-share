@@ -55,10 +55,8 @@ module RideShare
       if trips.last.cost == nil
         included_trips = trips[0..-2]
         total_with_fee_subtracted = included_trips.reduce(0){ |total, trip| total + (trip.cost - 1.65)}
-        # drivers_part = total_with_fee_subtracted * 0.80
       else
         total_with_fee_subtracted = trips.reduce(0){ |total, trip| total + (trip.cost - 1.65)}
-        # drivers_part = total_with_fee_subtracted * 0.80
       end
 
       drivers_part = total_with_fee_subtracted * 0.80
