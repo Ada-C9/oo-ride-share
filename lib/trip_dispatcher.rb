@@ -4,6 +4,7 @@ require 'time'
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class TripDispatcher
@@ -97,10 +98,10 @@ module RideShare
       # assign a driver to the trip
       # driver must be the first driver with the status :AVAILABLE
       driver = drivers.find{  |d| d.status == :AVAILABLE} #return first driver
-      # driver.find_available_drivers
-
+      # driver = drivers.find_available_drivers.first
+      passenger = find_passenger(passenger_id)
       trip = {
-        passenger: find_passenger(passenger_id),
+        passenger: passenger ,
         id: trips.last.id + 1,
         driver: driver,
         start_time: Time.now,
@@ -110,11 +111,12 @@ module RideShare
       }
 
       request_trip = Trip.new(trip)
-      driver.add_trip(request_trip)
-      # passenger.add_trip(request_trip)
-      @trips << request_trip
 
-      driver.change_status
+
+      request_trip.driver.change_status
+      driver.add_trip(request_trip)
+      passenger.add_trip(request_trip)
+      @trips << request_trip
       return request_trip
     end
 
@@ -133,5 +135,3 @@ module RideShare
 
   end # class
 end # module
-
-# request_trip(3)

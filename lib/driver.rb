@@ -70,16 +70,15 @@ module RideShare
       return average_revenue.round(2)
     end
 
-    def find_available_drivers
-      driver = @drivers.find{  |d| d.status == :AVAILABLE}
-      return driver
-    end # available_drivers
+    # def find_available_drivers # instance of driver - Array
+    #   driver = drivers.find{  |d| d.status == :AVAILABLE}
+    #   driver.change_status
+    #   return driver
+    # end # available_drivers
 
     def change_status
-      if trip.status == :incomplete
-        driver = driver.status == :UNAVAILABLE
-      end
-      return driver
+      @status = :UNAVAILABLE
+      return 
     end # change_status
-  end # class
+  end # classr
 end # module

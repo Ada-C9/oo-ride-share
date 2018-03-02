@@ -105,12 +105,11 @@ describe "TripDispatcher class" do
 
       # Act
       new_request = dispatcher.request_trip(passenger_id)
-      # binding.pry
       # Assert
       new_request.must_be_instance_of RideShare::Trip
       new_request.driver.status.must_equal :UNAVAILABLE
-      # driver.trip.must_include trip
-      # passenger.trip.must_include trip
+      new_request.driver.trips.must_include new_request
+      new_request.passenger.trips.must_include new_request
 
     end # driver AVAILABLE
   end # request_trip method
