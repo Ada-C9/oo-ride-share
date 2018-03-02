@@ -101,6 +101,8 @@ describe "Driver class" do
 
       @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 15.0, rating: 5})
 
+      @short_trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:02:00+00:00'), cost: 1, rating: 5})
+
       @in_progress_trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: nil, cost: nil, rating: nil})
     end
 
@@ -126,6 +128,11 @@ describe "Driver class" do
         total1 = (@driver.trips[0].cost - @fee) * 0.8
         @driver.add_trip(@in_progress_trip)
         @driver.total_revenue.must_equal total1
+      end
+
+      it "returns 0 if trip.cost < 0" do
+        @driver.add_trip(@short_trip)
+        @driver.total_revenue.must_equal 0
       end
     end
 
@@ -154,6 +161,6 @@ describe "Driver class" do
         @driver.avg_revenue_per_hour.must_equal (total1 / time1)
       end
     end
-    
+
   end
 end
