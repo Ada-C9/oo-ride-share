@@ -95,14 +95,7 @@ describe "TripDispatcher class" do
 
     # Selected driver: 14,Antwan Prosacco,KPLUTG0L6NW1A0ZRF,AVAILABLE
     # Passenger: 1,Nina Hintz Sr.,560.815.3059
-
-    # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-    # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
-    # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
-    # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
-    # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
     before do
-      # @selected_driver = RideShare::Driver.new(id: 2, name: "Emory Rosenbaum", vin: "1B9WEX2R92R12900E", status: :AVAILABLE, trips: [])
       @selected_driver = RideShare::Driver.new(id: 14, name: "Antwan Prosacco", vin: "KPLUTG0L6NW1A0ZRF")
       @passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
       @trip_dispatcher = RideShare::TripDispatcher.new
@@ -125,7 +118,7 @@ describe "TripDispatcher class" do
       trip.rating.must_be_nil
     end
 
-    it "assigns a driver to the trip (use first AVAILABLE driver from the file)" do
+    it "assigns a driver whose most recent trip ended the longest time ago to the trip" do
       trip = @trip_dispatcher.request_trip(1)
 
       trip.driver.id.must_equal @selected_driver.id
@@ -174,6 +167,25 @@ describe "TripDispatcher class" do
       end
 
       @trip_dispatcher.request_trip(1).must_be_nil
+    end
+
+    it "assigns right drivers for multiple trips" do
+      # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+      # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
+      # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
+      # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+      # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+      trips = []
+      5.times do
+        trip = @trip_dispatcher.request_trip(1)
+        trips << trip
+      end
+
+      trips[0].driver.id.must_equal 14
+      trips[1].driver.id.must_equal 27
+      trips[2].driver.id.must_equal 6
+      trips[3].driver.id.must_equal 87
+      trips[4].driver.id.must_equal 75
     end
 
   end
