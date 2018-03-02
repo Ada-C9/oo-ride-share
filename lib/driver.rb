@@ -58,18 +58,14 @@ module RideShare
     end
 
     def total_revenue
-      # NOTA BENE: THIS METHOD NEEDS TO NOT SHIT THE BED IF THERE
-      # IS A TRIP WITH A COST OF NIL.
       overall_gross_revenue_array = @trips.map{ |trip| trip.cost }.reject{ |cost| cost.nil? }
-  #    binding.pry
       fees_to_deduct = 1.65 * overall_gross_revenue_array.length
       @total_revenue = ((overall_gross_revenue_array.reduce(:+) - fees_to_deduct) * 0.8 ).round(2)
     end
 
     def average_revenue
-      # THIS METHOD NEEDS TO ACCOUNT FOR CASES WHERE
-      # THERE IS A TRIP IN PROGRESS (decrement by number of
-      # in-progress trips)
+      # NEEDS TO NOT SHIT THE BED IF THERE IS A TRIP IN PROGRESS
+
       @average_revenue = (@total_revenue / @trips.length).round(2)
     end
   end
