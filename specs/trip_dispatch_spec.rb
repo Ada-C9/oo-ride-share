@@ -129,10 +129,9 @@ describe "TripDispatcher class" do
     end
 
     it "selects a driver with a status of AVAILABLE" do
-      # binding.pry
       next_available_driver = @dispatcher.find_suitable_driver
 
-      next_available_driver.id.must_equal 27
+      next_available_driver.id.must_equal 14
       next_available_driver_id = next_available_driver.id
       result = @dispatcher.request_trip(5)
 
@@ -152,27 +151,19 @@ describe "TripDispatcher class" do
       nil_end_time.must_equal false
     end
 
-    it "assigns the first driver with available status whose most recent trip is the earliest in time" do
+    it "assigns the first new driver (hasn't completed trips yet) then available drivers whose most recent trip is the earliest in time" do
 
-      first_driver = @dispatcher.drivers.find do |driver|
-        driver.id == 14
-      end
+      first_driver = @dispatcher.find_driver(100)
 
-      second_driver = @dispatcher.drivers.find do |driver|
-        driver.id == 27
-      end
+      second_driver = @dispatcher.find_driver(14)
 
-      third_driver = @dispatcher.drivers.find do |driver|
-        driver.id == 6
-      end
+      third_driver = @dispatcher.find_driver(27)
 
-      fourth_driver = @dispatcher.drivers.find do |driver|
-        driver.id == 87
-      end
+      fourth_driver = @dispatcher.find_driver(6)
 
-      fifth_driver = @dispatcher.drivers.find do |driver|
-        driver.id == 75
-      end
+      fifth_driver = @dispatcher.find_driver(87)
+
+      sixth_driver = @dispatcher.find_driver(75)
 
       @result.driver.id.must_equal first_driver.id
 
@@ -184,6 +175,8 @@ describe "TripDispatcher class" do
       result.driver.id.must_equal fourth_driver.id
       result = @dispatcher.request_trip(9)
       result.driver.id.must_equal fifth_driver.id
+      result = @dispatcher.request_trip(10)
+      result.driver.id.must_equal sixth_driver.id
 
     end
 
@@ -240,9 +233,7 @@ describe "TripDispatcher class" do
 
     describe "pending trips excluded from calculations involving end_time, cost, and rating" do
       before do
-        @passenger = @dispatcher.passengers.find do |passenger|
-          passenger.id == 54
-        end
+        @passenger = @dispatcher.find_passenger(54)
       end
 
       it "raises an error when trying to compute the duration of the trip" do
@@ -271,18 +262,11 @@ describe "TripDispatcher class" do
       end
 
       it "is excluded from the total revenue calculation for the driver" do
-        next_available_driver = @dispatcher.drivers.find do |driver|
-          driver.id == 27
-        end
-
+        next_available_driver = @dispatcher.find_driver(14)
 
         total_revenue_before = next_available_driver.total_revenue
-
         new_trip = @dispatcher.request_trip(4)
-
-
         driver = new_trip.driver
-
         total_revenue_after = driver.total_revenue
 
         total_revenue_after.must_equal total_revenue_before
@@ -290,9 +274,7 @@ describe "TripDispatcher class" do
       end
 
       it "is excluded from the average revenue per hour calculation for the driver" do
-        next_available_driver = @dispatcher.drivers.find do |driver|
-          driver.id == 27
-        end
+        next_available_driver = @dispatcher.find_driver(14)
 
         average_revenue_before = next_available_driver.average_revenue
 
@@ -307,9 +289,7 @@ describe "TripDispatcher class" do
       end
 
       it "is excluded from the average rating calculation for the driver" do
-        next_available_driver = @dispatcher.drivers.find do |driver|
-          driver.id == 27
-        end
+        next_available_driver = @dispatcher.find_driver(14)
 
         average_rating_before = next_available_driver.average_rating
 

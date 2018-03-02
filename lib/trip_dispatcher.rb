@@ -41,7 +41,11 @@ module RideShare
 
     def find_driver(id)
       check_id(id)
-      @drivers.find{ |driver| driver.id == id }
+      driver = @drivers.find { |driver| driver.id == id }
+      if driver.nil?
+        raise ArgumentError.new("Driver #{id} does not exist in our records.")
+      end
+      return driver
     end
 
     def load_passengers
@@ -62,7 +66,6 @@ module RideShare
     def find_passenger(id)
       check_id(id)
       passenger = @passengers.find { |passenger| passenger.id == id }
-      # binding.pry
       if passenger.nil?
         raise ArgumentError.new("Passenger #{id} does not exist in our records.")
       end
@@ -102,7 +105,6 @@ module RideShare
       passenger = find_passenger(passenger_id)
       driver = find_suitable_driver
 
-
       if driver.nil?
         raise StandardError.new("There are no more available drivers.")
       end
@@ -140,33 +142,42 @@ module RideShare
     end
 
     def find_suitable_driver
-      available_drivers = @drivers.select do |driver|
+      new_drivers = @drivers.select do |driver|
+        driver.status == :AVAILABLE && driver.trips.empty?
+      end
+
+      experienced_drivers = @drivers.select do |driver|
         driver.status == :AVAILABLE && !driver.trips.empty?
       end
 
-      available_drivers_not_in_progress = available_drivers.map do |driver|
-        driver.trips.each do |trip|
-          trip.end_time != nil
+      selected_driver = new_drivers.first
+
+      if new_drivers.empty?
+
+        available_drivers_not_in_progress = experienced_drivers.map do |driver|
+          driver.trips.each do |trip|
+            trip.end_time != nil
+          end
+          driver
         end
-        driver
-      end
 
-      first_driver = available_drivers_not_in_progress.first
+        first_driver = available_drivers_not_in_progress.first
 
-      first_driver_trips = first_driver.trips
+        first_driver_trips = first_driver.trips
 
-      most_recent_trip_end_time = find_most_recent_trip(first_driver_trips)
+        most_recent_trip_end_time = find_most_recent_trip(first_driver_trips)
 
-      selected_driver = first_driver
+        selected_driver = first_driver
 
-      available_drivers_not_in_progress.each do |driver|
-        driver_trips = driver.trips
+        available_drivers_not_in_progress.each do |driver|
+          driver_trips = driver.trips
 
-        current_driver_most_recent_trip_end_time = find_most_recent_trip(driver_trips)
+          current_driver_most_recent_trip_end_time = find_most_recent_trip(driver_trips)
 
-        if current_driver_most_recent_trip_end_time < most_recent_trip_end_time
-          most_recent_trip_end_time = current_driver_most_recent_trip_end_time
-          selected_driver = driver
+          if current_driver_most_recent_trip_end_time < most_recent_trip_end_time
+            most_recent_trip_end_time = current_driver_most_recent_trip_end_time
+            selected_driver = driver
+          end
         end
       end
 
