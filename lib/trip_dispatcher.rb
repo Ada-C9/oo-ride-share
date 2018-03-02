@@ -91,7 +91,6 @@ module RideShare
     end
 
     def request_trip(pass_id)
-      id = @trips.length + 2
       pass = self.find_passenger(pass_id)
       driver = self.drivers.detect do |driver|
         driver.status == :AVAILABLE
@@ -104,7 +103,7 @@ module RideShare
       end
 
       data = {
-        id: id,
+        id: @trips.length + 1,
         passenger: pass,
         driver: driver,
         start_time: Time.now

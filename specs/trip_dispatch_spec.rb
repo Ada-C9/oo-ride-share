@@ -100,7 +100,7 @@ describe "TripDispatcher class" do
 
   describe "#request_trip" do
 
-    it "raises argument error if no passenger id provided" do
+    it "raises argument error if no id provided" do
       dispatcher = RideShare::TripDispatcher.new
       proc {
         dispatcher.request_trip()
@@ -112,11 +112,14 @@ describe "TripDispatcher class" do
       proc {
         dispatcher.request_trip(892)
       }.must_raise ArgumentError
+      proc {
+        dispatcher.request_trip("whatever")
+      }.must_raise ArgumentError
     end
 
     it "raises argument error if no drivers are available" do
       dispatcher = RideShare::TripDispatcher.new
-      dispatcher.drivers.each {|driver| driver.turn_off} 
+      dispatcher.drivers.each {|driver| driver.turn_off}
       proc {
         dispatcher.request_trip(14)
       }.must_raise ArgumentError
