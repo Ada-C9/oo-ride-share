@@ -1,5 +1,7 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
+require 'awesome_print'
 
 module RideShare
   class Driver
@@ -56,11 +58,14 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-      @trips << trip
-      # if end time == nil update driver status to UNAVAILABLE
+
+
       if trip.end_time == nil
         accept_trip
       end
+
+      @trips << trip
+
     end
 
     def accept_trip
@@ -71,7 +76,9 @@ module RideShare
     def total_revenue
       driver_revenue = 0
       @trips.each do |trip|
-        driver_revenue += ((trip.cost - 1.65) * 0.8)
+        if !(trip.end_time.nil?)
+          driver_revenue += ((trip.cost - 1.65) * 0.8)
+        end
       end
       return driver_revenue
     end

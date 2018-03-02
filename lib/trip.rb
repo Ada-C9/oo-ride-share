@@ -2,7 +2,7 @@ require 'csv'
 require 'time'
 module RideShare
   class Trip
-    attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
+    attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating, :trips
 
     def initialize(input)
       @id = input[:id]
@@ -26,6 +26,9 @@ module RideShare
       end
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
     def valid_rating?

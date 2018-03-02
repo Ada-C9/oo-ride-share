@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'awesome_print'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -108,6 +109,7 @@ describe "TripDispatcher class" do
 
     it "changes driver's status to UNAVAILABLE" do
       @new_trip.driver.status.must_equal :UNAVAILABLE
+      # binding.pry
     end
 
     it "selects driver from available driver list" do
@@ -121,6 +123,27 @@ describe "TripDispatcher class" do
       end
 
       proc { @new_trip = @dispatcher.request_trip(1) }.must_raise ArgumentError
+    end
+
+    it "updates the driver's trip list" do
+      @new_trip.driver.trips.must_be_kind_of Array
+      @new_trip.driver.trips.length.must_be_kind_of Integer
+      @new_trip.driver.trips.must_include @new_trip
+    end
+
+    it "updates the passenger's trip list" do
+      @new_trip.passenger.trips.must_be_kind_of Array
+      @new_trip.passenger.trips.length.must_be_kind_of Integer
+      @new_trip.passenger.trips.must_include @new_trip
+    end
+
+    it "does not update the passenger's total spent if end time is nil" do
+
+    
+    end
+
+    it "does not update the driver revenue if end_time is nil" do
+
     end
 
   end

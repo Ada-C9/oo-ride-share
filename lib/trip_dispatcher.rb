@@ -104,12 +104,13 @@ module RideShare
       # end
       available_driver = drivers.find {|driver| driver.status == :AVAILABLE}
 
-      raise ArgumentError.new "No available drivers" if available_driver == nil
+      raise ArgumentError.new "No available drivers" if available_driver.nil?
 
       return available_driver
     end
 
     def request_trip(passenger_id)
+
       new_trip_info = {
         id: trips.length + 1,
         driver: select_available_driver,
@@ -121,7 +122,8 @@ module RideShare
       }
       new_trip = RideShare::Trip.new(new_trip_info)
 
-      new_trip.driver.add_trip(new_trip)
+      new_trip_info[:driver].add_trip(new_trip)
+      new_trip_info[:passenger].add_trip(new_trip)
 
       return new_trip
     end
