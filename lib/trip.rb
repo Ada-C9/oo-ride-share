@@ -1,5 +1,5 @@
- require 'csv'
- require 'time'
+require 'csv'
+require 'time'
 
 module RideShare
   class Trip

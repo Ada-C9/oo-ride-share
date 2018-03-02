@@ -50,8 +50,8 @@ module RideShare
     end
 
     def total_revenue
-       total_rev = completed_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
-       return total_rev
+      total_rev = completed_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
+      return total_rev
     end
 
     def average_revenue
