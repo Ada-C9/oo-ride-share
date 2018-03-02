@@ -154,7 +154,7 @@ describe "Driver class" do
     it "functions properly when the driver has a trip in progress" do
 
       @driver_a.add_trip(@trip_now_ongoing)
-      @driver_a.total_revenue.mst_be_within_delta 20.35, 0.003
+      @driver_a.total_revenue.must_be_within_delta 20.35, 0.003
 
     end
 
