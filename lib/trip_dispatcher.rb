@@ -113,7 +113,7 @@ module RideShare
 
       new_trip = RideShare::Trip.new(new_trip_data)
       @trips << new_trip
-
+      find_first_available_driver.accept_new_trip_assignment(new_trip)
       return new_trip
 =begin
 

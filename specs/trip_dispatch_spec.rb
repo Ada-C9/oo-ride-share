@@ -134,6 +134,10 @@ describe "TripDispatcher class" do
       @test_trip.must_be_instance_of RideShare::Trip
     end
 
+    it "gives the new trip the correct id" do
+      @test_trip.id.must_equal 601
+    end
+
     it "assigns the first available driver" do
       @test_trip.driver.name.must_equal "Emory Rosenbaum"
     end
@@ -161,6 +165,11 @@ describe "TripDispatcher class" do
     it "adds the new trip to the TripDispatch's collection" do
       @dispatcher_1.trips.must_include @test_trip
       @dispatcher_1.trips.count.must_equal 601
+    end
+
+    it "adds the new trip to the driver's collection" do
+      @test_trip.driver.trips.count.must_equal 9
+      @test_trip.driver.trips.find { |trip| trip.id == 601 }.wont_be_nil
     end
   end
 end

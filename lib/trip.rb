@@ -31,6 +31,11 @@ module RideShare
     end
 
     def report_trip_duration
+      # Yeah, so when I started doing Wave I, I somehow
+      #decided that trip duration needed some sort of
+      #plain-English reporting method.  Turns out it doesn't,
+      #but by the time I figured that out, I'd already gotten
+      #this working, so what the hey, it's here now.
       trip_hrs_round = (@duration_seconds / 3600)
       trip_min_remdr_round = ((@duration_seconds % 3600) / 60)
       trip_sec_remdr = ((@duration_seconds % 3600) % 60)
