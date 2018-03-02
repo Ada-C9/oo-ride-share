@@ -98,9 +98,9 @@ module RideShare
     def request_trip(passenger_id)
       # create new on-going trip
       new_trip_data = {}
-      new_trip_data[:id] = @trips.map { |trip| trip.id }.max + 1
+      new_trip_data[:id] = new_trip_id
       new_trip_data[:passenger] = find_passenger(passenger_id)
-      new_trip_data[:driver] = @drivers.find { |driver| driver.status == :AVAILABLE }
+      new_trip_data[:driver] = find_available_driver
       new_trip_data[:start_time] = Time.now
       new_trip_data[:end_time] = nil
       new_trip_data[:cost] = nil
@@ -113,6 +113,22 @@ module RideShare
       new_trip.passenger.add_trip(new_trip)
       new_trip.driver.change_status
       return new_trip
+    end
+
+    def new_trip_id
+      @trips.map { |trip| trip.id }.max + 1
+    end
+
+    def find_available_driver
+      available_drivers = @drivers.select { |driver| driver.status == :AVAILABLE }
+      if available_drivers.empty?
+        raise StandardError.new("There are no availabe drivers. A trip cannot be requested.")
+      end
+      return available_drivers.first
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

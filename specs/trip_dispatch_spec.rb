@@ -93,9 +93,10 @@ describe "TripDispatcher class" do
   describe "request_trip method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
-      all_trips_before = @dispatcher.trips.length
-      passenger_trips_before = @dispatcher.find_passenger(1).trips.length
-      driver_trips_before = @dispatcher.find_driver(2).trips.length
+      @all_trips_before = @dispatcher.trips.length
+      @passenger_trips_before = @dispatcher.find_passenger(1).trips.length
+      @driver_trips_before = @dispatcher.find_driver(2).trips.length
+      @driver_status_before = @dispatcher.find_driver(2).status
       @new_trip = @dispatcher.request_trip(1)
     end
 
@@ -121,9 +122,33 @@ describe "TripDispatcher class" do
       passenger_trips_after = @dispatcher.find_passenger(1).trips.length
       driver_trips_after = @dispatcher.find_driver(2).trips.length
 
-      all_trips_after - all_trips_before = 1
-      passenger_trips_after - passenger_trips_before = 1
-      driver_trips_after - driver_trips_before = 1
+      all_trips_after - @all_trips_before = 1
+      passenger_trips_after - @passenger_trips_before = 1
+      driver_trips_after - @driver_trips_before = 1
     end
+
+    it "selects a driver that is available and changes their status" do
+      @driver_status_before.must_equal :AVAILABLE
+      @new_trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "raises an error if all drivers are unavailable" do
+      @dispatcher.drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          driver.change_status
+        end
+        driver.status.must_equal :UNAVAILABLE
+      end
+
+      proc { @dispatcher.request_trip(2) }.must_raise StandardError
+    end
+  end
+
+  describe "find_available_driver method" do
+
+  end
+
+  describe "new_trip_id method" do
+
   end
 end
