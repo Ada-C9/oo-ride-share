@@ -29,6 +29,10 @@ describe "TripDispatcher class" do
       proc{ @dispatcher.find_driver(0) }.must_raise ArgumentError
     end
 
+    it "raises an error for a nonexistent driver" do
+      proc { @dispatcher.find_driver(500) }.must_raise ArgumentError
+    end
+
     it "finds a driver instance" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
@@ -42,6 +46,10 @@ describe "TripDispatcher class" do
 
     it "throws an argument error for a bad ID" do
       proc{ @dispatcher.find_passenger(0) }.must_raise ArgumentError
+    end
+
+    it "raises an error for a nonexistent passenger" do
+      proc { @dispatcher.find_passenger(500) }.must_raise ArgumentError
     end
 
     it "finds a passenger instance" do
@@ -92,7 +100,7 @@ describe "TripDispatcher class" do
   end # describe loader methods
 
   describe "find_most_recent_trip(trips) method" do
-    it "finds the time for the most recent trip from a list of trips" do
+    it "finds the end time of the most recent trip from a list of trips" do
       dispatcher = RideShare::TripDispatcher.new
       first_driver_most_recent_trip_time = Time.parse("2016-12-16T09:53:00+00:00")
       trips = dispatcher.drivers.first.trips

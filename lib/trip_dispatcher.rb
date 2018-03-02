@@ -95,7 +95,6 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-      # binding.pry
 
       trips
     end
@@ -138,6 +137,7 @@ module RideShare
           most_recent_trip_end_time = trip_end_time
         end
       end
+      # returns trip end time, not trip
       return most_recent_trip_end_time
     end
 
@@ -149,9 +149,9 @@ module RideShare
       experienced_drivers = @drivers.select do |driver|
         driver.status == :AVAILABLE && !driver.trips.empty?
       end
-
+      # select new, available drivers first
+      # then experienced, available drivers whose most recent trip ended the earliest in time
       selected_driver = new_drivers.first
-
       if new_drivers.empty?
 
         available_drivers_not_in_progress = experienced_drivers.map do |driver|
@@ -192,6 +192,7 @@ module RideShare
     private
 
     def check_id(id)
+      # ensure id is a digit 
       unless /^\d+$/.match(id.to_s)
         raise ArgumentError.new("ID must be a digit.")
       end

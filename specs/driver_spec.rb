@@ -150,6 +150,6 @@ describe "Driver class" do
 
     end # describe average_revenue method
 
-  end # describe Driver#average_rating
+  end # describe total_revenue and average_revenue ratings 
 
 end # describe Driver

@@ -26,7 +26,7 @@ module RideShare
 
     end
 
-    # should be unable to calc duration if end_time == nil
+    # should be unable to calculate duration if end_time is nil
     def duration
       if @end_time.nil?
         raise StandardError.new("Cannot calculate trip duration. Trip is still in progress.")
