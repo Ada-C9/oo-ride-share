@@ -88,7 +88,6 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
     end
     def find_first_available_driver
@@ -97,8 +96,24 @@ module RideShare
     }
     end
 
-    def request_trip(passenger_id)
+    def create_new_trip_id
+      new_trip_id = (@trips.map(&:id).max + 1)
+    end
 
+    def request_trip(passenger_id)
+      new_trip_data = {
+        id: create_new_trip_id,
+        driver: find_first_available_driver,
+        passenger: find_passenger(passenger_id),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+
+      new_trip = RideShare::Trip.new(new_trip_data)
+      @trips << new_trip
+      return new_trip
 =begin
 WHAT'S HAPPENING HERE (OVERVIEW)
 (I)  IN THIS METHOD:
@@ -135,13 +150,10 @@ PSEUDOCODE FOR (I), above:
   5. Call .passenger_helper to do the stuff in III
 
 =end
-
-
     end
 
-    def create_new_trip_id
-      new_trip_id = (@trips.map(&:id).max + 1)
-    end
+
+
 
     def inspect
 

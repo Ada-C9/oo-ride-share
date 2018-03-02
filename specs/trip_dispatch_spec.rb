@@ -1,4 +1,5 @@
 require 'time'
+require 'pry'
 require_relative 'spec_helper'
 
 
@@ -108,29 +109,53 @@ describe "TripDispatcher class" do
       driver_to_assign.must_be_instance_of RideShare::Driver
       status = driver_to_assign.status
       status.must_equal :AVAILABLE
+      name = driver_to_assign.name
+      name.must_equal "Emory Rosenbaum"
     end
   end
 
   describe "create_new_trip_id" do
 
     it "creates a trip ID number that is one higher than the current highest trip ID number" do
-
       new_trip_id = @dispatcher_1.create_new_trip_id
       new_trip_id.must_be_kind_of Integer
       new_trip_id.to_i.must_equal 601
-
     end
   end
-  # describe "request_trip(passenger_id)" do
-  #   it "creates a new instance of Trip" do
-  #     test_trip = request_trip(passenger_id) #WALK-O
-  #     test_trip.must_be_instance_of Rideshare::Trip #WALK-O
-  #     test_trip.driver.must_equal driver_to_be_determined #GOT
-  #     test_trip.passenger.must_equal passenger_to_be_determined
-  #     test_trip.start_time.to_i.must_be_close_to Time.now.to_i, 2
-  #     test_trip.end_time.to_i.must_be_nil
-  #     test_trip.cost.must_be_nil
-  #     test_trip.rating.must_be_nil
-  #   end
-  # end
+
+  describe "request_trip(passenger_id)" do
+
+    before do
+      @test_trip = @dispatcher_1.request_trip(232)
+  #    binding.pry
+    end
+
+    it "creates a new instance of Trip" do
+      @test_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "assigns the first available driver" do
+      @test_trip.driver.name.must_equal "Emory Rosenbaum"
+    end
+
+    it "assigns the passenger with the specified id" do
+      @test_trip.passenger.name.must_equal "Creola Bernier PhD"
+    end
+
+    it "has an initial cost of nil" do
+      @test_trip.cost.must_be_nil
+    end
+
+    it "has an initial rating of nil" do
+      @test_trip.rating.must_be_nil
+    end
+
+    it "has an initial end-time of nil" do
+      @test_trip.end_time.must_be_nil
+    end
+
+    it "has a start time of approximately the moment the ride was requested" do
+      @test_trip.start_time.to_i.must_be_close_to Time.now.to_i, 5
+    end
+  end
 end
