@@ -91,14 +91,20 @@ describe "Driver class" do
     it "changes the driver's status to UNAVAILABLE" do
       @driver_a.status.must_equal :UNAVAILABLE
     end
-
   end
 
   describe "average_rating method" do
     before do
+
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_date: Time.parse('2016-08-08T16:01:00+00:00'), end_date: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
-      @driver.add_trip(trip)
+
+      trip_a = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_date: Time.parse('2016-08-08T16:01:00+00:00'), end_date: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
+
+      trip_b = RideShare::Trip.new({id: 901, driver: @driver, passenger: "somebody", start_date: Time.parse('2016-06-08T16:01:00+00:00'), end_date: Time.parse('2016-06-08T16:37:00+00:00'), cost: 10.12, rating: 2})
+
+      @driver.add_trip(trip_a)
+      @driver.add_trip(trip_b)
+
     end
 
     it "returns a float" do
@@ -111,9 +117,28 @@ describe "Driver class" do
       average.must_be :<=, 5.0
     end
 
+    it "correctly averages the driver's ratings" do
+      two_trip_average = @driver.average_rating
+      two_trip_average.must_be_within_delta 3.5, 0.003
+    end
+
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+    
+    it "behaves properly even if one of the driver's trips is not yet complete" do
+      #Testing for float output
+      @driver.add_trip(@trip_now_ongoing)
+      @driver.average_rating.must_be_kind_of Float
+
+      #Testing for average rating within range
+      average_with_ongoing = @driver.average_rating
+      average_with_ongoing.must_be :>=, 1.0
+      average_with_ongoing.must_be :<=, 5.0
+
+      #Testing for hard-coded expactation
+      two_trip_average.must_be_within_delta 3.5, 0.003
     end
   end
 

@@ -26,14 +26,17 @@ module RideShare
 
     def average_rating
       total_ratings = 0
+  #    trips_in_progress = 0
       @trips.each do |trip|
-        total_ratings += trip.rating
+    #    if trip.rating != nil
+          total_ratings += trip.rating
+    #    else trips_in_progress += 1
       end
 
       if trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = ((total_ratings.to_f) / trips.length).round(2)
       end
 
       return average
@@ -53,7 +56,7 @@ module RideShare
     end
 
     def total_revenue
-      # NOTA BENE: THIS METHOD NEEDS TO NOT SHIT THE BED IF THERE 
+      # NOTA BENE: THIS METHOD NEEDS TO NOT SHIT THE BED IF THERE
       # IS A TRIP WITH A COST OF NIL.
       overall_gross_revenue = @trips.map{ |t| t.cost }.reduce(:+)
       fees_to_deduct = 1.65 * @trips.length
