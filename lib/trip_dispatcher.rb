@@ -130,63 +130,35 @@ module RideShare
 
 
     def next_chosen_driver
-      #chooses driver with no trips made:
-      # @drivers.each do |driver|
-      #   if driver.trips.length == 0
-      #     return drivers
-      #   end
-      # end
 
-      #some code that picks driver with oldest end_time
-      # next_drivers = {}
-      # available_drivers.each do |driver|
-      #   oldest_trip = driver.trips.find {|trip| trip.end_time.min}
-      #   next_drivers[driver] = oldest_trip
-      #   #this fills the next_drivers hash with key:drivers and value:oldest trip
-      # end
-      #
-      #
-      # #min_by returns an array and the 0 index is the key
-      #  # sorted_drivers = next_drivers.min_by{ |k,v| v }
-      #
-      #
-      # oldest_trip = next_drivers.values.first
-      # next_drivers.values.each do |trip|
-      #   # UGHHHHH here trip is only where trip is in memory not the actual trip object WHYYYY.
-      #   if trip.end_time < oldest_trip.end_time
-      #     oldest_trip = trip
-      #   end
-      # end
-      #
-      # # binding.pry
-      # #return next_drivers.values[0] #this returns a trip object
-      #
-      # return next_drivers.key(oldest_trip)
       all_last_trips = [] #trips with oldest end_time per driver
       available_drivers.each do |driver|
-        last_trip = driver.trips[0]
-        driver.trips.each do |trip|
-          if trip.end_time < last_trip.end_time
-            last_trip = trip
+        if driver.trips.length != 0
+          last_trip = driver.trips[0]
+          driver.trips.each do |trip|
+            if trip.end_time > last_trip.end_time
+              last_trip = trip
+            end
           end
+          all_last_trips << last_trip
         end
-        all_last_trips << last_trip
       end
 
 
       oldest_trip_taken = all_last_trips[0]
       last_trip_end_time = all_last_trips[0].end_time #instance of time
 
-      # all_last_trips.each do |trip|
-      #   if trip.end_time < last_trip_end_time
-      #     last_trip_end_time = trip.end_time
-      #     oldest_trip_taken = trip
-      #   end
-      # end
+      count = 0
 
-      
+      all_last_trips.length.times do
+        if all_last_trips[count].end_time < last_trip_end_time
+          last_trip_end_time = all_last_trips[count].end_time
+          oldest_trip_taken = all_last_trips[count]
+        end
+        count += 1
+      end
 
-      return all_last_trips[1].end_time
+      return oldest_trip_taken.driver
 
     end #end of next_chosen_driver
 
