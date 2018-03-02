@@ -108,7 +108,7 @@ module RideShare
       # Get trip id
       trip_id = @trips.length + 1
       # assign price and rating
-      trip_cost = 12.00
+      trip_cost = nil
       trip_rate = nil
       # Make a trip (with above info)
       # RideShare::Trip.new
