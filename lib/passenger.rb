@@ -1,4 +1,6 @@
 require_relative 'trip'
+require_relative 'trip_dispatcher'
+
 
 module RideShare
   class Passenger

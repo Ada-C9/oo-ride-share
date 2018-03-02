@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require_relative 'trip_dispatcher'
 
 module RideShare
   class Driver
@@ -67,6 +68,15 @@ module RideShare
       average_revenue += average
       # ((Passenger.total_time_spent * 60)* 60)
       return average_revenue.round(2)
+    end
+
+    def find_available_drivers
+      driver = @drivers.find{  |d| d.status == :AVAILABLE}
+      return driver
+    end # available_drivers
+
+    def change_status
+      
     end
   end # class
 end # module

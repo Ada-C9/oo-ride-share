@@ -88,5 +88,27 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+  end# loader method
+
+  describe 'request_trip' do
+    it 'locates a driver whose status is AVAILABLE' do
+      # Arrange
+      dispatcher = RideShare::TripDispatcher.new
+      passenger_id = 1
+
+      data = {
+        start_time: Time.now,
+        rating: nil,
+        end_time: nil
+      }
+
+      # Act
+      new_request = dispatcher.request_trip(passenger_id)
+      # Assert
+      new_request.must_be_instance_of RideShare::Trip
+      # driver.status.must_equal :AVAILABLE
+
+    end # driver AVAILABLE
+  end # request_trip method
+
+end # TripDispatcher
