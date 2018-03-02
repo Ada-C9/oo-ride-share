@@ -42,7 +42,11 @@ module RideShare
 
     def find_available
       available = @drivers.find{ |i| i.status == :AVAILABLE}
-      available = available.id
+      if available == nil
+        raise ArgumentError.new("Sorry, there are no available drivers.")
+      else
+        available = available.id
+      end
     end
 
 
@@ -112,7 +116,7 @@ module RideShare
     def request_trip(passenger)
 
       driver = find_available
-      highest = @highest_id +1
+      highest = @highest_id + 1
       trip_info = {
         id: highest,
         driver: driver,
@@ -124,19 +128,19 @@ module RideShare
       }
 
       another_trip = RideShare::Trip.new(trip_info)
+      driver = another_trip.driver
+      find_driver(driver).update_info(another_trip)
 
-
-      CSV.open('support/trips.csv', 'a') do |csv|
-        csv << trip_info.values
-      end
+      passenger = another_trip.passenger
+      find_passenger(passenger).update_info(another_trip)
 
       return another_trip
-
-
     end
 
 
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     # any method below private cannot be called to operate by other methods
     # this is because it's best practice to make things as private as possible by default
@@ -152,22 +156,13 @@ module RideShare
   end
 end
 
-dispatcher = RideShare::TripDispatcher.new
+# dispatcher = RideShare::TripDispatcher.new
+# a_new_trip = dispatcher.request_trip(2)
 
-a_new_trip = dispatcher.request_trip(222)
-driver = a_new_trip.driver
-dispatcher.find_driver(driver).update_info(a_new_trip)
-
-
-second_trip = dispatcher.request_trip(444)
-driver = second_trip.driver
-dispatcher.find_driver(driver).update_info(second_trip)
-
+# driver = a_new_trip.driver
+# dispatcher.find_driver(driver).update_info(a_new_trip)
 #
-# puts "********** Created dispatcher"
-# trip = dispatcher.request_trip(999)
-# puts "*********Requested Trip"
-# trip.driver.status = :UNAVAILABLE
-# puts dispatcher.find_driver(1).id
 #
-# new_pass = RideShare::Passenger.new(id: 999)
+# second_trip = dispatcher.request_trip(444)
+# driver = second_trip.driver
+# dispatcher.find_driver(driver).update_info(second_trip)

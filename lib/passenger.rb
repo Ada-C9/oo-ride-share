@@ -40,7 +40,6 @@ module RideShare
     end
 
     def update_info(trip)
-      
       add_trip(trip)
     end
 
