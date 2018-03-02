@@ -80,87 +80,90 @@ describe "Driver class" do
 
     it "accurately ignores trips in progress" do
       start_time = Time.parse("2016-02-16T12:45:00+00:00")
-      driver = RideShare::Driver.new({id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [RideShare::Trip.new({rating:3, cost:27, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({rating:3,cost:14.87, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({start_time: start_time})]})
+
+      trips = [RideShare::Trip.new({rating:3, cost:27, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({rating:3,cost:14.87, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({start_time: start_time})]
+
+      driver = RideShare::Driver.new({id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: trips})
 
       expected_rating = 3
       result = driver.average_rating
       result.must_equal expected_rating
 
-      end
-    end # average rating
+    end
+  end # average rating
 
-    describe "#total_revenue" do
-      it "returns accurate total revenue" do
-        start_time = Time.parse("2016-02-16T12:45:00+00:00")
-        trips = [
-          RideShare::Trip.new({cost:14.8, rating: 3, start_time: start_time, end_time: start_time + 25 * 60}),
-          RideShare::Trip.new({cost:50, rating: 3, start_time: start_time, end_time: start_time + 25 * 60}),
-          RideShare::Trip.new({cost:27, rating: 3, start_time: start_time, end_time: start_time + 25 * 60})
-        ]
-        driver = RideShare::Driver.new({id:56, vin:"a"*17, trips: trips})
+  describe "#total_revenue" do
+    it "returns accurate total revenue" do
+      start_time = Time.parse("2016-02-16T12:45:00+00:00")
+      trips = [
+        RideShare::Trip.new({cost:14.8, rating: 3, start_time: start_time, end_time: start_time + 25 * 60}),
+        RideShare::Trip.new({cost:50, rating: 3, start_time: start_time, end_time: start_time + 25 * 60}),
+        RideShare::Trip.new({cost:27, rating: 3, start_time: start_time, end_time: start_time + 25 * 60})
+      ]
+      driver = RideShare::Driver.new({id:56, vin:"a"*17, trips: trips})
 
-        expected_revenue = 69.48
-        result = driver.total_revenue
-        result.must_equal expected_revenue
-      end
+      expected_revenue = 69.48
+      result = driver.total_revenue
+      result.must_equal expected_revenue
+    end
 
-      it "returns zero if the driver does not have any trips" do
-        driver = RideShare::Driver.new({ id:56, vin:"a"*17})
-        expected_revenue = 0
-        result = driver.total_revenue
-        result.must_equal expected_revenue
-      end
+    it "returns zero if the driver does not have any trips" do
+      driver = RideShare::Driver.new({ id:56, vin:"a"*17})
+      expected_revenue = 0
+      result = driver.total_revenue
+      result.must_equal expected_revenue
+    end
 
-      it "does not return a negative revenue" do
-        trips = [RideShare::Trip.new({cost:1.30, rating: 3}), RideShare::Trip.new({cost:1.25, rating: 3}), RideShare::Trip.new({cost:1.03, rating: 3})]
-        driver = RideShare::Driver.new({id:56, vin:"a"*17, trips: trips})
-        expected_revenue = 0
-        result = driver.total_revenue
-        result.must_equal expected_revenue
-      end
+    it "does not return a negative revenue" do
+      trips = [RideShare::Trip.new({cost:1.30, rating: 3}), RideShare::Trip.new({cost:1.25, rating: 3}), RideShare::Trip.new({cost:1.03, rating: 3})]
+      driver = RideShare::Driver.new({id:56, vin:"a"*17, trips: trips})
+      expected_revenue = 0
+      result = driver.total_revenue
+      result.must_equal expected_revenue
+    end
 
-      it "accurately ignores trips in progress" do
-        start_time = Time.parse("2016-02-16T12:45:00+00:00")
-        driver = RideShare::Driver.new({id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [RideShare::Trip.new({rating:3, cost: 10.65, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({rating:3,cost:7.65, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({start_time: start_time})]})
+    it "accurately ignores trips in progress" do
+      start_time = Time.parse("2016-02-16T12:45:00+00:00")
+      driver = RideShare::Driver.new({id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [RideShare::Trip.new({rating:3, cost: 10.65, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({rating:3,cost:7.65, start_time: start_time, end_time: start_time + 25 * 60}), RideShare::Trip.new({start_time: start_time})]})
 
-        expected_revenue = 12
-        result = driver.total_revenue
-        result.must_equal expected_revenue
-      end
+      expected_revenue = 12
+      result = driver.total_revenue
+      result.must_equal expected_revenue
+    end
 
-    end # total_revenue
+  end # total_revenue
 
-    describe "#ave_revenue_per_hour" do
+  describe "#ave_revenue_per_hour" do
 
-      it "returns average revenue of trips" do
-        start_time = Time.parse("2016-05-24T15:37:00+00:00")
-        trips = [
-          RideShare::Trip.new({cost: 45, rating: 3, start_time: start_time, end_time: start_time + 35 * 60}),
-          RideShare::Trip.new({cost: 32, rating: 3, start_time: start_time, end_time: start_time + 25 * 60})
-        ]
-        driver = RideShare::Driver.new({id: 63, vin:"a"*17, trips: trips})
-        expected_average = 58.96
-        result = driver.ave_revenue_per_hour
-        result.must_equal expected_average
-      end
+    it "returns average revenue of trips" do
+      start_time = Time.parse("2016-05-24T15:37:00+00:00")
+      trips = [
+        RideShare::Trip.new({cost: 45, rating: 3, start_time: start_time, end_time: start_time + 35 * 60}),
+        RideShare::Trip.new({cost: 32, rating: 3, start_time: start_time, end_time: start_time + 25 * 60})
+      ]
+      driver = RideShare::Driver.new({id: 63, vin:"a"*17, trips: trips})
+      expected_average = 58.96
+      result = driver.ave_revenue_per_hour
+      result.must_equal expected_average
+    end
 
 
-      it "returns zero if driver has no trips" do
-        driver = RideShare::Driver.new({id: 63, vin:"a"*17})
-        expected_average = 0
-        result = driver.ave_revenue_per_hour
-        result.must_equal expected_average
-      end
+    it "returns zero if driver has no trips" do
+      driver = RideShare::Driver.new({id: 63, vin:"a"*17})
+      expected_average = 0
+      result = driver.ave_revenue_per_hour
+      result.must_equal expected_average
+    end
 
-      it "accurately ignores trips in progress" do
-        start_time = Time.parse("2016-02-16T12:45:00+00:00")
-        driver = RideShare::Driver.new({id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [RideShare::Trip.new({rating:3, cost: 10.65, start_time: start_time, end_time: start_time + 20 * 60}), RideShare::Trip.new({rating:3,cost:7.65, start_time: start_time, end_time: start_time + 40 * 60}), RideShare::Trip.new({start_time: start_time})]})
+    it "accurately ignores trips in progress" do
+      start_time = Time.parse("2016-02-16T12:45:00+00:00")
+      driver = RideShare::Driver.new({id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: [RideShare::Trip.new({rating:3, cost: 10.65, start_time: start_time, end_time: start_time + 20 * 60}), RideShare::Trip.new({rating:3,cost:7.65, start_time: start_time, end_time: start_time + 40 * 60}), RideShare::Trip.new({start_time: start_time})]})
 
-        expected_average = 12
-        result = driver.ave_revenue_per_hour
-        result.must_equal expected_average
-      end
+      expected_average = 12
+      result = driver.ave_revenue_per_hour
+      result.must_equal expected_average
+    end
 
-    end # ave_revenue_per_hour
+  end # ave_revenue_per_hour
 
-  end # Describe driver Class
+end # Describe driver Class

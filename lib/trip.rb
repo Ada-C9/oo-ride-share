@@ -29,7 +29,7 @@ module RideShare
 
     def finish
       @end_time = Time.now
-      @driver.status_switch
+      self.driver.status_switch
     end # finish
 
     def inspect
