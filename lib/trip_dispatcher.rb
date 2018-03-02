@@ -17,7 +17,7 @@ module RideShare
     end
 
     def load_drivers
-      my_file = CSV.open('../support/drivers.csv', headers: true) #change this back to /support
+      my_file = CSV.open('support/drivers.csv', headers: true) #change this back to /support
 
       all_drivers = []
       my_file.each do |line|
@@ -47,7 +47,7 @@ module RideShare
     def load_passengers
       passengers = []
 
-      CSV.read('../support/passengers.csv', headers: true).each do |line|
+      CSV.read('support/passengers.csv', headers: true).each do |line|
         input_data = {}
         input_data[:id] = line[0].to_i
         input_data[:name] = line[1]
@@ -66,7 +66,7 @@ module RideShare
 
     def load_trips
       trips = []
-      trip_data = CSV.open('../support/trips.csv', 'r', headers: true, header_converters: :symbol)
+      trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
       #header_converters gives you a hash when you use :symbol so you can use headers as keys
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
@@ -115,14 +115,18 @@ module RideShare
 
       #drivers who haven't had a trip complete recently are at the end of oldest_trips array
 
+      if oldest_trips.empty?
+        raise ArgumentError.new("There are no available drivers")
+      end
+
       available_driver = oldest_trips.last.driver
 
 ############## stuff for wave 2 that worked below
       # available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE } #wave 2 version
 
-      if available_driver == nil
-        raise ArgumentError.new("There are no available drivers")
-      end
+      # if available_driver == nil
+      #   raise ArgumentError.new("There are no available drivers")
+      # end
 
       return available_driver
     end
@@ -151,6 +155,10 @@ module RideShare
       return trip
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
 
     private
 
@@ -162,13 +170,13 @@ module RideShare
   end
 end
 
-trip_dispatch = RideShare::TripDispatcher.new
+# trip_dispatch = RideShare::TripDispatcher.new
 # trip_dispatch.drivers.clear
 # puts trip_dispatch.drivers
 #
 # puts "Dispatch trips before new request: #{trip_dispatch.trips.length}"
 # puts "Driver length before new request: #{trip_dispatch.find_available_driver.trips.length}"
-assigned_driver = trip_dispatch.find_available_driver
+# assigned_driver = trip_dispatch.find_available_driver
 # puts "Driver status before new request: #{assigned_driver.status}"
 #
 # #try to request a new trip

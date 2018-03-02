@@ -96,7 +96,7 @@ describe "TripDispatcher class" do
       driver = @dispatcher.find_available_driver
       driver.must_be_instance_of(RideShare::Driver)
       driver.status.must_equal(:AVAILABLE)
-      driver.name.must_equal("Emory Rosenbaum")
+      driver.name.must_equal("Antwan Prosacco")
     end
 
     it "raises an error when there are no available drivers" do
@@ -134,6 +134,23 @@ describe "TripDispatcher class" do
       new_request = @dispatcher.request_trip(passenger_id)
       ending_ride_count = new_request.passenger.trips.length
       ending_ride_count.must_equal(starting_ride_count + 1)
+    end
+
+    it "accurately assigns trips to the available drivers who have not driven in the longest time" do
+      requested_trip_1 = @dispatcher.request_trip(1)
+      requested_trip_1.driver.name.must_equal("Antwan Prosacco")
+
+      requested_trip_2 = @dispatcher.request_trip(99)
+      requested_trip_2.driver.name.must_equal("Nicholas Larkin")
+
+      requested_trip_3 = @dispatcher.request_trip(23)
+      requested_trip_3.driver.name.must_equal("Mr. Hyman Wolf")
+
+      requested_trip_4 = @dispatcher.request_trip(45)
+      requested_trip_4.driver.name.must_equal("Jannie Lubowitz")
+
+      requested_trip_5 = @dispatcher.request_trip(64)
+      requested_trip_5.driver.name.must_equal("Mohammed Barrows")
     end
   end
 
