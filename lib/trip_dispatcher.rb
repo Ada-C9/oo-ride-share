@@ -96,18 +96,32 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      if @drivers.any? { |driver| driver.status == :AVAILABLE }
-        new_trip = make_new_trip(passenger_id)
+      if is_driver_available
+
+        available_drivers = removes_unavailable_drivers
+
+        new_trip = make_new_trip(passenger_id, available_drivers)
+
         update_trips_arrays(new_trip)
+
         return new_trip
       else
         return nil
       end
-
     end
 
-    def make_new_trip(passenger_id)
-      driver = @drivers.find { |driver| driver.status == :AVAILABLE }
+    def is_driver_available
+      @drivers.any? {|driver| driver.status == :AVAILABLE} ? true : false
+    end
+
+    #this takes care of trips with end_times = nil
+    def removes_unavailable_drivers
+      available_drivers = @drivers.delete_if { |driver| driver.status == :UNAVAILABLE }
+      return available_drivers
+    end
+
+    def make_new_trip(passenger_id, available_drivers)
+      driver = available_drivers.find { |d| d.status == :AVAILABLE }
       passenger = find_passenger(passenger_id)
       start_time = Time.now
 
@@ -125,18 +139,18 @@ module RideShare
       return new_trip
     end
 
-    def inspect
-      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    end
-
-    private
-
     def update_trips_arrays(new_trip)
       new_trip.driver.update_driver_info(new_trip)
       new_trip.driver.add_trip(new_trip)
       new_trip.passenger.add_trip(new_trip)
       trips << new_trip
     end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
+    private
 
     def check_id(id)
       if id == nil || id <= 0

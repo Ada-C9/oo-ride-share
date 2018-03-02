@@ -53,6 +53,7 @@ describe "TripDispatcher class" do
     it "accurately loads driver information into drivers array" do
 
       first_driver = @dispatcher.drivers.first
+      # binding.pry
       last_driver = @dispatcher.drivers.last
 
       first_driver.name.must_equal "Bernardo Prosacco"
@@ -129,6 +130,16 @@ describe "TripDispatcher class" do
       new_trip = @dispatcher.request_trip(passenger_id)
       new_trip.must_be_nil
     end
+  end
 
+  describe "#removes_unavailable_drivers" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "accurately removes_unavailable_drivers" do
+      available_drivers = @dispatcher.removes_unavailable_drivers
+      available_drivers.length.must_equal 47
+    end
   end
 end
