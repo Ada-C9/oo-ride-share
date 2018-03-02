@@ -167,6 +167,3 @@ describe "TripDispatcher class" do
     end
   end
 end
-
-
-# What happens if you try to request a trip when there are no AVAILABLE drivers?

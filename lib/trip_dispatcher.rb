@@ -71,6 +71,10 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+        # if driver.nil? || passanger.nil?
+        #   raise "Could not find driver or passanger "
+        # end
+
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
@@ -91,7 +95,6 @@ module RideShare
     end
 
     def select_driver_available
-      # For this initial version, choose the first driver whose status is :AVAILABLE
 
       @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
       # @drivers.find{ |driver| driver.status == :AVAILABLE }
@@ -99,9 +102,16 @@ module RideShare
 
 
     def request_trip(passenger_id)
+
       passenger = find_passenger(passenger_id)
 
+      if passenger == nil
+        raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.")
+      end
+
+
       select_driver_available
+
 
       in_progress_trip = {
         id: (@trips.size + 1),
@@ -141,6 +151,10 @@ module RideShare
     #     return nil
     #   end
     # end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 

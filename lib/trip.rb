@@ -13,7 +13,19 @@ module RideShare
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
-      # @duration = duration_of_ride
+
+      # -----------------
+      # For the trips that are in_progress use:
+      #change the rest of the current code to use it
+      # def finish_trip!
+      #   @end_time = Time.now
+      # end
+      #
+      # def finished?
+      #   return end_time !=nil
+      # end
+
+      # -----------------
 
       if @rating != nil
         if @rating > 5 || @rating < 1
@@ -27,14 +39,17 @@ module RideShare
     end
 
     def duration_method
+      #change this name! haha
 
       if @end_time == nil
         return nil
       end
 
       return (@end_time.to_f - @start_time.to_f)
-
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
   end
 end
