@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -91,15 +92,13 @@ module RideShare
     end
 
     def find_available_driver
-      #wave 3 would need to modify this From the Drivers that remain, select the one whose most recent trip ended the longest time ago
       all_available_drivers = @drivers.select{ |driver| driver.status == :AVAILABLE }
-      #oldest trip available driver
+
       recent_trips_of_available_drivers = []
       all_available_drivers.each do |driver|
         most_recent_trip = driver.trips.first
-        #need to loop through each available driver and only select their most recent completed trip
         driver.trips.each do |trip|
-          if trip.end_time > most_recent_trip.end_time
+          if trip.end_time > most_recent_trip.end_time #this isn't working like I would think it would. getting multiple trips back for the same driver
             most_recent_trip = trip
           end
           recent_trips_of_available_drivers << most_recent_trip
@@ -107,20 +106,19 @@ module RideShare
         # trips_of_available_drivers << driver.trips
       end
 
-      sorted_trips = recent_trips_of_available_drivers.flatten.sort {|trip_1,trip_2| trip_1.end_time <=> trip_2.end_time }
+      sorted_trips = recent_trips_of_available_drivers.flatten.sort {|trip_1, trip_2| trip_2.end_time <=> trip_1.end_time } #this puts the oldest correct drivers as the last 5
 
-      sorted_trips.each do |trip|
-        puts "#{trip.end_time} ended and driver: #{trip.driver.name} and driver status: #{trip.driver.status}"
-      end
+      oldest_trips = sorted_trips.uniq{ |trip| trip.driver } #using uniq to get rid of dupe trips for drivers
+      # oldest_trips.each do |trip|
+      #   puts "id: #{trip.id}. #{trip.end_time} ended and driver: #{trip.driver.name}"
+      # end
 
-      oldest_trip_driver = sorted_trips[0].driver
-      puts oldest_trip_driver.name
-      jeralds_trips = oldest_trip_driver.trips
-      jeralds_trips.each do |trip|
-        puts "start_time: #{trip.start_time} and end_time: #{trip.end_time}"
-      end
+      #drivers who haven't had a trip complete recently are at the end of oldest_trips array
+
+      available_driver = oldest_trips.last.driver
+
 ############## stuff for wave 2 that worked below
-      available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
+      # available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE } #wave 2 version
 
       if available_driver == nil
         raise ArgumentError.new("There are no available drivers")
