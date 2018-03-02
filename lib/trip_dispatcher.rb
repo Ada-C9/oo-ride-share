@@ -96,11 +96,8 @@ module RideShare
 
     # **W2: METHOD TO INSTITUE REQUEST TRIP METHOD-----------
     def request_trip (passenger_id)
-      if passenger_id == nil || passenger_id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{passenger_id})")
-      end
       #   # Find my passenger associated with the passenger ID
-      passenger_info = @passengers.find {|passenger| passenger.id == passenger_id }
+      passenger_info = find_passenger(passenger_id)
       #
       # Find a driver with an AVAILABLE STATUS (use enumerable that returns first thing that matches criteria)
       driver_info = @drivers.find {|driver| driver.status == :AVAILABLE}
@@ -112,7 +109,7 @@ module RideShare
       trip_id = @trips.length + 1
       # assign price and rating
       trip_cost = 12.00
-      trip_rate = 4
+      trip_rate = nil
       # Make a trip (with above info)
       # RideShare::Trip.new
       fresh_trip = {
@@ -136,12 +133,11 @@ module RideShare
       #
       # UTILIZE A PREVIOUS METHOD TO ADD NEW TRIP TO PASSENGER:
       # Include this trip in Passenger's overall Trips
-      #passenger_info.add_trip(new_trip)
-
+      passenger_info.add_trip(new_trip)
       return new_trip
-      #
     end
 
+    # CHARLES IMPLEMENTATION TO STOP INFINTE LOOPING--------------------------------
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end

@@ -75,6 +75,8 @@ module RideShare
       return av_revenue_hour
     end
     # **W1: METHOD TO INSTITUE AVERAGE REVENUE PER HOUR METHOD-----------
+
+    # CHARLES IMPLEMENTATION TO STOP INFINTE LOOPING--------------------------------
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end

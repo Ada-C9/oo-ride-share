@@ -38,5 +38,35 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+    # **W1: TEST FOR RAISING AN ERROR IF END TIME IS BEFORE START TIME--------------
+    it "raises an error if the end time is before the start time" do
+      trip_info = {
+        id: 1,
+        driver: "Jo Baker",
+        passenger: "Etta James",
+        start_time: Time.parse("2016-04-05T14:02:00+00:00"),
+        end_time: Time.parse("2016-04-05T14:01:00+00:00"),
+        cost: 28.16,
+        rating: 4}
+
+        proc {
+          RideShare::Trip.new(trip_info)
+        }.must_raise ArgumentError
+      end
+      # **W1: TEST FOR RAISING AN ERROR IF END TIME IS BEFORE START TIME--------------
+    end
+
+    describe "duration" do
+      it "can calculate the duration of a trip in seconds" do
+        e_time = Time.parse("2016-04-05T14:00:00+00:00")
+        s_time = Time.parse("2016-04-05T13:00:00+00:00")
+        # CALLING AN KEY ARGUMENT,SINCE ALL THE ATTRIBUTES WERE STORED AS SUCH
+        trip_info = {rating: 3, end_time: e_time, start_time: s_time}
+
+        # Act-----------------
+        # Assert------------
+        trip = RideShare::Trip.new(trip_info)
+        trip.duration.must_equal 3600
+      end
+    end
   end
-end
