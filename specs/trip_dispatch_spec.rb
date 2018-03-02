@@ -100,12 +100,23 @@ describe "TripDispatcher class" do
   end # describe loader methods
 
   describe "find_most_recent_trip(trips) method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
     it "finds the end time of the most recent trip from a list of trips" do
-      dispatcher = RideShare::TripDispatcher.new
       first_driver_most_recent_trip_time = Time.parse("2016-12-16T09:53:00+00:00")
-      trips = dispatcher.drivers.first.trips
-      result = dispatcher.find_most_recent_trip(trips)
+      trips = @dispatcher.drivers.first.trips
+      result = @dispatcher.find_most_recent_trip(trips)
       result.to_a.must_equal first_driver_most_recent_trip_time.to_a
+    end
+
+    it "raises an error if the trips array is empty" do
+      proc { @dispatcher.find_most_recent_trip([]) }.must_raise ArgumentError
+    end
+
+    it "raises an error if the trips argument is not an array of trips" do
+      proc { @dispatcher.find_most_recent_trip(1) }.must_raise ArgumentError
+      proc { @dispatcher.find_most_recent_trip([@dispatcher.passengers]) }.must_raise ArgumentError
     end
   end
 
