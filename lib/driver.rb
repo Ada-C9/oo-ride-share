@@ -30,14 +30,14 @@ module RideShare
 
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      completed_trips.each do |trip|
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if completed_trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / completed_trips.length
       end
 
       return average
@@ -53,10 +53,10 @@ module RideShare
 
     def total_revenue
 
-      if @trips == []
+      if self.completed_trips == []
         return 0
       else
-        costs = @trips.map do |trip|
+        costs = self.completed_trips.map do |trip|
           if trip.cost < FEE_PER_TRIP
             0
           else

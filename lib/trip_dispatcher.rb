@@ -169,33 +169,3 @@ module RideShare
 
   end # Class TripDispatcher
 end # Module RideShare
-
-# disp = RideShare::TripDispatcher.new
-# antwan = disp.find_driver(14)
-#
-# puts "Current status, before method: #{antwan.status}"
-# puts "Antwan's trips before method: #{antwan.trips}"
-#
-# result =  disp.request_trip(5)
-# puts result.driver.name
-# puts result.driver.id
-# puts "Current status, AFTER method: #{antwan.status}"
-# puts "Antwan's trips AFTER method: #{antwan.trips}"
-#
-# avail = disp.drivers.find_all do |driver|
-#   driver.status == :AVAILABLE
-# end
-# ap avail
-#
-# puts
-#
-# puts
-# puts
-# puts "My find driver method gets me: "
-# puts "#{disp.next_driver.name}"
-# puts
-# puts
-# new_one = disp.request_trip(26)
-#
-# puts new_one.driver.name
-# puts new_one.driver.id

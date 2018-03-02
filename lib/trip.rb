@@ -27,9 +27,14 @@ module RideShare
       return !@end_time ? 0 : @end_time - @start_time
     end # duration
 
+    def finish
+      @end_time = Time.now
+      @driver.status_switch
+    end # finish
+
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    end
+    end # inspect
 
   end # Class Trip
 end # Module RideShare

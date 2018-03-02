@@ -102,6 +102,20 @@ describe "Passenger class" do
       result.must_equal expected_total
     end
 
+    it "accurately ignores trips in progress" do
+      pass = RideShare::Passenger.new({
+        id: 89,
+        trips: [
+          RideShare::Trip.new({rating:3, cost:27, start_time: @start_time, end_time: @start_time + 25 * 60}),
+          RideShare::Trip.new({rating:3,cost:14.87, start_time: @start_time, end_time: @start_time + 25 * 60}),
+          RideShare::Trip.new({start_time: @start_time})
+        ]
+      })
+      expected_total = 41.87
+      result = pass.total_money
+      result.must_equal expected_total
+    end
+
   end # Describe total_money
 
   describe "#total_time" do
@@ -138,6 +152,21 @@ describe "Passenger class" do
     it "returns zero if passanger has no trips" do
       pass = RideShare::Passenger.new({id: 89})
       expected_total = 0
+      result = pass.total_time
+      result.must_equal expected_total
+    end
+
+    it "accurately ignores trips in progress" do
+      start_time = Time.parse("2016-02-16T12:45:00+00:00")
+      pass = RideShare::Passenger.new({
+        id: 89,
+        trips: [
+          RideShare::Trip.new({rating:3, cost:27, start_time: start_time, end_time: start_time + 25 * 60}),
+          RideShare::Trip.new({rating:3,cost:14.87, start_time: start_time, end_time: start_time + 25 * 60}),
+          RideShare::Trip.new({start_time: start_time})
+        ]
+      })
+      expected_total = 3000
       result = pass.total_time
       result.must_equal expected_total
     end

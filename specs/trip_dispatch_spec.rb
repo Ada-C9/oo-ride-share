@@ -19,7 +19,7 @@ describe "TripDispatcher class" do
     end
   end # Initializer
 
-  describe "find_driver method" do
+  describe "#find_driver" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
@@ -34,7 +34,7 @@ describe "TripDispatcher class" do
     end
   end # find_driver
 
-  describe "find_passenger method" do
+  describe "#find_passenger" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
