@@ -115,22 +115,6 @@ module RideShare
       @trips << new_trip
       return new_trip
 =begin
-WHAT'S HAPPENING HERE (OVERVIEW)
-(I)  IN THIS METHOD:
-    (1) Recieve a message from a passenger instance.
-    (2)  Create a new Trip instance using the first driver who is available
-        ****Method: First available driver***
-          A. Trip instance should have: start_time of now
-          B. Trip end_time, cost, and rating should be nil.
-    (3)  Add the new trip to the TripDispatcher's collection of trips
-    (4)  Return the new trip
-(II) IN DRIVER:  Make a helper method to:
-    (1). Add the new trip to the driver's collection
-    (2). Set the driver's status to :UNAVAILABLE
-
-(III) IN PASSENGER: Make a helper method to:
-    (1). Add the new trip to the passenger's trips
-
 
 PSEUDOCODE FOR (I), above:
 

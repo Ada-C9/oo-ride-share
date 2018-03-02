@@ -5,7 +5,8 @@ require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips, :total_revenue, :average_revenue
+    attr_reader :id, :name, :vehicle_id, :total_revenue, :average_revenue
+    attr_accessor :trips, :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -44,6 +45,11 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def accept_new_trip_assignment(trip)
+      # add_trip(trip)
+      # @status = :UNAVAILABLE
     end
 
     def total_revenue

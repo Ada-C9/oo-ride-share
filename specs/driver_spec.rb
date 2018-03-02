@@ -74,6 +74,24 @@ describe "Driver class" do
     end
   end
 
+  describe "accept_new_trip_assignment(trip)" do
+    before do
+        @assigned_trip = RideShare::Trip.new({id: 700, driver: @driver_a, passenger: "Unica Zurn", start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+
+        @driver_a.accept_new_trip_assignment(@assigned_trip)
+    end
+
+    it "adds the specified trip to the driver's collection" do
+        @driver_a.trips.must_include @assigned_trip
+        @driver_a.trips.count.must_equal 601
+    end
+
+    it "changes the driver's status to UNAVAILABLE" do
+      @driver_a.status.must_equal :UNAVAILABLE
+    end
+
+  end
+
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
@@ -148,7 +166,7 @@ describe "Driver class" do
       @driver_a.total_revenue
 
       @driver_a.average_revenue.must_be_within_delta 6.78, 0.003
-      
+
     end
   end
 end

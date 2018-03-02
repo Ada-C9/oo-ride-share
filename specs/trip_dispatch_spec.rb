@@ -157,5 +157,10 @@ describe "TripDispatcher class" do
     it "has a start time of approximately the moment the ride was requested" do
       @test_trip.start_time.to_i.must_be_close_to Time.now.to_i, 5
     end
+
+    it "adds the new trip to the TripDispatch's collection" do
+      @dispatcher_1.trips.must_include @test_trip
+      @dispatcher_1.trips.count.must_equal 601
+    end
   end
 end
