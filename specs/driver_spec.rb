@@ -94,4 +94,7 @@ describe "Driver class" do
       @driver.average_revenue_per_hour.must_be_kind_of Float
     end
   end
+
+
+
 end

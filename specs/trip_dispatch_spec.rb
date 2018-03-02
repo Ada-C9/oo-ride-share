@@ -94,6 +94,34 @@ describe "TripDispatcher class" do
 
       last_trip.trips.last.start_time.must_be_kind_of Time
     end
+  end
+
+  describe "accept_trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @new_trip = @dispatcher.request_trip(1)
+    end
+
+    it "makes a new trip" do
+      @new_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "changes driver's status to UNAVAILABLE" do
+      @new_trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "selects driver from available driver list" do
+      @dispatcher.drivers.must_include @new_trip.driver
+    end
+
+    it "raises an error when no drivers available" do
+      number_of_available_drivers = @dispatcher.drivers.find_all { |driver| driver.status == :AVAILABLE }.length
+      number_of_available_drivers.times do
+        @new_trip = @dispatcher.request_trip(1)
+      end
+
+      proc { @new_trip = @dispatcher.request_trip(1) }.must_raise ArgumentError
+    end
 
   end
 end

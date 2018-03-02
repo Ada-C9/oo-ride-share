@@ -9,11 +9,11 @@ module RideShare
       @driver = input[:driver]
       @passenger = input[:passenger]
       @start_time = Time.parse(input[:start_time])
-      @end_time = Time.parse(input[:end_time])
+      @end_time = Time.parse(input[:end_time]) if input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @rating > 5 || @rating < 1
+      if !valid_rating?
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
     end
@@ -25,6 +25,19 @@ module RideShare
         return ((@end_time - @start_time) / 60 ).to_i
       end
     end
+
+
+    private
+    def valid_rating?
+      return true if end_time.nil?
+
+      return @rating != nil &&
+             @rating <= 5 &&
+             @rating >= 1
+
+
+    end
+
 
   end
 end

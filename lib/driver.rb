@@ -19,7 +19,23 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
+
     end
+
+    def passengers
+      # EACH STYLE
+      # passengers = []
+      # trips.each do |trip|
+      #   passengers << trip.passenger
+      # end
+
+      # MAP STYLE
+      passengers = trips.map do |trip|
+        trip.passenger
+      end
+      return passengers
+    end
+
 
     def average_rating
       total_ratings = 0
@@ -41,6 +57,15 @@ module RideShare
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
       @trips << trip
+      # if end time == nil update driver status to UNAVAILABLE
+      if trip.end_time == nil
+        accept_trip
+      end
+    end
+
+    def accept_trip
+      @status = :UNAVAILABLE
+      return status
     end
 
     def total_revenue
