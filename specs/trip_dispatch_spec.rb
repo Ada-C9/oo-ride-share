@@ -157,7 +157,7 @@ describe "TripDispatcher class" do
 
     end
 
-      it "updated the passenger's trips correctly" do
+    it "updated the passenger's trips correctly" do
       passenger = @dispatcher.find_passenger(9)
       previous = passenger.trips.length
       @dispatcher.request_trip(9)
@@ -174,5 +174,33 @@ describe "TripDispatcher class" do
 
     #it "returns all unfinished trips"
     #end
+  end
+
+  describe "Wave3 tests- additional TripDispatcher logic" do
+    before do
+      # drivers =
+      @dispatcher = RideShare::TripDispatcher.new()
+    end
+
+    it "has no drivers whose last trip is nil" do
+      driver = @dispatcher.find_available_driver
+
+      driver.trips.last.end_time.wont_be_nil
+    end
+
+    it "drivers that have had no trips are available" do
+
+        driver = @dispatcher.find_driver(100)
+       #driver.trips = nil
+
+      @dispatcher.drivers.each { |driver| driver.available?(false)}
+      #
+       working_driver = @dispatcher.drivers.find { |driver| driver.id == 100 }
+       working_driver.available?(true)
+       trip = @dispatcher.request_trip(9)
+      #
+       trip.driver.id.must_equal 100
+
+    end
   end
 end

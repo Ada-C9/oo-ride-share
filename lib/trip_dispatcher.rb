@@ -100,22 +100,33 @@ module RideShare
       trips
     end
 
+
+
+
     def find_available_driver
 
        check_status
 
-       available_drivers = trips.select {|trip|
-        trip.driver.status == :AVAILABLE}
 
-       first_driver = available_drivers.first.driver
-      #find the first avaialbe driver
+       available_drivers = drivers.select {|driver|
+        driver.status == :AVAILABLE }
+
+        #will check the first condition, not get to the last
+        #for new drivers
+      available_drivers.select {|driver| driver.trips == []  || driver.trips.last.end_time != nil}
+
+
+       first_driver = available_drivers.first
+
       #@drivers.find{ |driver| driver.status == :AVAILABLE }
       return first_driver
     end
 
     def request_trip(passenger_id)
       passenger = find_passenger(passenger_id)
+
       driver = find_available_driver
+
       trip_id = trips.length + 1
 
       in_progress_data = {
@@ -149,6 +160,8 @@ module RideShare
         raise ArgumentError.new("No available drivers")
       end
     end
+
+
 
     private
 
