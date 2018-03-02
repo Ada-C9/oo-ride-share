@@ -90,9 +90,8 @@ describe "TripDispatcher class" do
     end
   end # end of describe "loader methods"
 
-
-  describe "request trip methods" do
-    it "accurately loads driver information into drivers array" do
+  describe "available_driver method" do
+    it "correctly finds the fist available driver" do
       dispatcher = RideShare::TripDispatcher.new
 
       first_driver = dispatcher.available_driver
@@ -101,31 +100,33 @@ describe "TripDispatcher class" do
       first_driver.id.must_equal 2
       first_driver.status.must_equal :AVAILABLE
     end
+  end
 
-    # it "accurately loads passenger information into passengers array" do
-    #   dispatcher = RideShare::TripDispatcher.new
-    #
-    #   first_passenger = dispatcher.passengers.first
-    #   last_passenger = dispatcher.passengers.last
-    #
-    #   first_passenger.name.must_equal "Nina Hintz Sr."
-    #   first_passenger.id.must_equal 1
-    #   last_passenger.name.must_equal "Miss Isom Gleason"
-    #   last_passenger.id.must_equal 300
-    # end
-  #
-  #   it "accurately loads trip info and associates trips with drivers and passengers" do
-  #     dispatcher = RideShare::TripDispatcher.new
-  #
-  #     trip = dispatcher.trips.first
-  #     driver = trip.driver
-  #     passenger = trip.passenger
-  #
-  #     driver.must_be_instance_of RideShare::Driver
-  #     driver.trips.must_include trip
-  #     passenger.must_be_instance_of RideShare::Passenger
-  #     passenger.trips.must_include trip
-  #   end
+  describe "request trip methods" do
+    it "accurately loads passenger information into passengers array" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      first_passenger = dispatcher.passengers.first
+      last_passenger = dispatcher.passengers.last
+
+      first_passenger.name.must_equal "Nina Hintz Sr."
+      first_passenger.id.must_equal 1
+      last_passenger.name.must_equal "Miss Isom Gleason"
+      last_passenger.id.must_equal 300
+    end
+
+    it "accurately loads trip info and associates trips with drivers and passengers" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      trip = dispatcher.trips.first
+      driver = trip.driver
+      passenger = trip.passenger
+
+      driver.must_be_instance_of RideShare::Driver
+      driver.trips.must_include trip
+      passenger.must_be_instance_of RideShare::Passenger
+      passenger.trips.must_include trip
+    end
   end # end of describe "loader methods"
 
 

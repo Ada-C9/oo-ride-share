@@ -138,7 +138,7 @@ module RideShare
       new_trip = Trip.new(trip)
       # binding.pry
       # Set up relations
-      driver.add_trip(new_trip)
+      available_driver.add_trip(new_trip)
       passenger.add_trip(new_trip)
       trips << new_trip
 
