@@ -111,7 +111,7 @@ describe "TripDispatcher class" do
     it "must add to the trips array" do
       initial_trips_length = @dispatcher.trips.length
       passenger_id = 150
-      new_trip = @dispatcher.request_trip(passenger_id)
+      @dispatcher.request_trip(passenger_id)
       new_trips_length = @dispatcher.trips.length
 
       new_trips_length.must_equal initial_trips_length + 1
@@ -154,6 +154,13 @@ describe "TripDispatcher class" do
     it "returns a Driver instance" do
       all_drivers = @dispatcher.drivers
       @dispatcher.find_new_driver(all_drivers).must_be_kind_of RideShare::Driver
+    end
+  end
+
+  describe "#get_most_recent_trip" do
+    it "returns Trip instance" do
+      all_trips = @dispatcher.drivers.first.trips
+      @dispatcher.get_most_recent_trip(all_trips).must_be_kind_of RideShare::Trip
     end
   end
 

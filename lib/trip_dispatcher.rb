@@ -142,8 +142,7 @@ module RideShare
       available_drivers.each do |driver|
         all_trips = driver.trips
         if all_trips.length != 0
-          sorted_trips = all_trips.sort { |x,y| x.end_time <=> y.end_time }
-          most_recent_trip = sorted_trips.last
+          most_recent_trip = get_most_recent_trip(all_trips)
           time_difference = (Time.now - most_recent_trip.end_time)
           if time_difference > time_passed
             selected_driver = driver
@@ -156,6 +155,10 @@ module RideShare
       end
 
       return selected_driver
+    end
+
+    def get_most_recent_trip(all_trips)
+      return sorted_trips = all_trips.sort { |x,y| x.end_time <=> y.end_time }.last
     end
 
     def update_trips_arrays(new_trip)
