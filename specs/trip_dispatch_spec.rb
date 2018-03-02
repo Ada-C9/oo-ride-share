@@ -119,8 +119,15 @@ describe "TripDispatcher class" do
     end
 
     it "adds a trip to drivers trips" do
-      @dispatcher.request_trip(2).driver.trips.length.must_equal 9
-      @dispatcher.request_trip(3).driver.trips.length.must_equal 10
+
+      @new_trip = @dispatcher.request_trip(3)
+
+      driver = @new_trip.driver
+      passenger = @new_trip.passenger
+
+
+      driver.trips.must_include @new_trip
+
     end
 
     it "trip contains a nil end_time, cost, and rating" do
@@ -137,38 +144,26 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "longest_wait_do" do
+  describe "next_chosen_driver method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
     it 'selects driver with longest wait for ride' do
-      @dispatcher.longest_wait_driver.must_be_instance_of RideShare::Driver
+      @dispatcher.next_chosen_driver.must_be_instance_of RideShare::Driver
 
-      # driver = @dispatcher.longest_wait_driver
-      #
-      # trip_data = {
-      #   id: 8,
-      #   driver: driver,
-      #   passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
-      #   start_time: Time.now,
-      #   end_time: Time.now,
-      #   cost: 4.00,
-      #   rating: 3
-      # }
-      #
-      # trip = RideShare::Trip.new(trip_data)
-      #
-      # driver.add_trip(trip)
-      #
-      # @dispatcher.longest_wait_driver
-
-      #binding.pry
+      @dispatcher.next_chosen_driver.name.must_equal "Antwan Prosacco"
     end
 
-    xit 'selects new driver for each ride' do
+    it 'selects correct new driver for each ride' do
       @dispatcher = RideShare::TripDispatcher.new
 
-      dispatcher.request_trip(2).driver
+      @dispatcher.request_trip(1).driver.name.must_equal "Antwan Prosacco"
+      @dispatcher.request_trip(2).driver.name.must_equal "Nicholas Larkin"
+      @dispatcher.request_trip(3).driver.name.must_equal "Mr. Hyman Wolf"
+      @dispatcher.request_trip(3).driver.name.must_equal "Jannie Lubowitz"
+      @dispatcher.request_trip(3).driver.name.must_equal "Mohammed Barrows"
+
+
       #binding.pry
 
     end

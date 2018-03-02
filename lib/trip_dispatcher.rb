@@ -103,8 +103,9 @@ module RideShare
     def request_trip(passenger_id)
       return nil if passenger_id.class != Integer
 
-      driver = available_drivers.first # use .sample for a random available driver instead of just the first available in list
+      #driver = available_drivers.first # use .sample for a random available driver instead of just the first available in list
       passenger = find_passenger(passenger_id)
+      driver = next_chosen_driver
 
       #driver = longest_wait_driver
 
@@ -134,6 +135,7 @@ module RideShare
       all_last_trips = [] #trips with oldest end_time per driver
       available_drivers.each do |driver|
         if driver.trips.length != 0
+          #for now this just removes Minnie (the driver with no rides) from the pool of drivers to be chosen.)
           last_trip = driver.trips[0]
           driver.trips.each do |trip|
             if trip.end_time > last_trip.end_time
@@ -143,7 +145,6 @@ module RideShare
           all_last_trips << last_trip
         end
       end
-
 
       oldest_trip_taken = all_last_trips[0]
       last_trip_end_time = all_last_trips[0].end_time #instance of time
