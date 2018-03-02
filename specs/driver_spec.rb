@@ -69,6 +69,9 @@ describe "Driver class" do
 
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
+
+      second_trip = RideShare::Trip.new({id: 9, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 3})
+      @driver.add_trip(second_trip)
     end
 
     it "returns a float" do
@@ -79,84 +82,149 @@ describe "Driver class" do
       average = @driver.average_rating
       average.must_be :>=, 1.0
       average.must_be :<=, 5.0
+      average.must_equal 4.0
     end
 
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
+
+    it "does not include the nil rating of a trip in progress" do
+      in_progress_trip_data = {
+        id: 10,
+        driver: @driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+
+      in_progress_trip = RideShare::Trip.new(in_progress_trip_data)
+
+      @driver.add_trip(in_progress_trip)
+
+      @driver.average_rating.must_equal 4.0
+
+    end
   end
 
   describe "total_revenue method" do
-    it "returns drivers total revenue" do
-      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
 
-      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+    before do
+      @passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
 
-      start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60 # 25 minutes
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
-      first_trip_data = {
+      @start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @end_time = @start_time + 25 * 60 # 25 minutes
+
+      @first_trip_data = {
         id: 8,
-        driver: driver,
-        passenger: passenger,
-        start_time: start_time,
-        end_time: end_time,
+        driver: @driver,
+        passenger: @passenger,
+        start_time: @start_time,
+        end_time: @end_time,
         cost: 100,
         rating: 3
       }
-      second_trip_data = {
+      @second_trip_data = {
         id: 9,
-        driver: driver,
-        passenger: passenger,
-        start_time: start_time,
-        end_time: end_time,
+        driver: @driver,
+        passenger: @passenger,
+        start_time: @start_time,
+        end_time: @end_time,
         cost: 100,
         rating: 5
       }
 
-      driver.add_trip(RideShare::Trip.new(first_trip_data))
-      driver.add_trip(RideShare::Trip.new(second_trip_data))
+      @driver.add_trip(RideShare::Trip.new(@first_trip_data))
+      @driver.add_trip(RideShare::Trip.new(@second_trip_data))
 
-      driver.total_revenue.must_equal 157.36
+    end
+
+    it "returns drivers total revenue" do
+      @driver.total_revenue.must_equal 157.36
+    end
+
+    it "returns drivers total revenue even if they have a trip in progress" do
+      in_progress_trip = {
+        id: 10,
+        driver: @driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+
+    @driver.add_trip(RideShare::Trip.new(in_progress_trip))
+
+    @driver.total_revenue.must_equal 157.36
+    @driver.trips.length.must_equal 3
+
     end
   end
 
   describe "average revenue per hour method" do
-    it "calculates driver's average revenue per hour spent driving" do
-      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+    before do
+      @passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
 
-      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
 
-      start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 60 * 60 # 1 hour
+      @start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      @end_time = @start_time + 60 * 60 # 1 hour
 
-      first_trip_data = {
+      @first_trip_data = {
         id: 8,
-        driver: driver,
-        passenger: passenger,
-        start_time: start_time,
-        end_time: end_time,
+        driver: @driver,
+        passenger: @passenger,
+        start_time: @start_time,
+        end_time: @end_time,
         cost: 50,
         rating: 3
       }
-      second_trip_data = {
+      @second_trip_data = {
         id: 9,
-        driver: driver,
-        passenger: passenger,
-        start_time: start_time,
-        end_time: end_time,
+        driver: @driver,
+        passenger: @passenger,
+        start_time: @start_time,
+        end_time: @end_time,
         cost: 100,
         rating: 5
       }
 
-      driver.add_trip(RideShare::Trip.new(first_trip_data))
-      driver.add_trip(RideShare::Trip.new(second_trip_data))
+      @driver.add_trip(RideShare::Trip.new(@first_trip_data))
+      @driver.add_trip(RideShare::Trip.new(@second_trip_data))
+    end
 
-      driver.total_revenue_per_hour.must_equal 58.68
+    it "calculates driver's average revenue per hour spent driving" do
 
+      @driver.total_revenue_per_hour.must_equal 58.68
 
     end
+
+    it "excludes the nil cost of a trip that is currently in progress, does not affect total rev per hour" do
+      in_progress_trip_data = {
+        id: 10,
+        driver: @driver,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+
+      in_progress_trip = RideShare::Trip.new(in_progress_trip_data)
+
+      @driver.add_trip(in_progress_trip)
+
+      @driver.total_revenue_per_hour.must_equal 58.68
+
+    end
+
+
   end
 
 end
