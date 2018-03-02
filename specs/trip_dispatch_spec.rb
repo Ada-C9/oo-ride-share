@@ -31,8 +31,6 @@ describe "TripDispatcher class" do
     it "finds a driver instance" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
-
-      puts @dispatcher.find_driver(100).trips.size
     end
   end
 
@@ -166,19 +164,6 @@ describe "TripDispatcher class" do
     end
 
     it "finds the drivers' whose ride ended the longest ago" do
-      #
-      # puts "-" * 50
-      # puts @dispatcher.request_trip(22)
-      # puts "-" * 50
-      # puts @dispatcher.request_trip(22)
-      #   puts "-" * 50
-      # puts @dispatcher.request_trip(22)
-      #   puts "-" * 50
-      # puts @dispatcher.request_trip(22)
-      #   puts "-" * 50
-      # puts @dispatcher.request_trip(22)
-      # puts "-" * 50
-
       @new_trip.driver.name.must_equal "Minnie Dach"
       @dispatcher.request_trip(27).driver.name.must_equal "Antwan Prosacco"
       @dispatcher.request_trip(27).driver.name.must_equal "Nicholas Larkin"
