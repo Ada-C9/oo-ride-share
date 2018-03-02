@@ -92,4 +92,17 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "find trip driver" do
+    it "finds driver by status" do
+      # Arrange/Given <= arranged by csv
+      dispatcher = RideShare::TripDispatcher.new
+      # Act/When
+      # Assert/Then
+      dispatcher.find_trip_driver(:AVAILABLE).must_be_kind_of RideShare::Driver
+      dispatcher.find_trip_driver(:AVAILABLE).id.must_equal 2
+    end
+  end
+
+  
 end

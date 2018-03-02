@@ -63,6 +63,10 @@ module RideShare
       @passengers.find{ |passenger| passenger.id == id }
     end
 
+    def find_trip_driver(driver_status)
+      @drivers.find{ |driver| driver.status == :AVAILABLE}
+    end
+
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
@@ -90,6 +94,7 @@ module RideShare
       trips
     end
 
+    
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
