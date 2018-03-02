@@ -90,6 +90,14 @@ module RideShare
       trips
     end
 
+    def find_available_drivers
+      @drivers.find{ |driver| driver.status == :AVAILABLE }
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)

@@ -90,4 +90,19 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "finds next available driver method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "must return the next available driver" do
+      driver = @dispatcher.find_available_drivers
+      driver.must_be_kind_of RideShare::Driver
+      driver.status.must_equal :AVAILABLE
+    end
+  end
+
+  
+
 end
