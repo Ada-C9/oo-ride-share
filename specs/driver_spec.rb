@@ -208,15 +208,16 @@ describe "Driver class" do
 
   end# end of describe add_new_trip
 
-  # describe "change_status" do
-  #   before do
-  #     @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
-  #   end
-  #
-  #   it "changes status from :AVAILABLE to :UNAVAILABLE" do
-  #
-  #   end
-  #
-  # end # end of describe change_status
+  describe "change_status" do
+    before do
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
+    end
+
+    it "changes status from :AVAILABLE to :UNAVAILABLE" do
+      @driver.status.must_equal :AVAILABLE
+      @driver.change_status.must_equal :UNAVAILABLE
+    end
+
+  end # end of describe change_status
 
 end # end of describe Driver class
