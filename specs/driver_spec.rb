@@ -126,7 +126,7 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
-    
+
     it "behaves properly even if one of the driver's trips is not yet complete" do
       #Testing for float output
       @driver.add_trip(@trip_now_ongoing)
@@ -138,7 +138,7 @@ describe "Driver class" do
       average_with_ongoing.must_be :<=, 5.0
 
       #Testing for hard-coded expactation
-      two_trip_average.must_be_within_delta 3.5, 0.003
+      average_with_ongoing.must_be_within_delta 3.5, 0.003
     end
   end
 
