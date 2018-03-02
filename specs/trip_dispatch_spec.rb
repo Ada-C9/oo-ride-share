@@ -85,11 +85,9 @@ describe "TripDispatcher class" do
 
     it "accurately converts strings to Time objects" do
       trip = @dispatcher.trips.first
-      start_time = trip.start_time
-      end_time = trip.end_time
 
-      start_time.must_be_kind_of Time
-      end_time.must_be_kind_of Time
+      trip.start_time.must_be_kind_of Time
+      trip.end_time.must_be_kind_of Time
     end
   end
 
@@ -118,6 +116,7 @@ describe "TripDispatcher class" do
     end
 
     it "returns nil if no driver is available" do
+      # NOTE: Is this considered "hacking" a test? Change?
       new_drivers = []
       @dispatcher.drivers.each do |driver|
         driver.status = :UNAVAILABLE
@@ -144,9 +143,26 @@ describe "TripDispatcher class" do
       4.times do
         @dispatcher.request_trip(passenger_id)
       end
+
       fifth_trip = @dispatcher.request_trip(passenger_id)
       fifth_trip.driver.id.must_equal 87
       fifth_trip.driver.name.must_equal "Jannie Lubowitz"
+    end
+  end
+
+  describe "#removes_unavailable_drivers" do
+    before do
+      @available_drivers = @dispatcher.removes_unavailable_drivers
+    end
+
+    it "accurately removes_unavailable_drivers" do
+      @available_drivers.must_be_kind_of Array
+    end
+
+    it "returns an array of Driver instances" do
+      @available_drivers.all? {|driver| driver.must_be_kind_of RideShare::Driver}
+      @available_drivers.all? {|driver| driver.status.must_equal :AVAILABLE}
+      @available_drivers.length.must_equal 47
     end
   end
 
@@ -164,17 +180,4 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "#removes_unavailable_drivers" do
-    before do
-      @available_drivers = @dispatcher.removes_unavailable_drivers
-    end
-
-    it "accurately removes_unavailable_drivers" do
-      @available_drivers.must_be_kind_of Array
-    end
-
-    it "returns an array" do
-      @available_drivers.length.must_equal 47
-    end
-  end
 end
