@@ -96,4 +96,50 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+  
+  describe 'request_trip method' do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @result = @dispatcher.request_trip(10)
+    end
+    it 'was created properly' do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(10)
+      result.must_be_instance_of RideShare::Trip
+    end
+    it 'updated the trip list for the driver' do
+      result = @result.driver.trips
+      result.must_include @result
+    end
+
+    it 'updated the trip list for the passenger ' do
+      result = @result.passenger.trips
+      result.must_include @result
+
+    end
+    it 'assigns the first driver available' do
+      first_available_driver_id = 2
+      @result.driver.id.must_equal first_available_driver_id
+    end
+
+    it 'updated the trip list' do
+      @dispatcher.trips.must_include @result
+    end
+
+    it 'returns error when no drivers are available' do
+
+    end
+    it 'turns the status to unavailable for the driver selected' do
+      @result.driver.status.must_equal :UNAVAILABLE
+    end
+    it 'end_time, costs, and rating are nil'do
+      @rating.must_be_nil
+      @cost.must_be_nil
+      @result.end_time.must_be_nil
+    end
+
+    it 'uses current time for start_time' do
+
+    end
+  end
 end
