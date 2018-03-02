@@ -96,7 +96,6 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      #what if the passenger does not exist?
       if @drivers.any? { |driver| driver.status == :AVAILABLE }
         new_trip = make_new_trip(passenger_id)
         update_trips_arrays(new_trip)
@@ -126,10 +125,15 @@ module RideShare
       return new_trip
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def update_trips_arrays(new_trip)
       new_trip.driver.update_driver_info(new_trip)
+      new_trip.driver.add_trip(new_trip)
       new_trip.passenger.add_trip(new_trip)
       trips << new_trip
     end
