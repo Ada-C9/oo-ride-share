@@ -33,10 +33,54 @@ describe "Trip class" do
     it "raises an error for an invalid rating" do
       [-3, 0, 6].each do |rating|
         @trip_data[:rating] = rating
-        proc {
-          RideShare::Trip.new(@trip_data)
-        }.must_raise ArgumentError
       end
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
     end
+
+    it "raises and error if start time is after end time" do
+      start_time = Time.parse('2016-01-13T13:28:00+00:00')
+      end_time = Time.parse('2016-01-13T13:16:00+00:00')
+      data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+
+      proc { RideShare::Trip.new(data)}.must_raise ArgumentError
+
+    end
+  end
+
+  describe "trip length" do
+    before do
+      start_time = Time.parse('2016-01-13T13:16:00+00:00')
+      end_time = Time.parse('2016-01-13T13:28:00+00:00')# 12 minutes
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "returns a float" do
+      @trip.trip_length.must_be_instance_of Float
+    end
+
+    it "returns length of trip in seconds" do
+      @trip.trip_length.must_equal 12 * 60
+    end
+
   end
 end

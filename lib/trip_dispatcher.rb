@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,10 +76,10 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
-          cost: raw_trip[:cost].to_f,
-          rating: raw_trip[:rating].to_i
+          start_time: Time.parse(raw_trip[:start_time]) || Time.now,
+          end_time: Time.parse(raw_trip[:end_time]) || nil,
+          cost: raw_trip[:cost].to_f || nil,
+          rating: raw_trip[:rating].to_i || nil
         }
 
         trip = Trip.new(parsed_trip)
@@ -86,9 +87,63 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
     end
+
+    def request_trip(passenger_id)
+      if find_passenger(passenger_id) == nil || passenger_id.class != Integer
+        raise ArgumentError.new "Invalid ID"
+      end
+
+      # available_array = drivers.find { |driver| driver.status == :AVAILABLE }
+      # if available_array == nil
+      #   raise ArgumentError.new "No available drivers"
+      # end
+      # next_driver = available_array
+
+      available_array = drivers.select { |driver| driver.status == :AVAILABLE }
+
+      if available_array.length == 0
+        raise ArgumentError.new "No available drivers"
+      end
+
+      earliest_end_time = available_array[0].trips.last.end_time
+      next_driver = available_array[0]
+
+      available_array.each do |driver|
+        if driver.trips.length == 0 || ( Time.now - driver.trips.last.end_time ) > ( Time.now - earliest_end_time )
+          # earliest_end_time = driver.trips.last.end_time
+          next_driver = driver
+        end
+        binding.pry
+      end
+
+      new_ride_passenger = find_passenger(passenger_id)
+
+      new_ride = {
+        id: trips.last.id + 1,
+        driver: next_driver,
+        passenger: new_ride_passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = RideShare::Trip.new(new_ride)
+
+      next_driver.in_progress(new_trip)
+      new_ride_passenger.in_progress(new_trip)
+      @trips << new_trip
+
+      return new_trip
+
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
 
     private
 
@@ -97,5 +152,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end
