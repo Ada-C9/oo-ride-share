@@ -90,6 +90,10 @@ module RideShare
       trips
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
