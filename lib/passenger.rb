@@ -21,29 +21,29 @@ module RideShare
       @trips << trip
     end
 
-    def total_spending
+    def get_total_spending
       finished_trips.map{|trip| trip.cost}.inject(0, :+).round(2)
     end
 
     def finished_trips
       trips_closed = @trips
-      trips_closed.each do |trip|
-        if trip.end_time == nil || trip.cost == nil || trip.rating == nil
-          trips_closed.delete(trip)
-        end
-      end
+      trips_closed.reject! {|trip| trip.end_time == nil || trip.cost == nil || trip.rating == nil }
+      # trips_closed.each do |trip|
+      #   if trip.end_time == nil || trip.cost == nil || trip.rating == nil
+      #     trips_closed.delete(trip)
+      #   end
+      # end
 
       return trips_closed
     end
 
-    def total_time
+    def get_total_time
       finished_trips.map{|trip| trip.duration}.inject(0, :+).round(1)
     end
 
     def add_new_trip(trip)
       @trips << trip
     end
-
 
   end # Passenger class ends
 

@@ -55,7 +55,7 @@ describe "Driver class" do
     end
   end
 
-  describe "average_rating method" do
+  describe "get_average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", end_time: Time.parse("2016-08-10"), cost: 1000, rating: 5})
@@ -63,22 +63,22 @@ describe "Driver class" do
     end
 
     it "returns a float" do
-      @driver.average_rating.must_be_kind_of Float
+      @driver.get_average_rating.must_be_kind_of Float
     end
 
     it "returns a float within range of 1.0 to 5.0" do
-      average = @driver.average_rating
+      average = @driver.get_average_rating
       average.must_be :>=, 1.0
       average.must_be :<=, 5.0
     end
 
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      driver.average_rating.must_equal 0
+      driver.get_average_rating.must_equal 0
     end
   end
 
-  describe "total_revenue method" do
+  describe "calculate_total_revenue method" do
     it "returns total revenue of a driver" do
       driver_data = {id: 3, name: "Lovelace", vin: "12345678912345678"}
       driver = RideShare::Driver.new(driver_data)
@@ -129,7 +129,7 @@ describe "Driver class" do
         driver.add_trip(trip)
       end
 
-      driver.total_revenue.must_equal 134.72
+      driver.calculate_total_revenue.must_equal 134.72
     end
 
     it "raises an StandardError when total revenue is negative" do
@@ -149,11 +149,11 @@ describe "Driver class" do
       }
 
       driver.add_trip(RideShare::Trip.new(trip_1))
-      proc { driver.total_revenue }.must_raise StandardError
+      proc { driver.calculate_total_revenue }.must_raise StandardError
     end
   end
 
-  describe "average_revenue method" do
+  describe "calculate_average_revenue method" do
     it "returns average revenue per hour by a driver" do
       driver_data = {id: 3, name: "Lovelace", vin: "12345678912345678"}
       driver = RideShare::Driver.new(driver_data)
@@ -185,7 +185,7 @@ describe "Driver class" do
       driver.add_trip(RideShare::Trip.new(trip_1))
       driver.add_trip(RideShare::Trip.new(trip_2))
 
-      driver.average_revenue.must_equal 82.67
+      driver.calculate_average_revenue.must_equal 82.67
     end
   end
 

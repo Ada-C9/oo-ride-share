@@ -77,7 +77,7 @@ describe "Passenger class" do
     end
   end
 
-  describe "total_spending method" do
+  describe "get_total_spending method" do
     it "returns passenger's total spending of all trips" do
       passenger_data = {
         id: 3,
@@ -133,13 +133,12 @@ describe "Passenger class" do
       trips.each do |trip|
         passenger.add_trip(trip)
       end
-      # binding.pry
 
-      passenger.total_spending.must_equal 173.35
+      passenger.get_total_spending.must_equal 173.35
     end
   end
 
-  describe "total_time method" do
+  describe "get_total_time method" do
     it "returns total time that passenger has spent on all trips" do
       passenger_data = {
         id: 3,
@@ -196,7 +195,7 @@ describe "Passenger class" do
         passenger.add_trip(trip)
       end
 
-      passenger.total_time.must_equal 9000.0
+      passenger.get_total_time.must_equal 9000.0
     end
 
   end

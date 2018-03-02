@@ -21,7 +21,7 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def average_rating
+    def get_average_rating
       total_ratings = 0
       finished_trips.each do |trip|
         total_ratings += trip.rating
@@ -55,7 +55,7 @@ module RideShare
       return trips_closed
     end
 
-    def total_revenue
+    def calculate_total_revenue
       fee = 1.65
       driver_portion = 0.8
       subtotal = finished_trips.map{ |trip| trip.cost - fee}.inject(0, :+).round(2)
@@ -65,11 +65,11 @@ module RideShare
       return subtotal * driver_portion
     end
 
-    def average_revenue
+    def calculate_average_revenue
       hour_to_second = 3600
       total_duration = finished_trips.map {|trip| trip.duration}.inject(0, :+) / hour_to_second
 
-      return (total_revenue / total_duration).round(2)
+      return (calculate_total_revenue / total_duration).round(2)
     end
 
     def add_new_trip(trip)
@@ -77,7 +77,7 @@ module RideShare
       @status = :UNAVAILABLE
     end
 
-    def most_recent_trip
+    def find_most_recent_trip
       finished_trips.max_by {|trip| trip.end_time}
     end
 

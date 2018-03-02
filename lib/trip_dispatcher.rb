@@ -111,14 +111,14 @@ module RideShare
     def available_drivers
       free_drivers = @drivers
 
-      free_drivers.reject! { |driver| driver.status == :UNAVAILABLE || driver.most_recent_trip.nil?}
+      free_drivers.reject! { |driver| driver.status == :UNAVAILABLE || driver.find_most_recent_trip.nil?}
       return free_drivers
     end
 
     def next_driver
       raise StandardError.new("No available driver") if available_drivers.empty?
       # there are drivers who has no trip at all
-      first_driver = available_drivers.min_by{ |driver| driver.most_recent_trip.end_time }
+      first_driver = available_drivers.min_by{ |driver| driver.find_most_recent_trip.end_time }
 
       return first_driver
     end
@@ -149,9 +149,9 @@ module RideShare
     end
 
 
-    def inspect
-      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    end
+    # def inspect
+    #   "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    # end
 
     private
 
