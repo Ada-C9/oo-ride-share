@@ -65,8 +65,9 @@ module RideShare
 
     def average_revenue
       # NEEDS TO NOT SHIT THE BED IF THERE IS A TRIP IN PROGRESS
-
-      @average_revenue = (@total_revenue / @trips.length).round(2)
+      ongoing_trips = @trips.find_all { |trip| trip.end_time.nil?}
+      trips_completed_quantity = @trips.length - ongoing_trips.length
+      @average_revenue = (@total_revenue / trips_completed_quantity).round(2)
     end
   end
 end
