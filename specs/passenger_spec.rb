@@ -32,7 +32,6 @@ describe "Passenger class" do
     end
   end
 
-
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])

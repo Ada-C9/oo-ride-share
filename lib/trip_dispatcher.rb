@@ -91,62 +91,6 @@ module RideShare
       trips
     end
 
-    # def request_trip(passenger_id)
-    #   if passenger_id == nil || passenger_id <= 0
-    #     raise ArgumentError.new("Invalid passenger id!")
-    #   else
-    #     new_rider = find_passenger(passenger_id)
-    #   end
-    #
-    #   if @drivers.select {|driver| driver.status == :AVAILABLE}.first == nil
-    #     raise ArgumentError.new("No drivers currently available!")
-    #   else
-    #     new_driver = @drivers.select {|driver| driver.status == :AVAILABLE}.first
-    #   end
-    #
-    #   new_ride = RideShare::Trip.new({
-    #     id: (@trips.last.id + 1),
-    #     driver: new_driver,
-    #     passenger: new_rider,
-    #     start_time: Time.now,
-    #     end_time: nil,
-    #     cost: nil,
-    #     rating: nil
-    #     })
-    #
-    #   new_driver.add_trip(new_ride)
-    #   new_driver.unavailable
-    #   new_rider.add_trip(new_ride)
-    #
-    #   @trips << new_ride
-    #
-    #   return new_ride
-    # end
-
-    # def pick_driver
-    #   new_drivers = @drivers.select {|driver| driver.status == :AVAILABLE}
-    #
-    #
-    #   drivers_latest_trips = []
-    #
-    #   new_drivers.each do |driver|
-    #     if (driver.trips.max_by {|drive| drive.end_time}) != nil
-    #       #make new_driver of first nil driver, nest if-else as needed
-    #       last_trip = driver.trips.max_by {|drive| drive.end_time}
-    #       drivers_latest_trips << {driver_id: driver.id, end_time: last_trip.end_time}
-    #     end
-    #   end
-    #
-    #   if drivers_latest_trips.length == 0
-    #     raise ArgumentError.new("No drivers available currently!")
-    #   else
-    #     new_driver_data = drivers_latest_trips.min_by {|trip_hash| trip_hash[:end_time]}
-    #
-    #     new_driver = find_driver(new_driver_data[:driver_id])
-    #   end
-    #   return new_driver
-    # end
-
     def pick_driver
       available_drivers = @drivers.select {|driver| driver.status == :AVAILABLE}
       newbie_drivers = available_drivers.select {|driver| driver.trips == []}

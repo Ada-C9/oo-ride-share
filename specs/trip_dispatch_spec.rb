@@ -101,109 +101,32 @@ describe "TripDispatcher class" do
       @dispatcher.pick_driver.id.must_equal 100
     end
 
-  #original#   it "accurately picks a new driver with the oldest last trip after the first one is called" do
-  #     @dispatcher = RideShare::TripDispatcher.new
-  #     @dispatcher.request_trip(1).driver.id.must_equal 14
-  #     @dispatcher.request_trip(2).driver.id.must_equal 27
-  #     @dispatcher.request_trip(3).driver.id.must_equal 6
-  #     @dispatcher.request_trip(4).driver.id.must_equal 87
-  #     @dispatcher.request_trip(5).driver.id.must_equal 75
-  #   end
-  #
-  #   it "accurately raises an error when no drivers are available" do
-  #     @dispatcher = RideShare::TripDispatcher.new
-  #     proc {
-  #       @dispatcher.drivers.each do |driver|
-  #         driver.unavailable
-  #       end
-  #       @dispatcher.pick_driver(1)
-  #     }.must_raise ArgumentError
-  #   end
-  # end
+    it "accurately picks driver with no trips first" do
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.request_trip(1).driver.id.must_equal 100
+    end
 
-  it "accurately picks driver with no trips first" do
-    @dispatcher = RideShare::TripDispatcher.new
-    @dispatcher.request_trip(1).driver.id.must_equal 100
+    it "accurately assigns drivers with longest-ago trips after exhausting supply of new drivers first" do
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.request_trip(1).driver.id.must_equal 100
+      @dispatcher.request_trip(1).driver.id.must_equal 14
+      @dispatcher.request_trip(2).driver.id.must_equal 27
+      @dispatcher.request_trip(3).driver.id.must_equal 6
+      @dispatcher.request_trip(4).driver.id.must_equal 87
+      @dispatcher.request_trip(5).driver.id.must_equal 75
+    end
+
+    it "accurately raises an error when no drivers are available" do
+      @dispatcher = RideShare::TripDispatcher.new
+      proc {
+        @dispatcher.drivers.each do |driver|
+          driver.unavailable
+        end
+        @dispatcher.pick_driver(1)
+      }.must_raise ArgumentError
+    end
   end
-
-
-  it "accurately assigns drivers with longest-ago trips after exhausting supply of new drivers first" do
-    @dispatcher = RideShare::TripDispatcher.new
-    @dispatcher.request_trip(1).driver.id.must_equal 100
-    @dispatcher.request_trip(1).driver.id.must_equal 14
-    @dispatcher.request_trip(2).driver.id.must_equal 27
-    @dispatcher.request_trip(3).driver.id.must_equal 6
-    @dispatcher.request_trip(4).driver.id.must_equal 87
-    @dispatcher.request_trip(5).driver.id.must_equal 75
-  end
-
-  it "accurately raises an error when no drivers are available" do
-    @dispatcher = RideShare::TripDispatcher.new
-    proc {
-      @dispatcher.drivers.each do |driver|
-        driver.unavailable
-      end
-      @dispatcher.pick_driver(1)
-    }.must_raise ArgumentError
-  end
-end
-
-  #original# describe "request_trip method" do
-  #   before do
-  #     @dispatcher = RideShare::TripDispatcher.new
-  #   end
-  #
-  #   it "raises an ArgumentError for an invalid id" do
-  #     proc {@dispatcher.request_trip(0)}.must_raise ArgumentError
-  #     proc {@dispatcher.request_trip("yay")}.must_raise ArgumentError
-  #     proc {@dispatcher.request_trip(-1)}.must_raise ArgumentError
-  #     proc {@dispatcher.request_trip(nil)}.must_raise ArgumentError
-  #   end
-  #
-  #   it "inputs nil for end_time, cost, and rating" do
-  #     @dispatcher.request_trip(1).end_time.must_be_nil
-  #     @dispatcher.request_trip(1).cost.must_be_nil
-  #     @dispatcher.request_trip(1).rating.must_be_nil
-  #   end
-  #
-  #   it "new trip must be instance of RideShare::Trip" do
-  #     @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
-  #   end
-  #
-  #   it "assigns first AVAILABLE driver to the trip" do
-  #     @dispatcher.request_trip(1).driver.id.must_equal 14
-  #   end
-  #
-  #   it "changes driver's status to UNAVAILABLE" do
-  #     @dispatcher.request_trip(1).driver.status.must_equal :UNAVAILABLE
-  #   end
-  #
-  #   it "correctly sets the start_time" do
-  #     @dispatcher.request_trip(1).start_time.must_be_instance_of Time
-  #   end
-  #
-  #   it "raises an error if no drivers are available" do
-  #     proc {
-  #       @dispatcher.drivers.each do |driver|
-  #         driver.unavailable
-  #       end
-  #       @dispatcher.request_trip(1)
-  #     }.must_raise ArgumentError
-  #   end
-  #
-  #   it "updates dispatcher's number of rides" do
-  #     @dispatcher.trips.length.must_equal 600
-  #     @dispatcher.request_trip(1)
-  #     @dispatcher.trips.length.must_equal 601
-  #   end
-  #
-  #   it "updates passenger's number of rides" do
-  #     @dispatcher.passengers.first.id.must_equal 1
-  #     @dispatcher.passengers.first.trips.length.must_equal 2
-  #     @dispatcher.request_trip(1)
-  #     @dispatcher.passengers.first.trips.length.must_equal 3
-  #   end
-
+  
   describe "request_trip method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new

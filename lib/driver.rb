@@ -73,25 +73,5 @@ module RideShare
       @status = :UNAVAILABLE
     end
 
-
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
