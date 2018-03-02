@@ -24,6 +24,10 @@ module RideShare
       @trips << trip
     end
 
+    def log_newly_requested_trip(trip)
+      # @trips << trip
+    end
+
     def total_ride_time
       @trips.map{ |t| t.duration_seconds }.reduce(:+)
     end

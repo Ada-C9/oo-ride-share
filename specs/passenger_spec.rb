@@ -96,6 +96,21 @@ describe "Passenger class" do
     end
   end
 
+  describe "log_newly_reqested_trip(trip)" do
+    before do
+      @requested_trip = RideShare::Trip.new({id: 10, driver: "Meret Oppenheim", passenger: @passenger_a, start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+
+      @passenger_a.log_newly_requested_trip(@requested_trip)
+    end
+
+    it "adds the requested trip to the passenger's collection" do
+      @passenger_a.trips.count.must_equal 4
+    # @passenger_a.trips.must_include @assigned_trip
+    end
+
+
+  end
+
   describe "total_ride_time" do
 
     it "returns an accurate tally of the passenger's ride-times" do
