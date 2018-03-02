@@ -192,10 +192,14 @@ describe "TripDispatcher class" do
     end
 
     it "it returns the driver who has not driven in the greatest amount of time" do
-      new_trip = @dispatcher.request_trip(2)
-      driver = new_trip.driver
-      name = "Minnie Dach"
-      driver.name.must_equal name
+
+      names = ["Minnie Dach", "Antwan Prosacco", "Nicholas Larkin", "Mr. Hyman Wolf", "Jannie Lubowitz"]
+      passenger_ids = [2, 3, 4, 5, 6]
+      passenger_ids.each.with_index do |id, i|
+        new_trip = @dispatcher.request_trip(id)
+        driver = new_trip.driver
+        driver.name.must_equal names[i]
+      end
     end
   end
 end
