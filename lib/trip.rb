@@ -1,5 +1,5 @@
-# require 'csv'
-# require 'time'
+require 'csv'
+require 'time'
 require 'pry'
 
 module RideShare
@@ -15,18 +15,32 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
+      # if @end_time != nil
+      #   @status = :COMPLETE
+      # else
+      #   @status = :INCOMPLETE
+      # end
+
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
       if @start_time > @end_time
-        raise ArgumentError.new("End time #{@end_time} cannot be earlier than #{@start_time}")
+        raise ArgumentError.new("End time: #{@end_time} cannot be earlier than Start time: #{@start_time}")
       end
     end
 
     def duration
-      (@end_time - @start_time) * 60
+      (end_time - start_time).to_i
     end
+
+    # def finish_trip!
+    #   @end_time = Time.now
+    # end
+
+    # def finished?
+    #   return end_time != nil
+    # end
 
   end # end of Trip class
 end # end of RideShare module

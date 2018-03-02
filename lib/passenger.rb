@@ -33,7 +33,7 @@ module RideShare
 
     def money_spent
       total_passenger_cost = 0
-      @trips.each do |trip|
+      trips.each do |trip|
         total_passenger_cost += trip.cost
       end
       return total_passenger_cost
@@ -41,7 +41,7 @@ module RideShare
 
     def time_spent
       total_passenger_time = 0
-      @trips.each do |trip|
+      trips.each do |trip|
         total_passenger_time += trip.duration
       end
       return total_passenger_time

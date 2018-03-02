@@ -86,7 +86,7 @@ describe "Driver class" do
     end
   end # end of describe "average_rating method"
 
-  describe "total_revenue" do
+  describe "total_revenue method" do
     it "calculate the total revenue" do
       trips = [
         RideShare::Trip.new({start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 5, rating: 3}),
@@ -105,12 +105,12 @@ describe "Driver class" do
 
       driver.total_revenue.must_equal 12.04
     end
-  end # end of describe "total_revenue"
+  end # end of describe "total_revenue method"
 
-  describe "average_revenue" do
+  describe "average_revenue method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 60
+      end_time = start_time + 60 * 60
       trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -128,6 +128,6 @@ describe "Driver class" do
     it "calculate the average revenue per hour" do
       @driver.average_revenue.must_equal 14.68
     end
-  end # end of describe "average_revenue"
+  end # end of describe "average_revenue method"
 
 end # end of describe "Driver class"

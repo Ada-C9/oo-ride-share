@@ -40,6 +40,7 @@ module RideShare
       return all_drivers
     end
 
+    # This method checks the driver id and makes sure we have a valid id
     def find_driver(id)
       check_id(id)
       @drivers.find{ |driver| driver.id == id }
@@ -76,6 +77,10 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+        if driver.nil? || passenger.nil?
+          raise "Could not find driver or passenger trip ID #{raw_trip[:id]}"
+        end
+
         # setting up parsed_trip to take in the raw_trip data
         # prepping it for the Trip class
         parsed_trip = {
@@ -100,6 +105,50 @@ module RideShare
       return trips
     end
 
+    def available_driver
+      @drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          return driver
+        end
+      end
+      raise ArgumentError.new("There are no drivers available at this time")
+    end
+
+    def request_trip(passenger_id)
+
+      passenger = find_passenger(passenger_id)
+
+      if passenger.nil?
+        raise "Could not find passenger trip ID #{passenger_id}"
+      end
+
+      trip_id = trips.length + 1
+
+      trip = {
+        id: trip_id,
+        driver: available_driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      # binding.pry
+      # this setting up the instance of trip
+      new_trip = Trip.new(trip)
+      # binding.pry
+      # Set up relations
+      driver.add_trip(new_trip)
+      passenger.add_trip(new_trip)
+      trips << new_trip
+
+      return new_trip
+    end # end of request_trip(passenger_id)
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
@@ -107,9 +156,9 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-    
+
   end # end of TripDispatcher class
 end # end of RideShare module
 
-# testing_code = RideShare::TripDispatcher.new
-# puts testing_code
+testing_code = RideShare::TripDispatcher.new
+puts testing_code.request_trip(21)

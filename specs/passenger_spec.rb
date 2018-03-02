@@ -1,5 +1,5 @@
 require_relative 'spec_helper'
-require 'time'
+
 
 describe "Passenger class" do
 
@@ -76,7 +76,7 @@ describe "Passenger class" do
     end
   end # end of describe "get_drivers method"
 
-  describe "money_spent" do
+  describe "money_spent method" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
       trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-08-08", end_time: "2016-08-08T12:14:00+00:00", cost: 30, rating: 5})
@@ -87,12 +87,12 @@ describe "Passenger class" do
     it "calculate the total amount of money the passenger spent" do
       @passenger.money_spent.must_equal 30
     end
-  end # end of describe "money_spent"
+  end # end of describe "money_spent method"
 
-  describe "time_spent" do
+  describe "time_spent method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 30
+      end_time = start_time + 30 * 60
       trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -111,6 +111,6 @@ describe "Passenger class" do
     it "calculate the total amount of time the passenger spent" do
       @passenger.time_spent.must_equal 1800
     end
-  end # end of describe "time_spent"
+  end # end of describe "time_spent method"
 
 end # end of describe "Passenger class"

@@ -46,10 +46,10 @@ describe "Trip class" do
     end
   end # end of describe "initialize"
 
-  describe "duration" do
+  describe "duration method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 30
+      end_time = start_time + 30 * 60
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -65,6 +65,6 @@ describe "Trip class" do
     it "correctly calculates the calculate the duration of the trip in seconds" do
       @trip.duration.must_equal 1800
     end
-  end # end of describe "duration"
+  end # end of describe "duration method"
 
 end # end of describe "Trip class"
