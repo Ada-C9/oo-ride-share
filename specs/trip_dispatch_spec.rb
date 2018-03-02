@@ -107,6 +107,23 @@ describe "TripDispatcher class" do
       @result = @dispatcher.request_trip(1)
     end
 
+    it "raises an error if the passenger id entered is not a digit" do
+      result = proc { @dispatcher.request_trip("ten") }
+      result.must_raise ArgumentError
+    end
+
+    it "raises an error if the passenger id entered is not valid" do
+      result = proc { @dispatcher.request_trip() }
+      result.must_raise ArgumentError
+      result = proc { @dispatcher.request_trip(0) }
+      result.must_raise ArgumentError
+    end
+
+    it "raises an error if the passenger id does not correspond to a passenger in the CSV file" do
+      result = proc { @dispatcher.request_trip(350) }
+      result.must_raise ArgumentError
+    end
+
     it "returns a proper trip" do
       @result.must_be_kind_of RideShare::Trip
     end

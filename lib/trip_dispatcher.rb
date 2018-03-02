@@ -61,7 +61,12 @@ module RideShare
 
     def find_passenger(id)
       check_id(id)
-      @passengers.find{ |passenger| passenger.id == id }
+      passenger = @passengers.find { |passenger| passenger.id == id }
+      # binding.pry
+      if passenger.nil?
+        raise ArgumentError.new("Passenger #{id} does not exist in our records.")
+      end
+      return passenger
     end
 
     def load_trips
@@ -87,16 +92,20 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
+      # binding.pry
 
       trips
     end
 
     def request_trip(passenger_id)
       # check passenger_id here
+      check_id(passenger_id)
 
-      passenger = @passengers.find do |passenger|
-        passenger.id == passenger_id
-      end
+      passenger = find_passenger(passenger_id)
+
+      # if passenger.nil?
+      #   raise ArgumentError.new("Passenger #{passenger_id} does not exist in our records.")
+      # end
 
       # binding.pry
 
@@ -208,9 +217,16 @@ module RideShare
       # return driver
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
+      unless /^\d+$/.match(id.to_s)
+        raise ArgumentError.new("ID must be a digit.")
+      end
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
