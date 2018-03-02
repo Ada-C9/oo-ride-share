@@ -6,7 +6,22 @@ require_relative 'spec_helper'
 describe "TripDispatcher class" do
 
   before do
-  @dispatcher_1 = RideShare::TripDispatcher.new
+
+    unavailable_drivers = [
+      RideShare::Driver.new(id: 701, name: "Xernardo Xrosacco", vin: "XBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: nil),
+
+      RideShare::Driver.new(id: 702, name: "Xmory Xosenbaum", vin: "XB9WEX2R92R12900E", status: :UNAVAILABLE, trips: nil),
+
+      RideShare::Driver.new(id: 703, name: "Xaryl Xitzsche", vin: "XAL6P2M2XNHC5Y656", status: :UNAVAILABLE, trips: nil),
+
+      RideShare::Driver.new(id: 704, name: "Xeromy X'Keefe DVM", vin: "X1CKRVH55W8S6S9T1", status: :UNAVAILABLE, trips: nil),
+
+      RideShare::Driver.new(id: 705, name: "Xerla Xarquardt", vin: "XAMLE35L3MAYRV1JD", status: :UNAVAILABLE, trips: nil)
+    ]
+
+    @dispatcher_1 = RideShare::TripDispatcher.new
+    @dispatcher_2_unavail = RideShare::TripDispatcher.new
+    @dispatcher_2_unavail.drivers = unavailable_drivers
   end
 
   describe "Initializer" do
@@ -112,6 +127,8 @@ describe "TripDispatcher class" do
       name = driver_to_assign.name
       name.must_equal "Emory Rosenbaum"
     end
+
+
   end
 
   describe "create_new_trip_id" do

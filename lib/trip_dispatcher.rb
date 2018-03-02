@@ -7,7 +7,10 @@ require_relative 'trip'
 
 module RideShare
   class TripDispatcher
-    attr_reader :drivers, :passengers, :trips
+    attr_reader :passengers, :trips
+    # :drivers moved from reader to accessor to make
+    # certain tests possible.
+    attr_accessor :drivers
 
     def initialize
       @drivers = load_drivers
@@ -117,7 +120,7 @@ module RideShare
       # there's no driver available.  So it's after the
       # driver-check method, but before the new trip
       # is made here. Single responsibility, yo: A lack
-      # of a suitable driver should break the trip-generating 
+      # of a suitable driver should break the trip-generating
       # apparatus, not the searching apparatus.
       new_trip = RideShare::Trip.new(new_trip_data)
       @trips << new_trip
