@@ -59,7 +59,6 @@ module RideShare
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 
-
       if trip.end_time == nil
         accept_trip
       end
@@ -80,7 +79,7 @@ module RideShare
           driver_revenue += ((trip.cost - 1.65) * 0.8)
         end
       end
-      return driver_revenue
+      return driver_revenue.round(2)
     end
 
     def average_revenue_per_hour

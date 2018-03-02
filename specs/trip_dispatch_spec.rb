@@ -129,6 +129,7 @@ describe "TripDispatcher class" do
       @new_trip.driver.trips.must_be_kind_of Array
       @new_trip.driver.trips.length.must_be_kind_of Integer
       @new_trip.driver.trips.must_include @new_trip
+
     end
 
     it "updates the passenger's trip list" do
@@ -139,11 +140,19 @@ describe "TripDispatcher class" do
 
     it "does not update the passenger's total spent if end time is nil" do
 
-    
+      @new_trip.passenger.total_amount_of_money.must_be_kind_of Float
+      @new_trip.passenger.total_amount_of_money.must_be_within_delta 37.29, 0.01
+
+      @next_trip = @dispatcher.request_trip(1)
+      @next_trip.passenger.total_amount_of_money.must_be_within_delta 37.29, 0.01
+
     end
 
     it "does not update the driver revenue if end_time is nil" do
+      @drivers = @dispatcher.drivers.dup
+      @drivers[1].total_revenue
 
+      @new_trip.driver.total_revenue.must_equal @drivers[1].total_revenue
     end
 
   end
