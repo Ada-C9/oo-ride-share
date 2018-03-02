@@ -4,7 +4,7 @@ describe "Driver class" do
 
   describe "Driver instantiation" do
     before do
-      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
     end
 
     it "is an instance of Driver" do
@@ -119,15 +119,13 @@ describe "Driver class" do
     describe " Driver # driver_status_change" do
       before do
         dispatcher = RideShare::TripDispatcher.new
-        trip = dispatcher.request_trip
-        driver = trip[driver]
-
-        trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-08-08", end_time: "2016-08-08T12:16:00+00:00", cost: 17.56, rating: 5})
-        @driver.add_trip(trip)
+        passenger = 7
+        trip = dispatcher.request_trip(passenger)
+        driver = dispatcher.available_driver
       end
 
-      it "changes driver status from available to unavailable" do
-        # driver.status
+      it "changes driver status" do
+        @driver.driver_status_change :UNAVAILABLE
 
       end
     end

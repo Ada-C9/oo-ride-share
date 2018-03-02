@@ -21,12 +21,20 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def driver_status_change
+    def driver_status_change(status)
       if @status == :AVAILABLE
         @status = :UNAVAILABLE
       end
       return @status
     end
+
+    # def add_customer_trip
+    #   @trips.each do |ride|
+    #     if ride.driver == @id
+    #       @trips << ride
+    #     end
+    #   end
+    # end
 
     def average_rating
       total_ratings = 0
