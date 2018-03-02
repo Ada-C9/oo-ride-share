@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 
 describe "TripDispatcher class" do
-  describe "Initializer" do
+  xdescribe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
       dispatcher.must_be_kind_of RideShare::TripDispatcher
@@ -97,20 +97,49 @@ describe "TripDispatcher class" do
       trip = dispatcher.trips.first
       trip.end_time.must_be_instance_of Time
     end
+  end
 
-    describe "request trip method" do
-      before do
-        @dispatcher = RideShare::TripDispatcher.new
-      end
-      it " creates a new trip" do
-        @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
-      end # it
+  describe "request trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      # 2,Emory Rosenbaum,1B9WEX2R92R12900E,AVAILABLE
+    end
+    it " creates a new trip" do
+      @dispatcher.request_trip(1).must_be_instance_of RideShare::Trip
+    end # it
 
-    end # end of request trip method
+    it "updates the passenger's trip list" do
+      orig_number = @dispatcher.find_passenger(1).trips.length
 
+      @dispatcher.request_trip(1)
 
+      @dispatcher.find_passenger(1).trips.length.must_equal orig_number + 1
+    end
 
+    it "updates the driver's trip list" do
+      orig_number = @dispatcher.find_driver(2).trips.length
 
+      @dispatcher.request_trip(1)
+
+      @dispatcher.find_driver(2).trips.length.must_equal orig_number + 1
+    end
+
+    it " updates driver status" do
+      @dispatcher.find_driver(2).status.must_equal :AVAILABLE
+
+      @dispatcher.request_trip(1)
+
+      @dispatcher.find_driver(2).status.must_equal :UNAVAILABLE
+    end
+
+    it" updates the trips for the dispatcher" do
+      origin_number = @dispatcher.trips.length
+
+      @dispatcher.request_trip(1)
+
+      @dispatcher.trips.length.must_equal origin_number + 1
+    end
 
   end
+  
 end
