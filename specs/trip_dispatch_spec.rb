@@ -123,6 +123,8 @@ describe "request_trip(passenger_id) method" do
     end # end of throws an ArgumentError if passenger_id is invalid
 
     it "creates a new instance of Trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.request_trip(5).must_be_instance_of RideShare::Trip      
     end
 
   end # end of describe request_trip(passenger_id) method

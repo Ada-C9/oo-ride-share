@@ -108,6 +108,7 @@ module RideShare
 
     def get_new_start_time
       start_time = Time.now
+      return start_time
     end
 
     def request_trip(passenger_id)
@@ -117,10 +118,25 @@ module RideShare
 
       available_driver_id = find_available_driver
 
+      new_trip_data = {
+        id: find_next_trip_id,
+        driver: find_available_driver,
+        passenger: passenger_id,
+        start_time: get_new_start_time,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
 
-      # new_trip = Trip.new()
+      new_trip = RideShare::Trip.new(new_trip_data)
+
+      return new_trip
 
     end # end of request_trip
+
+    def inspect
+      "#<#{self.class.name}: 0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 
