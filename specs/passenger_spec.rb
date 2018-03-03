@@ -108,6 +108,29 @@ describe "Passenger class" do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
       @passenger.calculate_all_trips_cost.must_equal 0
     end
+
+    it "returns the correct total when there are in progress trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      start_time = Time.parse("2015-05-27T01:11:00+00:00")
+      end_time = Time.parse("2015-05-27T01:11:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+      @passenger.add_trip(trip)
+
+      start_time = Time.parse("2016-05-25T23:04:00+00:00")
+      end_time = Time.parse("2016-05-25T23:49:00+00:00")
+      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 23, rating: 5})
+
+      @passenger.add_trip(trip1)
+
+      trip2 = RideShare::Trip.new({id: 84, driver: 94, passenger: @passenger, start_time: Time.new, end_time: nil, cost: nil, rating: nil})
+
+      @passenger.add_trip(trip2)
+
+      @passenger.calculate_all_trips_cost.must_be_kind_of Float
+      @passenger.calculate_all_trips_cost.must_equal 27.25
+    end
   end # end of describe calculate_all_trips_cost
 
   describe "calculate_total_trips_time_in_sec" do
@@ -133,6 +156,28 @@ describe "Passenger class" do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
       @passenger.calculate_all_trips_cost.must_equal 0
     end
+
+    it "returns a sum of all times if there are trips in progress" do    
+    @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+    start_time = Time.parse("2015-05-27T01:11:00+00:00")
+    end_time = Time.parse("2015-05-27T01:11:00+00:00")
+    trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+    @passenger.add_trip(trip)
+
+    start_time1 = Time.parse("2016-05-25T23:04:00+00:00")
+    end_time1 = Time.parse("2016-05-25T23:49:00+00:00")
+    trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time1, end_time: end_time1, cost: 23, rating: 5})
+
+    @passenger.add_trip(trip1)
+
+    trip2 = RideShare::Trip.new({id: 84, driver: 94, passenger: @passenger, start_time: Time.new, end_time: nil, cost: nil, rating: nil})
+
+    @passenger.add_trip(trip2)
+
+    @passenger.calculate_total_trips_time_in_sec.must_equal 2700.0
+  end
 
   end # end of describe "calculate_total_trips_time"
 

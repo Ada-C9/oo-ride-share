@@ -24,17 +24,25 @@ module RideShare
 
     def average_rating
       total_ratings = 0
+      trips_in_progess = 0
       @trips.each do |trip|
-        total_ratings += trip.rating
+        if trip.end_time != nil
+          total_ratings += trip.rating
+        else
+          trips_in_progess += 1
+        end
       end
+
+      trips_with_ratings = trips.length - trips_in_progess
 
       if trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+          average = (total_ratings.to_f) / trips_with_ratings
       end
 
       return average
+
     end
 
     def add_trip(trip)
@@ -49,26 +57,30 @@ module RideShare
       fee = 1.65
       driver_take_home = 0.8
       @trips.each do |trip|
-        subtotal = trip.cost - fee
-        subtotal *= driver_take_home
-        total_revenue += subtotal
+        if trip.end_time != nil
+          subtotal = trip.cost - fee
+          subtotal *= driver_take_home
+          total_revenue += subtotal
+        end
       end
       return total_revenue.to_f.round(2)
     end
 
     def calculate_total_trips_time_in_hours
-        return 0 if trips.length == 0
+      return 0 if trips.length == 0
 
-        trip_time_lengths = []
-        @trips.each do |trip|
+      trip_time_lengths = []
+      @trips.each do |trip|
+        if trip.end_time != nil
           trip_duration = trip.end_time.to_f - trip.start_time.to_f
           trip_time_lengths << trip_duration
         end
-        total_time_in_sec = 0
-        total_time_in_sec = trip_time_lengths.inject(:+)
-        total_time_in_hours = total_time_in_sec / (60 * 60)
+      end
+      total_time_in_sec = 0
+      total_time_in_sec = trip_time_lengths.inject(:+)
+      total_time_in_hours = total_time_in_sec / (60 * 60)
 
-        return total_time_in_hours
+      return total_time_in_hours
     end
 
     def calculate_avg_revenue_per_hour
@@ -78,6 +90,7 @@ module RideShare
       return 0 if calculate_total_trips_time_in_hours == 0
 
       hourly_rate = calculate_total_revenue / calculate_total_trips_time_in_hours
+
       hourly_rate = hourly_rate.round(2)
       return hourly_rate
     end

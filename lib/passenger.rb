@@ -24,7 +24,9 @@ module RideShare
     def calculate_all_trips_cost
       total_cost = 0
       @trips.each do |trip|
-        total_cost += trip.cost
+        if trip.cost != nil
+          total_cost += trip.cost
+        end
       end
       return total_cost.to_f.round(2)
     end
@@ -32,8 +34,10 @@ module RideShare
     def calculate_total_trips_time_in_sec
       trip_time_lengths = []
       @trips.each do |trip|
-        trip_duration = trip.end_time.to_f - trip.start_time.to_f
-        trip_time_lengths << trip_duration
+        if trip.end_time != nil
+          trip_duration = trip.end_time.to_f - trip.start_time.to_f
+          trip_time_lengths << trip_duration
+        end
       end
       total_time_in_sec = 0
       total_time_in_sec = trip_time_lengths.inject(:+)

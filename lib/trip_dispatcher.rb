@@ -95,6 +95,7 @@ module RideShare
     def find_available_driver
       @drivers.each do |driver|
         if driver.status == :AVAILABLE
+          driver.change_status
           return driver
         end
       end
@@ -121,8 +122,8 @@ module RideShare
 
       new_trip_data = {
         id: find_next_trip_id,
-        driver: available_driver,
-        passenger: passenger,
+        driver: available_driver.id,
+        passenger: passenger.id,
         start_time: get_new_start_time,
         end_time: nil,
         cost: nil,
@@ -149,5 +150,5 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-  end
-end
+  end # end of class
+end # end of module
