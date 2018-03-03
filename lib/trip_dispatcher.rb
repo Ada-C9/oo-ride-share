@@ -93,7 +93,8 @@ module RideShare
     end
 
     def assign_driver
-      ### WAVE 2 ### passes test
+      ### WAVE 2 ###
+
       # drivers_available = @drivers.reject { |driver| driver.status == :UNAVAILABLE }
       #
       # if drivers_available.length == 0
@@ -102,42 +103,21 @@ module RideShare
       #   return drivers_available.first
       # end
 
-      ### WAVE 3 ATTEMPT ###
+      ### WAVE 3 ###
 
       drivers_pool = drivers.reject { |driver| (driver.status == :UNAVAILABLE) || (driver.trips.length == 0)}
 
-      # last_trips = drivers_pool.map { |trips| trips.trips.last }
-
-      # last_time = last_trips.min_by { |trip| trip.end_time}
       most_recent = []
-      drivers_pool.each do |driver|
-        most_recent << driver.trips.max_by { |trip| trip.end_time }
+
+      if drivers_pool.length == 0
+        raise ArgumentError.new("There are no drivers available.")
+      else
+        drivers_pool.each do |driver|
+          most_recent << driver.trips.max_by { |trip| trip.end_time }
+        end
+        oldest = most_recent.min_by { |trip| trip.end_time }
+        return oldest.driver
       end
-
-      # most_recent.each do |trip|
-      #   puts trip.driver.name
-      #   puts trip.end_time
-      # end
-
-      oldest = most_recent.min_by { |trip| trip.end_time }
-
-      puts oldest
-      puts oldest.id
-      puts oldest.driver.name
-      puts oldest.end_time
-      # # puts last_rides.min_by { |trip| trip }
-
-
-      # puts last_time.end_time
-      # puts last_time.driver.id
-
-      # chosen = drivers_pool.min_by { |driver| driver.trips.last.id}
-
-      # time = drivers_pool.map { |x| x.trips.last.end_time}
-      #
-      # chosen = time.min
-
-
     end
 
     def request_trip(passenger_id)
@@ -183,76 +163,3 @@ module RideShare
 
   end
 end
-#
-
-# passenger = RideShare::Passenger.new({id: -23, name: "Smithy", phone: "353-533-5334"})
-# puts passenger
-dispatcher = RideShare::TripDispatcher.new
-puts dispatcher.assign_driver
-### TESTING FOR REQUESTING TRIP ####
-# dispatcher = RideShare::TripDispatcher.new
-# # puts dispatcher.assign_driver.length
-# first_driver = dispatcher.find_driver(2)
-# # puts first_driver.trips.length
-# puts "Drivers count before #{first_driver.trips.length}"
-# new_trip = dispatcher.request_trip(3)
-# driver = new_trip.driver
-# puts driver.id
-# puts "Drivers count after: #{driver.trips.length}"
-
-# actual_driver = dispatcher.find_driver(2)
-# puts "original passenger trips #{passenger.trips.length}"
-# puts "original driver trips : #{actual_driver.trips.length}"
-#
-# puts dispatcher.trips.length
-# new_trip = dispatcher.request_trip(3)
-# puts new_trip
-# puts new_trip.class
-# puts new_trip.id
-# driver = new_trip.driver
-# puts "Driver ID : #{driver.id}"
-# puts "Driver Status: #{driver.status}"
-# passenger = new_trip.passenger
-# passenger = dispatcher.find_passenger(2)
-#
-# puts "Final passenger trips: #{passenger.trips.length}"
-# puts "Final driver trips : #{actual_driver.trips.length}"
-#
-
-##############################################################
-
-# dispatcher = RideShare::TripDispatcher.new
-#
-# trip = dispatcher.trips[1]
-# puts trip.start_time
-# puts trip.end_time
-# puts trip.duration
-
-# puts "Passenger ID: #{passenger.id}"
-# puts dispatcher.trips.length
-# puts new_trip.driver.id
-# puts new_trip.passenger.id
-# puts new_trip.
-# driver = dispatcher.drivers[8]
-# #
-# puts driver.total_revenue
-#
-# driver.trips.each do |trip|
-#   times = trip.duration
-#   puts times
-# end
-# #
-# #
-# puts "Total revenue_per_hour: #{driver.total_revenue_per_hour}"
-# puts passenger.name
-# puts passenger.calculate_total_trips_duration
-
-# puts passenger.calculate_total_money_spent
-# # binding.pry
-# dispatcher = RideShare::TripDispatcher.new
-# puts dispatcher.load_passengers[0]
-# puts dispatcher.load_trips
-# puts dispatcher.trips[0].start_time
-# puts dispatcher.trips[0].start_time.class
-# puts dispatcher.trips[0].start_time.to_r
-# puts dispatcher.trips[0].class

@@ -143,13 +143,13 @@ describe "TripDispatcher class" do
 
     it "raises error if there are no drivers available" do
       dispatcher = RideShare::TripDispatcher.new
-      # 47 drivers originally available
+      # 46 drivers originally available
       passenger_id = 1
-      47.times do |request_trip|
-        passenger_id += 1
+      46.times do |request_trip|
         dispatcher.request_trip(passenger_id)
       end
-      proc {dispatcher.request_trip(62)}.must_raise ArgumentError
+
+      proc{dispatcher.request_trip(2)}.must_raise ArgumentError
     end
   end
 
@@ -157,7 +157,7 @@ describe "TripDispatcher class" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
       @passenger = @dispatcher.find_passenger(3)
-      @driver = @dispatcher.find_driver(2)
+      @driver = @dispatcher.find_driver(14)
 
       @initial_trips_length = @dispatcher.trips.length
       @initial_passenger_trips_length = @passenger.trips.length
@@ -173,10 +173,10 @@ describe "TripDispatcher class" do
 
     end
 
-    it "assigns the first driver with status available" do
-      @new_trip.driver.must_be_kind_of RideShare::Driver
-      @new_trip.driver.id.must_equal 2
-    end
+    # it "assigns the first driver with status available" do
+    #   @new_trip.driver.must_be_kind_of RideShare::Driver
+    #   @new_trip.driver.id.must_equal 2
+    # end
     #
     it "adds the new Trip to the collection of trips in TripDispatcher" do
       @dispatcher.trips.length.must_equal @initial_trips_length + 1
