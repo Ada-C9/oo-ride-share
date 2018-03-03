@@ -139,6 +139,7 @@ module RideShare
       select_available_driver.add_trip(active_trip)
       passenger.add_trip(active_trip)
 
+      return active_trip
     end
 
     def inspect

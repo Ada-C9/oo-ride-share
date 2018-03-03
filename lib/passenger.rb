@@ -26,22 +26,26 @@ module RideShare
       @trips << trip
     end
 
+    def in_progress
+      return @trips.reject { |ride| ride.end_time == nil }
+    end
 
-    def total_amount_spent
+
+    def total_money_spent
       total_amount = 0
-      @trips.each do |rides|
+      in_progress.each do |rides|
           total_amount += rides.cost
         end
       return total_amount
     end
 
-    def total_time_spent
-      total_duration = 0
-      @trips.each do |ride|
-        total_duration += ride.duration
+    def total_duration
+      total_time = 0
+      in_progress.each do |ride|
+        total_time += ride.duration
       # (ride.end_time - ride.start_time)
       end
-      return total_duration
+      return total_time
     end
 
   end

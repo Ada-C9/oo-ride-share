@@ -22,9 +22,13 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def in_progress
+      return @trips.reject { |ride| ride.end_time == nil }
+    end
+
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      in_progress.each do |trip|
         total_ratings += trip.rating
       end
 
@@ -38,13 +42,12 @@ module RideShare
     end
 
     def add_trip(trip)
-      if trip.class != Trip
+      unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
-      if trip.end_time.nil?
-        @status == :UNAVAILABLE
-      end
+      # if trip.end_time.nil?
+      #   @status == :UNAVAILABLE
+      # end
       @trips << trip
     end
 
@@ -53,7 +56,7 @@ module RideShare
       subtotal = 0
       driver_takehome = 0.8
 
-      @trips.each do |trip|
+      in_progress.each do |trip|
           subtotal += (trip.cost - fee)
         end
         total = (subtotal * driver_takehome).round(2)
@@ -65,12 +68,12 @@ module RideShare
       subtotal = 0
       driver_takehome = 0.8
 
-      @trips.each do |trip|
+      in_progress.each do |trip|
           subtotal += (trip.cost - fee)
         end
         total = (subtotal * driver_takehome).round(2)
 
-      average = total / @trips.length
+      average = total / in_progress.length
       return average
     end
 

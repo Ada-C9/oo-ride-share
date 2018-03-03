@@ -9,7 +9,8 @@ module RideShare
       @driver = input[:driver]
       @passenger = input[:passenger]
       @start_time = input[:start_time]
-      @end_time = input[:end_time] == nil ? nil : input[:end_time]
+      @end_time = input[:end_time]
+      # == nil ? nil : input[:end_time]
       @cost = input[:cost] == nil ? 0 : input[:cost]
       @rating = input[:rating]
 
