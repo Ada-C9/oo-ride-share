@@ -160,9 +160,9 @@ describe "TripDispatcher class" do
       passenger.name.must_equal "Jovani Nienow"
       passenger.id.must_equal 21
       trip.start_time.must_be_kind_of Time
-      trip.end_time.must_equal nil
-      trip.cost.must_equal nil
-      trip.rating.must_equal nil
+      trip.end_time.must_be_nil
+      trip.cost.must_be_nil
+      trip.rating.must_be_nil
     end
   end # end of describe "loader methods"
 

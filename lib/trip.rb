@@ -21,13 +21,13 @@ module RideShare
       #   @status = :INCOMPLETE
       # end
 
-      unless @rating == nil
-        if @rating > 5 || @rating < 1
+      unless rating == nil
+        if rating > 5 || rating < 1
           raise ArgumentError.new("Invalid rating #{@rating}")
         end
       end
 
-      unless @end_time == nil
+      unless end_time == nil
         if input[:start_time] > input[:end_time]
           raise ArgumentError.new("End time: #{input[:end_time]} cannot be earlier than Start time: #{input[:start_time]}")
         end
@@ -36,7 +36,9 @@ module RideShare
     end
 
     def duration
-      (end_time - start_time).to_i
+      unless end_time == nil
+        (end_time - start_time).to_i
+      end
     end
 
     # def finish_trip!
@@ -49,7 +51,7 @@ module RideShare
 
   end # end of Trip class
 end # end of RideShare module
-#
+
 # testing_code = RideShare::Trip.new(
 # id: 21,
 # driver: "Luxi",

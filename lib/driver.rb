@@ -78,7 +78,9 @@ module RideShare
       subtotal = 0
       trips.each do |trip|
         # Question: what if the cost is less than the fee
-        subtotal += trip.cost - fee
+        if trip.end_time != nil
+          subtotal += trip.cost - fee
+        end
       end
 
       total = subtotal * driver_takehome
