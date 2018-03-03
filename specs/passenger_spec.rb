@@ -173,6 +173,11 @@ describe "Passenger class" do
       @passenger.trips.length.must_equal 3
     end
 
+    it "returns zero if no trips" do
+      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      passenger.calculate_total_money_spent.must_equal 0
+    end
+
   end
 
   describe "Total duration of trips method" do

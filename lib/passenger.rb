@@ -27,7 +27,9 @@ module RideShare
     end
 
     def calculate_total_money_spent
-      if trips.last.cost == nil
+      if trips.length == 0
+        total_amount = 0
+      elsif trips.last.cost == nil
         included_trips = trips[0..-2]
         total_amount = included_trips.reduce(0){ |sum, trip| sum + trip.cost}
       else
