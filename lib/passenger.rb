@@ -11,12 +11,6 @@ module RideShare
       @name = input[:name]
       @phone_number = input[:phone]
 
-      # Did whoever gave us this input hash put any trip on it?
-      # if input.keys.include? :trips
-      #     @trips = input[:trips]
-      #    else
-      #     @trips = []
-      #   end
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
@@ -29,9 +23,9 @@ module RideShare
     end
 
     def passenger_spents
-      spents_array = @trips.collect {|trip| trip.cost}
-      amount_spent = (spents_array.sum).to_f
-      return amount_spent
+        spents_array = @trips.collect {|trip| trip.cost}
+        amount_spent = (spents_array.sum)
+        return amount_spent
     end
 
     def travel_time
@@ -39,5 +33,6 @@ module RideShare
       amount_time = (time_array.sum).to_f
       return amount_time
     end
+
   end
 end

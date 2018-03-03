@@ -86,7 +86,7 @@ describe "Passenger class" do
       result = @passenger.passenger_spents
       expected_spent = 20
       result.must_equal expected_spent
-      result.must_be_kind_of Float
+      # result.must_be_kind_of Float
     end
 
     it 'returns 0 if the passenger has no trips' do
@@ -122,7 +122,7 @@ describe "Passenger class" do
       result = @passenger.travel_time
       expected_time = 0
       result.must_equal expected_time
-      result.must_be_kind_of Float 
+      result.must_be_kind_of Float
     end
   end
 end

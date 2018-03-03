@@ -91,6 +91,42 @@ module RideShare
 
       return trips
     end
+
+    # helper method to calculate the next new id for the request_trip method
+    def gets_new_trip_id
+      next_id = @trips.max_by {|trip| trip.id}
+      return next_id.id
+    end
+
+    # helper method to get next driver with status available and oldest recent trip.
+    def driver_selection
+      drivers_available = drivers.find_all do |driver|
+        driver.status == :AVAILABLE
+      end
+
+      return nil if drivers_available.length == 0
+
+      # collect the last trip of each of the drivers available
+      oldest_trips = []
+      drivers_available.each do |driver|
+        oldest_trip = driver.trips.max_by do |trip|
+          trip.end_time
+        end
+
+        if oldest_trip != nil
+          oldest_trips.push({driver_id: driver.id, end_time_of_oldest_trip: oldest_trip.end_time})
+        end
+      end
+
+      # The minimum value of oldest_trips array will be the oldest trip.
+      driver_selected_info = oldest_trips.min_by do |data|
+        data[:end_time_of_oldest_trip]
+      end
+
+      return find_driver(driver_selected_info[:driver_id])
+
+    end
+
     def request_trip(passenger_id)
       #refactor variable driver for wave 3 requirements
       driver = driver_selection
@@ -121,41 +157,6 @@ module RideShare
       @trips << trip
 
       return trip
-
-    end
-
-    # helper method to calculate the next new id
-    def gets_new_trip_id
-      next_id = @trips.max_by {|trip| trip.id}
-      return next_id.id
-    end
-
-    # helper method to next driver with status available and oldest recent trip.
-    def driver_selection
-      drivers_available = drivers.find_all do |driver|
-        driver.status == :AVAILABLE
-      end
-
-      return nil if drivers_available.length == 0
-
-      # Collect the last trip of each of the drivers available
-      oldest_trips = []
-      drivers_available.each do |driver|
-        oldest_trip = driver.trips.max_by do |trip|
-          trip.end_time
-        end
-
-        if oldest_trip != nil
-          oldest_trips.push({driver_id: driver.id, end_time_of_oldest_trip: oldest_trip.end_time})
-        end
-      end
-
-      # The minimum value of oldest_trips array will be the oldest trip.
-      driver_selected_info = oldest_trips.min_by do |data|
-        data[:end_time_of_oldest_trip]
-      end
-
-      return find_driver(driver_selected_info[:driver_id])
 
     end
 
