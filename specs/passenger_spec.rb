@@ -148,13 +148,13 @@ describe "Passenger class" do
       @passenger.calculate_total_money_spent.must_be_kind_of Float
     end
 
-    it "Returns sum of all trip costs" do
+    it "returns sum of all trip costs" do
 
       @passenger.calculate_total_money_spent.must_equal 79.11
 
     end
 
-    it "Excludes in progress trips from calculation" do
+    it "does not include the nil cost of a trip in progress" do
       in_progress_trip_data = {
         id: 10,
         driver: @driver,
