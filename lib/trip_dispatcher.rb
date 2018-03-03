@@ -124,7 +124,7 @@ module RideShare
 
     def get_next_trip_id
       trip_ids = @trips.map { |trip| trip.id }
-      sorted_ids = trip_ids.sort!
+      sorted_ids = trip_ids.sort
       return sorted_ids.last + 1
     end
 
@@ -135,11 +135,10 @@ module RideShare
 
       if last_trips.any? {|trip| trip.class == Driver}
         return last_trips.find {|trip| trip.class == Driver }
+      elsif last_trips.empty?
+          raise ArgumentError.new("Unable to create a new trip, no available drivers")
       else
         oldest_trip = last_trips.min_by {|trip| trip.end_time.to_i}
-        if oldest_trip.nil?
-          raise ArgumentError.new("Unable to create a new trip, no available drivers")
-        end
         return oldest_trip.driver
       end
     end
