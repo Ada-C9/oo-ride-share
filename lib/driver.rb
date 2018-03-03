@@ -68,7 +68,9 @@ module RideShare
     end
 
     def total_revenue_per_hour
-      if trips.last.cost == nil
+      if trips.length == 0
+        return 0
+      elsif trips.last.cost == nil
         included_trips = trips[0..-2]
         total_amount_driving_in_s = included_trips.reduce(0){ |total, trip| total.to_f + trip.duration}
       else
@@ -79,7 +81,7 @@ module RideShare
 
       revenue_per_hour = total_revenue / total_amount_driving_in_h
 
-      return revenue_per_hour.round(2)
+      revenue_per_hour.round(2)
     end
 
     def change_to_unavailable

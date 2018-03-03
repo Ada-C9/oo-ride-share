@@ -208,6 +208,10 @@ describe "Driver class" do
       @driver.add_trip(RideShare::Trip.new(@second_trip_data))
     end
 
+    it "returns a float" do
+      @driver.total_revenue_per_hour.must_be_kind_of Float
+    end
+
     it "calculates driver's average revenue per hour spent driving" do
 
       @driver.total_revenue_per_hour.must_equal 58.68
@@ -231,6 +235,11 @@ describe "Driver class" do
 
       @driver.total_revenue_per_hour.must_equal 58.68
 
+    end
+
+    it "returns zero if no trips" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      driver.total_revenue_per_hour.must_equal 0
     end
 
   end
