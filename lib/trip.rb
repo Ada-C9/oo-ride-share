@@ -26,15 +26,6 @@ module RideShare
 
     end
 
-    # anytime we care to know status we can call method
-    # def finish_trip!
-    #   end_time = Time.now
-    # end
-    #
-    # def finished?
-    #   return @end_time != nil
-    # end
-
     def duration
       return (end_time - start_time).to_i
     end

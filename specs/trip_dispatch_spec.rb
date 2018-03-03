@@ -113,38 +113,48 @@ describe "TripDispatcher class" do
 
     it "assigns the driver to the available driver whose most recent trip ending is the oldest compared to today" do
       dispatcher = RideShare::TripDispatcher.new
-      trip_1 = dispatcher.request_trip(1)
-      trip_2 = dispatcher.request_trip(2)
-      trip_3 = dispatcher.request_trip(3)
-      trip_4 = dispatcher.request_trip(4)
-      trip_5 = dispatcher.request_trip(5)
 
-      new_trips = [trip_1, trip_2, trip_3, trip_4, trip_5]
+      driver_1 = dispatcher.assign_driver
+      driver_1.change_to_unavailable
 
-      all_trips = new_trips.all? { |trips| trips.class == RideShare::Trip }
+      driver_2 = dispatcher.assign_driver
+      driver_2.change_to_unavailable
 
-      all_trips.must_equal true
+      driver_3 = dispatcher.assign_driver
+      driver_3.change_to_unavailable
 
-      assigned_drivers = new_trips.all? { |trips| trips.driver.class == RideShare::Driver }
+      driver_4 = dispatcher.assign_driver
+      driver_4.change_to_unavailable
 
-      assigned_drivers.must_equal true
+      driver_5 = dispatcher.assign_driver
+      driver_5.change_to_unavailable
 
-      trip_1.driver.id.must_equal 14
-      trip_2.driver.id.must_equal 27
-      trip_3.driver.id.must_equal 6
-      trip_4.driver.id.must_equal 87
-      trip_5.driver.id.must_equal 75
+      assigned_drivers = [driver_1, driver_2, driver_3, driver_4, driver_5]
+
+      all_assigned_drivers = assigned_drivers.all? { |driver| driver.class == RideShare::Driver }
+
+      all_assigned_drivers.must_equal true
+
+      driver_1.id.must_equal 14
+      driver_1.name.must_equal "Antwan Prosacco"
+      driver_2.id.must_equal 27
+      driver_2.name.must_equal "Nicholas Larkin"
+      driver_3.id.must_equal 6
+      driver_3.name.must_equal "Mr. Hyman Wolf"
+      driver_4.id.must_equal 87
+      driver_4.name.must_equal "Jannie Lubowitz"
+      driver_5.id.must_equal 75
+      driver_5.name.must_equal "Mohammed Barrows"
     end
 
     it "raises error if there are no drivers available" do
       dispatcher = RideShare::TripDispatcher.new
       # 46 drivers originally available
-      passenger_id = 1
-      46.times do |request_trip|
-        dispatcher.request_trip(passenger_id)
+      46.times do
+        dispatcher.request_trip(1)
       end
 
-      proc{dispatcher.request_trip(2)}.must_raise ArgumentError
+      proc{dispatcher.assign_driver}.must_raise ArgumentError
     end
   end
 
@@ -205,6 +215,17 @@ describe "TripDispatcher class" do
       @new_trip.driver.must_be_kind_of RideShare::Driver
       @new_trip.passenger.must_be_kind_of RideShare::Passenger
 
+    end
+
+    it "raises error if there are no drivers available" do
+      dispatcher = RideShare::TripDispatcher.new
+      # 46 drivers originally available
+      passenger_id = 1
+      46.times do |request_trip|
+        dispatcher.request_trip(passenger_id)
+      end
+
+      proc{dispatcher.request_trip(2)}.must_raise ArgumentError
     end
 
   end

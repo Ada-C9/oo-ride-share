@@ -69,6 +69,7 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
 
       @trip.duration.must_equal 1500
+      @trip.duration.must_be_kind_of Integer
     end
   end
 
