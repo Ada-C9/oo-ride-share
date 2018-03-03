@@ -31,14 +31,14 @@ module RideShare
     end
 
     def report_trip_duration
-      # Yeeeeeah, so when I started doing Wave I, I somehow
-      # got it into my head that, since so much of what was
+      # Yeeeeeah, so when I started doing Wave 1, I somehow
+      # got it into my head that, because so much of what was
       # happening with the time calculation was being done in
       # epoch-seconds, there needed to be some sort of
       # plain-English reporting method for the trip duration.
       # It turns out that I was wrong about that, but by the
       # time I figured that out, I had already gotten this working.
-      # So whatevs, it's here now.
+      # So whatevs, this exists now.
       trip_hrs_round = (@duration_seconds / 3600)
       trip_min_remdr_round = ((@duration_seconds % 3600) / 60)
       trip_sec_remdr = ((@duration_seconds % 3600) % 60)

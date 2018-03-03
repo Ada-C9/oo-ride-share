@@ -29,15 +29,12 @@ module RideShare
     end
 
     def total_ride_time
-      #NOTA BENE: THIS METHOD NEEDS TO NOT SHIT THE BED IF THERE'S
-      #A TRIP WITH A ZERO DURATION.
       @trips.map{ |t| t.duration_seconds }.reduce(:+)
     end
 
     def total_spent
-      #NOTA BENE: THIS METHOD NEEDS TO NOT SHIT THE BED IF THERE'S
-      #A TRIP WITH A NIL COST.
-     @trips.map{ |t| t.cost }.reduce(:+)
+     @trips.map{ |trip| trip.cost }.reject{ |cost| cost.nil? }.reduce(:+)
+  #   @trips.map{ |t| t.cost }.reduce(:+)
     end
   end
 end
