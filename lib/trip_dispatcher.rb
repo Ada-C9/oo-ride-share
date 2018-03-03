@@ -129,7 +129,7 @@ module RideShare
       end
       if drivers_lasttrip_endtime == []
         return nil
-      end 
+      end
 
       least_recent_last_trip = drivers_lasttrip_endtime.first[:last_trip_end]
       the_driver = drivers_lasttrip_endtime.first[:id]

@@ -82,7 +82,7 @@ describe "TripDispatcher class" do
       trip = dispatcher.trips.first
       driver = trip.driver
       passenger = trip.passenger
-
+      
       driver.must_be_instance_of RideShare::Driver
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
@@ -91,6 +91,7 @@ describe "TripDispatcher class" do
   end
 
 describe "available_drivers" do
+
   it "Should return status available to any driver" do
     available = RideShare::TripDispatcher.new
     available.available_drivers.sample.status.must_equal :AVAILABLE
@@ -98,15 +99,17 @@ describe "available_drivers" do
 end
 
   describe "request_trip" do
+
     it "The driver must become unavailable after trip is requested " do
       trip = RideShare::TripDispatcher.new
       trip.request_trip(3).driver.status.must_equal :UNAVAILABLE
-
     end
+
     it "passanger must be a passanger in the passanger array" do
       trip = RideShare::TripDispatcher.new
       trip.request_trip(3).passenger.id.must_equal 3
     end
+
     it "should return nil for end time, cost and rating" do
       trip = RideShare::TripDispatcher.new
       trip.request_trip(3).end_time.must_be_nil
@@ -160,10 +163,19 @@ end
         end
       end
       proc {trip.request_trip(3)}.must_raise ArgumentError
-
     end
-
-
-
   end
+
+  describe "driver_longest_not_driving" do
+    it "should return first the driver with longest not working and so on" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.request_trip(3).driver.id.must_equal 14
+      dispatcher.request_trip(2).driver.id.must_equal 27
+      dispatcher.request_trip(1).driver.id.must_equal 6
+      dispatcher.request_trip(1).driver.id.must_equal 87
+      dispatcher.request_trip(1).driver.id.must_equal 75
+    end
+  end
+
+
 end

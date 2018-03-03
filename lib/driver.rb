@@ -30,7 +30,7 @@ module RideShare
       end
       return @status
     end
-    
+
 
 
     def average_rating

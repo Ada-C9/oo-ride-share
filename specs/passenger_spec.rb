@@ -104,7 +104,7 @@ describe "Passenger class" do
       trip.total_time_spent.must_be_kind_of Float
     end
 
-    it "should return a type of 300" do
+    it "should return a total of 300" do
       tripss = []
       trip1 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3)
       trip2 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:05:00 +0000"), rating: 3)
@@ -113,5 +113,7 @@ describe "Passenger class" do
       trip = RideShare::Passenger.new(id: 9, trips: tripss)
       trip.total_time_spent.must_equal 300.0
     end
+
+  
   end
 end
