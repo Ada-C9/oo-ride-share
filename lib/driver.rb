@@ -1,9 +1,13 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :trips
+
+    # added :status to attr_accessor to test 'request_trip' method in trip_dispatcher_spec.rb
+    attr_accessor :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -61,9 +65,19 @@ module RideShare
       unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-      @status = :UNAVAILABLE
+      if trip.end_time == nil
+        @status = :UNAVAILABLE
+      end
       @trips << trip
-    end # ends "def add_trip"
+    end # ends "add_trip" method
+
+    def change_status
+      if @status == :UNAVAILABLE
+        @status == :AVAILABLE
+      elsif @status == :AVAILABLE
+        @status == :UNAVAILABLE
+      end
+    end # ends "change_status" method
 
     # For a given driver, calculate their total revenue for all trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
     def total_revenue
@@ -80,7 +94,7 @@ module RideShare
 
       total = subtotal * driver_take_home
       return total
-    end
+    end #ends "total_revenue" method
 
   end # ends class Driver
 end # ends module RideShare

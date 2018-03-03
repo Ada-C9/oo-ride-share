@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -35,8 +36,11 @@ module RideShare
         :cost => nil,
         :rating => nil
       }
+
+
       # output must be new instance of a trip
       new_trip = Trip.new(input_hash)
+
       available_driver.add_trip(new_trip)
       # Modify the passenger for the trip using a new helper method in Passenger:
       # Add the new trip to the collection of trips for the Passenger
