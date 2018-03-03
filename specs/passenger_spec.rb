@@ -214,13 +214,17 @@ describe "Passenger class" do
 
     end
 
-    it "Calculates total time passenger has spent on their trips" do
+    it "returns an integer" do
+      @passenger.calculate_total_trips_duration.must_be_kind_of Integer
+    end
+
+    it "returns total time passenger has spent on their trips in seconds" do
 
       @passenger.calculate_total_trips_duration.must_equal 3000 #3000 seconds
 
     end
 
-    it "Excludes in progress trips from calculation" do
+    it "does not include the nil end_time of a trip in progress" do
       in_progress_trip_data = {
         id: 10,
         driver: @driver,
@@ -238,6 +242,11 @@ describe "Passenger class" do
     @passenger.calculate_total_trips_duration.must_equal 3000
     @passenger.trips.length.must_equal 3
 
+    end
+
+    it "returns zero if no trips" do
+      passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      passenger.calculate_total_trips_duration.must_equal 0
     end
 
   end

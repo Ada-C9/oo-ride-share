@@ -40,7 +40,9 @@ module RideShare
     end
 
     def calculate_total_trips_duration
-      if trips.last.end_time == nil
+      if trips.length == 0
+        return 0
+      elsif trips.last.end_time == nil
         included_trips = trips[0..-2]
         return included_trips.reduce(0){ |total, trip| total + trip.duration}
       else
