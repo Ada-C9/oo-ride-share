@@ -81,13 +81,14 @@ describe "Passenger class" do
   describe "total_money_spent" do
 
     it "should sum all cost of trips" do
+      ## it is failing because I added the unles end time is nil
       tripss = []
-      trip1 = {cost: 5.to_f}
-      trip2 = {cost: 7.5.to_f}
+      trip1 = RideShare::Trip.new(cost: 5.to_f, start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3)
+      trip2 = RideShare::Trip.new(cost: nil)
       tripss << trip1
       tripss << trip2
       trip = RideShare::Passenger.new(id: 3, trips: tripss)
-      trip.total_money_spent.must_equal 12.5
+      trip.total_money_spent.must_equal 5
     end
   end
 

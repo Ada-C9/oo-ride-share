@@ -26,7 +26,9 @@ module RideShare
     def total_money_spent
       money = 0
       @trips.each do |trip|
-        money += trip[:cost]
+        unless trip.in_progress? == true
+          money += trip.cost
+        end
       end
       return money
     end
@@ -34,7 +36,9 @@ module RideShare
     def total_time_spent
       time = 0
       @trips.each do |thistrip|
-        time += thistrip.trip_duration
+        unless thistrip.in_progress? == true
+          time += thistrip.trip_duration
+        end
       end
       return time
     end

@@ -1,5 +1,7 @@
 require 'csv'
 require "time"
+#require_relative "trip"
+#require_relative "trip_dispatcher"
 
 module RideShare
   class Trip
@@ -27,6 +29,12 @@ module RideShare
       end
     end
 
+    def in_progress?
+      if end_time == nil
+        return true
+      end
+    end
+
 
 
     def trip_duration
@@ -35,6 +43,10 @@ module RideShare
       end
       duration = @end_time - @start_time
       return duration
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
   end

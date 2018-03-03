@@ -100,8 +100,16 @@ describe "Driver class" do
       tripss << trip2
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: tripss)
       driver.average_revenue_hour.must_be_kind_of Float
-      driver.average_revenue_hour.must_equal ( ((5 - 1.65) + (7 - 1.65))* 0.8 / (5 / 60 ) )
+      driver.average_revenue_hour.must_equal  83.52
+      #(((5 - 1.65) + (7 - 1.65))* 0.8 / (5 / 60 ))
 
+    end
+  end
+
+  describe "change_driver_status" do
+    it "should change the drivers status" do
+      ddriver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
+      ddriver.change_driver_status.must_equal :UNAVAILABLE
     end
   end
 
