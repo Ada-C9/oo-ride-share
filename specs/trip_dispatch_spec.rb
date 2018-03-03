@@ -113,14 +113,16 @@ describe "TripDispatcher class" do
     end
 
     it "should should set the assigned driver's status to UNAVAILABLE" do
+      new_driver = @dispatcher.drivers.find { |driver| driver.id == 100 }
+      new_driver.status.must_equal :AVAILABLE
       new_trip = @dispatcher.request_trip(@passenger.id)
       new_trip_driver = new_trip.driver
       new_trip_driver.status.must_equal :UNAVAILABLE
     end
 
     it "should not affect the driver's total revenue calculation when starting a new trip" do
-      driver2 = @dispatcher.drivers.find { |driver| driver.id == 100 }
-      before_new_trip_revenue = driver2.total_revenue
+      new_driver = @dispatcher.drivers.find { |driver| driver.id == 100 }
+      before_new_trip_revenue = new_driver.total_revenue
       before_new_trip_revenue.must_equal 0.0
       new_trip = @dispatcher.request_trip(@passenger.id)
       new_trip_driver = new_trip.driver
@@ -129,9 +131,13 @@ describe "TripDispatcher class" do
     end
 
     it "should add the trip to the driver's list of trips" do
+      driver100 = @dispatcher.drivers.find { |driver| driver.id == 100 }
+      driver_trip_count = driver100.trips.length
       new_trip = @dispatcher.request_trip(@passenger.id)
       new_trip_driver = new_trip.driver
+      new_trip_driver.id.must_equal driver100.id
       new_trip_driver.trips.must_include new_trip
+      new_trip_driver.trips.length.must_equal driver_trip_count + 1
     end
 
     it "should throw an error if there are no available drivers" do
@@ -179,10 +185,15 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(@passenger.id).end_time.must_be_nil
       @dispatcher.request_trip(@passenger.id).cost.must_be_nil
       @dispatcher.request_trip(@passenger.id).rating.must_be_nil
+
     end
 
     it "should assign the new trip a new id" do
-      @dispatcher.request_trip(@passenger.id).id.must_equal 601
+      sorted_trips = @dispatcher.trips.sort_by {|trip| trip.id}
+      last_trip = sorted_trips.last
+      last_trip_id = last_trip.id
+      new_trip = @dispatcher.request_trip(@passenger.id)
+      new_trip.id.must_equal last_trip_id + 1
     end
 
     it "it returns the driver who has not driven in the greatest amount of time" do
