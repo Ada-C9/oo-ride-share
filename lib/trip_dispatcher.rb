@@ -112,15 +112,15 @@ module RideShare
 
     def assign_by_driver_status(passenger_ID)
       available_drivers = drivers.find_all{|driver|driver.status == :AVAILABLE}
-      if available_drivers == nil
+      if available_drivers == nil || available_drivers.length == 0
         return nil
       end
 
       driver_iterations = available_drivers.length
       available_driver_with_longest_wait_time = available_drivers[0]
-      index = 1
+      index = 0
 
-      puts "this is available drivers size #{available_drivers.length}"
+    
         driver_iterations.times do
           if available_drivers[index].trips.empty? || available_drivers.length == 1
             available_driver_with_longest_wait_time = available_drivers[index]
