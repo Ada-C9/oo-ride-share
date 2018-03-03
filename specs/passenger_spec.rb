@@ -85,7 +85,25 @@ describe "Passenger class" do
     end
   end
 
-  describe "calculate money passenger has spent on trips method" do
+  describe "add_trip(trip)" do
+    it "adds trip to passengers collection of trips" do
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60
+
+      orginal_trips_count = passenger.trips.length
+
+      trip = RideShare::Trip.new({id: 8, driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"), passenger: passenger, start_time: start_time, end_time: end_time, rating: 5})
+
+      passenger.add_trip(trip)
+
+      passenger.trips.length.must_equal orginal_trips_count + 1
+
+    end
+  end
+
+  describe "calculate_total_money_spent" do
 
     before do
       @passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
