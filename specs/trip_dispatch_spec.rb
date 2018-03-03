@@ -90,7 +90,7 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "request_trip and find_driver_to_accept_trip methods" do
+  describe "request_trip(passenger_id) and find_driver_to_accept_trip methods" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end

@@ -52,7 +52,7 @@ module RideShare
 
       raise StandardError.new("There are no available drivers not on a trip.") if available_drivers_not_on_trip.empty?
 
-      # if code reaches this point, an appropriate selected_driver will be assigned here or in the subsequent if block
+      # if code reaches this point, a drive is available
       selected_driver = available_drivers_not_on_trip.find {|driver| driver.trips.empty? }
 
       if selected_driver.nil?
@@ -82,29 +82,6 @@ module RideShare
 
       return trip
     end
-
-    # # WAVE 1
-    # def request_trip(passenger_id)
-    #
-    #   selected_driver = self.available_driver
-    #   raise StandardError.new("There are no available drivers.") if selected_driver == nil
-    #
-    #   requesting_passenger = self.find_passenger(passenger_id)
-    #
-    #   trip = Trip.new({
-    #     id: @trips.length + 1,
-    #     driver: selected_driver,
-    #     passenger: requesting_passenger,
-    #     start_time: Time.now
-    #   })
-    #
-    #   selected_driver.accept_trip(trip)
-    #   requesting_passenger.accept_trip(trip)
-    #
-    #   @trips << trip
-    #
-    #   return trip
-    # end
 
     def load_passengers
       passengers = []

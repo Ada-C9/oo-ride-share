@@ -19,6 +19,7 @@ Driver
     returns true if driver available
     returns false if driver unavailable
 
+- method not in use
 - drivers_completed_trips
     returns list of completed trips (calls trip_completed?)
 
@@ -50,9 +51,6 @@ SELECTED_DRIVER = ANT.max_by { |driver|
   driver.drivers_most_recent_trip.time_since_trip }
 
 return SELECTED_DRIVER
-
-
-
 
 
 

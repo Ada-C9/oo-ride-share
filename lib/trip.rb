@@ -28,6 +28,7 @@ module RideShare
       end
     end
 
+    # returns nil as default instead of zero bc trip could be in progress in which case the duration is > 0
     def get_duration
       duration = nil
       if !@start_time.nil? && !@end_time.nil?
@@ -37,29 +38,25 @@ module RideShare
     end
 
     def self.total_time(trip_list)
-      trip_time = 0
-      trip_list.each do |trip|
-        unless trip.get_duration.nil?
-          trip_time += trip.get_duration
-        end
-      end
-      return trip_time
+      trip_list.map { |trip| trip.get_duration }.compact.inject(0, :+)
     end
 
     # # Alternative 1
     # def self.total_time(trip_list)
-    #   trip_list.map { |trip| trip.get_duration }.compact.inject(0, :+)
+    #   trip_time = 0
+    #   trip_list.each do |trip|
+    #     unless trip.get_duration.nil?
+    #       trip_time += trip.get_duration
+    #     end
+    #   end
+    #   return trip_time
     # end
-
-    def trip_complete?
-      self.end_time != nil ? true : false
-    end
 
     def trip_in_progress?
       (self.start_time != nil && self.end_time == nil) ? true : false
     end
 
-    # returns time in seconds
+    # time in seconds; returns nil if trip in progress or no trips recorded
     def time_since_trip
       (Time.now - self.end_time) if self.end_time != nil
     end
