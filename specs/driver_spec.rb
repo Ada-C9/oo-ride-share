@@ -52,7 +52,7 @@ describe "Driver class" do
       proc{ @driver.add_trip(1) }.must_raise ArgumentError
     end
 
-    it "increases the trip count by one" do
+    it "adds trip to drivers collection of trips" do
       previous = @driver.trips.length
       @driver.add_trip(@trip)
       @driver.trips.length.must_equal previous + 1
