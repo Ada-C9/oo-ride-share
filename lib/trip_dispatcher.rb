@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'ap'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -124,7 +125,31 @@ module RideShare
       if available_drivers.empty?
         raise StandardError.new("There are no availabe drivers. A trip cannot be requested.")
       end
+
       return available_drivers.first
+    end
+
+    def find_most_recent_trip
+      available_drivers = @drivers.select { |driver| driver.status == :AVAILABLE && driver.trips.length > 1 }
+      most_recent_trips = {}
+      available_drivers.each do |driver|
+        most_recent_trip = driver.trips.first
+        driver.trips.each do |trip|
+          if trip.end_time > most_recent_trip.end_time
+            most_recent_trip = trip
+          end
+        end
+        most_recent_trips[driver] = most_recent_trip
+      end
+      return most_recent_trips
+    end
+
+    def find_least_utilized_driver
+      potential_drivers = find_most_recent_trip
+      result = potential_drivers.min_by do |driver, trip|
+        trip.end_time
+      end
+      return result[0]
     end
 
     def inspect

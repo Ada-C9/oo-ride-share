@@ -155,4 +155,27 @@ describe "TripDispatcher class" do
       proc { dispatcher.request_trip(3) }.must_raise StandardError
     end
   end
+
+  describe "find_most_recent_trip method" do
+    it "returns a hash of drivers and trips" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.find_most_recent_trip.must_be_kind_of Hash
+      dispatcher.find_most_recent_trip.each do |driver, trip|
+        driver.must_be_instance_of RideShare::Driver
+        trip.must_be_instance_of RideShare::Trip
+      end
+    end
+  end
+
+  describe "find_least_utilized_driver" do
+    it "returns a driver" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.find_least_utilized_driver.must_be_kind_of RideShare::Driver
+      # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+      # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
+      # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
+      # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+      # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+    end
+  end
 end
