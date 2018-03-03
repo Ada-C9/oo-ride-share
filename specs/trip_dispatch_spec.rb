@@ -90,28 +90,7 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "available_driver method" do
-    before do
-      @dispatcher = RideShare::TripDispatcher.new
-      @driver = @dispatcher.available_driver
-
-    end
-
-    it "returns an instance of driver" do
-      @driver.must_be_instance_of RideShare::Driver
-    end
-
-    it "the driver is available" do
-      @driver.status.must_equal :AVAILABLE
-    end
-
-    it "the driver is the first available driver" do
-      @driver.id.must_equal 2
-      # 2,Emory Rosenbaum,1B9WEX2R92R12900E,AVAILABLE
-    end
-  end
-
-  describe "request_trip method" do
+  describe "request_trip and find_driver_to_accept_trip methods" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end

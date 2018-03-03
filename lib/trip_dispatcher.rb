@@ -43,17 +43,7 @@ module RideShare
       @drivers.find{ |driver| driver.id == id }
     end
 
-    def available_driver
-      @drivers.find{ |driver| driver.available? }
-    end
-
-    # # Alternative 1
-    # def available_driver
-    #   @drivers.find(&:available?)
-    # end
-
-    def request_trip(passenger_id)
-
+    def find_driver_to_accept_trip
       available_drivers = @drivers.select {|driver| driver.available? }
 
       raise StandardError.new("There are no available drivers.") if available_drivers.empty?
@@ -70,6 +60,12 @@ module RideShare
         driver.drivers_most_recent_trip.time_since_trip }
       end
 
+      return selected_driver
+    end
+
+    def request_trip(passenger_id)
+      selected_driver = self.find_driver_to_accept_trip
+
       requesting_passenger = self.find_passenger(passenger_id)
 
       trip = Trip.new({
@@ -79,14 +75,13 @@ module RideShare
         start_time: Time.now
         })
 
-        selected_driver.accept_trip(trip)
-        requesting_passenger.accept_trip(trip)
+      selected_driver.accept_trip(trip)
+      requesting_passenger.accept_trip(trip)
 
-        @trips << trip
+      @trips << trip
 
-        return trip
-
-      end
+      return trip
+    end
 
     # # WAVE 1
     # def request_trip(passenger_id)
