@@ -111,20 +111,7 @@ describe "TripDispatcher class" do
 
   describe "#assign_driver" do
 
-    # it "returns the first driver with the status available" do
-    #   dispatcher = RideShare::TripDispatcher.new
-    #   initial_driver_status = dispatcher.find_driver(2).status
-    #   new_trip = dispatcher.request_trip(3)
-    #
-    #   # Assertions
-    #   new_trip.driver.must_be_kind_of RideShare::Driver
-    #   initial_driver_status.must_equal :AVAILABLE
-    #   #first driver id in CSV file with AVAILABLE status
-    #   new_trip.driver.id.must_equal 2
-    #
-    # end
-
-    it "returns a driver with status available, not currently in in-progress ride, driver with the oldest end_time" do
+    it "assigns the driver to the available driver whose most recent trip ending is the oldest compared to today" do
       dispatcher = RideShare::TripDispatcher.new
       trip_1 = dispatcher.request_trip(1)
       trip_2 = dispatcher.request_trip(2)
@@ -132,13 +119,17 @@ describe "TripDispatcher class" do
       trip_4 = dispatcher.request_trip(4)
       trip_5 = dispatcher.request_trip(5)
 
+      new_trips = [trip_1, trip_2, trip_3, trip_4, trip_5]
+
+      all_trips = new_trips.all? { |trips| trips.class == RideShare::Trip }
+
+      all_trips.must_equal true
+
       trip_1.driver.id.must_equal 14
       trip_2.driver.id.must_equal 27
       trip_3.driver.id.must_equal 6
       trip_4.driver.id.must_equal 87
       trip_5.driver.id.must_equal 75
-
-
     end
 
     it "raises error if there are no drivers available" do
