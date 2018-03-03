@@ -126,7 +126,6 @@ module RideShare
       # apparatus, not the searching apparatus.
       new_trip = RideShare::Trip.new(new_trip_data)
       if new_trip.driver == nil
-        # puts "+++++++++++++I'm in the error-raising loop woooo+++"
         raise StandardError.new("Alas, no drivers are available at this time. Please try again later.")
       end
 

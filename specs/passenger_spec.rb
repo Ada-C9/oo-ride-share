@@ -117,6 +117,12 @@ describe "Passenger class" do
       total_trip_seconds.must_equal 6660
 
     end
+
+    it "functions properly if a passenger has a ride in progress" do
+      @passenger_a.add_trip(@newly_requested_trip)
+      total_trip_seconds = @passenger_a.total_ride_time
+      total_trip_seconds.must_equal 6660
+    end
   end
 
   describe "total_spent" do
@@ -128,5 +134,11 @@ describe "Passenger class" do
 
     end
 
+    it "functions properly if a passenger has a ride in progress" do
+
+      @passenger_a.add_trip(@newly_requested_trip)
+      passenger_total_paid = @passenger_a.total_spent
+      passenger_total_paid.must_equal 30.39
+    end
   end
 end
