@@ -107,16 +107,16 @@ module RideShare
 
       drivers_pool = drivers.reject { |driver| (driver.status == :UNAVAILABLE) || (driver.trips.length == 0)}
 
-      most_recent = []
+      most_recent_trips = []
 
       if drivers_pool.length == 0
         raise ArgumentError.new("There are no drivers available.")
       else
         drivers_pool.each do |driver|
-          most_recent << driver.trips.max_by { |trip| trip.end_time }
+          most_recent_trips << driver.trips.max_by { |trip| trip.end_time }
         end
-        oldest = most_recent.min_by { |trip| trip.end_time }
-        return oldest.driver
+        oldest_trip = most_recent_trips.min_by { |trip| trip.end_time }
+        return oldest_trip.driver
       end
     end
 
