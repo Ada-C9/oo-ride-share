@@ -93,13 +93,51 @@ module RideShare
     end
 
     def assign_driver
-      drivers_available = @drivers.reject { |driver| driver.status == :UNAVAILABLE }
+      ### WAVE 2 ### passes test
+      # drivers_available = @drivers.reject { |driver| driver.status == :UNAVAILABLE }
+      #
+      # if drivers_available.length == 0
+      #   raise ArgumentError.new("There are no drivers available.")
+      # else
+      #   return drivers_available.first
+      # end
 
-      if drivers_available.length == 0
-        raise ArgumentError.new("There are no drivers available.")
-      else
-        return drivers_available.first
+      ### WAVE 3 ATTEMPT ###
+
+      drivers_pool = drivers.reject { |driver| (driver.status == :UNAVAILABLE) || (driver.trips.length == 0)}
+
+      # last_trips = drivers_pool.map { |trips| trips.trips.last }
+
+      # last_time = last_trips.min_by { |trip| trip.end_time}
+      most_recent = []
+      drivers_pool.each do |driver|
+        most_recent << driver.trips.max_by { |trip| trip.end_time }
       end
+
+      # most_recent.each do |trip|
+      #   puts trip.driver.name
+      #   puts trip.end_time
+      # end
+
+      oldest = most_recent.min_by { |trip| trip.end_time }
+
+      puts oldest
+      puts oldest.id
+      puts oldest.driver.name
+      puts oldest.end_time
+      # # puts last_rides.min_by { |trip| trip }
+
+
+      # puts last_time.end_time
+      # puts last_time.driver.id
+
+      # chosen = drivers_pool.min_by { |driver| driver.trips.last.id}
+
+      # time = drivers_pool.map { |x| x.trips.last.end_time}
+      #
+      # chosen = time.min
+
+
     end
 
     def request_trip(passenger_id)
@@ -147,10 +185,10 @@ module RideShare
 end
 #
 
-passenger = RideShare::Passenger.new({id: -23, name: "Smithy", phone: "353-533-5334"})
-puts passenger
-# dispatcher = RideShare::TripDispatcher.new
-# dispatcher.request_trip(23532492)
+# passenger = RideShare::Passenger.new({id: -23, name: "Smithy", phone: "353-533-5334"})
+# puts passenger
+dispatcher = RideShare::TripDispatcher.new
+puts dispatcher.assign_driver
 ### TESTING FOR REQUESTING TRIP ####
 # dispatcher = RideShare::TripDispatcher.new
 # # puts dispatcher.assign_driver.length

@@ -10,6 +10,7 @@ module RideShare
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
       end
+
       if input[:vin] == nil || input[:vin].length != 17
         raise ArgumentError.new("VIN cannot be less than 17 characters.  (got #{input[:vin]})")
       end
@@ -81,6 +82,11 @@ module RideShare
 
     def change_to_unavailable
       @status = :UNAVAILABLE
+    end
+
+    def gives_end_time_of_last_trip
+      last_trip = @trips.last
+      return last_trip[:end_time]
     end
   end
 end
