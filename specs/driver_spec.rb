@@ -70,7 +70,6 @@ describe "Driver class" do
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
     end
-
     it "returns a float" do
       @driver.average_rating.must_be_kind_of Float
     end
@@ -85,6 +84,7 @@ describe "Driver class" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
     end
+  end
 
   describe "Total Revenue" do
     before do
@@ -110,12 +110,23 @@ describe "Driver class" do
       @driver.average_revenue.must_be_kind_of Float
       @driver.average_revenue.must_equal 24.68
     end
+  end
 
+  describe "add_trip part 2" do
 
+    it 'changes status if end_time equals nil' do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = nil
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
 
+      @driver.add_trip(trip)
+
+      @driver.status.must_equal :UNAVAILABLE
+    end
   end
 
 
 
-  end
+
 end

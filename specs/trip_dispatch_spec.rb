@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -108,14 +107,14 @@ describe "TripDispatcher class" do
         dispatcher = RideShare::TripDispatcher.new
         proc{ dispatcher.request_trip() }.must_raise ArgumentError
     end
-    it 'will raise an ArgumentError when the ID is invalid' do
-        dispatcher = RideShare::TripDispatcher.new
-        proc{ dispatcher.request_trip(301) }.must_raise ArgumentError
-    end
-    it '' do
-      
-    end
-
+    it 'accurately loads trip into the list of trips' do
+        # dispatcher = RideShare::TripDispatcher.new
+        #
+        # new_trip = dispatcher.request_trip(2)
+        #
+        # new_trip.must_be_kind_of RideShare::Trip
+      end
+  #
   end
 
 

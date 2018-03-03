@@ -110,39 +110,36 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      # raise argument if nothing is entered
       if passenger_id.nil? || passenger_id == ''
         raise ArgumentError ("Can\'t find passenger ID")
       end
 
-      new_trip = {}
+      new_ride = {}
       # create a new ID
-      num = @trips.length
-      new_trip[:id] = num + 1
+      new_ride[:id] = (@trips.length + 1)
 
       # check for the available driver
-      new_trip[:driver] = select_available_driver
+      new_ride[:driver] = select_available_driver
 
-      # confirm passenger id is valid
+      # confirm passenger is valid
       passenger = find_passenger(passenger_id)
-      if passenger.nil?
-          raise ArgumentError("Invalid ID")
+      unless passenger.nil?
+          new_ride[:passenger] = passenger
         else
-          new_trip[:passenger] = passenger
+          raise ArgumentError("Invalid ID")
       end
 
-      new_trip[:start_time] = Time.now
-      new_trip[:end_time] = nil
-      new_trip[:cost] = nil
-      new_trip[:rating] = nil
+      new_ride[:start_time] = Time.now
+      new_ride[:end_time] = nil
+      new_ride[:cost] = nil
+      new_ride[:rating] = nil
 
-      active_trip = Trip.new(new_trip)
+      active_trip = Trip.new(new_ride)
 
-      driver.add_trip(active_trip)
+      select_available_driver.add_trip(active_trip)
       passenger.add_trip(active_trip)
 
     end
-
 
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
@@ -152,8 +149,3 @@ module RideShare
 
   end
 end
-
-
-# dispatcher = RideShare::TripDispatcher.new
-# #
-# dispatcher.request_trip(1)

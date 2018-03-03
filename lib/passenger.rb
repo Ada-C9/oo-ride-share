@@ -46,11 +46,3 @@ module RideShare
 
   end
 end
-
-
-# Did whoever gave us this input hash put any trip in it?
-# if input.keys.include? :trips
-# @trips = input[:trips]
-# else
-# @trips = []
-# end
