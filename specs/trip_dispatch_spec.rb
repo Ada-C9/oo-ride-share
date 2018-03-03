@@ -103,8 +103,8 @@ describe "TripDispatcher class" do
 
     it "accurately finds the next available driver" do
       trip = @dispatcher.request_trip(21)
+      second_driver = trip.driver
       second_driver = @dispatcher.available_driver
-      driver = trip.driver
 
       second_driver.name.must_equal "Daryl Nitzsche"
       second_driver.id.must_equal 3

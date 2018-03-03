@@ -168,9 +168,15 @@ describe "Driver class" do
       @driver.add_trip(@trip2)
     end
 
-    it "remove trip from trips if end time is nil" do
+    it "correctly remove trip from trips if end time is nil" do
       @driver.finish_trip.must_include @trip2
       @driver.finish_trip.wont_include @trip
+    end
+
+    it "correctly only calculates trips that are not in-progress" do
+      @driver.average_rating.must_equal 5
+      @driver.total_revenue.must_equal 6.68
+      @driver.average_revenue.must_equal 6.68
     end
   end # end of describe "finish_trip"
 end # end of describe "Driver class"

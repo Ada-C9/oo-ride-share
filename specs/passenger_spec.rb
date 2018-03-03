@@ -113,4 +113,41 @@ describe "Passenger class" do
     end
   end # end of describe "time_spent method"
 
+  describe "finish_trip" do
+    before do
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: nil,
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: nil,
+        cost: 20.00,
+        rating: 3
+      }
+      trip_data2 = {
+        id: 10,
+        driver: RideShare::Driver.new(id: 4, name: "Ada", vin: "12345678912345678"),
+        passenger: nil,
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T13:14:00+00:00'),
+        cost: 45.00,
+        rating: 5
+      }
+      @trip = RideShare::Trip.new(trip_data)
+      @trip2 = RideShare::Trip.new(trip_data2)
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      @passenger.add_trip(@trip)
+      @passenger.add_trip(@trip2)
+    end
+
+    it "correctly remove trip from trips if end time is nil" do
+      @passenger.finish_trip.must_include @trip2
+      @passenger.finish_trip.wont_include @trip
+    end
+
+    it "correctly only calculates trips that are not in-progress" do
+      @passenger.money_spent.must_equal 45
+      @passenger.time_spent.must_equal 3600
+    end
+  end # end of describe "finish_trip"
 end # end of describe "Passenger class"
