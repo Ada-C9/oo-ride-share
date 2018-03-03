@@ -13,6 +13,12 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def completed_trips
+      @trips.find_all do |trip|
+        trip.end_time != nil && trip.cost != nil && trip.rating != nil
+      end
+    end
+
     def get_drivers
       @trips.map{ |t| t.driver }
     end
@@ -25,7 +31,7 @@ module RideShare
       # total = @trips.inject {|sum, trip| sum + trip[@cost]} # why isn't this working!!!
       total = 0
 
-      @trips.each do |trip|
+      self.completed_trips.each do |trip|
         total += trip.cost
       end
       return total

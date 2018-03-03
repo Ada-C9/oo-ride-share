@@ -23,16 +23,23 @@ module RideShare
       @total_revenue = total_revenue
     end
 
+    def completed_trips
+      @trips.find_all do |trip|
+        trip.end_time != nil && trip.rating != nil && trip.cost != nil
+      end
+    end
+
     def average_rating
+
       total_ratings = 0
-      @trips.each do |trip|
+      self.completed_trips.each do |trip|
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if completed_trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / completed_trips.length
       end
 
       return average
@@ -40,11 +47,11 @@ module RideShare
 
     def add_trip(trip)
       if trip.class != Trip
-      # unless trip.class <= Trip # if Trip not a subclass of trip then not permissible
+        # unless trip.class <= Trip # if Trip not a subclass of trip then not permissible
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 
-      @trips << trip 
+      @trips << trip
     end
 
     def total_revenue
@@ -53,7 +60,7 @@ module RideShare
       driver_share = 0.8
 
       subtotal = 0
-      @trips.each do |trip|
+      completed_trips.each do |trip|
         subtotal += trip.cost - fee
       end
 
@@ -65,6 +72,5 @@ module RideShare
       avg_revenue = (total_revenue/trips.length)
       return avg_revenue_per_hr = (avg_revenue/60).round(2)
     end
-
   end
 end

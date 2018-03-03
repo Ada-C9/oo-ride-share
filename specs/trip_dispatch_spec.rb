@@ -94,9 +94,7 @@ describe "TripDispatcher class" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
-    # it "instantiates a new trip" do
-    # end
-
+    
     it "returns the first available driver" do
       trip = @dispatcher.request_trip(3)
       trip[:id].must_equal(601)
