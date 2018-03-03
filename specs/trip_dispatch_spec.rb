@@ -102,12 +102,13 @@ describe "TripDispatcher class" do
       @dispatcher = RideShare::TripDispatcher.new
       @result = @dispatcher.request_trip(10)
     end
+
     it 'was created properly' do
       @result.must_be_kind_of RideShare::Trip
     end
 
     it 'returns a new trip' do
-      first_available_driver_id_file = 2
+      first_available_driver_id_file = 14
       last_trip_id_file = 600
       expected_trip_id = last_trip_id_file + 1
 
@@ -128,11 +129,13 @@ describe "TripDispatcher class" do
     end
 
     it 'returns error when requested a trip with an invalid or none passenger ID' do
+      # when no passenger id
       proc {@dispatcher.request_trip()
-      }.must_raise StandardError
+      }.must_raise ArgumentError
 
+      # when passenger id is invalid
       proc {@dispatcher.request_trip(500)
-      }.must_raise StandardError
+      }.must_raise ArgumentError
     end
 
     it 'updated the trip list for the driver' do
@@ -146,9 +149,9 @@ describe "TripDispatcher class" do
 
     end
 
-    it 'assigns the first driver available from the csv' do
-      expected_first_available_driver_id = 2
-      expected_first_available_driver = 'Emory Rosenbaum'
+    it 'assigns the first driver available' do
+      expected_first_available_driver_id = 14
+      expected_first_available_driver = 'Antwan Prosacco'
       @result.driver.id.must_equal expected_first_available_driver_id
       @result.driver.name.must_equal expected_first_available_driver
 
@@ -157,7 +160,7 @@ describe "TripDispatcher class" do
     it 'returns error when no drivers are available' do
       @dispatcher.drivers.map {|driver| driver.unavailable}
       proc {@dispatcher.request_trip(10)
-      }.must_raise StandardError
+      }.must_raise ArgumentError
     end
 
     it 'changes the status to unavailable for the driver selected' do
@@ -173,6 +176,32 @@ describe "TripDispatcher class" do
       @dispatcher.trips.length.must_equal expected_new_trips_length
     end
 
+  end
+  describe 'driver_selection' do
+
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+      # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
+      # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
+      # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
+      # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
+      # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+    it 'selects the correct available drivers' do
+
+      @result_1 = @dispatcher.request_trip(11)
+      @result_2 = @dispatcher.request_trip(12)
+      @result_3 = @dispatcher.request_trip(13)
+      @result_4 = @dispatcher.request_trip(14)
+      @result_5 = @dispatcher.request_trip(15)
+
+      @result_1.driver.id.must_equal 14
+      @result_2.driver.id.must_equal 27
+      @result_3.driver.id.must_equal 6
+      @result_4.driver.id.must_equal 87
+      @result_5.driver.id.must_equal 75
+
+    end
   end
 
 end
