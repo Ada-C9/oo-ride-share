@@ -66,8 +66,8 @@ describe "Driver class" do
       @driver.add_trip(trip)
     end
 
-    it "returns a float" do
-      @driver.average_rating.must_be_kind_of Float
+    it "returns a integer" do
+      @driver.average_rating.must_be_kind_of Integer
     end
 
     it "returns a float within range of 1.0 to 5.0" do
