@@ -23,22 +23,35 @@ module RideShare
 
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
-
+    
     def average_rating
-      total_ratings = 0
-      @trips.each do |trip|
-        total_ratings += trip.rating
-      end
+      ratings_sum = @trips.map { |trip|
+       trip.rating }.sum
 
       if trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = ratings_sum / trips.length
       end
 
       return average
     end
-
+    
+    # def average_rating
+    #   total_ratings = 0
+    #   @trips.each do |trip|
+    #     total_ratings += trip.rating
+    #   end
+    #
+    #   if trips.length == 0
+    #     average = 0
+    #   else
+    #     average = (total_ratings.to_f) / trips.length
+    #   end
+    #
+    #   return average
+    # end
+    
     def add_trip(trip)
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
