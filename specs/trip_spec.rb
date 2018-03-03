@@ -39,8 +39,6 @@ describe "Trip class" do
       end
     end
 
-  end # end of describe "initialize"
-  describe "time validation" do
     it "raises an ArgumentError if the end time is before the start time" do
       @trip_data[:start_time] = Time.parse('2015-05-20T12:14:00+00:00')
       @trip_data[:end_time] = Time.parse('2015-05-20T12:03:00+00:00')
@@ -48,5 +46,5 @@ describe "Trip class" do
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
     end
-  end # end of describe "time validation"
+  end # end of describe "initialize"
 end # end of describe "Trip class"
