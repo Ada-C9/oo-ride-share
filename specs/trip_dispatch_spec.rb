@@ -125,6 +125,10 @@ describe "TripDispatcher class" do
 
       all_trips.must_equal true
 
+      assigned_drivers = new_trips.all? { |trips| trips.driver.class == RideShare::Driver }
+
+      assigned_drivers.must_equal true
+
       trip_1.driver.id.must_equal 14
       trip_2.driver.id.must_equal 27
       trip_3.driver.id.must_equal 6
@@ -159,16 +163,9 @@ describe "TripDispatcher class" do
     end
 
     it "returns/creates new instance of Trip" do
-
       @new_trip.must_be_kind_of RideShare::Trip
-
     end
 
-    # it "assigns the first driver with status available" do
-    #   @new_trip.driver.must_be_kind_of RideShare::Driver
-    #   @new_trip.driver.id.must_equal 2
-    # end
-    #
     it "adds the new Trip to the collection of trips in TripDispatcher" do
       @dispatcher.trips.length.must_equal @initial_trips_length + 1
     end
@@ -185,7 +182,7 @@ describe "TripDispatcher class" do
       @driver.status.must_equal :UNAVAILABLE
     end
 
-    it "assigns new and unique trip id (trip ids in dispatcher are in consecutive order)" do
+    it "assigns new trip id (trip ids in dispatcher are in consecutive order)" do
       @new_trip.id.must_equal 601
     end
 
@@ -197,6 +194,17 @@ describe "TripDispatcher class" do
       @new_trip.end_time.must_be_nil
       @new_trip.cost.must_be_nil
       @new_trip.rating.must_be_nil
+    end
+
+    it "is set up for specific attributes and data types" do
+      [:id, :passenger, :driver, :start_time, :end_time, :cost, :rating].each do |prop|
+        @new_trip.must_respond_to prop
+      end
+
+      @new_trip.id.must_be_kind_of Integer
+      @new_trip.driver.must_be_kind_of RideShare::Driver
+      @new_trip.passenger.must_be_kind_of RideShare::Passenger
+
     end
 
   end
