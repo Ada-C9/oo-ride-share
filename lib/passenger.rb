@@ -26,7 +26,7 @@ module RideShare
     def trips_total
       total = 0
       @trips.each do |trip|
-        if trip.duration != :IN_PROGRESS
+        if trip.duration != :nil
           total += trip.cost
         end
       end
@@ -36,7 +36,7 @@ module RideShare
     def total_time
       total = 0
       @trips.each do |trip|
-        if trip.duration != :IN_PROGRESS
+        if trip.duration != nil
           total += trip.duration
         end
       end

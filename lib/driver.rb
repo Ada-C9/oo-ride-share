@@ -5,7 +5,8 @@ require 'pry'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_accessor :status
+    attr_reader :id, :name, :vehicle_id, :trips
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -48,7 +49,7 @@ module RideShare
     def net_income
       income = 0
       @trips.each do |trip|
-        if trip.duration != :IN_PROGRESS
+        if trip.duration != nil
           income += trip.cost
         end
       end
@@ -63,7 +64,7 @@ module RideShare
     def hourly_pay
       driving_time_seconds = 0
       @trips.each do |trip|
-        if trip.duration != :IN_PROGRESS
+        if trip.duration != nil
           driving_time_seconds += trip.duration
         end
       end

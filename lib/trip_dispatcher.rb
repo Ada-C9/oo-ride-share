@@ -112,6 +112,7 @@ module RideShare
     def request_trip(passenger_id)
       start_time = Time.now
       new_trip = Hash.new
+
       newly_added_trip = "No available drivers"
 
       new_trip[:id] = @trips.length
@@ -119,6 +120,8 @@ module RideShare
       drivers = available_drivers
       if drivers.count > 1
         driver = drivers[0]
+
+        driver.status = :UNAVAILABLE
         new_trip[:driver] = driver
 
         new_trip[:passenger] = find_passenger(passenger_id)
@@ -132,6 +135,7 @@ module RideShare
         newly_added_trip = RideShare::Trip.new(new_trip)
 
         @trips << newly_added_trip
+        # passenger.add_trip(newly_added_trip)
       end
 
       return newly_added_trip

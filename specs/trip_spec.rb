@@ -91,6 +91,15 @@ describe "Trip class" do
 
       RideShare::Trip.new(@trip_data).duration.must_equal 23
     end
+
+    it "returns nil if end_time is nil" do
+      control_test_time = Time.now
+
+      @trip_data[:end_time] = nil
+      @trip_data[:start_time] = control_test_time
+
+      RideShare::Trip.new(@trip_data).duration.must_be_nil
+    end
   end
   ##
 end
