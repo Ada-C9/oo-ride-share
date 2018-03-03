@@ -90,8 +90,13 @@ module RideShare
       trips
     end
 
+    # def find_available_driver
+    #   return @drivers.find{ |each_driver| each_driver.status == :AVAILABLE }
+    # end
+
     def find_available_driver
-      return @drivers.find{ |each_driver| each_driver.status == :AVAILABLE }
+      drivers = @drivers.select{ |each_driver| each_driver.status == :AVAILABLE && !each_driver.is_trip_in_progress? }
+      return drivers.min_by{ |each_driver| each_driver.last_trip_end_time.to_i }
     end
 
     def request_trip(passenger_id)
@@ -115,20 +120,19 @@ module RideShare
         passenger.add_trip trip
         @trips << trip
         return trip
-      end
+    end
 
-      def inspect
-        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-      end
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
-      private
+    private
 
-      def check_id(id)
-        if id == nil || id <= 0
-          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
-        end
+    def check_id(id)
+      if id == nil || id <= 0
+        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+    
   end
-  # dispatcher = RideShare::TripDispatcher.new
-  # puts dispatcher.find_passenger(1)
+end

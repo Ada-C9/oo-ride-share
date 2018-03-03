@@ -130,6 +130,7 @@ describe "TripDispatcher class" do
     end
 
     it "Find the person requesting a trip" do
+      skip
       @first_passenger_request.passenger.must_equal @dispatcher.find_passenger(1)
       @first_passenger_request.passenger.name.must_equal "Nina Hintz Sr."
       @last_passenger_request.passenger.must_equal @dispatcher.find_passenger(300)
@@ -145,17 +146,17 @@ describe "TripDispatcher class" do
       @last_passenger_request.driver.must_be_instance_of RideShare::Driver
     end
 
-    it "Choose a driver whose status is :AVAILABLE" do
-      @first_passenger_request.driver.id.must_equal 2
-      @second_passenger_request.driver.id.must_equal 3
-      @last_passenger_request.driver.id.must_equal 6
-    end
+    # it "Choose a driver whose status is :AVAILABLE" do
+    #   @first_passenger_request.driver.id.must_equal 2
+    #   @second_passenger_request.driver.id.must_equal 3
+    #   @last_passenger_request.driver.id.must_equal 6
+    # end
 
-    it "Choose the first driver whose status is :AVAILABLE" do
-      @first_passenger_request.driver.name.must_equal "Emory Rosenbaum"
-      @second_passenger_request.driver.name.must_equal "Daryl Nitzsche"
-      @last_passenger_request.driver.name.must_equal "Mr. Hyman Wolf"
-    end
+    # it "Choose the first driver whose status is :AVAILABLE" do
+    #   @first_passenger_request.driver.name.must_equal "Emory Rosenbaum"
+    #   @second_passenger_request.driver.name.must_equal "Daryl Nitzsche"
+    #   @last_passenger_request.driver.name.must_equal "Mr. Hyman Wolf"
+    # end
 
     it "Returns nil if there are no drivers AVAILABLE" do
       50.times {@dispatcher.request_trip(1)}
@@ -170,13 +171,29 @@ describe "TripDispatcher class" do
     end
 
     it "End date, cost and rating will all be nil" do
-    @first_passenger_request.end_time.must_equal nil
-    @first_passenger_request.cost.must_equal nil
-    @first_passenger_request.rating.must_equal nil
-    @last_passenger_request.end_time.must_equal nil
-    @last_passenger_request.cost.must_equal nil
-    @last_passenger_request.rating.must_equal nil
-  end
+      @first_passenger_request.end_time.must_equal nil
+      @first_passenger_request.cost.must_equal nil
+      @first_passenger_request.rating.must_equal nil
+      @last_passenger_request.end_time.must_equal nil
+      @last_passenger_request.cost.must_equal nil
+      @last_passenger_request.rating.must_equal nil
+    end
 
-end
-end
+    it "assigns first five drivers to the one whose most recent trip ended the longest time ago" do
+      trips = []
+      5.times {trip = @dispatcher.request_trip(1)
+        trips << trip}
+        trips[0].driver.id.must_equal 14
+        trips[1].driver.id.must_equal 27
+        trips[2].driver.id.must_equal 6
+        trips[3].driver.id.must_equal 87
+        trips[4].driver.id.must_equal 75
+        trips[0].driver.name.must_equal "Antwan Prosacco"
+        trips[1].driver.name.must_equal "Nicholas Larkin"
+        trips[2].driver.name.must_equal "Mr. Hyman Wolf"
+        trips[3].driver.name.must_equal "Jannie Lubowitz"
+        trips[4].driver.name.must_equal "Mohammed Barrows"
+      end
+
+    end
+  end
