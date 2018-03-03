@@ -125,7 +125,7 @@ module RideShare
 
     def next_id
       ids = @trips.map {|trip| trip.id}
-      return ids.max
+      return ids.max + 1
     end
 
     def request_trip(pass_id)
