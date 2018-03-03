@@ -26,7 +26,7 @@ describe "Trip class" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end
 
-    it "stores an instanxce of driver" do
+    it "stores an instance of driver" do
       @trip.driver.must_be_kind_of RideShare::Driver
     end
 
