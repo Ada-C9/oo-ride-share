@@ -16,8 +16,8 @@ module RideShare
 
     end
 
-    def get_total_spent
-      @trips.map { |trip| trip.cost }.compact.inject(0, :+)
+     def get_total_spent
+      @trips.map { |trip| trip.cost }.compact.sum
     end
 
     # # Alternative 1
