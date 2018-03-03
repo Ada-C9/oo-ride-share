@@ -116,14 +116,6 @@ describe "TripDispatcher class" do
       end
     end
 
-    # Modify this selected driver using a new helper method in Driver:
-    # Add the new trip to the collection of trips for that Driver
-    # Set the driver's status to :UNAVAILABLE
-    # Modify the passenger for the trip using a new helper method in Passenger:
-    # Add the new trip to the collection of trips for the Passenger
-    # Add the new trip to the collection of all Trips in TripDispatcher
-    # Return the newly created trip
-
     # it "returns string telling user no drivers available when there are no available drivers" do
     #   test_trip.must_equal("No available drivers")
     # end
@@ -146,9 +138,9 @@ describe "TripDispatcher class" do
     end
 
     it "end_time, trip cost and rating must be equal to nil" do
-      @test_trip.end_time.must_equal nil
-      @test_trip.cost.must_equal nil
-      @test_trip.rating.must_equal nil
+      @test_trip.end_time.must_be_nil
+      @test_trip.cost.must_be_nil
+      @test_trip.rating.must_be_nil
     end
     ##
   end

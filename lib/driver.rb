@@ -48,7 +48,9 @@ module RideShare
     def net_income
       income = 0
       @trips.each do |trip|
-        income += trip.cost
+        if trip.duration != :IN_PROGRESS
+          income += trip.cost
+        end
       end
       if income == 0
         net_income = income
@@ -61,7 +63,9 @@ module RideShare
     def hourly_pay
       driving_time_seconds = 0
       @trips.each do |trip|
-        driving_time_seconds += trip.duration
+        if trip.duration != :IN_PROGRESS
+          driving_time_seconds += trip.duration
+        end
       end
 
       if net_income != 0 && driving_time_seconds != 0
