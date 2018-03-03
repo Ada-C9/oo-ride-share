@@ -113,21 +113,64 @@ describe "Driver class" do
       end_time = start_time + 60 * 60
       trip_data = {
         id: 8,
-        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        driver: nil,
         passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
         start_time: start_time,
         end_time: end_time,
         cost: 20.00,
         rating: 3
       }
+      trip_data2 = {
+        id: 10,
+        driver: nil,
+        passenger: RideShare::Passenger.new(id: 21, name: "Lovelace", phone: "412-867-5309"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 10.00,
+        rating: 5
+      }
       trip = RideShare::Trip.new(trip_data)
+      trip2 = RideShare::Trip.new(trip_data2)
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       @driver.add_trip(trip)
+      @driver.add_trip(trip2)
     end
 
     it "calculate the average revenue per hour" do
-      @driver.average_revenue.must_equal 14.68
+      @driver.average_revenue.must_equal 42.72
     end
   end # end of describe "average_revenue method"
 
+  describe "finish_trip" do
+    before do
+      trip_data = {
+        id: 8,
+        driver: nil,
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: nil,
+        cost: 20.00,
+        rating: 3
+      }
+      trip_data2 = {
+        id: 10,
+        driver: nil,
+        passenger: RideShare::Passenger.new(id: 21, name: "Lovelace", phone: "412-867-5309"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T13:14:00+00:00'),
+        cost: 10.00,
+        rating: 5
+      }
+      @trip = RideShare::Trip.new(trip_data)
+      @trip2 = RideShare::Trip.new(trip_data2)
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @driver.add_trip(@trip)
+      @driver.add_trip(@trip2)
+    end
+
+    it "remove trip from trips if end time is nil" do
+      @driver.finish_trip.must_include @trip2
+      @driver.finish_trip.wont_include @trip
+    end
+  end # end of describe "finish_trip"
 end # end of describe "Driver class"

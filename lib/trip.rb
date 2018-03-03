@@ -41,14 +41,6 @@ module RideShare
       end
     end
 
-    # def finish_trip!
-    #   @end_time = Time.now
-    # end
-    #
-    # def finished?
-    #   return end_time != nil
-    # end
-
   end # end of Trip class
 end # end of RideShare module
 

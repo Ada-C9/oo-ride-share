@@ -76,7 +76,5 @@ describe "Trip class" do
       }
       @trip = RideShare::Trip.new(@trip_data).duration.must_be_nil
     end
-
   end # end of describe "duration method"
-
 end # end of describe "Trip class"
