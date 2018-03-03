@@ -31,7 +31,7 @@ module RideShare
       if trips.length == 0
         average = 0
       else
-        average = ratings_sum / trips.length
+        average = ratings_sum.to_f / trips.length
       end
 
       return average
