@@ -53,7 +53,9 @@ module RideShare
     end
 
     def total_revenue
-      if trips.last.cost == nil
+      if trips.length == 0
+        total_with_fee_subtracted = 0
+      elsif trips.last.cost == nil
         included_trips = trips[0..-2]
         total_with_fee_subtracted = included_trips.reduce(0){ |total, trip| total + (trip.cost - 1.65)}
       else
@@ -84,9 +86,5 @@ module RideShare
       @status = :UNAVAILABLE
     end
 
-    def gives_end_time_of_last_trip
-      last_trip = @trips.last
-      return last_trip[:end_time]
-    end
   end
 end

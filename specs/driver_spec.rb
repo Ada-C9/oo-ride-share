@@ -144,11 +144,15 @@ describe "Driver class" do
 
     end
 
+    it "returns a float" do
+      @driver.total_revenue.must_be_kind_of Float
+    end
+
     it "returns drivers total revenue" do
       @driver.total_revenue.must_equal 157.36
     end
 
-    it "returns drivers total revenue even if they have a trip in progress" do
+    it "does not include the nil cost of a trip in progress" do
       in_progress_trip = {
         id: 10,
         driver: @driver,
@@ -164,6 +168,11 @@ describe "Driver class" do
     @driver.total_revenue.must_equal 157.36
     @driver.trips.length.must_equal 3
 
+    end
+
+    it "returns zero if no trips" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      driver.total_revenue.must_equal 0
     end
   end
 
