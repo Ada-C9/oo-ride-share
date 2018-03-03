@@ -244,4 +244,14 @@ describe "Driver class" do
 
   end
 
+  describe "change_to_unavailable method" do
+    it "changes driver's available status to UNAVAILABLE" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", status: :AVAILABLE)
+
+      driver.change_to_unavailable
+
+      driver.status.must_equal :UNAVAILABLE
+    end
+  end
+
 end
