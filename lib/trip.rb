@@ -28,7 +28,6 @@ module RideShare
           raise ArgumentError.new("End time (#{@end_time}) cannot be before start time (#{@start_time}).")
         end
       end
-      #THIS IS A BULLSHIT CHANGE FOR LEARNING ABOUT GIT
     end
 
     def report_trip_duration
