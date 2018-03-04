@@ -96,9 +96,6 @@ describe "TripDispatcher class" do
       dispatcher = RideShare::TripDispatcher.new
 
       trip = dispatcher.trips.first
-      driver = trip.driver
-      passenger = trip.passenger
-
       trip.start_time.must_be_kind_of Time
     end
   end
@@ -139,23 +136,22 @@ describe "TripDispatcher class" do
     it "creates a valid id for the trip" do
 
       previous = @dispatcher.trips.length
-      new_trip = @dispatcher.request_trip(2)
+      @dispatcher.request_trip(2)
 
-      @dispatcher.trips.length.must_equal previous +1
+      @dispatcher.trips.length.must_equal previous + 1
     end
 
     it "updated the driver list of trips correctly" do
       driver = @dispatcher.find_driver(9)
       previous = driver.trips.length
 
-      @dispatcher.drivers.each { |driver| driver.available?(false)}
+      @dispatcher.drivers.each { |driver_element| driver_element.available?(false)}
 
-      working_driver = @dispatcher.drivers.find { |driver| driver.id == 9 }
+      working_driver = @dispatcher.drivers.find { |driver_element| driver_element.id == 9 }
       working_driver.available?(true)
       @dispatcher.request_trip(9)
       #array of driver objects
       working_driver.trips.length.must_equal previous + 1
-
     end
 
     it "updated the passenger's trips correctly" do
@@ -172,9 +168,6 @@ describe "TripDispatcher class" do
 
       trips.length.must_equal previous + 1
     end
-
-    #it "returns all unfinished trips"
-    #end
   end
 
   describe "Wave3 tests- additional TripDispatcher logic" do
@@ -196,17 +189,13 @@ describe "TripDispatcher class" do
 
     it "drivers that have had no trips are available" do
 
-      driver = @dispatcher.find_driver(100)
-      #driver.trips = nil
+      @dispatcher.drivers.each { |driver_element| driver_element.available?(false)}
 
-      @dispatcher.drivers.each { |driver| driver.available?(false)}
-      #
-      working_driver = @dispatcher.drivers.find { |driver| driver.id == 100 }
+      working_driver = @dispatcher.drivers.find { |driver_element| driver_element.id == 100 }
       working_driver.available?(true)
       trip = @dispatcher.request_trip(9)
-      #
-      trip.driver.id.must_equal 100
 
+      trip.driver.id.must_equal 100
     end
 
     it "prioritizes drivers who have the oldest most recent trip" do
@@ -216,14 +205,11 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(12).driver.id.must_equal 6
       @dispatcher.request_trip(13).driver.id.must_equal 87
       @dispatcher.request_trip(9).driver.id.must_equal 75
-
-
     end
 
 
     it "prioritizes drivers that have had no trips" do
       @dispatcher.request_trip(9).driver.id.must_equal 100
-
     end
   end
 end

@@ -43,10 +43,8 @@ module RideShare
     end
 
     def find_driver(id)
-      #checkid method for each driver(in this class)
       check_id(id)
-      #for each driver in instance variable for TripDispenser instance, assign their id ?
-      #if true
+
       @drivers.find{ |driver| driver.id == id }
     end
 
@@ -66,15 +64,12 @@ module RideShare
     end
 
     def find_passenger(id)
-      #check passenger id
+
       check_id(id)
-      #for each passenger in instance variable of dispatcher id is passenger id
-      #finds first result in @passenger instance variable
-      #if true
+
       @passengers.find{ |passenger| passenger.id == id }
     end
 
-    #????Go over this
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
@@ -102,121 +97,70 @@ module RideShare
     end
 
     def find_available_driver
-
-      check_status
+     check_status
 
       available_drivers = drivers.select {|driver| driver.status == :AVAILABLE }
-
-      #will check the first condition, not get to the last
-      #for new drivers
-      new_drivers = available_drivers.select {|driver| driver.trips == []  || driver.trips.last.end_time != nil}
-
-      # first_driver = available_drivers.first
-
       first_driver = compare_oldest_trip(available_drivers)
 
       return first_driver
-
     end
 
 
     def compare_oldest_trip(available_drivers)
-
-      #make this priority later
       new_drivers = available_drivers.select {|driver| driver.trips.length == 0}
 
       if new_drivers.length>0
         return new_drivers.first
       end
 
+      older = available_drivers.min_by{|driver| driver.trips.max_by{|trip| trip.end_time}.end_time}
+      return older
+    end
 
-      older = available_drivers.min_by{|driver|  driver.trips.max_by{|trip| trip.end_time}.end_time
-    }
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
 
+      driver = find_available_driver
 
-    return older
+      trip_id = trips.length + 1
 
-  end
+      in_progress_data = {
+        id: trip_id,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time:nil,
+        cost:nil,
+        rating:nil,
+      }
 
-  def request_trip(passenger_id)
-    passenger = find_passenger(passenger_id)
+      unfinished_trip = RideShare::Trip.new(in_progress_data)
 
-    driver = find_available_driver
+      driver.available?(false)
+      trips.push(unfinished_trip)
+      driver.add_trip(unfinished_trip)
+      passenger.add_trip(unfinished_trip)
 
-    trip_id = trips.length + 1
+      return unfinished_trip
+    end
 
-    in_progress_data = {
-      id: trip_id,
-      driver: driver,
-      passenger: passenger,
-      start_time: Time.now,
-      end_time:nil,
-      cost:nil,
-      rating:nil,
-    }
+    def check_status
+      if @drivers.all?{ |driver| driver.status == :UNAVAILABLE}
+        raise ArgumentError.new("No available drivers")
+      end
+    end
 
-    unfinished_trip = RideShare::Trip.new(in_progress_data)
+    private
 
-    driver.available?(false)
+    def trip_time
+      return trip[:start_time] - trip[:endtime]
+    end
 
-    trips.push(unfinished_trip)
+    def check_id(id)
+      if id == nil || id <= 0
+        raise ArgumentError.new("ID cannot be blank or less than zero.(got #{id})")
+      end
 
-    driver.add_trip(unfinished_trip)
-
-    passenger.add_trip(unfinished_trip)
-
-
-
-    #how do these instances not write over each other?
-    return unfinished_trip
-  end
-
-  def check_status
-    if @drivers.all?{ |driver| driver.status == :UNAVAILABLE}
-      raise ArgumentError.new("No available drivers")
     end
   end
-
-
-
-  private
-
-  def trip_time
-    return trip[:start_time] - trip[:endtime]
-  end
-
-  def check_id(id)
-    if id == nil || id <= 0
-      raise ArgumentError.new("ID cannot be blank or less than zero.(got #{id})")
-    end
-  end
-
-
 end
-end
-
-# trips.each do
-# puts trips.driver.id
-# puts trips.end_time
-
-
-# #puts trips.length
-# dispatcher = RideShare::TripDispatcher.new
-# puts dispatcher.trips
-#yet_trip =  dispatcher.request_trip(9)
-
-
-#
-# #puts dispatcher.drivers.status.to_s
-#
-# puts yet_trip.id
-# puts yet_trip.driver
-# puts yet_trip.passenger
-# puts yet_trip.start_time
-# puts yet_trip.end_time
-# puts yet_trip.cost
-# puts yet_trip.rating
-# puts yet_trip.driver.status
-# puts yet_trip.driver.trips
-# puts "*********"
-# puts yet_trip.passenger.trips
