@@ -231,11 +231,11 @@ describe "TripDispatcher class" do
     end
 
     it "Selects the right driver" do
+
       driver1_id = 100
       driver1_name = "Minnie Dach"
       new_trip1 = @new_trip
       test_driver1 = new_trip1.driver
-      ap "test_driver1 STATUS = #{test_driver1.status}"
       test_driver1.id.must_equal driver1_id
       test_driver1.name.must_equal driver1_name
 
@@ -243,10 +243,9 @@ describe "TripDispatcher class" do
       driver2_id = 14
       driver2_name = "Antwan Prosacco"
       test_driver2 = new_trip2.driver
-    ap "test_driver2 STATUS = #{test_driver2.status}"
       test_driver2.id.must_equal driver2_id
       test_driver2.name.must_equal driver2_name
-    #
+
       new_trip3 = @trip_disp.better_request_new_trip(4)
       driver3_id = 27
       driver3_name = "Nicholas Larkin"
@@ -281,7 +280,7 @@ describe "TripDispatcher class" do
 
     it 'Returns an exeption if there are no AVAILABLE drivers' do
       @trip_disp.drivers.each {|driver| driver.change_status}
-      proc {@trip_disp.better_request_new_trip(1)}.must_raise ArgumentError
+      proc {@trip_disp.better_request_new_trip(1)}.must_raise StandardError
     end
 
     it 'Updates the length of trip list in @trip_disp:' do

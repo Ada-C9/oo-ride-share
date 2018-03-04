@@ -237,7 +237,7 @@ module RideShare
 
       right_driver = select_the_right_driver
       if right_driver.nil?
-        raise ArgumentError
+        raise StandardError
         puts "There is no available drivers"
       end
 
