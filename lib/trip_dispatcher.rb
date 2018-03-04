@@ -114,6 +114,10 @@ module RideShare
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
+    def reset_trips # to test request_trip method if there are no existing trips
+      @trips = []
+    end
+
     private
 
     def check_id(id)
@@ -123,9 +127,13 @@ module RideShare
     end
 
     def get_next_trip_id
-      trip_ids = @trips.map { |trip| trip.id }
-      sorted_ids = trip_ids.sort
-      return sorted_ids.last + 1
+      if @trips.empty?
+        return 1
+      else
+        trip_ids = @trips.map { |trip| trip.id }
+        sorted_ids = trip_ids.sort
+        return sorted_ids.last + 1
+      end
     end
 
     def get_oldest_driver

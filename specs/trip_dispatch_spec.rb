@@ -196,6 +196,13 @@ describe "TripDispatcher class" do
       new_trip.id.must_equal last_trip_id + 1
     end
 
+    it "should assign a new trip an id of 1 if there are no prior trips" do
+      new_dispatcher = RideShare::TripDispatcher.new
+      new_dispatcher.reset_trips
+      new_trip = new_dispatcher.request_trip(1)
+      new_trip.id.must_equal 1
+    end
+
     it "it returns the driver who has not driven in the greatest amount of time" do
 
       names = ["Minnie Dach", "Antwan Prosacco", "Nicholas Larkin", "Mr. Hyman Wolf", "Jannie Lubowitz"]
