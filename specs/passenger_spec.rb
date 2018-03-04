@@ -43,22 +43,20 @@ describe "Passenger class" do
 
     end
 
-    it "returns the type of total_amount_of_money" do
-      total = @passenger.total_amount_of_money
-      total.must_be_kind_of Float
 
-    end
 
     it "return total amount spent by passenger " do
 
-       @passenger.total_amount_of_money.must_equal 0.0
-       @passenger.total_amount_of_money.must_be_kind_of Float
-       @passenger.add_trip(@trip)
-       @passenger.add_trip(@trip)
-       @passenger.total_amount_of_money.must_equal 34.78
+
+      @passenger.add_trip(@trip)
+      @passenger.add_trip(@trip)
+      @passenger.total_amount_of_money.must_equal 34.78
 
     end
 
+    it "returns 0 if there are no trips" do
+      @passenger.total_amount_of_money.must_equal 0
+    end
   end
 
   describe "total_amount_of_time" do
@@ -74,13 +72,18 @@ describe "Passenger class" do
     end
 
     it "return total_amount_of_time" do
-      @passenger.total_amount_of_time.must_equal 0
-      @passenger.add_trip(@trip)
 
+      @passenger.add_trip(@trip)
       @passenger.total_amount_of_time.must_equal 480
 
-     end
+    end
+
+    it "returns 0 if there are no trips" do
+      @passenger.total_amount_of_money.must_equal 0
+    end
+    
   end
+
 
 
   describe "trips property" do
