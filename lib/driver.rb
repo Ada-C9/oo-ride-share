@@ -38,47 +38,48 @@ module RideShare
 
     def add_trip(trip)
       if trip.class != Trip
-        # unless trip.class <= Trip
-        #tripclass is subclass or instance of Trip
+
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 
       @trips << trip
     end
 
+    def new_trip(new_trip)
+      @trips << new_trip
+      new_trip[:status] = :UNAVAILABLE
+
+    end
+
     def total_revenue
-      #revenue = RideShare::Passenger.ne.total_amount_of_money
-      if @end_time != nil
-      total = 0.0
-      @trips.each do |trip|
-        total+= trip.cost
+      if @trips.length == 0
+        return 0
+      else
+
+        fee = 1.65
+        driver_portion = 0.8
+        subtotal = @trips.map {|trip| trip.cost - fee}.inject(0, :+) * driver_portion
       end
-      total_revenue = total * 0.8 - 1.65
-      return total_revenue.round(2)
+      return subtotal.round(2)
+
     end
-    end
+
 
     def average_revenue
       total_revenue
-      total_time = 0
-      @trips.each do |trip|
-        total_time += (trip.end_time) - (trip.start_time)
+      if @trips.length == 0
+        return 0
+      else
+        total_time = 0
+        @trips.each do |trip|
+          total_time += trip.end_time - trip.start_time
 
+        end
+        total_time_per_hour = total_time/3600
+        avg_revenue = (total_revenue) /(total_time_per_hour)
       end
-      total_time_per_hour = total_time/3600
-      avg_revenue = (total_revenue) /(total_time_per_hour)
       return avg_revenue.round(2)
     end
 
-    # def passengers
-    #   passangers = []
-    #   trips.each do |trip|
-    #     passengers << trip.passanger
-    #   end
-    #   return passengers.uniq
-    # using map
-    # passengers = trips.map do |trip|
-    #   trip.passenger
-    # end
   end
 end
