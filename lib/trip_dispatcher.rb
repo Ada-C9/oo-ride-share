@@ -92,34 +92,38 @@ module RideShare
 
       trips
     end
+
     def request_trip(passenger_id)
 
-      new_trip_id = @trips.length + 1
       start_time = Time.now
-      @drivers.each do |driver|
-        if driver[:status] == :AVAILABLE
-          selected_driver = driver
-        else
-        raise "drivers are not available right now"
+      selected_driver = @drivers.find{ |driver| driver.status == :AVAILABLE}
+      passenger = find_passenger(passenger_id)
+
+      id = @trips.length + 1
+
+      if selected_driver == nil
+        return nil
       end
-      parsed_new_trip = {
-        id: new_trip_id,
-        driver: select_driver,
-        passenger: find_passenger(id),
-        start_time:start_time,
+
+      trip_data= {
+        id: id,
+        driver: selected_driver,
+        passenger: passenger,
+        start_time: start_time,
         end_time:nil,
         cost: nil,
-        rating: nil,
+        rating: nil
 
       }
-      new_trip = Trip.new(parsed_new_trip)
-      driver.add_trip(new_trip)
+      new_trip = RideShare::Trip.new(trip_data)
+
+      selected_driver.add_trip(new_trip)
+      selected_driver.set_status(new_trip)
+
       passenger.add_trip(new_trip)
       @trips << new_trip
+
       return new_trip
-
-    end
-
   end
 
     private
@@ -131,4 +135,3 @@ module RideShare
     end
   end
 end
-#puts RideShare::TripDispatcher.request_trip(54)
