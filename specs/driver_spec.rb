@@ -77,4 +77,24 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "driver's total revenue" do
+    before do
+      @trip_1 = RideShare::Trip.new(id: 1, driver: 1, passenger: 54, start_time: Time.parse('2016-04-05T14:01:00+00:00'), end_time: Time.parse('2016-04-05T14:09:00+00:00'), cost: 17.39, rating: 3)
+      @trip_2 = RideShare::Trip.new(id: 122, driver: 1, passenger: 247, start_time: Time.parse('2015-12-24T04:57:00+00:00'), end_time: Time.parse('2015-12-24T04:57:00+00:00'), cost: 13.11, rating: 5)
+      @driver = RideShare::Driver.new(id: 1, name: "Bernardo Prosacco", vin: "WBWSS52P9NEYLVDE9", status: :UNAVAILABLE, trips: [])
+    end
+
+    it "calculates that driver's total revenue" do
+      @driver.add_trip(@trip_1)
+      @driver.add_trip(@trip_2)
+
+      @driver.total_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8
+    end
+
+    it "returns 0 if there are no trips for driver" do
+      @driver.total_revenue.must_equal 0
+    end
+
+  end
 end
