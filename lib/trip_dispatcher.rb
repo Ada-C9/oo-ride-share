@@ -107,15 +107,19 @@ module RideShare
     # Add trip to array of Trips in TripDispatcher
 
     # Return the newly created Trip
+    def available_drivers
+      available_drivers = @drivers.find_all do |driver|
+        driver.status == :AVAILABLE
 
+      first_available_driver  = available_drivers.first
+    end
 
     def request_trip(passenger_id)
 
-
       trip_data = {
         id: trips.length + 1
-        driver: "AVAILABLE Driver"
-        passenger: find_passenger(passenger_id) 
+        driver: first_available_driver
+        passenger: find_passenger(passenger_id)
         start_time: Time.now,
         end_time: nil,
         cost: nil,
@@ -124,8 +128,8 @@ module RideShare
 
       new_trip = Trip.new(trip_data)
       trips << new_trip
-
-
+      p new_trip
+      return new_trip
 
     end
 
