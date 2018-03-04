@@ -91,18 +91,17 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
     end
 
-    def select_driver_available
-      # Find the first available driver:
-      @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
+    def inspect
+      # Fix testing bug:
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
+    #________________________WAVE 2:
     def request_trip(passenger_id)
       # Initiate a new trip:
-
       passenger = find_passenger(passenger_id)
 
       raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.") if passenger == nil
@@ -142,133 +141,29 @@ module RideShare
       return trip_in_progress
     end
 
+    #________________________WAVE 3:
 
-
-    # ___________Wave 3:
-
-    def select_the_right_driver
-
-      # Find a driver with no trips:
-      select_driver_with_no_trips
-      if select_driver_with_no_trips != nil
-        right_driver = select_driver_with_no_trips
-        return right_driver
-      end
-      # return select_driver_with_no_trips
-
-      # Create a hash with latest trips of all drivers: array[driver, lastest_trip]
-      lastest_trips_of_all_drivers = find_lastest_trips_of_all_drivers
-
-      # Select only the availables ones: array[driver, lastest_trip]
-      only_available = only_available(lastest_trips_of_all_drivers)
-
-      # Select the driver with the earliest end of trip in the hash:
-      earliest_end_time = Time.now
-      right_driver = nil
-
-      ap "only_available = #{only_available.length}"
-
-      only_available.each do |sub_array|
-        if sub_array[1] == nil
-          return right_driver = sub_array[0]
-        end
-        # elsif
-        if sub_array[1].end_time != nil
-          ap "not equal nil"
-          # else
-          # right_driver =  sub_array.min_by {|end_time| sub_array[1].end_time.to_i}
-
-          if
-            sub_array[1].end_time.to_i < earliest_end_time.to_i
-            earliest_end_time = sub_array[1].end_time
-            ap "earliest_end_time = #{earliest_end_time}"
-            ap "driver status = #{sub_array[0].status}"
-            right_driver = sub_array[0]
-          end
-        end
-      end
-      # puts "right_driver = #{right_driver}"
-      return right_driver
-    end
-
-    def find_lastest_trips_of_all_drivers
-      # Returns a hash with {driver: latest_trip}
-      lastest_trips_of_all_drivers = []
-
-      @drivers.each do |driver|
-        last = driver.trips.max_by { |trips| trips.end_time.to_i }
-        lastest_trips_of_all_drivers << [driver, last]
-      end
-
-      # @drivers.each do |driver|
-      #   # lastest_trips_of_all_drivers[:"#{driver}"] = driver.trips.last
-      #
-      #    lastest_trips_of_all_drivers << [driver, last]
-      # lastest_trips_of_all_drivers << [driver, driver.trips.last]
-      #  Hash[lastest_trips_of_all_drivers]
-      # end
-      return lastest_trips_of_all_drivers
-    end
-
-    def select_driver_with_no_trips
-      select_driver_with_no_trips = nil
-
-      @drivers.each {|driver| return select_driver_with_no_trips = driver if driver.trips == 0 }
-
-      return select_driver_with_no_trips #if select_driver_with_no_trips != nil
-    end
-
-    def only_available(lastest_trips_of_all_drivers)
-      available_drivers = []
-      lastest_trips_of_all_drivers.each do |index|
-        if index[0].status == :AVAILABLE
-          available_drivers << index
-        end
-      end
-      return available_drivers
-    end
-
-    def better_request_new_trip(passenger_id)
+    def wave3_request_trip(passenger_id)
       # Initiate a new trip:
 
+      # 1 - Check if passanger exists
       passenger = find_passenger(passenger_id)
       raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.") if passenger == nil
 
-
-      right_driver = select_the_right_driver
-      if right_driver.nil?
-        raise StandardError
-        puts "There is no available drivers"
-      end
-
+      # 2 - Check if there are available drivers:
+      driver = select_the_right_driver
+      raise StandardError.new("There is no available drivers") if driver.nil?
 
       # Create a new instance of Trip:
-      in_progress_trip = {
-        id: (@trips.size + 1),
-        driver: right_driver,
-        passenger: passenger,
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil,
-      }
-      trip_in_progress = Trip.new(in_progress_trip)
-      # ap "FILE new_trip:"
-      ap trip_in_progress
-      # Add the new trip to the collection of trips for that Driver:
+      trip_in_progress = new_trip(passenger, driver)
 
-      # ap "FILE first row"
-      # ap right_driver.trips
+      # Add the new trip to the collection of trips for this Driver:
+      driver.add_trip(trip_in_progress)
 
-      right_driver.add_trip(trip_in_progress)
+      # Set this driver's status to UNAVAILABLE:
+      driver.change_status
 
-      # ap "FILE second row"
-      # ap right_driver.trips
-
-      # Set the driver's status to :UNAVAILABLE:
-      right_driver.change_status
-
-      # Add the new trip to the collection of trips for the Passenger:
+      # Add the new trip to the collection of trips for this Passenger:
       passenger.add_trip(trip_in_progress)
 
       # Add the new trip to the collection of all Trips in TripDispatcher:
@@ -276,11 +171,6 @@ module RideShare
 
       # Return the newly created trip:
       return trip_in_progress
-    end
-
-    def inspect
-      # Fix testing bug:
-      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
@@ -291,18 +181,80 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+    
+    #________________________Private methods for WAVE 2:
+    def select_driver_available
+      # Find the first available driver:
+      @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
+    end
+
+    #________________________Private methods for WAVE 3:
+    def select_driver_with_earliest_end_of_trip(only_available)
+      earliest_end_time = Time.now
+      right_driver = nil
+
+      only_available.each do |sub_array|
+
+        return right_driver = sub_array[0] if sub_array[1] == nil
+
+        if
+          sub_array[1].end_time < earliest_end_time
+          earliest_end_time = sub_array[1].end_time
+          right_driver = sub_array[0]
+        end
+      end
+      return right_driver
+    end
+
+    def only_available(lastest_trips_of_all_drivers)
+      available_drivers = []
+      lastest_trips_of_all_drivers.each {|index| available_drivers << index if index[0].status == :AVAILABLE}
+      return available_drivers
+    end
+
+    def select_driver_with_no_trips
+      select_driver_with_no_trips = nil
+      @drivers.each {|driver| return select_driver_with_no_trips = driver if driver.trips == 0 }
+      return select_driver_with_no_trips
+    end
+
+    def find_lastest_trips_of_all_drivers
+      lastest_trips_of_all_drivers = []
+      @drivers.each do |driver|
+        last = driver.trips.max_by { |trips| trips.end_time.to_i }
+        lastest_trips_of_all_drivers << [driver, last]
+      end
+      return lastest_trips_of_all_drivers
+    end
+
+    def new_trip(passenger, driver)
+      # Create a new instance of Trip:
+      in_progress_trip = {
+        id: (@trips.size + 1),
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+      return Trip.new(in_progress_trip)
+    end
+
+    def select_the_right_driver
+
+      # Return a driver with no trips if it exists:
+      select_driver_with_no_trips
+
+      # Create a hash with latest trips of all drivers: array[driver, lastest_trip]
+      lastest_trips_of_all_drivers = find_lastest_trips_of_all_drivers
+
+      # Select only the availables ones: array[driver, lastest_trip]
+      only_available = only_available(lastest_trips_of_all_drivers)
+
+      # Select the driver with the earliest end of trip in the hash:
+
+      return select_driver_with_earliest_end_of_trip(only_available)
+    end
   end
 end
-
-
-# The Driver must have a status of AVAILABLE
-# The Driver must not have any in-progress trips (end time of nil)
-# From the Drivers that remain, select the one whose most recent trip ended the longest time ago
-
-# trip_dispatcher = RideShare::TripDispatcher.new()
-# Request new trip:
-# testing = trip_dispatcher.select_the_right_driver
-# puts testing
-
-# ap trip_dispatcher.find_lastest_trips_of_all_drivers
-# ap trip_dispatcher.select_the_right_driver
