@@ -23,6 +23,13 @@ describe "TripDispatcher class" do
     @dispatcher_1 = RideShare::TripDispatcher.new
     @dispatcher_2_unavail = RideShare::TripDispatcher.new
     @dispatcher_2_unavail.drivers = unavailable_drivers
+
+    #Special stuff for testing methods involving drivers with ongoing trips:
+
+    @a_trip_in_progress = RideShare::Trip.new({id: 901, driver: "Yinnie Yach", passenger: "passenger_TBD", start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+
+    @driver_y_in_progress = RideShare::Driver.new(id: 800, name: "Yinnie Yach", vin: "YF9Z0ST7X18WD41HT", status: :UNAVAILABLE, trips: @a_trip_in_progress)
+
   end
 
   describe "Initializer" do
@@ -120,13 +127,30 @@ describe "TripDispatcher class" do
   end
   describe "choose_available_driver" do
 
-    it "identifies the first available driver" do
-      driver_to_assign = @dispatcher_1.choose_available_driver
-      driver_to_assign.must_be_instance_of RideShare::Driver
-      status = driver_to_assign.status
-      status.must_equal :AVAILABLE
-      name = driver_to_assign.name
-      name.must_equal "Emory Rosenbaum"
+    # it "identifies the first available driver" do
+    #  --NOTES FOR WAVE 3:  THIS COULD WORK WITH A LIMITED DRIVER SET WITH ONLY ONE AVAILABLE--
+    #   driver_to_assign = @dispatcher_1.choose_available_driver
+    #   driver_to_assign.must_be_instance_of RideShare::Driver
+    #   status = driver_to_assign.status
+    #   status.must_equal :AVAILABLE
+    #   name = driver_to_assign.name
+    #   name.must_equal "Emory Rosenbaum"
+    # end
+
+    it "chooses the driver who has been idle the longest since the end of their most recent trip, if more than one driver is available" do
+    end
+
+    it "will not choose a driver who has a trip in progress" do
+      #Test arrangement:
+      @dispatcher_3_only_in_prog = RideShare::TripDispatcher.new
+      @dispatcher_3_only_in_prog.drivers = [@driver_y_in_progress]
+
+      #The two assertions below just test the test:
+      @dispatcher_3_only_in_prog.drivers.count.must_equal 1
+      @dispatcher_3_only_in_prog.drivers.find { |driver| driver.id == 800}.wont_be_nil
+
+      #The assertion below is the actual test of the production code:
+      @dispatcher_3_only_in_prog.choose_available_driver.must_be_nil
     end
 
     it "returns nil when there are no drivers with available status" do

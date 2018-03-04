@@ -111,7 +111,7 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      # WAVE 3 note:  The driver selection mechanism prescribed in Wave 3 is actually happening in the helper method, find_available_driver, above.
+      # WAVE 3 note:  The driver selection mechanism prescribed in Wave 3 is actually happening in the helper method, choose_available_driver, above.
       new_trip_data = {
         id: create_new_trip_id,
         driver: choose_available_driver,
