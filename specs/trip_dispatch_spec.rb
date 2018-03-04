@@ -1,6 +1,7 @@
 require_relative 'spec_helper'
+require 'pry'
 
-xdescribe "TripDispatcher class" do
+describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -12,7 +13,7 @@ xdescribe "TripDispatcher class" do
       [:trips, :passengers, :drivers].each do |prop|
         dispatcher.must_respond_to prop
       end
-
+      
       dispatcher.trips.must_be_kind_of Array
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
@@ -92,11 +93,11 @@ xdescribe "TripDispatcher class" do
     end
 
     describe "request_trip method" do
-      it "can create a new trip requested by a passenger" do
+      it "create a new trip requested by a passenger" do
         passenger_id = 54
+
         trip_dispatcher =  RideShare::TripDispatcher.new
         trip_dispatcher.request_trip(passenger_id).must_be_instance_of RideShare::Trip
-
       end
 
       it "return an updated trip collections including the new trip in passenger class" do
@@ -104,12 +105,47 @@ xdescribe "TripDispatcher class" do
         trip_dispatcher = RideShare::TripDispatcher.new
         new_trip = trip_dispatcher.request_trip(passenger_id)
 
-        new_trip.passenger.new_trip(new_trip)
+        new_trip.passenger.add_trip(new_trip)
         new_trip.passenger.trips.must_include new_trip
 
-        new_trip.driver.new_trip(new_trip)
+        new_trip.driver.add_trip(new_trip)
         new_trip.driver.trips.must_include new_trip
       end
+
+      it "returns the status of choosen driver" do
+        passenger_id = 10
+        trip_dispatcher = RideShare::TripDispatcher.new
+
+        new_trip = trip_dispatcher.request_trip(passenger_id)
+
+        new_trip.driver.add_trip(new_trip)
+        new_trip.driver.set_status(new_trip).must_equal :UNAVAILABLE
+      end
+
+      it "returns the first available driver" do
+        passenger_id = 10
+
+        trip_dispatcher =  RideShare::TripDispatcher.new
+
+        new_trip = trip_dispatcher.request_trip(passenger_id)
+        new_trip.driver.add_trip(new_trip)
+
+        new_trip.driver.name.must_equal "Emory Rosenbaum"
+
+      end
+
+
+      it "returns nil when there are no :AVAILABLE divers" do
+        trip_dispatcher =  RideShare::TripDispatcher.new
+        trip_dispatcher.drivers.each do |driver|
+          driver.set_status(:UNAVAILABLE)
+        end
+
+        trip_dispatcher.request_trip(1).must_be_nil
+      end
+
+
+
     end
 
   end
