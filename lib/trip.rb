@@ -29,12 +29,17 @@ module RideShare
     end
 
     def duration
-      duration = (@end_time - @start_time)
+      unless end_time == nil
+        duration = (@end_time - @start_time)
+      end
       return duration
     end
 
     def finish_trip!
-      @end_time = Time.new
+      if finished?
+        raise "The trip is already finished"
+      end
+        @end_time = Time.new
     end
 
     def finished?

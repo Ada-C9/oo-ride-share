@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class Driver
@@ -20,16 +21,20 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def finished_trips
+      trips.reject {|trip| trip.end_time == nil}
+    end
+
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      finished_trips.each do |trip|
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if finished_trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / finished_trips.length
       end
 
       return average
@@ -50,7 +55,7 @@ module RideShare
       driver_takehome = 0.8
 
       subtotal = 0
-      trips.each do |trip|
+      finished_trips.each do |trip|
         # Question: what if the cost is less than the fee
         subtotal += trip.cost - fee
       end
@@ -60,11 +65,7 @@ module RideShare
     end
 
     def average_revenue
-      average = 0
-      trips.each do |trip|
-        average += (total_revenue / (trip.duration / 3600))
-      end
-      return average.round(2)
+      (total_revenue / finished_trips.length).round(2)
     end
   end
 end

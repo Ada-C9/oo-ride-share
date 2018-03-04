@@ -118,5 +118,27 @@ describe "Passenger class" do
     it "return the total amount of time that passenger has spent on their trips" do
       @passenger.total_time.must_equal 1800
     end
+
+    describe "finished_trips" do
+      it "return an array of trips that have end time" do
+        trips = [
+          RideShare::Trip.new({cost: 5, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"}),
+          RideShare::Trip.new({cost: 7, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"}),
+          RideShare::Trip.new({cost: 8, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: nil})
+        ]
+
+        passenger_data = {
+          id: 7,
+          vin: 'a' * 17,
+          name: 'test driver',
+          trips: trips
+        }
+
+        passenger = RideShare::Passenger.new(passenger_data)
+        passenger.finished_trips.length.must_equal 2        
+        trips.last.finish_trip!
+        passenger.finished_trips.length.must_equal 3
+      end
+    end
   end
 end

@@ -21,9 +21,13 @@ module RideShare
       @trips << trip
     end
 
+    def finished_trips
+      trips.reject {|trip| trip.end_time == nil}
+    end
+
     def total_spent
       trips_cost = 0
-      @trips.each do |trip|
+      finished_trips.each do |trip|
         trips_cost += trip.cost
       end
       return trips_cost
@@ -31,7 +35,7 @@ module RideShare
 
     def total_time
       total_time = 0
-      @trips.each do |time|
+      finished_trips.each do |time|
         total_time += time.duration
       end
       return total_time
