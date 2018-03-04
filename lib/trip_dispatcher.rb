@@ -90,15 +90,51 @@ module RideShare
       trips
     end
 
+    def find_available_drivers
+      available_drivers = @drivers.find_all do |driver|
+        driver.status == :AVAILABLE
+      end
+
+      if available_drivers == []
+        return nil
+      else
+        return available_drivers
+      end
+    end
+
+    def select_driver
+
+      # Search for the driver whose last trip ended longest ago
+      end_time_to_beat = Time.now
+      selected_driver = @drivers.first
+
+      @trips.each do |trip|
+        driver = trip.driver
+        if trip.end_time > end_time_to_beat
+          end_time_to_beat = trip.end_time
+          selected_driver = driver
+        end
+      end
+      return selected_driver
+    end
+
     def request_trip(passenger_id)
       # load data for new trip argument
-      driver = drivers.find{ |driver| driver.status == :AVAILABLE}
       trip_id = trips.length + 1
       passenger = find_passenger(passenger_id)
+      driver = select_driver
 
+      # throw exception if passenger id does not exist or all drivers are unavailable
+      if passenger_id == nil
+        raise ArgumentError.new("Invalid passenger id")
+      elsif driver == nil
+        raise ArgumentError.new("There are no drivers available.")
+      end
+
+      # load data to create new trip instance
       trip_data = {
         id: trip_id,
-        driver: driver,
+        driver: select_driver,
         passenger: passenger,
         start_time: Time.now,
         end_time: nil,
@@ -109,9 +145,11 @@ module RideShare
       # call new trip
       new_trip = Trip.new(trip_data)
       trips << new_trip
-      # update driver status and trip list
+
+      # update selected driver's trip list and their status
       driver.add_trip(new_trip)
       driver.change_driver_status
+
       # update passenger trip list
       passenger.add_trip(new_trip)
 
@@ -129,6 +167,5 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-
   end
 end

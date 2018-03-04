@@ -89,6 +89,26 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+  describe "find_available_drivers" do
+    it "returns an array of all drivers that are available" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.find_available_drivers.each do |driver|
+        driver.status.must_equal :AVAILABLE
+      end
+      dispatcher.find_available_drivers.must_be_kind_of Array
+    end
+  end
+  describe "select_driver" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "will not return a driver with a trip already in progress" do
+      @dispatcher.select_driver.trips.each do |trip|
+        trip.end_time.wont_be_nil
+      end
+    end
+  end
 
   describe "request_trip" do
     before do
