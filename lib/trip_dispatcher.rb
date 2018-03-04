@@ -148,13 +148,13 @@ module RideShare
 
     def select_the_right_driver
 
-      # # Find a driver with no trips:
-      # select_driver_with_no_trips
-      # if select_driver_with_no_trips != nil
-      #   right_driver = select_driver_with_no_trips
-      #   return right_driver
-      # end
-      # # return select_driver_with_no_trips
+      # Find a driver with no trips:
+      select_driver_with_no_trips
+      if select_driver_with_no_trips != nil
+        right_driver = select_driver_with_no_trips
+        return right_driver
+      end
+      # return select_driver_with_no_trips
 
       # Create a hash with latest trips of all drivers: array[driver, lastest_trip]
       lastest_trips_of_all_drivers = find_lastest_trips_of_all_drivers
@@ -164,21 +164,27 @@ module RideShare
 
       # Select the driver with the earliest end of trip in the hash:
       earliest_end_time = Time.now
-      right_driver = @drivers.first
+      right_driver = nil
+
+      ap "only_available = #{only_available.length}"
+
       only_available.each do |sub_array|
         if sub_array[1] == nil
           return right_driver = sub_array[0]
         end
         # elsif
         if sub_array[1].end_time != nil
-          # puts "wrong"
+          ap "not equal nil"
           # else
-          right_driver =  sub_array.min_by {|end_time| sub_array[1].end_time}
+          # right_driver =  sub_array.min_by {|end_time| sub_array[1].end_time.to_i}
 
-
-          # sub_array[1].end_time.to_i < earliest_end_time.to_i
-          # earliest_end_time = sub_array[1].end_time
-          # right_driver = sub_array[0]
+          if
+            sub_array[1].end_time.to_i < earliest_end_time.to_i
+            earliest_end_time = sub_array[1].end_time
+            ap "earliest_end_time = #{earliest_end_time}"
+            ap "driver status = #{sub_array[0].status}"
+            right_driver = sub_array[0]
+          end
         end
       end
       # puts "right_driver = #{right_driver}"
@@ -190,7 +196,7 @@ module RideShare
       lastest_trips_of_all_drivers = []
 
       @drivers.each do |driver|
-        last = driver.trips.max_by { |trips| trips.end_time }
+        last = driver.trips.max_by { |trips| trips.end_time.to_i }
         lastest_trips_of_all_drivers << [driver, last]
       end
 
@@ -228,10 +234,11 @@ module RideShare
       passenger = find_passenger(passenger_id)
       raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.") if passenger == nil
 
-      begin
-        right_driver = select_the_right_driver
-      rescue SystemCallError => exception
-        puts "There is no available drivers #{exception.message}"
+
+      right_driver = select_the_right_driver
+      if right_driver.nil?
+        raise ArgumentError
+        puts "There is no available drivers"
       end
 
 
@@ -246,16 +253,20 @@ module RideShare
         rating: nil,
       }
       trip_in_progress = Trip.new(in_progress_trip)
-      ap "FILE new_trip:"
+      # ap "FILE new_trip:"
       ap trip_in_progress
       # Add the new trip to the collection of trips for that Driver:
-      ap "FILE first row"
-      ap right_driver.trips
+
+      # ap "FILE first row"
+      # ap right_driver.trips
+
       right_driver.add_trip(trip_in_progress)
-      ap "FILE second row"
-      ap right_driver.trips
+
+      # ap "FILE second row"
+      # ap right_driver.trips
+
       # Set the driver's status to :UNAVAILABLE:
-      select_driver_available.change_status
+      right_driver.change_status
 
       # Add the new trip to the collection of trips for the Passenger:
       passenger.add_trip(trip_in_progress)

@@ -233,43 +233,38 @@ describe "TripDispatcher class" do
     it "Selects the right driver" do
       driver1_id = 100
       driver1_name = "Minnie Dach"
-      # new_trip1 = @trip_disp.better_request_new_trip(1)
       new_trip1 = @new_trip
       test_driver1 = new_trip1.driver
-      puts "SPEC new_trip1 #{new_trip1}"
-      puts "SPEC test_driver1 = #{test_driver1}"
+      ap "test_driver1 STATUS = #{test_driver1.status}"
       test_driver1.id.must_equal driver1_id
       test_driver1.name.must_equal driver1_name
-puts"\n"
+
       new_trip2 = @trip_disp.better_request_new_trip(2)
-      puts "SPEC new_trip2 #{new_trip2}"
       driver2_id = 14
-      driver2_name = "Antwan Prosacco "
+      driver2_name = "Antwan Prosacco"
       test_driver2 = new_trip2.driver
-      puts "SPEC test_driver2 = #{test_driver2}"
+    ap "test_driver2 STATUS = #{test_driver2.status}"
       test_driver2.id.must_equal driver2_id
       test_driver2.name.must_equal driver2_name
-      # #
-      # # @new_trip = @trip_disp.better_request_new_trip(1)
-      # driver1_id = 27
-      # driver1_name = "Nicholas Larkin "
-      # test_driver1 = @trip_disp.better_request_new_trip(1).driver
-      # test_driver1.id.must_equal driver1_id
-      # test_driver1.name.must_equal driver1_name
-      # #
-      # # @new_trip = @trip_disp.better_request_new_trip(1)
-      # driver1_id = 6
-      # driver1_name = "Mr. Hyman Wolf"
-      # test_driver1 = @trip_disp.better_request_new_trip(1).driver
-      # test_driver1.id.must_equal driver1_id
-      # test_driver1.name.must_equal driver1_name
-      # #
-      # # @new_trip = @trip_disp.better_request_new_trip(1)
-      # driver1_id = 87
-      # driver1_name = "Jannie Lubowitz"
-      # test_driver1 = @trip_disp.better_request_new_trip(1).driver
-      # test_driver1.id.must_equal driver1_id
-      # test_driver1.name.must_equal driver1_name
+    #
+      new_trip3 = @trip_disp.better_request_new_trip(4)
+      driver3_id = 27
+      driver3_name = "Nicholas Larkin"
+      test_driver3 = new_trip3.driver
+      test_driver3.id.must_equal driver3_id
+      test_driver3.name.must_equal driver3_name
+
+      driver4_id = 6
+      driver4_name = "Mr. Hyman Wolf"
+      test_driver4 = @trip_disp.better_request_new_trip(1).driver
+      test_driver4.id.must_equal driver4_id
+      test_driver4.name.must_equal driver4_name
+
+      driver4_id = 87
+      driver4_name = "Jannie Lubowitz"
+      test_driver4 = @trip_disp.better_request_new_trip(1).driver
+      test_driver4.id.must_equal driver4_id
+      test_driver4.name.must_equal driver4_name
     end
 
     it 'Selects an AVAILABLE driver' do
@@ -286,7 +281,7 @@ puts"\n"
 
     it 'Returns an exeption if there are no AVAILABLE drivers' do
       @trip_disp.drivers.each {|driver| driver.change_status}
-      proc {@trip_disp.better_request_new_trip(1)}.must_raise StandardError
+      proc {@trip_disp.better_request_new_trip(1)}.must_raise ArgumentError
     end
 
     it 'Updates the length of trip list in @trip_disp:' do
@@ -296,7 +291,8 @@ puts"\n"
       @trip_disp.better_request_new_trip(1)
 
       final_list_length = @trip_disp.trips.length
-
+      # puts "initial_list_length = #{initial_list_length}"
+      # puts "final_list_length = #{final_list_length}"
       final_list_length.must_equal initial_list_length + 1
     end
 
@@ -308,11 +304,80 @@ puts"\n"
     end
 
     it 'Updates the drivers trip list:' do
+
+      # Look for new trip in the trips list:
       driver_for_new_trip = @new_trip.driver
+
 
       find_new_trip_in_driver = driver_for_new_trip.trips.find{ |trip|  trip == @new_trip }
 
       find_new_trip_in_driver.must_equal @new_trip
+
+      # # __________________________________Erase this
+      # # Compare length of original and new trips list of the driver:
+      #
+      # drivers_trips_new_length = driver_for_new_trip.trips.length
+      #
+      #
+      # my_file = CSV.open('support/drivers.csv', headers: true)
+      #
+      # all_drivers = []
+      # my_file.each do |line|
+      #   input_data = {}
+      #   # Set to a default value
+      #   vin = line[2].length == 17 ? line[2] : "0" * 17
+      #
+      #   # Status logic
+      #   status = line[3]
+      #   status = status.to_sym
+      #
+      #   input_data[:vin] = vin
+      #   input_data[:id] = line[0].to_i
+      #   input_data[:name] = line[1]
+      #   input_data[:status] = status
+      #   all_drivers << input_data
+      # end
+      #
+      # this_driver = all_drivers.each {|driver| return driver if :id == driver_for_new_trip.id}
+      #
+      #
+      #
+      # trips = []
+      # trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
+      #
+      # trip_data.each do |raw_trip|
+      #   driver = all_drivers.each {|driver| return driver if :id == driver_for_new_trip.id}
+      #   # passenger = find_passenger(raw_trip[:passenger_id].to_i)
+      #
+      #   # if driver.nil? || passanger.nil?
+      #   #   raise "Could not find driver or passanger "
+      #   # end
+      #
+      #   parsed_trip = {
+      #     id: raw_trip[:id].to_i,
+      #     driver: driver,
+      #     # passenger: passenger,
+      #     start_time: Time.parse(raw_trip[:start_time]),
+      #     end_time: Time.parse(raw_trip[:end_time]),
+      #     cost: raw_trip[:cost].to_f,
+      #     rating: raw_trip[:rating].to_i
+      #   }
+      #
+      #   trip = parsed_trip
+      #   trips << trip
+      # end
+      #
+      # drivers_trips = []
+      # trips.each {|trip| drivers_trips << trip if :driver == this_driver}
+      #
+      # # this_driver = all_drivers.find_driver(driver_for_new_trip.id)
+      #
+      # drivers_trips_old_length = drivers_trips.length
+      #
+      #
+      # drivers_trips_new_length.must_equal drivers_trips_old_length + 1
+
+
     end
 
     it 'Updates the passangers trip list:' do
