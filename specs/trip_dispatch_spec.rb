@@ -119,18 +119,19 @@ describe "TripDispatcher class" do
   describe "#request_trip(passenger_id)" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
-      @first_passenger_request = @dispatcher.request_trip(1)
-      @second_passenger_request = @dispatcher.request_trip(2)
-      @last_passenger_request = @dispatcher.request_trip(300)
+      #@second_passenger_request = @dispatcher.request_trip(2)
     end
 
     it "Create a new instance of Trip" do
+      @first_passenger_request = @dispatcher.request_trip(1)
+      @last_passenger_request = @dispatcher.request_trip(300)
       @first_passenger_request.must_be_instance_of RideShare::Trip
       @first_passenger_request.must_be_instance_of RideShare::Trip
     end
 
     it "Find the person requesting a trip" do
-      skip
+      @first_passenger_request = @dispatcher.request_trip(1)
+      @last_passenger_request = @dispatcher.request_trip(300)
       @first_passenger_request.passenger.must_equal @dispatcher.find_passenger(1)
       @first_passenger_request.passenger.name.must_equal "Nina Hintz Sr."
       @last_passenger_request.passenger.must_equal @dispatcher.find_passenger(300)
@@ -142,6 +143,8 @@ describe "TripDispatcher class" do
     end
 
     it "Automatically assign a driver to the trip" do
+      @first_passenger_request = @dispatcher.request_trip(1)
+      @last_passenger_request = @dispatcher.request_trip(300)
       @first_passenger_request.driver.must_be_instance_of RideShare::Driver
       @last_passenger_request.driver.must_be_instance_of RideShare::Driver
     end
@@ -164,6 +167,8 @@ describe "TripDispatcher class" do
     end
 
     it "Use the current time for the start time" do
+      @first_passenger_request = @dispatcher.request_trip(1)
+      @last_passenger_request = @dispatcher.request_trip(300)
       @first_passenger_request.start_time.must_be_instance_of Time
       (@first_passenger_request.start_time.to_i - Time.now.to_i).must_equal 0
       @last_passenger_request.start_time.must_be_instance_of Time
@@ -171,6 +176,8 @@ describe "TripDispatcher class" do
     end
 
     it "End date, cost and rating will all be nil" do
+      @first_passenger_request = @dispatcher.request_trip(1)
+      @last_passenger_request = @dispatcher.request_trip(300)
       @first_passenger_request.end_time.must_equal nil
       @first_passenger_request.cost.must_equal nil
       @first_passenger_request.rating.must_equal nil
@@ -183,16 +190,16 @@ describe "TripDispatcher class" do
       trips = []
       5.times {trip = @dispatcher.request_trip(1)
         trips << trip}
-        trips[0].driver.id.must_equal 14
-        trips[1].driver.id.must_equal 27
-        trips[2].driver.id.must_equal 6
-        trips[3].driver.id.must_equal 87
-        trips[4].driver.id.must_equal 75
-        trips[0].driver.name.must_equal "Antwan Prosacco"
-        trips[1].driver.name.must_equal "Nicholas Larkin"
-        trips[2].driver.name.must_equal "Mr. Hyman Wolf"
-        trips[3].driver.name.must_equal "Jannie Lubowitz"
-        trips[4].driver.name.must_equal "Mohammed Barrows"
+        trips[0].driver.id.must_equal 100
+        trips[1].driver.id.must_equal 14
+        trips[2].driver.id.must_equal 27
+        trips[3].driver.id.must_equal 6
+        trips[4].driver.id.must_equal 87
+        trips[0].driver.name.must_equal "Minnie Dach"
+        trips[1].driver.name.must_equal "Antwan Prosacco"
+        trips[2].driver.name.must_equal "Nicholas Larkin"
+        trips[3].driver.name.must_equal "Mr. Hyman Wolf"
+        trips[4].driver.name.must_equal "Jannie Lubowitz"
       end
 
     end

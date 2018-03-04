@@ -96,7 +96,7 @@ module RideShare
 
     def find_available_driver
       drivers = @drivers.select{ |each_driver| each_driver.status == :AVAILABLE && !each_driver.is_trip_in_progress? }
-      return drivers.min_by{ |each_driver| each_driver.last_trip_end_time.to_i }
+      return drivers.min_by{ |each_driver| each_driver.recent_trip_end_time.to_i }
     end
 
     def request_trip(passenger_id)
@@ -133,6 +133,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-    
+
   end
 end

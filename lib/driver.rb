@@ -47,30 +47,30 @@ module RideShare
         @trips.map{|each_trip|
           total_duration += each_trip.duration if !each_trip.end_time.nil? }
           return total_revenue / (total_duration / 3600)
+        end
+
+        def add_latest_trip trip
+          @trips << trip
+          @status = :UNAVAILABLE
+        end
+
+        def add_trip(trip)
+          raise ArgumentError.new("Can only add trip instance to trip collection") if trip.class != Trip
+          @trips << trip
+        end
+
+        def is_trip_in_progress?
+          # return false if there is no trip
+          return false if @trips.length == 0
+
+          # else return true/false based on last trip end_time
+          return @trips.last.end_time.nil?
+        end
+
+        def recent_trip_end_time
+          return 0 if @trips.length == 0
+          return @trips.sort_by{ |trip| trip.end_time.nil? ? 0 : trip.end_time.to_i }.last.end_time
+        end
+
       end
-
-      def add_latest_trip trip
-        @trips << trip
-        @status = :UNAVAILABLE
-      end
-
-      def add_trip(trip)
-        raise ArgumentError.new("Can only add trip instance to trip collection") if trip.class != Trip
-        @trips << trip
-      end
-
-      def is_trip_in_progress?
-        # return false if there is no trip
-        return false if @trips.length == 0
-
-        # else return true/false based on last trip end_time
-        return @trips.last.end_time.nil?
-      end
-
-    def last_trip_end_time
-      return 0 if @trips.length == 0
-      return @trips.sort_by{ |trip| trip.end_time.nil? ? 0 : trip.end_time.to_i }.last.end_time.to_i
     end
-
-  end
-end
