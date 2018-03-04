@@ -1,9 +1,10 @@
+
 require 'csv'
 require 'time'
 
 module RideShare
   class Trip
-    attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating
+    attr_reader :id, :passenger, :driver, :start_time, :end_time, :cost, :rating, :status_in_progress
     # could add status to whether a driver have completed his ride or still driving
 
     def initialize(input)
@@ -14,34 +15,34 @@ module RideShare
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
+      @status_in_progress = false
 
 
-      # if @end_time != initialize@status = :completed
-      # else
-      #   @status = :incomplete
-      # end_time
+      if @end_time == nil || @cost == nil || @rating == nil
+        @status_in_progress = true
+      end
 
-      if @rating > 5 || @rating < 1
+
+      if !@status_in_progress && (@rating > 5 || @rating < 1)
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      if @end_time < @start_time
+      if  !@status_in_progress && @end_time < @start_time
         raise ArgumentError.new("Invalid time")
       end
+
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     def duration
+
+      return 0 if @end_time == nil
       return (@end_time - @start_time).to_i
+      
     end
-
-    # def finish_trip!
-    #   @end_time = time.now
-    # end
-    #
-    # def finished?
-    #   return @end_time != nil
-    # end
-
 
 
   end

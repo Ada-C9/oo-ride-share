@@ -124,7 +124,7 @@ module RideShare
       @trips << new_trip
 
       return new_trip
-  end
+    end
 
     private
 

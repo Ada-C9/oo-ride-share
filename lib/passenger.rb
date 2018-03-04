@@ -23,16 +23,16 @@ module RideShare
       @trips << trip
     end
 
-    def new_trip(new_trip)
-      add_trip
-    end
-
     def total_amount_of_money
-      @trips.reduce(0){|total,trip| total + trip.cost}
+      if @end_time!= nil
+        @trips.reduce(0){|total,trip| total + trip.cost}
+      end
     end
 
     def total_amount_of_time
-      @trips.reduce(0){|total,trip| total + trip.duration}
+      if @end_time!= nil
+        @trips.reduce(0){|total,trip| total + trip.duration}
+      end
     end
 
   end

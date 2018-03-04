@@ -45,40 +45,45 @@ module RideShare
       @trips << trip
     end
 
-    def new_trip(new_trip)
+    def set_status(new_trip)
       @trips << new_trip
-      new_trip[:status] = :UNAVAILABLE
+      @status = :UNAVAILABLE
 
     end
 
     def total_revenue
-      if @trips.length == 0
-        return 0
-      else
+      if @end_time!= nil
+        if @trips.length == 0
+          return 0
+        else
 
-        fee = 1.65
-        driver_portion = 0.8
-        subtotal = @trips.map {|trip| trip.cost - fee}.inject(0, :+) * driver_portion
+          fee = 1.65
+          driver_portion = 0.8
+          subtotal = @trips.map {|trip| trip.cost - fee}.inject(0, :+) * driver_portion
+        end
+        return subtotal.round(2)
+
       end
-      return subtotal.round(2)
 
     end
 
 
     def average_revenue
-      total_revenue
-      if @trips.length == 0
-        return 0
-      else
-        total_time = 0
-        @trips.each do |trip|
-          total_time += trip.end_time - trip.start_time
+      if @end_time!= nil
+        total_revenue
+        if @trips.length == 0
+          return 0
+        else
+          total_time = 0
+          @trips.each do |trip|
+            total_time += trip.end_time - trip.start_time
 
+          end
+          total_time_per_hour = total_time/3600
+          avg_revenue = (total_revenue) /(total_time_per_hour)
         end
-        total_time_per_hour = total_time/3600
-        avg_revenue = (total_revenue) /(total_time_per_hour)
+        return avg_revenue.round(2)
       end
-      return avg_revenue.round(2)
     end
 
   end

@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 require 'pry'
 
-describe "Passenger class" do
+xdescribe "Passenger class" do
 
   describe "Passenger instantiation" do
     before do
@@ -81,7 +81,7 @@ describe "Passenger class" do
     it "returns 0 if there are no trips" do
       @passenger.total_amount_of_money.must_equal 0
     end
-    
+
   end
 
 
