@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -70,13 +71,15 @@ module RideShare
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+        start_time = Time.parse(raw_trip[:start_time])
+        end_time = Time.parse(raw_trip[:end_time])
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time:start_time,
+          end_time:end_time,
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -89,6 +92,35 @@ module RideShare
 
       trips
     end
+    def request_trip(passenger_id)
+
+      new_trip_id = @trips.length + 1
+      start_time = Time.now
+      @drivers.each do |driver|
+        if driver[:status] == :AVAILABLE
+          selected_driver = driver
+        else
+        raise "drivers are not available right now"
+      end
+      parsed_new_trip = {
+        id: new_trip_id,
+        driver: select_driver,
+        passenger: find_passenger(id),
+        start_time:start_time,
+        end_time:nil,
+        cost: nil,
+        rating: nil,
+
+      }
+      new_trip = Trip.new(parsed_new_trip)
+      driver.add_trip(new_trip)
+      passenger.add_trip(new_trip)
+      @trips << new_trip
+      return new_trip
+
+    end
+
+  end
 
     private
 
@@ -99,3 +131,4 @@ module RideShare
     end
   end
 end
+#puts RideShare::TripDispatcher.request_trip(54)
