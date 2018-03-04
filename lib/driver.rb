@@ -23,6 +23,11 @@ module RideShare
     end
 
     def average_rating
+      if trips == []
+        average = nil
+        return average
+      end
+
       total_ratings = 0
       @trips.each do |trip|
         if trip.rating != nil
