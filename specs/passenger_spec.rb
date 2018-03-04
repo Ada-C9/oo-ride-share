@@ -78,7 +78,9 @@ describe "Passenger class" do
   describe "get_drivers method" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
       trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2016-08-08T16:01:00+00:00'), end_time: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
 
       @passenger.add_trip(trip)
