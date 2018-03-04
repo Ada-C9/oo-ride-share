@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "TripDispatcher class" do
+xdescribe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
       dispatcher = RideShare::TripDispatcher.new
@@ -17,6 +17,8 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
+
+
   end
 
   describe "find_driver method" do
@@ -88,5 +90,27 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    describe "request_trip method" do
+      it "can create a new trip requested by a passenger" do
+        passenger_id = 54
+        trip_dispatcher =  RideShare::TripDispatcher.new
+        trip_dispatcher.request_trip(passenger_id).must_be_instance_of RideShare::Trip
+
+      end
+
+      it "return an updated trip collections including the new trip in passenger class" do
+        passenger_id = 54
+        trip_dispatcher = RideShare::TripDispatcher.new
+        new_trip = trip_dispatcher.request_trip(passenger_id)
+
+        new_trip.passenger.new_trip(new_trip)
+        new_trip.passenger.trips.must_include new_trip
+
+        new_trip.driver.new_trip(new_trip)
+        new_trip.driver.trips.must_include new_trip
+      end
+    end
+
   end
 end
