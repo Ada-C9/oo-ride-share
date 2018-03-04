@@ -18,10 +18,10 @@ module RideShare
     end
 
     # this is what i was trying to create but this not make sense because this is a method
-    def time
-      @start_time = start_time
-      @end_time = end_time
-    end
+    # def time
+    #   @start_time = start_time
+    #   @end_time = end_time
+    # end
 #initialize that raises an ArgumentError if the end time is before the start time, and a corresponding test
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
@@ -69,7 +69,39 @@ module RideShare
     def find_passenger(id)
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
+      end
+
+      #Ask Charles tomorrow what this does exaclty does.
+
+    def request_trip(passenger_id)
+
+      available_driver = @drivers.find{|driver| driver.status == :Available }
+      if available_driver == nil
+        return nil
+      end
+
+      passenger = find_passenger(passenger_id)
+      if passenger == nil
+        return nil
+      end
+
+      requested_trip = {
+        id: @trips.length + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now, #current-time- what is current-time?
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+        trip = Trip.new(requested_trip)
+        @trips.push(trip)
+        return trip
+
+
     end
+
 
     def load_trips
       trips = []
@@ -92,17 +124,6 @@ module RideShare
 
         parsed_trip[:end_time] = Time.parse(parsed_trip[:end_time])
         parsed_trip[:start_time] = Time.parse(parsed_trip[:start_time])
-
-
-
-
-
-
-
-
-
-
-
 
 
 
