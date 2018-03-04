@@ -120,6 +120,13 @@ describe "TripDispatcher class" do
       @new_trip.must_be_instance_of RideShare::Trip
     end
 
+    it "raises argument error if no drivers are available" do
+      @dispatcher.drivers.each do |driver|
+        driver.turn_unavailable
+      end
+      proc{ @dispatcher.request_trip(25) }.must_raise ArgumentError
+    end
+
     it "Changes the driver's status to unavailable" do
       @new_trip.driver.status.must_equal :UNAVAILABLE
     end
@@ -145,6 +152,17 @@ describe "TripDispatcher class" do
 
     it "updates the total trips" do
       @dispatcher.trips.must_include @new_trip
+    end
+    it "assigns the driver who's last trip was the longest time ago" do
+      first_result = @dispatcher.request_trip(25)
+      first_result.driver.name.must_equal "Minnie Dach"
+      second_result = @dispatcher.request_trip(43)
+      second_result.driver.name.must_equal "Antwan Prosacco"
+      third_result = @dispatcher.request_trip(1)
+      third_result.driver.name.must_equal "Nicholas Larkin"
+      fourth_result = @dispatcher.request_trip(19)
+      fifth_result = @dispatcher.request_trip(30)
+      fifth_result.driver.name.must_equal "Jannie Lubowitz"
     end
   end
 end

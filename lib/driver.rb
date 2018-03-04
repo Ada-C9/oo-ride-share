@@ -61,11 +61,15 @@ module RideShare
     end
 
     def change_driver_status
-      if @status == :AVAILABLE
-        @status = :UNAVAILABLE
+      if status == :AVAILABLE
+        status = :UNAVAILABLE
       else
-        @status = :AVAILABLE
+        status = :AVAILABLE
       end
+    end
+
+    def turn_unavailable
+      @status = :UNAVAILABLE
     end
 
   end
