@@ -103,7 +103,7 @@ describe "Driver class" do
   describe "Total Revenue" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25
+      end_time = start_time + 30
 
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
 
@@ -111,16 +111,18 @@ describe "Driver class" do
 
       trip_two = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, cost: 25, rating: 3})
 
+      trip_three = RideShare::Trip.new({id: 5, driver: @driver, passenger: nil, start_time: start_time, end_time: nil, cost: 0, rating: nil})
+
       @driver.add_trip(trip_one)
       @driver.add_trip(trip_two)
+      @driver.add_trip(trip_three)
 
     end
     it 'calculate total revenue from driver' do
-
       @driver.total_revenue.must_be_kind_of Float
       @driver.total_revenue.must_equal 49.36
     end
-    it 'calculate the average total revenue from driver' do
+    it 'calculate the average revenue per hour from driver' do
       @driver.average_revenue.must_be_kind_of Float
       @driver.average_revenue.must_equal 24.68
     end
@@ -129,40 +131,33 @@ describe "Driver class" do
   describe 'In-Progress method' do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = nil
-
-      end_time_two = start_time + 25
-
+      end_time = start_time + 25
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
 
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
 
       @trip_one = RideShare::Trip.new({id: 2, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, cost: 40, rating: 5})
 
-      @trip_two = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time_two, cost: 25, rating: 3})
+      @trip_two = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: nil, cost: 0, rating: 3})
       end
-    it 'removes trips when end time is nil' do
+    it 'wont not include trip in trips if in_progress' do
       @driver.add_trip(@trip_one)
       @driver.add_trip(@trip_two)
       @driver.trips.must_include @trip_one
       @driver.trips.must_include @trip_two
-      @driver.in_progress.wont_include @trip_one
-      @driver.in_progress.must_include @trip_two
+      @driver.in_progress.must_include @trip_one
+      @driver.in_progress.wont_include @trip_two
       end
     it 'will not include in_progress trips in total revenue' do
       @driver.add_trip(@trip_one)
       @driver.add_trip(@trip_two)
-      @driver.total_revenue.must_equal 18.68
+      @driver.total_revenue.must_equal 30.68
     end
     it 'will not include in_progress trips in average revenue' do
       @driver.add_trip(@trip_one)
       @driver.add_trip(@trip_two)
-      @driver.average_revenue.must_equal 18.68
+      @driver.average_revenue.must_equal 73.63
     end
   end
-
-
-
-
 
 end

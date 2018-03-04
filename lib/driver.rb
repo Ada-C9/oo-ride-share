@@ -45,9 +45,11 @@ module RideShare
       unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-      # if trip.end_time.nil?
-      #   @status == :UNAVAILABLE
-      # end
+      # >>>>>Do i need this code below?<<<<<<
+      if trip.end_time.nil?
+        @status == :UNAVAILABLE
+      end
+      # >>>>>>>> <<<<<<<<<<
       @trips << trip
     end
 
@@ -64,20 +66,17 @@ module RideShare
     end
 
     def average_revenue
-      fee = 1.65
-      subtotal = 0
-      driver_takehome = 0.8
+        average_per_hour = (total_revenue / in_progress.length) / (total_duration / 3600)
+      return average_per_hour.round(2)
+    end
 
+    def total_duration
+      total_time_seconds = 0
       in_progress.each do |trip|
-          subtotal += (trip.cost - fee)
-        end
-        total = (subtotal * driver_takehome).round(2)
-
-      average = total / in_progress.length
-      return average
+        total_time_seconds += trip.duration
+      end
+      return total_time_seconds
     end
 
   end
 end
-
-# if trip.class != Trip (is a restrictive way to say not apart of the class)

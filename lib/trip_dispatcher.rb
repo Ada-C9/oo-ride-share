@@ -111,7 +111,7 @@ module RideShare
 
     def request_trip(passenger_id)
       if passenger_id.nil? || passenger_id == ''
-        raise ArgumentError ("Can\'t find passenger ID")
+        raise ArgumentError ("CANNOT FIND PASSENGER ID")
       end
 
       new_ride = {}
