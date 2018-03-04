@@ -1,7 +1,7 @@
 require 'csv'
 require 'time'
 
-# require_relative 'driver'
+require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
 
@@ -90,9 +90,48 @@ module RideShare
       trips
     end
 
-    # def date_to_time_instance
-    #   Time.parse
-    # end
+    # Request trip needs:
+    # Passenger_ ID supplied
+    # Automatically assign AVAILABLE Driver
+    # Current time as start time
+    # end date, cost, rating == nil
+
+    #########
+
+    # Creat Trip (hash)
+    # Create helper method
+    # Add the new trip to Driver's collection
+    # Change driver status AVAILABLE TO UNAVAILABLE
+    # Add the new trip to the Passenger's colelction
+
+    # Add trip to array of Trips in TripDispatcher
+
+    # Return the newly created Trip
+
+
+    def request_trip(passenger_id)
+
+
+      trip_data = {
+        id: trips.length + 1
+        driver: "AVAILABLE Driver"
+        passenger: find_passenger(passenger_id) 
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = Trip.new(trip_data)
+      trips << new_trip
+
+
+
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
     private
 

@@ -55,12 +55,14 @@ describe "Driver class" do
     end
   end
 
+  before do
+    @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+    trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2015-05-20T12:14:00+00:00", end_time: "2015-05-20T12:19:00+00:00", cost: 18.49, rating: 5})
+    @driver.add_trip(trip)
+  end
+
   describe "average_rating method" do
-    before do
-      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2015-05-20T12:14:00+00:00", end_time: "2015-05-20T12:19:00+00:00", rating: 5})
-      @driver.add_trip(trip)
-    end
 
     it "returns a float" do
       @driver.average_rating.must_be_kind_of Float
@@ -77,4 +79,32 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue method" do
+
+    it "returns a float" do
+      @driver.total_revenue.must_be_kind_of Float
+    end
+
+    it "returns total revenue" do
+      @driver.total_revenue.must_equal 13.47
+
+    end
+
+  end
+
+  describe "average_revenue method" do
+
+    it "returns a float" do
+      @driver.average_revenue.must_be_kind_of Float
+    end
+
+    it "returns average revenue" do
+      @driver.total_revenue.must_equal 13.47
+
+    end
+
+  end
+
+
 end
