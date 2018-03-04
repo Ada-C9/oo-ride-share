@@ -67,16 +67,14 @@ describe "Passenger class" do
       trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 50, rating: 5})
 
       @passenger.add_trip(trip)
-      end
+    end
     it 'can add the trip cost to the total amount spent' do
-        rider_total = @passenger.total_money_spent
-
-        rider_total.must_equal 50
-      end
+      rider_total = @passenger.total_money_spent
+      rider_total.must_equal 50
+    end
     it 'can add the time per trip to total time spent' do
-        rider_total = @passenger.total_duration
-
-        rider_total.must_equal 1500 # converted in duration somewhere
+      rider_total = @passenger.total_duration
+      rider_total.must_equal 1500 # converted in duration somewhere
     end
   end
 
@@ -128,10 +126,6 @@ describe "Passenger class" do
       @passenger.add_trip(@trip)
       @passenger.total_duration.must_equal 0
     end
-
   end
-
-
-
 
 end

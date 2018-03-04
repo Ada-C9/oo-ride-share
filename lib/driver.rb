@@ -66,11 +66,11 @@ module RideShare
     end
 
     def average_revenue
-        average_per_hour = (total_revenue / in_progress.length) / (total_duration / 3600)
+        average_per_hour = (total_revenue / in_progress.length) / (total_trip_duration / 3600)
       return average_per_hour.round(2)
     end
 
-    def total_duration
+    def total_trip_duration
       total_time_seconds = 0
       in_progress.each do |trip|
         total_time_seconds += trip.duration

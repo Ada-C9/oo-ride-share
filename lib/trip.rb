@@ -10,7 +10,6 @@ module RideShare
       @passenger = input[:passenger]
       @start_time = input[:start_time]
       @end_time = input[:end_time]
-      # == nil ? nil : input[:end_time]
       @cost = input[:cost] == nil ? 0 : input[:cost]
       @rating = input[:rating]
 
@@ -23,18 +22,16 @@ module RideShare
           return
         end
       end
-
     end
 
-      def duration
-        duration = (end_time - start_time) * 60
-        return duration
-      end
+    def duration
+      duration = (end_time - start_time) * 60
+      return duration
+    end
 
-      def inspect
-        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-      end
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
 
   end
 end

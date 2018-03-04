@@ -1,5 +1,4 @@
 require 'time'
-require 'pry'
 
 module RideShare
 
@@ -15,7 +14,6 @@ module RideShare
       @name = input[:name]
       @phone_number = input[:phone]
       @trips = input[:trips] == nil ? [] : input[:trips]
-      # @trips needs to be an array
     end
 
     def get_drivers
@@ -30,12 +28,11 @@ module RideShare
       return @trips.reject { |ride| ride.end_time == nil }
     end
 
-
     def total_money_spent
       total_amount = 0
       in_progress.each do |rides|
-          total_amount += rides.cost
-        end
+        total_amount += rides.cost
+      end
       return total_amount
     end
 
@@ -43,7 +40,7 @@ module RideShare
       total_time = 0
       in_progress.each do |ride|
         total_time += ride.duration
-      # (ride.end_time - ride.start_time)
+        # (ride.end_time - ride.start_time)
       end
       return total_time
     end

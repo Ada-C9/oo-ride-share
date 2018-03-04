@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Driver class" do
 
@@ -13,10 +14,10 @@ describe "Driver class" do
 
     it "throws an argument error with a bad ID value" do
       begin
-      RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")
-      fail
-    rescue ArgumentError
-      pass
+        RideShare::Driver.new(id: 0, name: "George", vin: "33133313331333133")
+        fail
+      rescue ArgumentError
+        pass
       end
     end
 
@@ -42,7 +43,7 @@ describe "Driver class" do
     end
   end
 
-  describe "add trip method" do
+  describe "Add Trip Method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = (start_time + 25 * 60)
@@ -62,8 +63,7 @@ describe "Driver class" do
     end
   end
 
-  describe "add_trip part 2" do
-
+  describe "Driver Status" do
     it 'changes status if end_time equals nil' do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = nil
@@ -76,7 +76,7 @@ describe "Driver class" do
     end
   end
 
-  describe "average_rating method" do
+  describe "Average Rating Method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = (start_time + 25 * 60)
@@ -139,7 +139,7 @@ describe "Driver class" do
       @trip_one = RideShare::Trip.new({id: 2, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, cost: 40, rating: 5})
 
       @trip_two = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: nil, cost: 0, rating: 3})
-      end
+    end
     it 'wont not include trip in trips if in_progress' do
       @driver.add_trip(@trip_one)
       @driver.add_trip(@trip_two)
@@ -147,7 +147,7 @@ describe "Driver class" do
       @driver.trips.must_include @trip_two
       @driver.in_progress.must_include @trip_one
       @driver.in_progress.wont_include @trip_two
-      end
+    end
     it 'will not include in_progress trips in total revenue' do
       @driver.add_trip(@trip_one)
       @driver.add_trip(@trip_two)
@@ -157,6 +157,34 @@ describe "Driver class" do
       @driver.add_trip(@trip_one)
       @driver.add_trip(@trip_two)
       @driver.average_revenue.must_equal 73.63
+    end
+  end
+
+  describe 'Total Duration method' do
+    it 'calculates the total duration of all trips' do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      trip_one = RideShare::Trip.new({id: 2, driver: driver, passenger: passenger, start_time: start_time, end_time: end_time, cost: 40, rating: 5})
+      trip_two = RideShare::Trip.new({id: 8, driver: driver, passenger: nil, start_time: start_time, end_time: nil, cost: 0, rating: 3})
+
+      driver.add_trip(trip_one)
+      driver.add_trip(trip_two)
+      driver.total_trip_duration.must_equal 1500
+    end
+    it 'calculates the total duration of all trips when there are no finished trips' do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      trip_one = RideShare::Trip.new({id: 2, driver: driver, passenger: passenger, start_time: start_time, end_time: nil, cost: 40, rating: 5})
+      trip_two = RideShare::Trip.new({id: 8, driver: driver, passenger: nil, start_time: start_time, end_time: nil, cost: 0, rating: 3})
+
+      driver.add_trip(trip_one)
+      driver.add_trip(trip_two)
+      driver.total_trip_duration.must_equal 0
     end
   end
 

@@ -6,13 +6,11 @@ describe "TripDispatcher class" do
       dispatcher = RideShare::TripDispatcher.new
       dispatcher.must_be_kind_of RideShare::TripDispatcher
     end
-
     it "establishes the base data structures when instantiated" do
       dispatcher = RideShare::TripDispatcher.new
       [:trips, :passengers, :drivers].each do |prop|
         dispatcher.must_respond_to prop
       end
-
       dispatcher.trips.must_be_kind_of Array
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
@@ -23,11 +21,9 @@ describe "TripDispatcher class" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
-
     it "throws an argument error for a bad ID" do
       proc{ @dispatcher.find_driver(0) }.must_raise ArgumentError
     end
-
     it "finds a driver instance" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
@@ -38,11 +34,9 @@ describe "TripDispatcher class" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
-
     it "throws an argument error for a bad ID" do
       proc{ @dispatcher.find_passenger(0) }.must_raise ArgumentError
     end
-
     it "finds a passenger instance" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
@@ -63,7 +57,6 @@ describe "TripDispatcher class" do
       last_driver.id.must_equal 100
       last_driver.status.must_equal :AVAILABLE
     end
-
     it "accurately loads passenger information into passengers array" do
       dispatcher = RideShare::TripDispatcher.new
 
@@ -75,7 +68,6 @@ describe "TripDispatcher class" do
       last_passenger.name.must_equal "Miss Isom Gleason"
       last_passenger.id.must_equal 300
     end
-
     it "accurately loads trip info and associates trips with drivers and passengers" do
       dispatcher = RideShare::TripDispatcher.new
 
@@ -104,14 +96,14 @@ describe "TripDispatcher class" do
 
   describe 'Request Trip' do
     it 'will raise an ArgumentError when the passenger ID when nothing is entered' do
-        dispatcher = RideShare::TripDispatcher.new
-        proc{ dispatcher.request_trip() }.must_raise ArgumentError
+      dispatcher = RideShare::TripDispatcher.new
+      proc{ dispatcher.request_trip() }.must_raise ArgumentError
     end
     it 'accurately loads trip into the list of trips' do
-        dispatcher = RideShare::TripDispatcher.new
-        new_trip = dispatcher.request_trip(2)
-        new_trip.must_be_kind_of RideShare::Trip
-      end
+      dispatcher = RideShare::TripDispatcher.new
+      new_trip = dispatcher.request_trip(2)
+      new_trip.must_be_kind_of RideShare::Trip
+    end
   end
 
 

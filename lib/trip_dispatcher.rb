@@ -36,7 +36,6 @@ module RideShare
         input_data[:status] = status
         all_drivers << Driver.new(input_data)
       end
-
       return all_drivers
     end
 
@@ -56,7 +55,6 @@ module RideShare
 
         passengers << Passenger.new(input_data)
       end
-
       return passengers
     end
 
@@ -84,7 +82,6 @@ module RideShare
         }
 
         trip = Trip.new(parsed_trip)
-
         # Set up relations
         driver.add_trip(trip)
         passenger.add_trip(trip)
@@ -96,7 +93,7 @@ module RideShare
 
     def check_id(id)
       if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        raise ArgumentError.new("ID CANNOT BE BLANK OR LESS THAN ZERO (got #{id})")
       end
     end
 
@@ -106,12 +103,12 @@ module RideShare
           return driver
         end
       end
-      raise ArgumentError("No Driver Available.")
+      raise ArgumentError("NO DRIVER AVAILABLE AT THIS TIME.")
     end
 
     def request_trip(passenger_id)
       if passenger_id.nil? || passenger_id == ''
-        raise ArgumentError ("CANNOT FIND PASSENGER ID")
+        raise ArgumentError ("INVALID PASSENGER ID")
       end
 
       new_ride = {}
@@ -124,9 +121,9 @@ module RideShare
       # confirm passenger is valid
       passenger = find_passenger(passenger_id)
       unless passenger.nil?
-          new_ride[:passenger] = passenger
-        else
-          raise ArgumentError("Invalid ID")
+        new_ride[:passenger] = passenger
+      else
+        raise ArgumentError("INVALID ID")
       end
 
       new_ride[:start_time] = Time.now
@@ -147,6 +144,5 @@ module RideShare
     end
 
     private
-
   end
 end
