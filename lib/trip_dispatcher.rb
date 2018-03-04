@@ -106,27 +106,17 @@ module RideShare
 
       raise ArgumentError.new("Passanger with id #{passenger_id} does not exist.") if passenger == nil
 
-      select_driver_available
-
-      in_progress_trip = {
-        id: (@trips.size + 1),
-        driver: select_driver_available,
-        passenger: passenger,
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil,
-      }
+      begin
+        select_driver_available
+      rescue SystemCallError => exception
+        puts "There are no available drivers #{exception.message}"
+      end
 
       # Create a new instance of Trip:
-      trip_in_progress = Trip.new(in_progress_trip)
+      trip_in_progress = new_trip(passenger, select_driver_available)
 
       # Add the new trip to the collection of trips for that Driver:
-      begin
-        select_driver_available.add_trip(trip_in_progress)
-      rescue SystemCallError => exception
-        puts "There is no available drivers #{exception.message}"
-      end
+      select_driver_available.add_trip(trip_in_progress)
 
       # Set the driver's status to :UNAVAILABLE:
       select_driver_available.change_status
@@ -181,11 +171,25 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-    
+
     #________________________Private methods for WAVE 2:
     def select_driver_available
       # Find the first available driver:
       @drivers.each {|driver| return select_driver_available = driver if driver.status == :AVAILABLE }
+    end
+
+    def new_trip(passenger, driver)
+      # Create a new instance of Trip:
+      in_progress_trip = {
+        id: (@trips.size + 1),
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+      return Trip.new(in_progress_trip)
     end
 
     #________________________Private methods for WAVE 3:
@@ -225,20 +229,6 @@ module RideShare
         lastest_trips_of_all_drivers << [driver, last]
       end
       return lastest_trips_of_all_drivers
-    end
-
-    def new_trip(passenger, driver)
-      # Create a new instance of Trip:
-      in_progress_trip = {
-        id: (@trips.size + 1),
-        driver: driver,
-        passenger: passenger,
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil,
-      }
-      return Trip.new(in_progress_trip)
     end
 
     def select_the_right_driver
