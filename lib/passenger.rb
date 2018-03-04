@@ -23,9 +23,9 @@ module RideShare
 
     def total_spent
       # Passanger's total $ spent so far:
-      total = 0
-      @trips.each {|trip| trip.end_time == nil ? total += 0 : total += trip.cost}
-      return total
+      total_money = 0
+      @trips.each {|trip| trip.end_time == nil ? total_money += 0 : total_money += trip.cost}
+      return total_money
     end
 
     def total_time_spent

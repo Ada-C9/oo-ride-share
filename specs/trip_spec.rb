@@ -75,6 +75,7 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
 
       @trip.trip_duration.must_equal 60
+      @trip.trip_duration.must_be_kind_of Float
     end
 
     it 'Ignores the trips that are still in progress' do

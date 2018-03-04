@@ -96,6 +96,8 @@ describe "Passenger class" do
 
       passenger.add_trip(trip)
 
+      passenger.total_spent.must_be_kind_of Float
+      passenger.total_spent.must_be :>, 0
       passenger.total_spent.must_equal trip.cost
     end
 
@@ -129,11 +131,11 @@ describe "Passenger class" do
 
       passenger.add_trip(trip)
 
-
       duration_of_ride = (end_time.to_f - start_time.to_f)
 
+      passenger.total_time_spent.must_be_kind_of Float
+      passenger.total_time_spent.must_be :>, 0
       passenger.total_time_spent.must_equal duration_of_ride
-
     end
 
 

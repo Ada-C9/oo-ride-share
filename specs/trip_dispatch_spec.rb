@@ -170,40 +170,55 @@ describe "TripDispatcher class" do
 
     it "Selects the right driver for the first 5 new trip-requests" do
 
+      # 1 - Arrange / Act:
       driver1_id = 100
       driver1_name = "Minnie Dach"
       new_trip1 = @new_trip
       test_driver1 = new_trip1.driver
+      # Assert:
+      test_driver1.must_be_instance_of RideShare::Driver
       test_driver1.id.must_equal driver1_id
       test_driver1.name.must_equal driver1_name
 
+      # 2 - Arrange / Act:
       new_trip2 = @trip_disp.wave3_request_trip(2)
       driver2_id = 14
       driver2_name = "Antwan Prosacco"
       test_driver2 = new_trip2.driver
+      # Assert:
+      test_driver2.must_be_instance_of RideShare::Driver
       test_driver2.id.must_equal driver2_id
       test_driver2.name.must_equal driver2_name
 
+      # 3 - Arrange / Act:
       new_trip3 = @trip_disp.wave3_request_trip(4)
       driver3_id = 27
       driver3_name = "Nicholas Larkin"
       test_driver3 = new_trip3.driver
+      # Assert:
+      test_driver3.must_be_instance_of RideShare::Driver
       test_driver3.id.must_equal driver3_id
       test_driver3.name.must_equal driver3_name
 
+      # 4 - Arrange / Act:
       new_trip4 = @trip_disp.wave3_request_trip(52)
       driver4_id = 6
       driver4_name = "Mr. Hyman Wolf"
       test_driver4 = new_trip4.driver
+      # Assert:
+      test_driver4.must_be_instance_of RideShare::Driver
       test_driver4.id.must_equal driver4_id
       test_driver4.name.must_equal driver4_name
 
+      # 5 - Arrange / Act:
       new_trip5 = @trip_disp.wave3_request_trip(61)
-      driver4_id = 87
-      driver4_name = "Jannie Lubowitz"
-      test_driver4 = new_trip5.driver
-      test_driver4.id.must_equal driver4_id
-      test_driver4.name.must_equal driver4_name
+      driver5_id = 87
+      driver5_name = "Jannie Lubowitz"
+      test_driver5 = new_trip5.driver
+      # Assert:
+      test_driver5.must_be_instance_of RideShare::Driver
+      test_driver5.id.must_equal driver5_id
+      test_driver5.name.must_equal driver5_name
     end
 
     it 'Selects an AVAILABLE driver' do
@@ -215,11 +230,13 @@ describe "TripDispatcher class" do
       initial_status = initial_drivers_list[index].status
 
       # Assert:
+      initial_drivers_list[0].must_be_instance_of RideShare::Driver
       initial_status.must_equal :AVAILABLE
     end
 
     it 'Returns an error if there are no AVAILABLE drivers' do
       @trip_disp.drivers.each {|driver| driver.change_status}
+      # Assert:
       proc {@trip_disp.wave3_request_trip(1)}.must_raise StandardError
     end
 
@@ -230,12 +247,14 @@ describe "TripDispatcher class" do
       @trip_disp.wave3_request_trip(1)
 
       final_list_length = @trip_disp.trips.length
+
+      # Assert:
       final_list_length.must_equal initial_list_length + 1
     end
 
     it 'Can find new trip in the trip list in @trip_disp' do
       exists = false
-      @trip_disp.trips.each{ |trip| exists = true if trip == @new_trip}
+      @trip_disp.trips.each {|trip| exists = true if trip == @new_trip}
 
       exists.must_equal true
     end
@@ -246,6 +265,9 @@ describe "TripDispatcher class" do
 
       find_new_trip_in_driver = driver_for_new_trip.trips.find{ |trip|  trip == @new_trip }
 
+      #Assert:
+      find_new_trip_in_driver.must_be_instance_of RideShare::Trip
+      driver_for_new_trip.must_be_instance_of RideShare::Driver
       find_new_trip_in_driver.must_equal @new_trip
     end
 
@@ -254,12 +276,14 @@ describe "TripDispatcher class" do
 
       find_new_trip_in_passanger = passenger_for_new_trip.trips.find{ |trip|  trip == @new_trip }
 
+      find_new_trip_in_passanger.must_be_instance_of RideShare::Trip
+      passenger_for_new_trip.must_be_instance_of RideShare::Passenger
       find_new_trip_in_passanger.must_equal @new_trip
     end
   end
 
-##_________Personal tests for some private methods:
-#
+  ##_________Personal tests for some methods that became private when refactoring:
+  #
   # describe 'select_driver_available' do
   #   it 'Selects an AVAILABLE driver' do
   #

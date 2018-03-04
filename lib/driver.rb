@@ -40,7 +40,7 @@ module RideShare
     def total_rev
       # Calculates the total revenue per hour:
       total_rev = 0
-      @trips.each {|trip| trip.end_time == nil ?   total_rev += 0 : total_rev += ((trip.cost - 1.65) * 0.8)}
+      @trips.each {|trip| trip.end_time == nil ? total_rev += 0 : total_rev += ((trip.cost - 1.65) * 0.8)}
       return total_rev
     end
 
@@ -52,6 +52,7 @@ module RideShare
     end
 
     def change_status
+      # Make driver unavailable
       @status = :UNAVAILABLE
     end
 
