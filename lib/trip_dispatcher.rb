@@ -94,11 +94,13 @@ module RideShare
       trips
     end
 
-    def find_first_available_driver
+    def choose_available_driver
       @drivers.find { |driver|
         driver.status == :AVAILABLE
     }
     end
+
+
 
     def create_new_trip_id
       @trips.map(&:id).max + 1
@@ -109,9 +111,10 @@ module RideShare
     end
 
     def request_trip(passenger_id)
+      # WAVE 3 note:  The driver selection mechanism prescribed in Wave 3 is actually happening in the helper method, find_available_driver, above.
       new_trip_data = {
         id: create_new_trip_id,
-        driver: find_first_available_driver,
+        driver: choose_available_driver,
         passenger: find_passenger(passenger_id),
         start_time: Time.now,
         end_time: nil,
@@ -130,7 +133,7 @@ module RideShare
       end
 
       @trips << new_trip
-      find_first_available_driver.accept_new_trip_assignment(new_trip)
+      choose_available_driver.accept_new_trip_assignment(new_trip)
       find_passenger(passenger_id).log_newly_requested_trip(new_trip)
       return new_trip
     end

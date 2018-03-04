@@ -118,10 +118,10 @@ describe "TripDispatcher class" do
 
     end
   end
-  describe "find_first_available_driver" do
+  describe "choose_available_driver" do
 
     it "identifies the first available driver" do
-      driver_to_assign = @dispatcher_1.find_first_available_driver
+      driver_to_assign = @dispatcher_1.choose_available_driver
       driver_to_assign.must_be_instance_of RideShare::Driver
       status = driver_to_assign.status
       status.must_equal :AVAILABLE
@@ -134,7 +134,7 @@ describe "TripDispatcher class" do
       @dispatcher_2_unavail.drivers.count.must_equal 5
       @dispatcher_2_unavail.drivers.find { |driver| driver.id == 701}.wont_be_nil
       #The assertion below is the actual test of the production code.
-      @dispatcher_2_unavail.find_first_available_driver.must_be_nil
+      @dispatcher_2_unavail.choose_available_driver.must_be_nil
     end
   end
 
