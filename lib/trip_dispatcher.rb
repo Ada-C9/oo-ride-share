@@ -109,6 +109,30 @@ module RideShare
       return available_drivers
     end
 
+    def select_driver
+      latest_end_time = Time.new(1992)
+      most_available_driver = nil
+
+      available_drivers.each do |driver|
+
+        unless driver.end_time == nil
+
+          if driver.trips.count == 0
+            most_available_driver = driver
+          else
+            trips.sort_by! {|trip| trip.end_time}
+
+            if trips[0].end_time > latest_end_time
+              latest_end_time = trips[0].end_time
+              most_available_driver = driver
+            end
+          end
+        end
+      end
+
+      return most_available_driver
+    end
+
     def request_trip(passenger_id)
       start_time = Time.now
       new_trip = Hash.new
@@ -117,9 +141,9 @@ module RideShare
 
       new_trip[:id] = @trips.length
 
-      drivers = available_drivers
-      if drivers.count > 1
-        driver = drivers[0]
+      driver = select_driver
+
+      if driver != nil
 
         driver.status = :UNAVAILABLE
         new_trip[:driver] = driver
@@ -135,7 +159,6 @@ module RideShare
         newly_added_trip = RideShare::Trip.new(new_trip)
 
         @trips << newly_added_trip
-        # passenger.add_trip(newly_added_trip)
       end
 
       return newly_added_trip

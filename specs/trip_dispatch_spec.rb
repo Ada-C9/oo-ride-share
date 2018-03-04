@@ -111,9 +111,12 @@ describe "TripDispatcher class" do
       end
 
       it "returns empty array if there are no available drivers" do
-        # loop through drivers and change their status here and then return the empty array.
-        @test_drivers.must_be_kind_of Array
-        # @test_drivers.count.must_equal 0
+        unavailable_drivers_dispatch = RideShare::TripDispatcher.new
+        unavailable_drivers_dispatch.drivers.each do |driver|
+          driver.status = :UNAVAILABLE
+        end
+        unavailable_drivers_dispatch.available_drivers.must_be_kind_of Array
+        unavailable_drivers_dispatch.available_drivers.count.must_equal 0
       end
     end
 
@@ -134,14 +137,12 @@ describe "TripDispatcher class" do
     end
 
     it "request_trip assigned driver status is UNAVAILABLE" do
-      @test_trip.status.must_equal :UNAVAILABLE
+      @test_trip.driver.status.must_equal :UNAVAILABLE
     end
 
-    it "available drivers count goes down by 1 after request_ride is called" do
+    it "available drivers count goes down by 1 after request_ride is called. checks that status of available driver goes to unavailable after assigned a new trip" do
       test_trip_2 = @test_dispatcher.request_trip(8)
-      test_trip_2.available_drivers.must_equal(@test_drivers.count - 1)
-
-
+      @test_dispatcher.available_drivers.count.must_equal(@test_drivers.count - 1)
     end
 
     it "end_time, trip cost and rating must be equal to nil" do
