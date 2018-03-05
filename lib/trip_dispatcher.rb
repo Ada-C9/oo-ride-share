@@ -90,14 +90,10 @@ module RideShare
     end
 
     def request_trip(passenger_ID)
-      #first driver who is available
       a_driver = drivers.detect{|driver|driver.status == :AVAILABLE}
       if a_driver == nil
         new_trip = nil
       else
-        #should I add a finder to passenger or can i
-        #do the finding here?
-        #a_passenger = passengers.detect{|passenger|passenger.id == passenger_ID}
         a_passenger = find_passenger(passenger_ID)
         start_time = Time.now
         new_trip = RideShare::Trip.new({id:passenger_ID,driver:a_driver,passenger:a_passenger,start_time:start_time,end_time: :PENDING, rating: :PENDING,cost: 0})
@@ -120,28 +116,26 @@ module RideShare
       available_driver_with_longest_wait_time = available_drivers[0]
       index = 0
 
-    
-        driver_iterations.times do
-          if available_drivers[index].trips.empty? || available_drivers.length == 1
-            available_driver_with_longest_wait_time = available_drivers[index]
-            break
-          elsif available_drivers[index].trips[-1].end_time < available_driver_with_longest_wait_time.trips[-1].end_time
-            available_driver_with_longest_wait_time = available_drivers[index]
-          end
-            index+=1
-          end
+      driver_iterations.times do
+        if available_drivers[index].trips.empty? || available_drivers.length == 1
+          available_driver_with_longest_wait_time = available_drivers[index]
+          break
+        elsif available_drivers[index].trips[-1].end_time < available_driver_with_longest_wait_time.trips[-1].end_time
+          available_driver_with_longest_wait_time = available_drivers[index]
+        end
+        index+=1
+      end
 
-          a_passenger = find_passenger(passenger_ID)
+      a_passenger = find_passenger(passenger_ID)
 
-          start_time = Time.now
-          new_trip = RideShare::Trip.new({id:passenger_ID,driver:available_driver_with_longest_wait_time,passenger:a_passenger,start_time:start_time,end_time: :PENDING, rating: :PENDING,cost: 0})
-          available_driver_with_longest_wait_time.add_trip(new_trip)
-          available_driver_with_longest_wait_time.status = :UNAVAILABLE
-          a_passenger.trips << new_trip
-          trips << new_trip
+      start_time = Time.now
+      new_trip = RideShare::Trip.new({id:passenger_ID,driver:available_driver_with_longest_wait_time,passenger:a_passenger,start_time:start_time,end_time: :PENDING, rating: :PENDING,cost: 0})
+      available_driver_with_longest_wait_time.add_trip(new_trip)
+      available_driver_with_longest_wait_time.status = :UNAVAILABLE
+      a_passenger.trips << new_trip
+      trips << new_trip
 
       return new_trip
-        #driver has been set an changed to unavailable
     end
 
     def inspect
