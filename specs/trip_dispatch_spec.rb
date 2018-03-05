@@ -95,17 +95,27 @@ describe "TripDispatcher class" do
   end
 
   describe 'Request Trip' do
-    it 'will raise an ArgumentError when the passenger ID when nothing is entered' do
+    it 'will raise an ArgumentError when nothing is entered for Passenger ID' do
       dispatcher = RideShare::TripDispatcher.new
       proc{ dispatcher.request_trip() }.must_raise ArgumentError
+      proc{ dispatcher.request_trip(' ') }.must_raise ArgumentError
     end
     it 'accurately loads trip into the list of trips' do
       dispatcher = RideShare::TripDispatcher.new
       new_trip = dispatcher.request_trip(2)
       new_trip.must_be_kind_of RideShare::Trip
+      dispatcher.trips.must_include new_trip
+    end
+    it 'accurately loads trip info and associates trips with drivers and passengers' do
+      dispatcher = RideShare::TripDispatcher.new
+
+      new_trip = dispatcher.request_trip(5)
+      passenger = dispatcher.find_passenger(5)
+      driver = dispatcher.select_available_driver
+
+      driver.trips.must_include new_trip
+      passenger.trips.must_include new_trip
     end
   end
-
-
 
 end

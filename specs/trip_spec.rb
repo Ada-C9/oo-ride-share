@@ -33,7 +33,7 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
-    end    
+    end
     it 'raises an error for invalid end time' do
       @trip_data[:start_time] = Time.parse('2015-05-20T12:14:00+00:00')
       @trip_data[:end_time] = @trip_data[:start_time] - 60

@@ -34,7 +34,7 @@ describe "Passenger class" do
   end
 
 
-  describe "trips property" do
+  describe "Trips Property" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60
@@ -78,7 +78,7 @@ describe "Passenger class" do
     end
   end
 
-  describe "get_drivers method" do
+  describe "Get Drivers Method" do
     before do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60

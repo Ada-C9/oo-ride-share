@@ -1,7 +1,5 @@
 require 'csv'
 require 'time'
-require 'awesome_print'
-require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -135,6 +133,8 @@ module RideShare
 
       select_available_driver.add_trip(active_trip)
       passenger.add_trip(active_trip)
+
+      @trips << active_trip
 
       return active_trip
     end

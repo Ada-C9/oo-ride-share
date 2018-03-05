@@ -37,7 +37,6 @@ module RideShare
       else
         average = (total_ratings.to_f) / trips.length
       end
-
       return average
     end
 
@@ -59,14 +58,14 @@ module RideShare
       driver_takehome = 0.8
 
       in_progress.each do |trip|
-          subtotal += (trip.cost - fee)
-        end
-        total = (subtotal * driver_takehome).round(2)
+        subtotal += (trip.cost - fee)
+      end
+      total = (subtotal * driver_takehome).round(2)
       return total
     end
 
     def average_revenue
-        average_per_hour = (total_revenue / in_progress.length) / (total_trip_duration / 3600)
+      average_per_hour = (total_revenue / in_progress.length) / (total_trip_duration / 3600)
       return average_per_hour.round(2)
     end
 
