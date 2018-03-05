@@ -1,5 +1,4 @@
-# require 'time'
-
+# Stores the module methods
 module RideShare
 
   # Throws ArgumentError is provided id is not an Integer greater than zero.
@@ -42,9 +41,7 @@ module RideShare
   def self.return_valid_trips_or_errors(trips)
     return [] if trips.nil?
     raise ArgumentError.new("#{trips} must be an Array") if trips.class != Array
-    trips.each do |trip|
-      return_valid_trip_or_error(trip)
-    end
+    trips.each { |trip| return_valid_trip_or_error(trip) }
     return trips
   end
 

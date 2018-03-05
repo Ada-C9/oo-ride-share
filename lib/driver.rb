@@ -25,6 +25,8 @@ module RideShare
       @trips << trip
     end
 
+    # Returns the average rating if the driver has completed any trips.
+    # Otherwise, returns 0
     def get_average_rating
       num_of_trips = get_num_of_completed_trips
       return num_of_trips == 0 ? 0 : (get_ratings.to_f / num_of_trips)
@@ -72,7 +74,8 @@ module RideShare
       check_for_in_progress_error(num_of_in_progress) if num_of_in_progress > 0
     end
 
-    #
+    # Throws ArgumentError if num_of_in_progress is 1 and the driver is
+    # available or if num_of_in_progress is greater than 1.
     def check_for_in_progress_error(num_of_in_progress)
       if num_of_in_progress == 1 && is_available?
         raise ArgumentError.new("Error in driver's initial status or trips")
@@ -109,7 +112,7 @@ module RideShare
       return RideShare.get_all_trip_durations_in_seconds(trips).to_f / 60 / 60
     end
 
-    #
+    # Returns the total ratings.
     def get_ratings
       return @trips.inject(0) do |sum, trip|
         trip.is_in_progress? ? sum + 0 : sum + trip.rating
@@ -122,6 +125,8 @@ module RideShare
       return @trips.length
     end
 
+    # Throws ArgumentError if input_vin is not a String or if its length is not
+    # 17. Otherwise, returns input_vin
     def return_valid_vin_or_error(input_vin)
       if input_vin.class != String || input_vin.length != 17
         raise ArgumentError.new("VIN #{input_vin} must be an int with length 17")
@@ -129,6 +134,8 @@ module RideShare
       return input_vin
     end
 
+    # Throws ArgumentError if input_status is not nil, AVAILABLE, or UNAVAILABLE.
+    # If input_status is nil, returns AVAILABLE. Otherwise, returns input_status.
     def return_valid_status_or_error(input_status)
       return :AVAILABLE if input_status.nil?
       if input_status != :AVAILABLE  && input_status != :UNAVAILABLE

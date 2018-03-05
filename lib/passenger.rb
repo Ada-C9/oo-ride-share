@@ -1,5 +1,3 @@
-# require_relative 'trip'
-
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -34,19 +32,26 @@ module RideShare
 
     private
 
+    # Throws ArgumentError if provided trip is not a valid Trip. Otherwise, adds
+    # trip to trips.
     def add_trip_if_valid(trip)
       @trips << RideShare.return_valid_trip_or_error(trip)
     end
 
+    # Returns the total amount spent on completed trips.
     def calculate_total_money_spent
       return @trips.inject(0.0) { |sum, trip|
         trip.is_in_progress? ? sum + 0 : sum + trip.cost }
     end
 
+    # Returns all drivers that have driven trips.
     def return_all_drivers
       return @trips.map{ |trip| trip.driver }
     end
 
+    # Throws ArgumentError if input_phone_num is not a String or if it contains
+    # less than 10 digits.
+    # Returns input_phone_num.
     def return_valid_phone_or_error(input_phone_num)
       if input_phone_num.class != String || input_phone_num.count("0-9") < 10
         raise ArgumentError.new("Invalid phone number #{input_phone_num}")
