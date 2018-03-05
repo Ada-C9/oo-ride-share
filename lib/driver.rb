@@ -1,7 +1,7 @@
 require_relative 'trip'
 
 module RideShare
-  class Driver # < Traveler
+  class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
     def initialize(input)
@@ -18,29 +18,7 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
-      # @trips = input[:trips] || []
-      # remove the above uncommented code and replace with below
-      # if you create the Driver class as a subclass of Traveler
-      #super (input[:trips])
     end
-
-    # # this is a way to find all the passengers in the trips array
-    # # EACH Style
-    # def passengers
-    #   passengers = []
-    #   trips.each do |trip|
-    #     passengers << trip.passenger
-    #   end
-    # end
-    # return passengers.uniq
-    #
-    #
-    # # MAP Style
-    # passengers = trips.map do |trip|
-    #   trip.passenger
-    # end
-    # return passengers.uniq
-
 
     def average_rating
       total_ratings = 0
