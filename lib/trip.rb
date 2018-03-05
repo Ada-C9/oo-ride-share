@@ -10,15 +10,12 @@ module RideShare
       @id = input[:id]
       @driver = input[:driver]
       @passenger = input[:passenger]
-      # method for temporarily dealng with bad data in test specs
-      # @start_time = input[:start_time].class == Time ? input[:start_time] : 0
-      # @end_time = input[:end_time].class == Time ? input[:end_time] : 1
       @start_time = input[:start_time]
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @end_time != nil
+      if @end_time != nil || @end_time == @start_time
         if @end_time < @start_time
           raise ArgumentError.new("Invalid times: #{@end_time} occurs before #{@start_time}")
         end
@@ -26,12 +23,14 @@ module RideShare
           raise ArgumentError.new("Invalid rating #{@rating}")
         end
       end
-
-
     end
 
     def calculate_duration
       @end_time - @start_time
+    end
+
+    def inspect
+      "#<#{self.class.name}: 0x#{self.object_id.to_s(16)}>"
     end
   end
 end
