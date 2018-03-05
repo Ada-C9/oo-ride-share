@@ -155,14 +155,3 @@ module RideShare
 
   end
 end
-
-# dispatcher = RideShare::TripDispatcher.new
-# a_new_trip = dispatcher.request_trip(2)
-
-# driver = a_new_trip.driver
-# dispatcher.find_driver(driver).update_info(a_new_trip)
-#
-#
-# second_trip = dispatcher.request_trip(444)
-# driver = second_trip.driver
-# dispatcher.find_driver(driver).update_info(second_trip)
