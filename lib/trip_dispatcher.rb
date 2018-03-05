@@ -111,7 +111,7 @@ module RideShare
     def last_trip (driver)
       driver_trips = driver.trips
       driver_trips.sort_by! {|trip| trip.end_time}
-      return driver_trips[0]
+      return driver_trips[-1]
     end
 
     def select_driver
