@@ -7,13 +7,15 @@ TRIP_FEE = 1.65
 describe "Driver class" do
 
   describe "Driver instantiation" do
-    before do
-      @driver = RideShare::Driver.new(id: 1, name: "George",
-        vin: "33133313331333133")
-    end
+    # before do
+    #   @driver = RideShare::Driver.new(id: 1, name: "George",
+    #     vin: "33133313331333133")
+    # end
 
     it "is an instance of Driver" do
-      @driver.must_be_kind_of RideShare::Driver
+      driver = RideShare::Driver.new(id: 1, name: "George",
+        vin: "33133313331333133")
+      driver.must_be_kind_of RideShare::Driver
     end
 
     it "throws an argument error with a bad ID value" do
@@ -68,20 +70,89 @@ describe "Driver class" do
         vin: "33133313331333133") }.must_raise ArgumentError # No id
     end
 
-    it "sets trips to an empty array if not provided" do
-      @driver.trips.must_be_kind_of Array
-      @driver.trips.must_equal []
+    it "throws an argument error with a bad status value" do
+      proc{ RideShare::Driver.new(id: 0, name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError # id = 0
+
+      proc{ RideShare::Driver.new(id: "A", name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError   # id is letter
+
+
+      proc{ RideShare::Driver.new(name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError # No id
+    end
+
+    it "sets status to AVAILABLE if not provided" do
+      driver = RideShare::Driver.new(id: 1, name: "George",
+        vin: "33133313331333133")
+
+      driver.status.must_equal :AVAILABLE
+    end
+
+    it "raises ArgumentError if trips contains an invalid trip" do
+      # place_holder_driver is so the Trip objects can be made. Although it does
+      # not sense to add it to a different driver, it does not matter for this
+      # test.
+      place_holder_driver = RideShare::Driver.new(id: 101, name: "Fake",
+        vin: "33133313331333139")
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      trip = RideShare::Trip.new({id: 8, driver: place_holder_driver,
+        passenger: pass, start_time: Time.parse("2018-01-02T10:42:00+00:00")})
+
+      proc{ RideShare::Driver.new(id: 11, name: "George",
+        vin: "33133313331333133", trips: [trip, "foo"], status: :UNAVAILABLE)
+        }.must_raise ArgumentError
+
+    end
+
+    it "raises ArgumentError if trips contains multiple in-progress trips" do
+      # place_holder_driver is so the Trip objects can be made. Although it does
+      # not sense to add it to a different driver, it does not matter for this
+      # test.
+      place_holder_driver = RideShare::Driver.new(id: 101, name: "Fake",
+        vin: "33133313331333139")
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      trip = RideShare::Trip.new({id: 8, driver: place_holder_driver,
+        passenger: pass, start_time: Time.parse("2018-01-02T10:42:00+00:00")})
+      trip_two = RideShare::Trip.new({id: 7, driver: place_holder_driver,
+        passenger: pass, start_time: Time.parse("2018-01-06T10:42:00+00:00")})
+
+      proc{ RideShare::Driver.new(id: 11, name: "George",
+        vin: "33133313331333133", trips: [trip, trip_two], status: :UNAVAILABLE)
+        }.must_raise ArgumentError
+
+      proc{ RideShare::Driver.new(id: 11, name: "George",
+        vin: "33133313331333133", trips: [trip], status: :AVAILABLE)
+        }.must_raise ArgumentError
+    end
+
+    it "raises ArgumentError if trips has an in-progress trip but AVAILABLE" do
+      # place_holder_driver is so the Trip objects can be made. Although it does
+      # not sense to add it to a different driver, it does not matter for this
+      # test.
+      place_holder_driver = RideShare::Driver.new(id: 101, name: "Fake",
+        vin: "33133313331333139")
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      trip = RideShare::Trip.new({id: 8, driver: place_holder_driver,
+        passenger: pass, start_time: Time.parse("2018-01-02T10:42:00+00:00")})
+
+      proc{ RideShare::Driver.new(id: 11, name: "George",
+        vin: "33133313331333133", trips: [trip], status: :AVAILABLE)
+        }.must_raise ArgumentError
     end
 
     it "is set up for specific attributes and data types" do
+      driver = RideShare::Driver.new(id: 1, name: "George",
+        vin: "33133313331333133")
+
       [:id, :name, :vehicle_id, :status].each do |prop|
-        @driver.must_respond_to prop
+        driver.must_respond_to prop
       end
 
-      @driver.id.must_be_kind_of Integer
-      @driver.name.must_be_kind_of String
-      @driver.vehicle_id.must_be_kind_of String
-      @driver.status.must_be_kind_of Symbol
+      driver.id.must_be_kind_of Integer
+      driver.name.must_be_kind_of String
+      driver.vehicle_id.must_be_kind_of String
+      driver.status.must_be_kind_of Symbol
     end
   end
 
