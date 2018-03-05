@@ -135,5 +135,21 @@ describe "TripDispatcher class" do
 
       @dispatcher.request_trip(5).driver.status.must_equal :UNAVAILABLE
     end
+
+    it "adds new trip to trips" do
+      # Given
+      # When
+      @dispatcher.request_trip(5)
+      # Then
+      @dispatcher.trips.length.must_equal 601
+    end
+
+    it "adds trip to drivers trips" do
+      # Given
+      # When
+      @dispatcher.request_trip(5)
+      # Then
+      @dispatcher.request_trip(5).driver.trips.length.must_equal 9
+    end
   end
 end

@@ -112,6 +112,7 @@ module RideShare
       trip = Trip.new(new_trip)
       driver.add_trip(trip)
       passenger.add_trip(trip)
+      trips << trip
 
       return trip
     end
