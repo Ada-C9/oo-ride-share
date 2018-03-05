@@ -23,17 +23,13 @@ module RideShare
     end
 
     def average_rating
+      return nil if trips.length == 0
+
       total_ratings = 0
       @trips.each do |trip|
         total_ratings += trip.rating
       end
-
-      if trips.length == 0
-        average = 0
-      else
-        average = (total_ratings.to_f) / trips.length
-      end
-
+      average = (total_ratings.to_f) / trips.length
       return average
     end
 

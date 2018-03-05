@@ -72,9 +72,9 @@ describe "Driver class" do
       average.must_be :<=, 5.0
     end
 
-    it "returns zero if no trips" do
+    it "returns nil if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      driver.average_rating.must_equal 0
+      driver.average_rating.must_equal nil
     end
   end
 

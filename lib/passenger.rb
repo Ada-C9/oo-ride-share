@@ -35,9 +35,5 @@ module RideShare
       return total_time
     end
 
-    def new_ride(trip)
-      @trips << trip
-    end
-
   end#end passenger class
 end#end rideshare module
