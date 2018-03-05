@@ -41,7 +41,6 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
     end
 
@@ -50,8 +49,7 @@ module RideShare
     end
 
     def average_hourly_revenue
-      total_minutes = @trips.sum{ |t| t.calculate_duration / 60 }
-      total_hours = total_minutes / 60
+      total_hours = @trips.sum{ |t| t.calculate_duration / (3600) }
       (total_revenue / total_hours).round(2)
     end
 
