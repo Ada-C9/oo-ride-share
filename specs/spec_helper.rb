@@ -2,7 +2,9 @@ require 'time'
 require 'minitest'
 require 'minitest/autorun'
 require 'minitest/reporters'
-# Add simplecov
+
+require 'simplecov'
+SimpleCov.start
 
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
