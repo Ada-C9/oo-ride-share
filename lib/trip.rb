@@ -13,24 +13,22 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      # TODO: update in-progress trip labeling
-      if @end_time == nil || @cost == nil || @rating == nil
-        puts "This is a in-progress trip."
-        return
+      if @end_time != nil && @start_time !=nil && @end_time < @start_time
+        raise ArgumentError.new("Invalid times")
       end
 
-      if @end_time < @start_time
-        raise ArgumentError.new("Invalid time")
-      end
-
-      if @rating > 5 || @rating < 1
+      if @rating !=nil && (@rating > 5 || @rating < 1)
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
+    end #initialize
 
-    end
     def duration
-      (@end_time - @start_time).to_i
-    end
+      if end_time == nil
+        raise ArgumentError.new ("Ride still in progress")
+      else
+        return duration = (@end_time - @start_time)
+      end
+    end  # duration
 
     def inspect
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"

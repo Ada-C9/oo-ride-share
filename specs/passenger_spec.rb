@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-xdescribe "Passenger class" do
+describe "Passenger class" do
   before do
     # 1,Nina Hintz Sr.,560.815.3059
     # 98,Ms. Winston Emard,1F9Z5CF13VV8041ND,AVAILABLE
@@ -106,13 +106,13 @@ xdescribe "Passenger class" do
     it "calculates the passenger's total time spent on all trips" do
       @passenger.add_trip(@trip_1)
       @passenger.add_trip(@trip_2)
-      expected_total_time = @trip_1.duration + @trip_2.duration
+      expected_total_amount_of_time = @trip_1.duration + @trip_2.duration
 
-      @passenger.total_amount_of_time.must_equal expected_total_time
+      @passenger.total_amount_of_time.must_equal expected_total_amount_of_time
     end
 
     it "returns 0 if there is no trip for this passenger" do
-      @passenger.total_time.must_equal 0
+      @passenger.total_amount_of_time.must_equal 0
     end
 
   end

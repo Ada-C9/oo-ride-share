@@ -93,32 +93,39 @@ module RideShare
       trips
     end
 
+    def available_drivers
+      available_drivers = @drivers.find_all { |driver| driver.status == :AVAILABLE }
+      if available_drivers.empty?
+        raise ArgumentError.new ("No available drivers!")
+      else
+        return available_drivers
+      end
+    end
+
     def request_trip(passenger_id)
       check_id(passenger_id)
       passenger = find_passenger(passenger_id)
 
-      select_driver = @drivers.find { |d| d.status == :AVAILABLE }
-      if select_driver == nil
-        return nil
-      end
+      driver = available_drivers.first
 
       new_trip = {
-        id: @trips.length + 1,
-        driver: select_driver,
+        id: trips.length + 1,
+        driver: driver,
         passenger: passenger,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
         rating: nil
       }
-      request_trip = RideShare::Trip.new(new_trip)
+      requested_trip = RideShare::Trip.new(new_trip)
 
-      passenger.add_trip(request_trip)
-      select_driver.add_trip(request_trip)
-      select_driver.status = :UNAVAILABLE
-      @trips << new_trip
 
-      return request_trip
+      driver.change_status
+      driver.add_trip(requested_trip)
+      passenger.add_trip(requested_trip)
+      @trips << requested_trip
+
+      return requested_trip
     end
 
     def inspect

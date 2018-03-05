@@ -18,22 +18,24 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def finished_trips
+      @trips.select { |trip| trip.end_time != nil  }
+    end # finished trips
+
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      finished_trips.each do |trip|
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if finished_trips.length == 0
         average = 0
       else
         average = (total_ratings.to_f) / trips.length
       end
-
       return average
     end
 
@@ -46,11 +48,17 @@ module RideShare
     end
 
     def total_revenue
-      @trips.empty? ? 0 : (@trips.inject(0){ |rev, trip| rev + trip.cost } - 1.65) * 0.8
+      @trips.finished_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
+      return total_revenue
     end
 
     def average_revenue
-      @trips.empty? ? 0 : (total_revenue / @trips.length.round(2))
+      @trips.empty? ? 0 : (total_revenue / @trips.finished_trips.length.round(2))
     end
+
+    def change_status
+      @status = :UNAVAILABLE
+    end
+
   end
 end
