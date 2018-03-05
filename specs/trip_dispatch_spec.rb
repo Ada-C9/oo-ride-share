@@ -95,8 +95,8 @@ describe "TripDispatcher class" do
       @dispatcher = RideShare::TripDispatcher.new
       @all_trips_before = @dispatcher.trips.length
       @passenger_trips_before = @dispatcher.find_passenger(1).trips.length
-      @driver_trips_before = @dispatcher.find_driver(2).trips.length
-      @driver_status_before = @dispatcher.find_driver(2).status
+      @driver_trips_before = @dispatcher.find_driver(14).trips.length
+      @driver_status_before = @dispatcher.find_driver(14).status
       @new_trip = @dispatcher.request_trip(1)
     end
 
@@ -105,22 +105,26 @@ describe "TripDispatcher class" do
       @new_trip.id.must_equal 601
       @new_trip.passenger.id.must_equal 1
       @new_trip.passenger.name.must_equal "Nina Hintz Sr."
-      @new_trip.driver.id.must_equal 2
-      @new_trip.driver.name.must_equal "Emory Rosenbaum"
+      @new_trip.driver.id.must_equal 14
+      @new_trip.driver.name.must_equal "Antwan Prosacco"
       @new_trip.end_time.must_be_nil
       @new_trip.cost.must_be_nil
       @new_trip.rating.must_be_nil
       @new_trip.driver.status.must_equal :UNAVAILABLE
     end
 
+    it "raises an error if a trip is requested for a new passenger (not in database)" do
+      proc { @dispatcher.request_trip(301) }.must_raise ArgumentError
+    end
+
     it "updates all trip lists" do
       @dispatcher.trips.must_include @new_trip
       @dispatcher.find_passenger(1).trips.must_include @new_trip
-      @dispatcher.find_driver(2).trips.must_include @new_trip
+      @dispatcher.find_driver(14).trips.must_include @new_trip
 
       all_trips_after = @dispatcher.trips.length
       passenger_trips_after = @dispatcher.find_passenger(1).trips.length
-      driver_trips_after = @dispatcher.find_driver(2).trips.length
+      driver_trips_after = @dispatcher.find_driver(14).trips.length
 
       all_trips_after - @all_trips_before = 1
       passenger_trips_after - @passenger_trips_before = 1
@@ -134,7 +138,7 @@ describe "TripDispatcher class" do
   end
 
   describe "new_trip_id method" do
-    it "creates a trips with a new id" do
+    it "creates a trip with a new id" do
       dispatcher = RideShare::TripDispatcher.new
       initial_trip_ids = dispatcher.trips.map { |trip| trip.id }
       new_trip = dispatcher.request_trip(2)
@@ -142,7 +146,16 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "find_available_driver method" do
+  describe "available_drivers method" do
+    it "returns an array of available drivers" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.available_drivers.must_be_kind_of Array
+      dispatcher.available_drivers.each do |driver|
+        driver.must_be_instance_of RideShare::Driver
+        driver.status.must_equal :AVAILABLE
+      end
+    end
+
     it "raises an error if all drivers are unavailable" do
       dispatcher = RideShare::TripDispatcher.new
       dispatcher.drivers.each do |driver|
@@ -156,26 +169,66 @@ describe "TripDispatcher class" do
     end
   end
 
-  describe "find_most_recent_trip method" do
-    it "returns a hash of drivers and trips" do
+  describe "most_recent_trip_by_driver method" do
+    before do
       dispatcher = RideShare::TripDispatcher.new
-      dispatcher.find_most_recent_trip.must_be_kind_of Hash
-      dispatcher.find_most_recent_trip.each do |driver, trip|
-        driver.must_be_instance_of RideShare::Driver
+      @most_recent_trips = dispatcher.most_recent_trip_by_driver
+    end
+
+    it "returns an array of trips" do
+      @most_recent_trips.must_be_kind_of Array
+      @most_recent_trips.each do |trip|
         trip.must_be_instance_of RideShare::Trip
       end
     end
+
+    it "each trip has a unique driver" do
+      unique_drivers = @most_recent_trips.map {|trip| trip.driver}.uniq
+      @most_recent_trips.length.must_equal unique_drivers.length
+    end
+
+    it "includes the last (most recently completed) trip for each driver" do
+      last_trip_driver_14 = @most_recent_trips.find do |trip|
+        trip.driver.id == 14
+      end
+
+      last_trip_driver_27 = @most_recent_trips.find do |trip|
+        trip.driver.id == 27
+      end
+
+      last_trip_driver_14.end_time.must_equal Time.parse("2015-04-23T17:53:00+00:00")
+      last_trip_driver_27.end_time.must_equal Time.parse("2015-04-28T04:13:00+00:00")
+    end
   end
 
-  describe "find_least_utilized_driver" do
+  describe "select_driver" do
     it "returns a driver" do
       dispatcher = RideShare::TripDispatcher.new
-      dispatcher.find_least_utilized_driver.must_be_kind_of RideShare::Driver
-      # Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-      # Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
-      # Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
-      # Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
-      # Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
+      dispatcher.select_driver.must_be_kind_of RideShare::Driver
+    end
+
+    it "returns the least recently utilized driver when a new trip is requested" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      trip_1 = dispatcher.request_trip(1)
+      trip_1.driver.id.must_equal 14
+      trip_1.driver.name.must_equal "Antwan Prosacco"
+
+      trip_2 = dispatcher.request_trip(2)
+      trip_2.driver.id.must_equal 27
+      trip_2.driver.name.must_equal "Nicholas Larkin"
+
+      trip_3 = dispatcher.request_trip(3)
+      trip_3.driver.id.must_equal 6
+      trip_3.driver.name.must_equal "Mr. Hyman Wolf"
+
+      trip_4 = dispatcher.request_trip(4)
+      trip_4.driver.id.must_equal 87
+      trip_4.driver.name.must_equal "Jannie Lubowitz"
+
+      trip_5 = dispatcher.request_trip(4)
+      trip_5.driver.id.must_equal 75
+      trip_5.driver.name.must_equal "Mohammed Barrows"
     end
   end
 end

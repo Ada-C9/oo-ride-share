@@ -26,11 +26,11 @@ module RideShare
     end
 
     def total_cost
-      completed_trips.map { |trip| trip.cost }.reduce(0.0,:+)
+      completed_trips.map { |trip| trip.cost }.reduce(0,:+)
     end
 
     def total_time
-      completed_trips.map { |trip| trip.duration }.reduce(0.0,:+)
+      completed_trips.map { |trip| trip.duration }.reduce(0,:+)
     end
 
     def completed_trips

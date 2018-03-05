@@ -1,6 +1,5 @@
 require 'csv'
 require 'time'
-require 'ap'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -72,11 +71,6 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
-        # could add a check here
-        # if driver.nil? || passenger.nil?
-        # => raise StandardError ("Could not find driver or passenger for trip ID #{raw_trip[:id]}")
-        # end
-
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
@@ -97,22 +91,29 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      # create new on-going trip
-      new_trip_data = {}
-      new_trip_data[:id] = new_trip_id
-      new_trip_data[:passenger] = find_passenger(passenger_id)
-      new_trip_data[:driver] = find_available_driver
-      new_trip_data[:start_time] = Time.now
-      new_trip_data[:end_time] = nil
-      new_trip_data[:cost] = nil
-      new_trip_data[:rating] = nil
+
+      if find_passenger(passenger_id).nil?
+        raise ArgumentError.new("A trip can only be requested for an existing customer.")
+      end
+
+      new_trip_data = {
+        id: new_trip_id,
+        passenger: find_passenger(passenger_id),
+        driver: select_driver,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
       new_trip = Trip.new(new_trip_data)
 
-      # change driver status, add trips to all trips, driver trips, and passenger trips arrays
       @trips << new_trip
       new_trip.driver.add_trip(new_trip)
       new_trip.passenger.add_trip(new_trip)
+
       new_trip.driver.change_status
+
       return new_trip
     end
 
@@ -120,36 +121,34 @@ module RideShare
       @trips.map { |trip| trip.id }.max + 1
     end
 
-    def find_available_driver
-      available_drivers = @drivers.select { |driver| driver.status == :AVAILABLE }
-      if available_drivers.empty?
-        raise StandardError.new("There are no availabe drivers. A trip cannot be requested.")
+    def available_drivers
+      available_drivers = @drivers.select do |driver|
+        driver.status == :AVAILABLE && driver.trips.length > 0
       end
 
-      return available_drivers.first
+      if available_drivers.nil?
+        raise StandardError.new("There are no availabe drivers at this time. A trip cannot be requested.")
+      end
+
+      return available_drivers
     end
 
-    def find_most_recent_trip
-      available_drivers = @drivers.select { |driver| driver.status == :AVAILABLE && driver.trips.length > 1 }
-      most_recent_trips = {}
-      available_drivers.each do |driver|
-        most_recent_trip = driver.trips.first
-        driver.trips.each do |trip|
-          if trip.end_time > most_recent_trip.end_time
-            most_recent_trip = trip
-          end
+    def most_recent_trip_by_driver
+      most_recent_trip_by_driver = available_drivers.map do |driver|
+        driver.trips.max_by do |trip|
+          trip.end_time
         end
-        most_recent_trips[driver] = most_recent_trip
       end
-      return most_recent_trips
+
+      return most_recent_trip_by_driver
     end
 
-    def find_least_utilized_driver
-      potential_drivers = find_most_recent_trip
-      result = potential_drivers.min_by do |driver, trip|
+    def select_driver
+      most_distant_trip = most_recent_trip_by_driver.min_by do |trip|
         trip.end_time
       end
-      return result[0]
+
+      return most_distant_trip.driver
     end
 
     def inspect

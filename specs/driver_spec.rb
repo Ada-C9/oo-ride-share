@@ -141,7 +141,7 @@ describe "Driver class" do
     end
 
 
-    it "returns the sum duration for all of the driver's completed trips" do
+    it "returns the sum duration of the driver's completed trips" do
       passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       trip_1_start = Time.parse("2016-04-05T14:01:00+00:00")
       trip_1_end = trip_1_start + 8 * 60  #8 minutes later
