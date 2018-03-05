@@ -15,19 +15,19 @@ module RideShare
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
-      @status_in_progress = false
+      @trip_in_progress = false
 
 
       if @end_time == nil || @cost == nil || @rating == nil
-        @status_in_progress = true
+        @trip_in_progress = true
       end
 
 
-      if !@status_in_progress && (@rating > 5 || @rating < 1)
+      if !@trip_in_progress && (@rating > 5 || @rating < 1)
         raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
-      if  !@status_in_progress && @end_time < @start_time
+      if  !@trip_in_progress && @end_time < @start_time
         raise ArgumentError.new("Invalid time")
       end
 
@@ -41,7 +41,7 @@ module RideShare
 
       return 0 if @end_time == nil
       return (@end_time - @start_time).to_i
-      
+
     end
 
 

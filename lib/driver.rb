@@ -52,7 +52,7 @@ module RideShare
     end
 
     def total_revenue
-      if @end_time!= nil
+      if !@trip_in_progress
         if @trips.length == 0
           return 0
         else
@@ -69,7 +69,7 @@ module RideShare
 
 
     def average_revenue
-      if @end_time!= nil
+      if !@trip_in_progress
         total_revenue
         if @trips.length == 0
           return 0

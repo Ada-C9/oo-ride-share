@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 require 'pry'
 
-xdescribe "Passenger class" do
+describe "Passenger class" do
 
   describe "Passenger instantiation" do
     before do
