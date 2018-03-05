@@ -108,64 +108,45 @@ module RideShare
       return free_drivers
     end
 
-    def last_trip (driver_1)
-      soonest_end_time = Time.new(2011)
-      driver_trips = driver_1.trips
-      driver_trips.each do |trip|
-        if trip.end_time != nil && soonest_end_time < trip.end_time
-          soonest_end_time = trip.end_time
-        end
-      end
-      return soonest_end_time
+    def last_trip (driver)
+      driver_trips = driver.trips
+      driver_trips.sort_by! {|trip| trip.end_time}
+      return driver_trips[0]
     end
 
     def select_driver
-      latest = Time.new(1992)
-
       free_drivers = available_drivers
+      driver_last_trip = {}
       free_drivers.each do |driver|
         if driver.trips.count == 0
-          next_driver = driver
-        else
-          last_end_time = last_trip(driver)
-
-          if (last_end_time - latest) > 0
-            latest = driver_latest_end_time
-            next_driver = driver
-          end
+          return driver
+        elsif
+          last_trip = last_trip(driver)
+          driver_last_trip.store(driver,last_trip)
         end
-        return next_driver
       end
+      driver_last_trip = driver_last_trip.sort_by{|driver, trip| trip.end_time}.to_a
+      next_driver = driver_last_trip[0][0]
+      return next_driver
     end
 
     def request_trip(passenger_id)
       start_time = Time.now
       new_trip = Hash.new
-
-      newly_added_trip = "No available drivers"
-
+      newly_added_trip = nil
       new_trip[:id] = @trips.length
-
       driver = select_driver
-
       if driver != nil
-
         driver.status = :UNAVAILABLE
         new_trip[:driver] = driver
-
         new_trip[:passenger] = find_passenger(passenger_id)
-
         new_trip[:start_time] = start_time
-
         new_trip[:end_time] = nil
         new_trip[:cost] = nil
         new_trip[:rating] = nil
-
         newly_added_trip = RideShare::Trip.new(new_trip)
-
         @trips << newly_added_trip
       end
-
       return newly_added_trip
     end
 
@@ -182,26 +163,3 @@ module RideShare
     end
   end
 end
-
-# def select_driver
-#   most_available_driver_end_time = Time.new(1992)
-#   most_available_driver = nil
-#
-#   available_drivers.each do |driver|
-#     if driver.trips.count == 0
-#       most_available_driver = driver
-#     else
-#       last_trip_end = Time.new(2010)
-#       driver.trips.each do |trip|
-#         if trip.end_time != nil && (trip.end_time > last_trip_end)
-#           last_trip_end = trip.end_time
-#         end
-#       end
-#       if last_trip_end > most_available_driver_end_time
-#         most_available_driver_end_time = last_trip_end
-#         most_available_driver = driver
-#       end
-#     end
-#   end
-#   return most_available_driver
-# end
