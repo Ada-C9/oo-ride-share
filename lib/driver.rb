@@ -1,9 +1,11 @@
 require 'csv'
 require_relative 'trip'
+require 'awesome_print'
 
 module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_writer :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -44,9 +46,14 @@ module RideShare
       @trips << trip
     end
 
+    def set_status_unavailable
+      @status.to_s
+      @status == "UNAVAILABLE".to_sym
+    end
+
     def total_revenue
-    fee = 1.65
-    total_revenue = 0
+      fee = 1.65
+      total_revenue = 0
       @trips.each do |trip|
         trip = (trip.cost - fee) * 0.8
         total_revenue += trip

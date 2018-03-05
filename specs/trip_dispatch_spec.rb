@@ -104,7 +104,18 @@ describe "TripDispatcher class" do
     end
 
     it "updates trip lists for driver, passenger, and tripdispatcher" do
+      # this assumes that the driver selected is driver 2
+      dispatcher_trips = @dispatcher.trips.length
+      driver = @dispatcher.find_driver(2)
+      driver_trips = driver.trips.length
+      passenger = @dispatcher.find_passenger(1)
+      passenger_trips = passenger.trips.length
 
+      new_trip = @dispatcher.request_trip(1)
+
+      @dispatcher.trips.length.must_equal dispatcher_trips + 1
+      new_trip.driver.trips.length.must_equal driver_trips + 1
+      new_trip.passenger.trips.length.must_equal passenger_trips + 1
     end
 
     it "supplies a passenger id as parameter" do
