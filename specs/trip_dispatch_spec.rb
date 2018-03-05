@@ -105,6 +105,12 @@ describe "TripDispatcher class" do
       @new_trip = @trip_disp.request_trip(1)
     end
 
+    it 'Creates a new instance of trips' do
+      @new_trip.must_be_instance_of RideShare::Trip
+      @new_trip.driver.must_be_instance_of RideShare::Driver
+      @new_trip.passenger.must_be_instance_of RideShare::Passenger
+    end
+
     it 'Updates the length of trip list in @trip_dispatcher:' do
       initial_list_length = @trip_disp.trips.length
 
@@ -168,6 +174,12 @@ describe "TripDispatcher class" do
       @new_trip = @trip_disp.wave3_request_trip(1)
     end
 
+    it 'Creates a new instance of trips' do
+      @new_trip.must_be_instance_of RideShare::Trip
+      @new_trip.driver.must_be_instance_of RideShare::Driver
+      @new_trip.passenger.must_be_instance_of RideShare::Passenger
+    end
+    
     it "Selects the right driver for the first 5 new trip-requests" do
 
       # 1 - Arrange / Act:
