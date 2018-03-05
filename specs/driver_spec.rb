@@ -2,6 +2,8 @@ require_relative 'spec_helper'
 
 # TODO: test is all ride's features are nil ONLY if ride is in progress
 
+TRIP_FEE = 1.65
+
 describe "Driver class" do
 
   describe "Driver instantiation" do
@@ -16,19 +18,59 @@ describe "Driver class" do
 
     it "throws an argument error with a bad ID value" do
       proc{ RideShare::Driver.new(id: 0, name: "George",
-        vin: "33133313331333133")}.must_raise ArgumentError
+        vin: "33133313331333133") }.must_raise ArgumentError # id = 0
+
+      proc{ RideShare::Driver.new(id: "A", name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError   # id is letter
+
+
+      proc{ RideShare::Driver.new(name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError # No id
     end
 
     it "throws an argument error with a bad VIN value" do
-      proc{ RideShare::Driver.new(id: 100, name: "George",
-        vin: "")}.must_raise ArgumentError
-      proc{ RideShare::Driver.new(id: 100, name: "George",
-        vin: "33133313331333133extranums")}.must_raise ArgumentError
+      proc{ RideShare::Driver.new(id: 101, name: "George",
+        vin: "") }.must_raise ArgumentError  # empty
+
+      proc{ RideShare::Driver.new(id: 101, name: "George",
+        vin: "33133313331333133extranums") }.must_raise ArgumentError # too long
+
+      proc{ RideShare::Driver.new(id: 101, name: "George",
+        vin: "tooshortbyonechr") }.must_raise ArgumentError  # too short
+
+      proc{ RideShare::Driver.new(id: 101, name: "George",
+        vin: ["33133313331333133"]) }.must_raise ArgumentError # wrong type
+
+      proc{ RideShare::Driver.new(id: 101, name: "George") }.must_raise
+        ArgumentError # missing
+    end
+
+    it "throws an argument error with a bad name value" do
+      proc{ RideShare::Driver.new(id: 101, name: "",
+        vin: "33133313331333133") }.must_raise ArgumentError # empty String
+
+      proc{ RideShare::Driver.new(id: 101, name: 42,
+        vin: "33133313331333133") }.must_raise ArgumentError # wrong type
+
+      proc{ RideShare::Driver.new(id: 101, vin: "33133313331333133")
+        }.must_raise ArgumentError # missing
+    end
+
+    it "throws an argument error with a bad status value" do
+      proc{ RideShare::Driver.new(id: 0, name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError # id = 0
+
+      proc{ RideShare::Driver.new(id: "A", name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError   # id is letter
+
+
+      proc{ RideShare::Driver.new(name: "George",
+        vin: "33133313331333133") }.must_raise ArgumentError # No id
     end
 
     it "sets trips to an empty array if not provided" do
       @driver.trips.must_be_kind_of Array
-      @driver.trips.length.must_equal 0
+      @driver.trips.must_equal []
     end
 
     it "is set up for specific attributes and data types" do
@@ -141,7 +183,8 @@ describe "Driver class" do
     end
 
     it 'calculates correctly' do
-      expected_rev = [20.45, 10.01].inject(0.0) { |sum, cost| sum + (cost - 1.56) * 0.80 }
+      expected_rev = [20.45, 10.01].inject(0.0) { |sum, cost|
+        sum + (cost - TRIP_FEE) * 0.80 }
       @driver.get_total_revenue.must_be_kind_of Float
       @driver.get_total_revenue.must_equal expected_rev
     end
@@ -173,7 +216,7 @@ describe "Driver class" do
 
     it 'calculates the average correctly' do
 
-      expected_rev = (12.45 - 1.56) * 0.80
+      expected_rev = (12.45 - TRIP_FEE) * 0.80
       expected_duration = @driver.trips.first.get_duration.to_f / 120
       @driver.get_avg_revenue_per_hour.must_be_kind_of Float
       @driver.get_avg_revenue_per_hour.must_equal (expected_rev / expected_duration).round(2)
