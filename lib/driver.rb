@@ -34,7 +34,7 @@ module RideShare
           total_trips
         end
       end
-      
+
       if total_trips == 0
         average = 0
       else
@@ -47,28 +47,36 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
     end
 
     def calc_revenue
       revenue = 0
+
       @trips.each do |trip|
-        revenue += (0.8 * (trip.cost-1.65))
+        if trip.end_time != nil
+          revenue += (0.8 * (trip.cost-1.65))
+        else
+          revenue
+        end
       end
-      return revenue
+      return revenue.to_f
     end
 
     def calc_avg_revenue
       total_duration = 0
       @trips.each do |trip|
-        total_duration += trip.duration
+        if trip.end_time != nil
+          total_duration += trip.duration
+        else
+          total_duration
+        end
       end
 
       if trips.length == 0
         avg_revenue = 0
       else
-        avg_revenue = (((calc_revenue)*3600)/total_duration)
+        avg_revenue = (((calc_revenue.to_f)*3600)/total_duration)
       end
 
     end

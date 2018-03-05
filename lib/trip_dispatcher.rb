@@ -96,17 +96,24 @@ module RideShare
 
     def request_trip(passenger_id)
       check_id(passenger_id)
+      driver_id = find_available_drivers.id
+      driver = find_driver(driver_id.to_i)
+      passenger = find_passenger(passenger_id.to_i)
       #@drivers.find{ |driver| driver.status == AVAILABLE }
-      @trip_data  = {
-        id: ((@trips.map{ |t| t.id }).max) + 1,
-        driver: find_available_drivers.id,
+      trip_data  = {
+        id: ((@trips.map{ |t| t.id }).max) + 1, #can I reduce to use the Passenger get_drivers method?
+        driver: driver_id,
         passenger: passenger_id,
         start_time: Time.now,
-        end_time: nil, #Time.now + 60, ## Remember to update
-        cost: nil, #0.01,
-        rating: nil, #3
+        end_time: nil,
+        cost: nil,
+        rating: nil,
       }
-      @trip = RideShare::Trip.new(@trip_data)
+      trip = Trip.new(trip_data) ## consider collapsing with object above
+      driver.add_trip(trip)
+      passenger.add_trip(trip)
+      @trips << trip
+      return trip
     end
 
     def inspect
@@ -122,23 +129,3 @@ module RideShare
     end
   end
 end
-puts puts
-dispatcher = RideShare::TripDispatcher.new
-
-# puts dispatcher
-# print dispatcher.load_trips.first.passenger.name
-# puts puts
-# puts puts
-#
-# puts dispatcher.find_available_drivers.id
-# puts dispatcher.find_available_drivers.name
-# #puts dispatcher.output_next_available_driver_id
-# puts puts
-# print
-# puts puts
-# puts Time.now
-# puts Time.now + 60
-# puts Time.parse('2015-05-20T12:14:00+00:00')
-# #print dispatcher.find_max_id
-# puts puts
-# puts dispatcher.request_trip(1).driver

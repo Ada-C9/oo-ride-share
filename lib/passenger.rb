@@ -32,7 +32,7 @@ module RideShare
           total_spent
         end
       end
-      return total_spent
+      return total_spent.to_f
     end
 
     def calc_total_duration
@@ -44,7 +44,7 @@ module RideShare
           total_duration
         end
       end
-      return total_duration
+      return total_duration.to_f
     end
 
   end
