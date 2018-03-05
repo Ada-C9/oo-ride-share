@@ -90,63 +90,56 @@ module RideShare
       trips
     end
 
-    # Request trip needs:
-    # Passenger_ ID supplied
-    # Automatically assign AVAILABLE Driver
-    # Current time as start time
-    # end date, cost, rating == nil
-
-    #########
-
-    # Creat Trip (hash)
-    # Create helper method
-    # Add the new trip to Driver's collection
-    # Change driver status AVAILABLE TO UNAVAILABLE
-    # Add the new trip to the Passenger's colelction
-
-    # Add trip to array of Trips in TripDispatcher
-
-    # Return the newly created Trip
-
     def generate_available_drivers
-      generate_available_drivers = @drivers.find_all do |driver|
-        driver.status == :AVAILABLE
+      available_drivers = @drivers.find_all {|driver|
+        driver.status == :AVAILABLE}
+
+        if available_drivers.empty?
+          raise ArgumentError.new("NO DRIVERS AVAILABLE")
+        else
+          return available_drivers
+        end
+
       end
-    end
 
-    def first_available_driver
-      first_available_driver  = generate_available_drivers.first
-    end
+      def first_available_driver
+        first_available_driver  = generate_available_drivers.first
+      end
 
-    def request_trip(passenger_id)
+      def request_trip(passenger_id)
+        driver = first_available_driver
+        passenger = find_passenger(passenger_id)
 
-      trip_data = {
-        id: trips.length + 1,
-        driver: first_available_driver,
-        passenger: find_passenger(passenger_id),
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil
-      }
+        trip_data = {
+          id: trips.length + 1,
+          driver: driver,
+          passenger: passenger,
+          start_time: Time.now,
+          end_time: nil,
+          cost: nil,
+          rating: nil
+        }
 
-      new_trip = Trip.new(trip_data)
-      trips << new_trip
-      p new_trip
-      return new_trip
+        new_trip = Trip.new(trip_data)
+        driver.change_to_unavailable
+        driver.add_trip(new_trip)
+        passenger.add_trip(new_trip)
 
-    end
+        trips << new_trip
+        return new_trip
 
-    def inspect
-      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    end
+      end
 
-    private
+      def inspect
+        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+      end
 
-    def check_id(id)
-      if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+      private
+
+      def check_id(id)
+        if id == nil || id <= 0
+          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        end
       end
     end
   end
-end

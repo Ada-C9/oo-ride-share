@@ -94,24 +94,24 @@ describe "TripDispatcher class" do
     end
   end
 
-  # describe "generate_available_drivers method" do
-  #   it "finds all available drivers" do
-  #
-  #   end
-  # end
-  #
-  # describe "first_available_driver method" do
-  #   it "lists the first available driver" do
-  #
-  #   end
-  # end
-  #
-  #
-  # describe "request_trip methods" do
-  #   it "accurately requests a trip" do
-  #
-  #   end
-  # end
+  describe "generate_available_drivers method" do
+    it "finds all available drivers" do
+
+    end
+  end
+
+  describe "first_available_driver method" do
+    it "lists the first available driver" do
+
+    end
+  end
+
+
+  describe "request_trip methods" do
+    it "accurately requests a trip" do
+
+    end
+  end
 
 
 end
