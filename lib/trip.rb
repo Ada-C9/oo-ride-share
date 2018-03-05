@@ -55,6 +55,11 @@ module RideShare
       end
     end
 
+    def valid_end_time_or_error(time)
+      valid_time_or_error(time) if !time.nil?
+      return time
+    end
+
     def valid_time_or_error(time)
       if time.class != Time
         raise ArgumentError.new("Invalid time #{time}")

@@ -48,7 +48,7 @@ module RideShare
     end
 
     def return_valid_phone_or_error(input_phone_num)
-      if input_phone_num.count("0-9") < 7
+      if input_phone_num.class != String || input_phone_num.count("0-9") < 10
         raise ArgumentError.new("Invalid phone number #{input_phone_num}")
       end
       return input_phone_num
