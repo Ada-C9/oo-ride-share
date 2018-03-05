@@ -126,18 +126,20 @@ describe "TripDispatcher class" do
     end
   end
   describe "choose_available_driver" do
+    before do
+      @driver_to_assign = @dispatcher_1.choose_available_driver
+    end
 
-    # it "identifies the first available driver" do
-    #  --NOTES FOR WAVE 3:  THIS COULD WORK WITH A LIMITED DRIVER SET WITH ONLY ONE AVAILABLE--
-    #   driver_to_assign = @dispatcher_1.choose_available_driver
-    #   driver_to_assign.must_be_instance_of RideShare::Driver
-    #   status = driver_to_assign.status
-    #   status.must_equal :AVAILABLE
+    it "identifies an available driver" do
+      @driver_to_assign.must_be_instance_of RideShare::Driver
+      @driver_to_assign.status.must_equal :AVAILABLE
     #   name = driver_to_assign.name
     #   name.must_equal "Emory Rosenbaum"
-    # end
+    end
 
     it "chooses the driver who has been idle the longest since the end of their most recent trip, if more than one driver is available" do
+      @driver_to_assign.name.must_equal "Antwan Prosacco"
+      @driver_to_assign.id.must_equal 14
     end
 
     it "will not choose a driver who has a trip in progress" do
@@ -160,6 +162,7 @@ describe "TripDispatcher class" do
       #The assertion below is the actual test of the production code.
       @dispatcher_2_unavail.choose_available_driver.must_be_nil
     end
+
   end
 
   describe "create_new_trip_id" do
