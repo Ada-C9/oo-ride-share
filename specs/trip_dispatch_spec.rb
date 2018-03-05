@@ -96,32 +96,48 @@ describe "TripDispatcher class" do
       before do
         @trip_dispatcher =  RideShare::TripDispatcher.new
       end
+
+      it "returns instance of trip" do
+
+        trip = @trip_dispatcher.request_trip(45)
+        trip.must_be_instance_of RideShare::Trip
+      end
+
+
       it "create a new trip requested by a passenger" do
+
         passenger_id = 54
-
-
         @trip_dispatcher.request_trip(passenger_id).must_be_instance_of RideShare::Trip
+
       end
 
       it "return an updated trip collections including the new trip in passenger class" do
 
         passenger_id = 54
-
         new_trip = @trip_dispatcher.request_trip(passenger_id)
 
         new_trip.passenger.add_trip(new_trip)
         new_trip.passenger.trips.must_include new_trip
+        new_trip.passenger.must_be_instance_of RideShare::Passenger
 
+
+      end
+
+
+      it " appropriately adds the new trip to the collection of trips the driver" do
+
+        passenger_id = 10
+
+        new_trip = @trip_dispatcher.request_trip(passenger_id)
         new_trip.driver.add_trip(new_trip)
-        new_trip.driver.trips.must_include new_trip
+
+        new_trip.driver.must_be_instance_of RideShare::Driver
 
       end
 
       it "updates the status  to UNAVAILABLE after adding trip for the choosen driver" do
 
         passenger_id = 10
-
-
         new_trip = @trip_dispatcher.request_trip(passenger_id)
 
         new_trip.driver.add_trip(new_trip)
@@ -129,26 +145,24 @@ describe "TripDispatcher class" do
 
       end
 
-      it "returns the first available driver" do
 
-        passenger_id = 10
-
-        new_trip = @trip_dispatcher.request_trip(passenger_id)
-        new_trip.driver.add_trip(new_trip)
-
-        new_trip.driver.name.must_equal "Emory Rosenbaum"
-
-      end
-
-
-      it "returns nil when there are no :AVAILABLE divers" do
+      it "raises standard error when there are no :AVAILABLE divers" do
 
         @trip_dispatcher.drivers.each do |driver|
           driver.set_status(:UNAVAILABLE)
         end
 
-        @trip_dispatcher.request_trip(1).must_be_nil
+        proc{@trip_dispatcher.request_trip(1)}.must_raise StandardError
       end
+
+      it " appropriately adds the new trip to the collection of all trips for the trip_dispatcher" do
+        trip_length = @trip_dispatcher.trips.length
+
+        trip = @trip_dispatcher.request_trip(1)
+
+        @trip_dispatcher.trips.length.must_equal trip_length + 1
+      end
+
 
 
       it "Use the current time for the start time and end time to nil " do
@@ -176,11 +190,26 @@ describe "TripDispatcher class" do
 
       end
 
+      it "assigns the driver who's last trip was the longest time ago" do
+        # selected_driver = RideShare::Driver.new(id: 14, name: "Antwan Prosacco", vin: "KPLUTG0L6NW1A0ZRF")
+        # passenger = RideShare::Passenger.new(id: 1, name: "Nina Hintz Sr.", phone_number: "560.815.3059", trips: [])
 
+        trips = []
+        5.times do
+          trip = @trip_dispatcher.request_trip(1)
+          trips << trip
+        end
 
-
-
+        trips[0].driver.id.must_equal 14
+        trips[0].driver.name.must_equal "Antwan Prosacco"
+        trips[0].driver.set_status(1).must_equal :UNAVAILABLE
+        trips[1].driver.id.must_equal 27
+        trips[2].driver.id.must_equal 6
+        trips[3].driver.id.must_equal 87
+        trips[4].driver.id.must_equal 75
+      end
     end
+
 
   end
 end
