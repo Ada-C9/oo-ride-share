@@ -123,26 +123,40 @@ describe "TripDispatcher class" do
       trip_request.start_time.must_be_instance_of Time
     end
 
+    it "must change the drivers status to unavailable" do
+      @dispatcher.drivers[1].status.must_equal :AVAILABLE
+      trip_request = @dispatcher.request_trip(1)
+      # puts   @dispatcher.drivers[1].status
+      # puts   @dispatcher.drivers[1].name
+      @dispatcher.drivers[1].status.must_equal :UNAVAILABLE
+    end
 
-    # it "must change the drivers status to unavailable" do
-    #   driver.status.must_equal :AVAILABLE
-    #   trip_request = @dispatcher.request_trip(1)
-    #   driver.status.must_equal :UNAVAILABLE
-    # end
+    it "adds the trip to the driver's list of trips" do
+      trip_num = @dispatcher.drivers[1].trips.count
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.drivers[1].trips.count.must_equal (trip_num + 1)
+    end
 
-    # it "accurately loads trip info and associates trips with drivers and passengers" do
-    #
-    # end
-    #
-    # it "adds the trip to the driver's list of trips" do
-    #
-    # end
-    #
-    # it "adds the trip to the passenger's list of trips" do
-    #
-    # end
+    it "adds the trip to the passenger's list of trips" do
+      trip_num = @dispatcher.passengers[0].trips.count
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.passengers[0].trips.count.must_equal (trip_num + 1)
+    end
+
+    it "adds the trip to the passenger's list of trips" do
+      trip_num = @dispatcher.trips.count
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.trips.count.must_equal (trip_num + 1)
+      puts puts puts
+      puts "xxxxxxxx #{trip_request}"
+      puts puts
+    end
+
+    it "returns the newly created trip" do
+      trip_request = @dispatcher.request_trip(1)
+      trip_request.must_be_instance_of RideShare::Trip
+    end
 
   end
-
 
 end

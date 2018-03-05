@@ -111,6 +111,7 @@ module RideShare
       }
       trip = Trip.new(trip_data) ## consider collapsing with object above
       driver.add_trip(trip)
+      driver.change_status
       passenger.add_trip(trip)
       @trips << trip
       return trip

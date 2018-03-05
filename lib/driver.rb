@@ -81,5 +81,13 @@ module RideShare
 
     end
 
+    def change_status
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
+      else @status == :UNAVAILABLE
+        @status = :AVAILABLE
+      end
+    end
+
   end
 end
