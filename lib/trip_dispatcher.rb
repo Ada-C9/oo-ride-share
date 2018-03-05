@@ -125,7 +125,8 @@ module RideShare
           driver_last_trip.store(driver,last_trip)
         end
       end
-      driver_last_trip = driver_last_trip.sort_by{|driver, trip| trip.end_time}.to_a
+      driver_last_trip =
+     driver_last_trip.sort_by {|driver, trip| trip.end_time}.to_a
       next_driver = driver_last_trip[0][0]
       return next_driver
     end
