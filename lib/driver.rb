@@ -17,11 +17,6 @@ module RideShare
       @trips = set_valid_trips_or_errors(input[:trips])
     end
 
-    def get_average_rating
-      num_of_trips = get_num_of_completed_trips
-      return num_of_trips == 0 ? 0 : (get_ratings.to_f / num_of_trips)
-    end
-
     # Throws ArgumentError is provided trip is not a trip or if the trip is in
     # progress but the driver is unavailable.
     # Adds trip to trips and sets status to unavailable if trip is in progress.
@@ -29,6 +24,11 @@ module RideShare
       RideShare.return_valid_trip_or_error(trip)
       check_and_update_status if trip.is_in_progress?
       @trips << trip
+    end
+
+    def get_average_rating
+      num_of_trips = get_num_of_completed_trips
+      return num_of_trips == 0 ? 0 : (get_ratings.to_f / num_of_trips)
     end
 
     # Returns the total revenue of all completed trips.
@@ -94,7 +94,7 @@ module RideShare
     # Return the amount earned for all completed trips.
     def calculate_total_revenue
       return @trips.inject(0.0) do |sum, trip|
-        sum + calculate_pay(trip.cost) if !trip.is_in_progress?
+        trip.is_in_progress? ? sum + 0 : sum + calculate_pay(trip.cost)
       end
     end
 
@@ -106,13 +106,13 @@ module RideShare
 
     # Returns the trip durations in hours.
     def get_total_trip_durations_in_hours
-      RideShare.get_all_trip_durations_in_seconds(trips).to_f / 120
+      return RideShare.get_all_trip_durations_in_seconds(trips).to_f / 120
     end
 
     #
     def get_ratings
       return @trips.inject(0) do |sum, trip|
-        sum + trip.rating if !trip.is_in_progress?
+        trip.is_in_progress? ? sum + 0 : sum + trip.rating
       end
     end
 
