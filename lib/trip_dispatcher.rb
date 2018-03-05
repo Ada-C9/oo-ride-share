@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -95,7 +96,7 @@ module RideShare
     def request_trip(passenger_id)
       check_id(passenger_id)
       id = trips.length + 1
-      available_driver = @drivers.find { | driver | driver.status == :AVAILABLE }
+      available_driver = find_least_recently_active_driver
       return if available_driver.nil?
       passenger = find_passenger(passenger_id)
       new_trip = {
@@ -115,6 +116,35 @@ module RideShare
       trip
     end
 
+    def find_least_recently_active_driver
+      drivers_with_no_rides = []
+      recent_rides = []
+      @drivers.find_all do |driver|
+        if driver.status == :AVAILABLE && driver.trips.empty?
+          return driver
+        elsif driver.status == :AVAILABLE
+          available_drivers = []
+          unsorted_rides = []
+          available_drivers << driver
+          available_drivers.each { |available_driver| unsorted_rides << available_driver.trips}
+          unsorted_rides.each do |rides|
+              recent_rides << rides.max_by {|ride| ride.end_time.to_i}
+          end
+        end
+      end
+      least_recent_ride = recent_rides.min_by { |ride| ride.end_time.to_i }
+
+      if drivers_with_no_rides.empty?
+        return if least_recent_ride.nil?
+        return least_recent_ride.driver
+      end
+      drivers_with_no_rides[0]
+    end
+
+    def inspect
+      "#<#{self.class.name}: 0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
@@ -124,3 +154,66 @@ module RideShare
     end
   end
 end
+
+# trip_dispatcher = RideShare::TripDispatcher.new
+#
+# driver_1 = trip_dispatcher.find_least_recently_active_driver
+# trip_dispatcher.request_trip(2)
+# driver_2 = trip_dispatcher.find_least_recently_active_driver
+# trip_dispatcher.request_trip(4)
+# driver_3 = trip_dispatcher.find_least_recently_active_driver
+# trip_dispatcher.request_trip(5)
+# driver_4 = trip_dispatcher.find_least_recently_active_driver
+# trip_dispatcher.request_trip(67)
+# driver_5 = trip_dispatcher.find_least_recently_active_driver
+# trip_dispatcher.request_trip(23)
+# driver_6 = trip_dispatcher.find_least_recently_active_driver
+#
+# puts driver_1.name
+# puts driver_2.name
+# puts driver_3.name
+# puts driver_4.name
+# puts driver_5.name
+# puts driver_6.name
+
+
+# drivers = trip_dispatcher.drivers
+# drivers_with_no_rides = []
+# recent_rides = []
+# drivers.find_all do |driver|
+#   if driver.status == :AVAILABLE && driver.trips.empty?
+#     return driver
+#   elsif driver.status == :AVAILABLE
+#     available_drivers = []
+#     unsorted_rides = []
+#     available_drivers << driver
+#     available_drivers.each { |driver| unsorted_rides << driver.trips}
+#     unsorted_rides.each do |rides|
+#         recent_rides << rides.max_by {|ride| ride.end_time.to_i}
+#     end
+#   end
+# end
+#
+# least_recent_ride = recent_rides.min_by { |ride| ride.end_time.to_i }
+#
+#
+# puts recent_rides.length
+# puts least_recent_ride.driver.name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

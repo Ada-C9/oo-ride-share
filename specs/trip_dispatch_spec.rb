@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 require 'time'
+# require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -131,7 +132,6 @@ describe "TripDispatcher class" do
     it "has an existing driver that is now :UNAVAILABLE" do
       driver = @new_trip.driver
       same_driver = @trip_dispatcher.find_driver(driver.id)
-
       driver.must_equal same_driver
       driver.status.must_equal :UNAVAILABLE
       driver.must_be_instance_of RideShare::Driver
@@ -153,5 +153,36 @@ describe "TripDispatcher class" do
       end
       @trip_dispatcher.request_trip(300).must_be_nil
     end
+  end
+
+  describe 'find_least_recently_active_driver' do
+    before do
+      @trip_dispatcher = RideShare::TripDispatcher.new
+      @driver = @trip_dispatcher.find_least_recently_active_driver
+    end
+
+    it 'returns a driver who is available' do
+      @driver.must_be_instance_of RideShare::Driver
+      @driver.status.must_equal :AVAILABLE
+    end
+
+    it 'returns the driver with the least recent trip' do
+      # driver = @trip_dispatcher.find_least_recently_active_driver
+      @trip_dispatcher.request_trip(2)
+      driver_2 = @trip_dispatcher.find_least_recently_active_driver
+      @trip_dispatcher.request_trip(4)
+      driver_3 = @trip_dispatcher.find_least_recently_active_driver
+      @trip_dispatcher.request_trip(5)
+      driver_4 = @trip_dispatcher.find_least_recently_active_driver
+      @trip_dispatcher.request_trip(67)
+      driver_5 = @trip_dispatcher.find_least_recently_active_driver
+
+      @driver.name.must_equal "Minnie Dach"
+      driver_2.name.must_equal "Antwan Prosacco"
+      driver_3.name.must_equal "Nicholas Larkin"
+      driver_4.name.must_equal "Mr. Hyman Wolf"
+      driver_5.name.must_equal "Jannie Lubowitz"
+    end
+
   end
 end
