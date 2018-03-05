@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 
 describe "Driver class" do
-
   describe "Driver instantiation" do
     before do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
@@ -141,7 +140,7 @@ describe "Driver class" do
     end
   end # end of describe "average_revenue method"
 
-  describe "finish_trip" do
+  describe "finish_trip method" do
     before do
       trip_data = {
         id: 8,

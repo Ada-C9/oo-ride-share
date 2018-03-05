@@ -1,11 +1,9 @@
 require 'csv'
 require 'time'
-require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
-
 
 module RideShare
   class TripDispatcher

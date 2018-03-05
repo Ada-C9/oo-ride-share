@@ -1,6 +1,3 @@
-require 'csv'
-require 'time'
-require 'pry'
 
 module RideShare
   class Trip
@@ -14,12 +11,6 @@ module RideShare
       @end_time = input[:end_time]
       @cost = input[:cost]
       @rating = input[:rating]
-
-      # if @end_time != nil
-      #   @status = :COMPLETE
-      # else
-      #   @status = :INCOMPLETE
-      # end
 
       unless rating == nil
         if rating > 5 || rating < 1
@@ -40,6 +31,17 @@ module RideShare
         (end_time - start_time).to_i
       end
     end
+
+    # def finish_trip!
+    #   if finished?
+    #     raise "The trip is already finished"
+    #   end
+    #     @end_time = Time.new
+    # end
+    #
+    # def finished?
+    #   return end_time != nil
+    # end
 
   end # end of Trip class
 end # end of RideShare module

@@ -47,7 +47,7 @@ describe "Trip class" do
   end # end of describe "initialize"
 
   describe "duration method" do
-    it "correctly calculates the calculate the duration of the trip in seconds" do
+    it "correctly calculates the duration of the trip in seconds" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 30 * 60
       @trip_data = {
@@ -62,7 +62,7 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data).duration.must_equal 1800
     end
 
-    it "correctly calculates the calculate the duration of the trip in seconds" do
+    it "correctly returns nil if the trip is still in progress" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = nil
       @trip_data = {

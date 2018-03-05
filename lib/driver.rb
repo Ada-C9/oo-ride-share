@@ -1,5 +1,3 @@
-require 'csv'
-require 'pry'
 require_relative 'trip'
 
 module RideShare
