@@ -29,8 +29,28 @@ describe "Trip class" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end
 
+    it "stores an instance of start_time" do
+      @trip.start_time.must_be_kind_of Time
+    end
+
+    it "stores an instance of end_time" do
+      @trip.end_time.must_be_kind_of Time
+    end
+
     it "stores an instance of driver" do
       @trip.driver.must_be_kind_of RideShare::Driver
+    end
+
+    it "raises an error if not a passenger" do
+      proc {
+        @trip_data[:passenger] = nil
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
+      proc {
+        @trip_data[:passenger] = 42
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
     end
 
     it "raises an error if the end time is before the start time" do
@@ -47,12 +67,12 @@ describe "Trip class" do
       }.must_raise ArgumentError
     end
 
-    # it "throws error if invalid times" do
-    #   proc {
-    #     @trip_data[:end_time] = "not a time!"
-    #     RideShare::Trip.new(@trip_data)
-    #   }.must_raise ArgumentError
-    # end
+    it "throws error if invalid end times" do
+      proc {
+        @trip_data[:end_time] = "not a time!"
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+    end
 
     it "sets valid costs" do
       @trip_data[:cost] = 0.0
@@ -90,29 +110,29 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
-    #
-    # it "throws error if invalid end times" do
-    #   proc {  @trip_data[:end_time] = "not a time!"
-    #     RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
-    # end
 
-    # it "throws error if all in-progress trip info is not nil" do
-    #   # @trip_data[:end_time] = nil
-    #   proc { @trip_data[:cost] = nil
-    #     @trip_data[:rating] = nil
-    #     RideShare::Trip.new(@trip_data)
-    #   }.must_raise ArgumentError
-      #
-      # @trip_data[:end_time] = nil
-      # # @trip_data[:cost] = nil
-      # @trip_data[:rating] = nil
-      # proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
-      #
-      # @trip_data[:end_time] = nil
-      # @trip_data[:cost] = nil
-      # # @trip_data[:rating] = nil
-      # proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
-    # end
+
+    it "throws error if all in-progress trip info is not nil" do
+      proc {
+        @trip_data[:cost] = nil
+        @trip_data[:rating] = nil
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
+      proc {
+        @trip_data[:end_time] = nil
+        @trip_data[:cost] = 12.33
+        @trip_data[:rating] = nil
+        RideShare::Trip.new(@trip_data)
+       }.must_raise ArgumentError
+
+      proc {
+        @trip_data[:end_time] = nil
+        @trip_data[:cost] = nil
+        @trip_data[:rating] = 5
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+    end
 
   end
 
@@ -134,7 +154,6 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
     end
 
-
     it "calculates the trip duration" do
       expected_duration = @trip_data[:end_time] - @trip_data[:start_time]
       @trip.get_duration.must_be_kind_of Integer
@@ -143,8 +162,5 @@ describe "Trip class" do
 
   end
 
-  # describe "is_in_progress?" do
-  #   it '' do
-  # end
 
 end

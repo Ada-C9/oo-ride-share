@@ -163,22 +163,16 @@ describe "TripDispatcher class" do
       proc{ @dispatcher.request_trip(27) }.must_raise ArgumentError
     end
 
+    it "raises ArgumentError if invalid ID " do
+      proc{ @dispatcher.request_trip(1111127) }.must_raise ArgumentError
+    end
+
     it "finds the drivers' whose ride ended the longest ago" do
       @new_trip.driver.name.must_equal "Minnie Dach"
       @dispatcher.request_trip(27).driver.name.must_equal "Antwan Prosacco"
       @dispatcher.request_trip(27).driver.name.must_equal "Nicholas Larkin"
     end
 
-
   end
 
 end
-
-
-#
-#
-# Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)
-# Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)
-# Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)
-# Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)
-# Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)
