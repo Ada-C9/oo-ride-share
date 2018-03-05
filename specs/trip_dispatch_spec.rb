@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 require 'time'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -19,10 +20,9 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
-  end
 
+  end
   describe "request_trip" do
-    ##############################
     it "can return a new requested trip" do
       dispatcher = RideShare::TripDispatcher.new
       temp_ride_status = :PENDING
@@ -38,9 +38,67 @@ describe "TripDispatcher class" do
       new_trip.rating.must_equal temp_ride_status
     end
 
-    it "will return XYZ for an empty passenger ID" do
+    it "trip list for driver will be updated after a request" do
+      original_drivers_length = 8
+      dispatcher = RideShare::TripDispatcher.new
+      new_trip = dispatcher.request_trip(1)
+      new_trip.driver.trips.length.must_equal original_drivers_length+1
+    end
+
+    it "will return nil when no available driver cannot be found" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.drivers.each do |driver|
+        driver.status = :UNAVAILABLE
+      end
+      dispatcher.request_trip(1).must_be_nil
     end
   end
+
+  describe "assign_by_driver_status" do
+    it "can ensure the first driver assigned will be a person who has never had a passenger" do
+      dispatcher = RideShare::TripDispatcher.new
+      a_single_trip = 1
+
+      new_trip_for_longest_wait = dispatcher.assign_by_driver_status(1)
+      length_of_longest_wait = new_trip_for_longest_wait.driver.trips.length
+
+      dispatcher.drivers.each do |a_driver|
+        if a_driver.status == :AVAILABLE && a_driver.name != new_trip_for_longest_wait.driver.name
+          a_driver.trips.length.must_be :>, length_of_longest_wait - a_single_trip
+        end
+      end
+
+      length_of_longest_wait.must_equal 1
+    end
+
+    it "can send the driver who has waited the longest to a passenger first (excluding new drivers from test)" do
+      first_driver_end_time = Time.parse('2017-02-19 18:39:00 +0000')
+      last_driver_end_time = Time.parse('2017-01-28 13:01:00 +0000')
+
+      dispatcher = RideShare::TripDispatcher.new
+      all_available_drivers = dispatcher.drivers.find_all{|driver|driver.status == :AVAILABLE}
+      passenger = 1
+      (all_available_drivers.length-2).times do
+        dispatcher.assign_by_driver_status(passenger)
+        passenger+=1
+      end
+      reduced_available_drivers = dispatcher.drivers.find_all{|driver|driver.status == :AVAILABLE}
+      new_trip = dispatcher.assign_by_driver_status(46)
+      new_trip.driver.trips[-2].end_time.must_equal last_driver_end_time
+    end
+
+    it "Will return nil with no available drivers" do
+      dispatcher = RideShare::TripDispatcher.new
+      all_available_drivers = dispatcher.drivers.find_all{|driver|driver.status == :AVAILABLE}
+      passenger = 1
+      all_available_drivers.length.times do
+        dispatcher.assign_by_driver_status(passenger)
+        passenger+=1
+      end
+      dispatcher.assign_by_driver_status(55).must_be_nil
+    end
+  end
+
 
   describe "find_driver method" do
     before do
@@ -106,7 +164,7 @@ describe "TripDispatcher class" do
       trip = dispatcher.trips.first
       driver = trip.driver
       passenger = trip.passenger
-
+      
       driver.must_be_instance_of RideShare::Driver
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
@@ -121,10 +179,10 @@ describe "TripDispatcher class" do
     end
 
     it "must be an instant of the Time class for end_time as read in by the CSV" do
-        dispatcher = RideShare::TripDispatcher.new
-        dispatcher.trips.each do |a_trip|
-          a_trip.end_time.must_be_instance_of Time
-        end
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.trips.each do |a_trip|
+        a_trip.end_time.must_be_instance_of Time
+      end
     end
   end
 
