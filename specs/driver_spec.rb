@@ -95,7 +95,7 @@ describe "Driver class" do
 
       proc{ RideShare::Driver.new(id: 11, name: "George",
         vin: "33133313331333133", trips: [trip, "foo"], status: :UNAVAILABLE)
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
 
     end
 
@@ -113,11 +113,11 @@ describe "Driver class" do
 
       proc{ RideShare::Driver.new(id: 11, name: "George",
         vin: "33133313331333133", trips: [trip, trip_two], status: :UNAVAILABLE)
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
 
       proc{ RideShare::Driver.new(id: 11, name: "George",
         vin: "33133313331333133", trips: [trip], status: :AVAILABLE)
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
     end
 
     it "raises ArgumentError if trips has an in-progress trip but AVAILABLE" do
@@ -183,7 +183,8 @@ describe "Driver class" do
       proc { test_driver.add_trip(RideShare::Trip.new({id: 66,
         driver: test_driver, passenger: @pass, start_time:
         Time.parse("2018-01-02T10:42:00+00:00"), end_time: nil, cost: nil,
-        rating: nil})) }.must_raise ArgumentError
+        rating: nil}))
+      }.must_raise ArgumentError
     end
 
     it "sets driver's status to unavailable" do
@@ -281,7 +282,7 @@ describe "Driver class" do
       expected_rev = [20.45, 10.01].inject(0.0) { |sum, cost|
         sum + (cost - TRIP_FEE) * 0.80 }
       new_trip = RideShare::Trip.new({id: 33, driver: @driver, passenger: @passenger,
-          start_time: Time.parse("2018-01-08T10:40:00+00:00")})
+        start_time: Time.parse("2018-01-08T10:40:00+00:00")})
       @driver.add_trip(new_trip)
 
       @driver.get_total_revenue.must_equal expected_rev
@@ -291,9 +292,9 @@ describe "Driver class" do
       expected_rev = [20.45, 10.01].inject(0.0) { |sum, cost|
         sum + (cost - TRIP_FEE) * 0.80 }
       new_trip = RideShare::Trip.new({id: 33, driver: @driver, passenger: @passenger,
-          start_time: Time.parse("2018-01-08T10:40:00"),
-          end_time: Time.parse("2018-01-08T11:00:00"), cost: TRIP_FEE - 0.01,
-          rating: 5})
+        start_time: Time.parse("2018-01-08T10:40:00"),
+        end_time: Time.parse("2018-01-08T11:00:00"), cost: TRIP_FEE - 0.01,
+        rating: 5})
       @driver.add_trip(new_trip)
 
       @driver.get_total_revenue.must_equal expected_rev
@@ -303,9 +304,9 @@ describe "Driver class" do
       expected_rev = [20.45, 10.01, (TRIP_FEE + 0.01)].inject(0.0) { |sum, cost|
         sum + (cost - TRIP_FEE) * 0.80 }
       new_trip = RideShare::Trip.new({id: 33, driver: @driver, passenger: @passenger,
-          start_time: Time.parse("2018-01-08T10:40:00"),
-          end_time: Time.parse("2018-01-08T11:00:00"), cost: TRIP_FEE + 0.01,
-          rating: 5})
+        start_time: Time.parse("2018-01-08T10:40:00"),
+        end_time: Time.parse("2018-01-08T11:00:00"), cost: TRIP_FEE + 0.01,
+        rating: 5})
       @driver.add_trip(new_trip)
 
       @driver.get_total_revenue.must_equal expected_rev

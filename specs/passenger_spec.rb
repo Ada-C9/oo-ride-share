@@ -15,10 +15,11 @@ describe "Passenger class" do
 
     it "throws an argument error with a bad phone number" do
       proc{ RideShare::Passenger.new(id: 22, name: "Wrong", phone:
-        "35-533-5334")}.must_raise ArgumentError
+        "35-533-5334")
+      }.must_raise ArgumentError
 
       proc{ RideShare::Passenger.new(id: 22, name: "Missing")
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
     end
 
     it "sets trips to an empty array if not provided" do
@@ -53,7 +54,7 @@ describe "Passenger class" do
         vin: "12345678912345678")
 
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
-         phone: "1-602-620-2330 x3723", trips: [])
+        phone: "1-602-620-2330 x3723", trips: [])
 
       @trip1 = RideShare::Trip.new({id: 3, driver: driver1, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:40:00+00:00"),
@@ -81,7 +82,7 @@ describe "Passenger class" do
 
     it "returns 0.0 if no trips taken" do
       new_passenger = RideShare::Passenger.new(id: 9, name: "No Trips Passenger",
-         phone: "1-902-620-2330 x3723", trips: [])
+        phone: "1-902-620-2330 x3723", trips: [])
       new_passenger.get_total_money_spent.must_equal 0.0
     end
 
@@ -141,7 +142,7 @@ describe "Passenger class" do
 
     it "return 0 if no trips" do
       new_passenger = RideShare::Passenger.new(id: 9, name: "No Trips Passenger",
-         phone: "1-902-620-2330 x3723", trips: [])
+        phone: "1-902-620-2330 x3723", trips: [])
       new_passenger.get_total_time.must_equal 0
     end
 
@@ -160,9 +161,9 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
-         phone: "1-602-620-2330 x3723", trips: [])
+        phone: "1-602-620-2330 x3723", trips: [])
       driver = RideShare::Driver.new(id: 3, name: "Lovelace",
-           vin: "12345678912345678")
+        vin: "12345678912345678")
       trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
         end_time: Time.parse("2018-01-02T11:27:00+00:00"), cost: 3.23, rating: 5})

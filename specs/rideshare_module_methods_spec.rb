@@ -77,12 +77,15 @@ describe "RideShare Method class" do
 
     it "throws an argument error with a bad trips value" do
       proc{ RideShare.return_valid_trips_or_errors(42) }.must_raise ArgumentError
+
       proc{ RideShare.return_valid_trips_or_errors(["foo"])
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
+
       proc{ RideShare.return_valid_trips_or_errors([@trip, "foo"])
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
+
       proc{ RideShare.return_valid_trips_or_errors(@trip)
-        }.must_raise ArgumentError
+      }.must_raise ArgumentError
     end
 
     it "returns a valid trip array" do
@@ -94,7 +97,6 @@ describe "RideShare Method class" do
         passenger: pass_two, start_time: Time.parse("2018-01-03T10:42:00+00:00"),
         end_time: Time.parse("2018-01-03T11:42:00+00:00"), cost: 3.0,
         rating: 5})
-
       trips = [@trip, trip_two]
 
       RideShare.return_valid_trips_or_errors(trips).must_equal trips
@@ -105,7 +107,6 @@ describe "RideShare Method class" do
     end
 
   end
-
 
   describe "get_all_trip_durations_in_seconds" do
 
@@ -120,12 +121,12 @@ describe "RideShare Method class" do
         rating: 5})
 
       @trip_two = RideShare::Trip.new({id: 95, driver: driver, passenger: pass,
-          start_time: Time.parse("2018-01-03T10:00:00+00:00"),
-          end_time: Time.parse("2018-01-03T10:20:00+00:00"), cost: 9.6,
-          rating: 5})
+        start_time: Time.parse("2018-01-03T10:00:00+00:00"),
+        end_time: Time.parse("2018-01-03T10:20:00+00:00"), cost: 9.6,
+        rating: 5})
 
       @trip_three = RideShare::Trip.new({id: 99, driver: driver, passenger: pass,
-          start_time: Time.parse("2018-01-04T11:00:00+00:00")})
+        start_time: Time.parse("2018-01-04T11:00:00+00:00")})
     end
 
     it "throws an error for invalid trips array" do
@@ -140,7 +141,7 @@ describe "RideShare Method class" do
 
     it "ignores in-progress trips" do
       duration = RideShare.get_all_trip_durations_in_seconds([@trip, @trip_two,
-         @trip_three])
+        @trip_three])
       duration.must_equal 4800
     end
 

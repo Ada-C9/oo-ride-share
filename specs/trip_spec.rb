@@ -111,7 +111,6 @@ describe "Trip class" do
       end
     end
 
-
     it "throws error if all in-progress trip info is not nil" do
       proc {
         @trip_data[:cost] = nil

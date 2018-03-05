@@ -147,9 +147,11 @@ describe "TripDispatcher class" do
     end
 
     it "selects an available driver" do
-      before_ids = @dispatcher.drivers.map { |driver| driver.id if driver.is_available? }
+      before_ids = @dispatcher.drivers.map { |driver| driver.id if
+        driver.is_available? }
       new_test_trip = @dispatcher.request_trip(24)
-      after_ids = @dispatcher.drivers.map { |driver| driver.id if driver.is_available? }
+      after_ids = @dispatcher.drivers.map { |driver| driver.id if
+        driver.is_available? }
 
       before_ids.include?(new_test_trip.driver.id).must_equal true
       (before_ids - after_ids).must_equal [new_test_trip.driver.id]
