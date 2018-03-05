@@ -32,27 +32,5 @@ module RideShare
       end
     end
 
-    # def finish_trip!
-    #   if finished?
-    #     raise "The trip is already finished"
-    #   end
-    #     @end_time = Time.new
-    # end
-    #
-    # def finished?
-    #   return end_time != nil
-    # end
-
   end # end of Trip class
 end # end of RideShare module
-
-# testing_code = RideShare::Trip.new(
-# id: 21,
-# driver: "Luxi",
-# passenger: "Mark",
-# start_time: Time.now,
-# end_time: nil,
-# cost: nil,
-# rating: nil
-# )
-# puts testing_code
