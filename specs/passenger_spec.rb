@@ -173,7 +173,7 @@ describe "Passenger class" do
         vin: "12345678912345678")
       trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-02T11:27:00+00:00"), rating: 5})
+        end_time: Time.parse("2018-01-02T11:27:00+00:00"),cost: 6.87, rating: 5})
 
       @passenger.add_trip(trip)
     end

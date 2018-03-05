@@ -44,6 +44,35 @@ describe "Trip class" do
       }.must_raise ArgumentError
     end
 
+    it "sets valid costs" do
+        @trip_data[:cost] = 0.0
+        RideShare::Trip.new(@trip_data).cost.must_equal 0.0
+
+        @trip_data[:cost] = 0.01
+        RideShare::Trip.new(@trip_data).cost.must_equal 0.01
+
+        @trip_data[:cost] = 1.0
+        RideShare::Trip.new(@trip_data).cost.must_equal 1.0
+    end
+
+    it "raises an error if cost is invalid" do
+      proc {
+        @trip_data[:cost] = "This is not a cost!"
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
+      proc {
+        @trip_data[:cost] = 0.0099999
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+
+      proc {
+        @trip_data[:cost] = -2.86
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+    end
+
+
     # it "raises an error if end_time is not a time" do
     #   proc {
     #     @trip_data[:end_time] = "This is not a end time!"
@@ -74,7 +103,7 @@ describe "Trip class" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time + 25 * 60 # 25 minutes
       @trip_data = {
-        id: 8,
+        id: 999,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace",
           vin: "12345678912345678"),
         passenger: RideShare::Passenger.new(id: 1, name: "Ada",

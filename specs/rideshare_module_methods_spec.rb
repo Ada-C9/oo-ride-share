@@ -55,7 +55,7 @@ describe "RideShare Method class" do
         vin: "12345678912345678")
       trip = RideShare::Trip.new({id: 8, driver: driver, passenger: pass,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"), cost: 2.2,
         rating: 5})
 
       RideShare.return_valid_trip_or_error(trip).must_equal trip
@@ -71,7 +71,7 @@ describe "RideShare Method class" do
         vin: "12345678912345678")
       @trip = RideShare::Trip.new({id: 8, driver: driver, passenger: pass,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"), cost: 2.5,
         rating: 5})
     end
 
@@ -92,7 +92,7 @@ describe "RideShare Method class" do
         vin: "1234567891q345678")
       trip_two = RideShare::Trip.new({id: 95, driver: driver_two,
         passenger: pass_two, start_time: Time.parse("2018-01-03T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-03T11:42:00+00:00"),
+        end_time: Time.parse("2018-01-03T11:42:00+00:00"), cost: 3.0,
         rating: 5})
 
       trips = [@trip, trip_two]
@@ -116,12 +116,12 @@ describe "RideShare Method class" do
 
       @trip = RideShare::Trip.new({id: 8, driver: driver, passenger: pass,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
-        end_time: Time.parse("2018-01-02T11:42:00+00:00"),
+        end_time: Time.parse("2018-01-02T11:42:00+00:00"), cost: 21.9,
         rating: 5})
 
       @trip_two = RideShare::Trip.new({id: 95, driver: driver, passenger: pass,
           start_time: Time.parse("2018-01-03T10:00:00+00:00"),
-          end_time: Time.parse("2018-01-03T10:20:00+00:00"),
+          end_time: Time.parse("2018-01-03T10:20:00+00:00"), cost: 9.6,
           rating: 5})
 
       @trip_three = RideShare::Trip.new({id: 99, driver: driver, passenger: pass,
