@@ -89,15 +89,29 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
 
       trip.start_time.must_be_instance_of Time
-
       trip.end_time.must_be_instance_of Time
 
     end
   end
 
-  # describe "Time String to Time Instance" do
-  #   it "turns the time string to a time instance" do
+  # describe "generate_available_drivers method" do
+  #   it "finds all available drivers" do
   #
+  #   end
   # end
+  #
+  # describe "first_available_driver method" do
+  #   it "lists the first available driver" do
+  #
+  #   end
+  # end
+  #
+  #
+  # describe "request_trip methods" do
+  #   it "accurately requests a trip" do
+  #
+  #   end
+  # end
+
 
 end
