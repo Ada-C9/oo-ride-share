@@ -20,12 +20,7 @@ describe "TripDispatcher class" do
   end
 
   describe "request_trip" do
-    before do
-     # @dispatcher = RideShare::TripDispatcher.new
-     # @passenger_id = 21
-     # @new_trip = @dispatcher.request_trip(@passenger_id)
-   end
-    it "creates a new trip" do
+    it "request_trip creates a new trip" do
       dispatcher = RideShare::TripDispatcher.new
       trip = dispatcher.request_trip(1)
 
@@ -35,45 +30,31 @@ describe "TripDispatcher class" do
       trip.driver.status.must_equal :UNAVAILABLE
     end
 
-    it "adds current trip" do
-
-      # # dispatcher = RideShare::TripDispatcher.new
-      # trips_before = @dispatcher.trips.count
-      # @dispatcher.request_trip(1)
-      # @dispatcher.trips.count.must_equal trips_before + 1
-    end
-
     it "raises an argument error when no drivers are available" do
       dispatcher = RideShare::TripDispatcher.new
-      # dispatcher.drivers.each do |driver|
-      #   driver.toggle_status
-      # end
       dispatcher.drivers.each do |driver|
-        driver.status = :UNAVAILABLE
+        driver.toggle_status
       end
-
 
       proc{dispatcher.request_trip(1)}.must_raise ArgumentError
     end
-    it "adds current trip to driver" do
 
-
-
-    end
-    it "adds current trip to passenger" do
+    it "request_trip adds current trip to driver" do
       dispatcher = RideShare::TripDispatcher.new
-      trips = [
-        RideShare::Trip.new({cost: 5, rating: 3, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
-        RideShare::Trip.new({cost: 3, rating: 1, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")}),
-        RideShare::Trip.new({cost: 2, rating: 5, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00")})
-      ]
+      new_trip = dispatcher.request_trip(1)
+      driver = new_trip.driver
 
-      passenger = RideShare::Passenger.new(id: 21, trips: trips, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
-      # puts passenger.inspect
-      trip = dispatcher.request_trip(21)
-      # puts trip.inspect
-      passenger.trips.length.must_equal 4
-      passenger.trips.last.must_equal trip
+      driver.trips.last.must_equal new_trip
+    end
+
+    it "request_trip adds current trip to passenger" do
+      dispatcher = RideShare::TripDispatcher.new
+      passenger = dispatcher.find_passenger(21)
+      number_of_trips = passenger.trips.length
+      new_trip = dispatcher.request_trip(21)
+
+      passenger.trips.length.must_equal number_of_trips + 1
+      passenger.trips.last.must_equal new_trip
     end
   end
 

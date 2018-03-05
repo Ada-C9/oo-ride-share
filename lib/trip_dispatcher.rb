@@ -16,10 +16,6 @@ module RideShare
       @trips = load_trips
     end
 
-
-
-    # this is NOT a self method
-    # will have an instance of Trip Dispatcher
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
 
@@ -95,58 +91,53 @@ module RideShare
       trips
     end
 
-    def request_trip(passenger_id)
+    def available_driver
       driver_today = nil
-
       available_drivers = @drivers.select { |driver|
         driver.status == :AVAILABLE}
 
-
-      if available_drivers.empty?
-        raise ArgumentError.new("There are no available drivers")
-      else
-        driver_today = available_drivers.first
+        if available_drivers.empty?
+          raise ArgumentError.new("There are no available drivers")
+        else
+          driver_today = available_drivers.first
+        end
       end
 
+      def request_trip(passenger_id)
+        driver_today = available_driver
+        passenger = find_passenger(passenger_id)
+        id = @trips.length + 1
 
-      # @drivers.each do |driver|
-      #   if driver.status == :AVAILABLE
-      #     driver_today = driver
-      #     break
-      #   end
-      # end
-
-      passenger = find_passenger(passenger_id)
-      id = @trips.length + 1
-
-      trip_details = {
-        id: id,
-        driver: driver_today,
-        passenger: passenger,
-        start_time: Time.now,
-        end_time: nil,
-        cost: nil,
-        rating: nil,
+        trip_details = {
+          id: id,
+          driver: driver_today,
+          passenger: passenger,
+          start_time: Time.now,
+          end_time: nil,
+          cost: nil,
+          rating: nil,
         }
 
         trip = Trip.new(trip_details)
         @trips << trip
-        # trip.driver.toggle_status
-        # trip.driver.add_trip(trip)
-        # trip.passenger.add_trip(trip)
+
         driver_today.toggle_status
         driver_today.add_trip(trip)
         passenger.add_trip(trip)
 
         return trip
-    end
+      end
 
-    private
+      def inspect
+        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+      end
 
-    def check_id(id)
-      if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+      private
+
+      def check_id(id)
+        if id == nil || id <= 0
+          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        end
       end
     end
   end
-end
