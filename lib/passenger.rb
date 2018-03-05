@@ -8,12 +8,12 @@ module RideShare
       @id = RideShare.return_valid_id_or_error(input[:id])
       @name = RideShare.return_valid_name_or_error(input[:name])
       @phone_number = input[:phone]
-      @trips = input[:trips] == nil ? [] : RideShare.return_valid_trips_or_errors(input[:trips])
+      @trips = RideShare.return_valid_trips_or_errors(input[:trips])
     end
 
-    
+    # Return all trip drivers.
     def get_drivers
-      @trips.map{ |trip| trip.driver }
+      return @trips.map{ |trip| trip.driver }
     end
 
     # Throws ArgumentError if provided trip is not a valid Trip. Otherwise, adds

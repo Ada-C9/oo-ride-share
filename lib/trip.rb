@@ -7,7 +7,7 @@ module RideShare
 
     def initialize(input)
       @id = RideShare.return_valid_id_or_error(input[:id])
-      @driver = valid_driver_or_error(input[:driver])
+      @driver = RideShare.return_valid_driver_or_error(input[:driver])
       @passenger = input[:passenger]
       @start_time = valid_time_or_error(input[:start_time])
       @end_time = input[:end_time]
@@ -16,18 +16,23 @@ module RideShare
       valid_trip_duration_or_error
     end
 
+    # If trip is not in-progress, returns the trip duration in seconds.
+    # Otherwise returns 'nil'.
     def get_duration
       return (@end_time - @start_time).to_i if !is_in_progress?
     end
 
+    # Returns 'true' if the trip is in progress and 'false' otherwise.
     def is_in_progress?
       return @end_time.nil?
     end
 
     private
 
+    # Throws ArgumentError if trip is not in progress and provided ta is provided rating
     def valid_rating_or_error(rating)
-      if !is_in_progress? && (rating > 5 || rating < 1)
+      # rating must be nil if trip is in progress.
+      if !is_in_progress? && (rating.class != Integer || !rating.between?(1, 5))
         raise ArgumentError.new("Invalid rating #{rating}")
       end
       return rating
@@ -46,12 +51,11 @@ module RideShare
       return time
     end
 
-    def valid_driver_or_error(driver)
-      if driver.class != Driver
-        raise ArgumentError.new("Driver #{driver} must be a driver.")
+    def valid_cost(initial_cost)
+      if initial_cost.class != Double || initial_cost >= 0.00
+        raise ArgumentError.new("Invalid cost #{initial_cost}")
       end
-      return driver
-      # return assign_to_driver_or_error(driver)
+      return time
     end
 
   end

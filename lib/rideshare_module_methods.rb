@@ -2,14 +2,6 @@
 
 module RideShare
 
-  # Throws ArgumentError is provided trip is not a trip. Otherwise, returns trip.
-  def self.return_valid_trip_or_error(trip)
-    if trip.class != Trip
-      raise ArgumentError.new("Trip #{trip} must be a valid trip.")
-    end
-    return trip
-  end
-
   # Throws ArgumentError is provided id is not an Integer greater than zero.
   # Otherwise, returns id.
   def self.return_valid_id_or_error(id)
@@ -28,14 +20,6 @@ module RideShare
     return name
   end
 
-  # Throws ArgumentError is provided trips is not an Array or if all elements in
-  # trips are not Trips. Otherwise returns trips.
-  def self.return_valid_trips_or_errors(trips)
-    raise ArgumentError.new("#{trips} must be an Array") if trips.class != Array
-    trips.each { |trip| return_valid_trip_or_error(trip) }
-    return trips
-  end
-
   # Throws ArgumentError is provided driver is not a Driver. Otherwise returns
   # Driver.
   def self.return_valid_driver_or_error(driver)
@@ -45,15 +29,33 @@ module RideShare
     return driver
   end
 
+  # Throws ArgumentError is provided trip is not a trip. Otherwise, returns trip.
+  def self.return_valid_trip_or_error(trip)
+    if trip.class != Trip
+      raise ArgumentError.new("Trip #{trip} must be a valid trip.")
+    end
+    return trip
+  end
+
+  # Throws ArgumentError is provided trips is not an Array or if all elements in
+  # trips are not Trips. Otherwise returns trips.
+  def self.return_valid_trips_or_errors(trips)
+    return [] if trips.nil?
+    raise ArgumentError.new("#{trips} must be an Array") if trips.class != Array
+    trips.each do |trip|
+      return_valid_trip_or_error(trip)
+    end
+    return trips
+  end
+
   # Throws ArgumentError is provided trips is not an Array or if all elements in
   # trips are not Trips
   # Returns the total amount in seconds of all completed trips.
   def self.get_all_trip_durations_in_seconds(trips)
-    return_valid_trips_or_errors(trips) # TODO do I need this? Less expensive to integrate?
-    return trips.inject(0) { |sum, trip| sum + trip.get_duration if
-      !trip.is_in_progress? }
+    return_valid_trips_or_errors(trips)
+    return 0 if trips.empty?
+    return trips.inject(0) { |sum, trip| trip.is_in_progress? ? sum + 0 :
+      sum + trip.get_duration }
   end
-
-
 
 end
