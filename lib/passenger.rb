@@ -7,7 +7,7 @@ module RideShare
     def initialize(input)
       @id = RideShare.return_valid_id_or_error(input[:id])
       @name = RideShare.return_valid_name_or_error(input[:name])
-      @phone_number = input[:phone]
+      @phone_number = return_valid_phone_or_error(input[:phone])
       @trips = RideShare.return_valid_trips_or_errors(input[:trips])
     end
 
@@ -34,6 +34,13 @@ module RideShare
     end
 
     private
+
+    def return_valid_phone_or_error(input_phone_num)
+      if input_phone_num.count("0-9") < 7
+        raise ArgumentError.new("Invalid phone number #{input_phone_num}")
+      end
+      return input_phone_num
+    end
 
 
   end
