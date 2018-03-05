@@ -9,10 +9,10 @@ module RideShare
     def initialize(input)
       @id = RideShare.return_valid_id_or_error(input[:id])
       @driver = RideShare.return_valid_driver_or_error(input[:driver])
-      @passenger = input[:passenger]
+      @passenger = valid_passenger_or_error(input[:passenger])
       @start_time = valid_time_or_error(input[:start_time])
-      @end_time = input[:end_time]
-      @cost = valid_cost(input[:cost])
+      @end_time = valid_end_time_or_error(input[:end_time])
+      @cost = valid_cost_or_error(input[:cost])
       @rating = valid_rating_or_error(input[:rating])
       valid_in_progress_or_not
       valid_trip_duration_or_error
@@ -55,6 +55,13 @@ module RideShare
       end
     end
 
+    def valid_passenger_or_error(input_passenger)
+      if input_passenger.class != Passenger
+        raise ArgumentError.new("Invalid passenger #{input_passenger}")
+      end
+      return input_passenger
+    end
+
     def valid_end_time_or_error(time)
       valid_time_or_error(time) if !time.nil?
       return time
@@ -67,7 +74,7 @@ module RideShare
       return time
     end
 
-    def valid_cost(initial_cost)
+    def valid_cost_or_error(initial_cost)
       if !is_in_progress? && !is_valid_money_amount?(initial_cost)
         raise ArgumentError.new("Invalid cost #{initial_cost}")
       end

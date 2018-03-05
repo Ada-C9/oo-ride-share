@@ -75,11 +75,12 @@ module RideShare
 
     def request_trip(passenger_id)
       driver = find_driver_or_error
+      passenger = find_passenger_or_error(passenger_id)
       trip_id = @trips.empty? ? 1 : @trips.size
       new_trip_data = {
         id: trip_id,
         driver: driver,
-        passenger: find_passenger(passenger_id),
+        passenger: passenger,
         start_time: Time.now,
         end_time: nil,
         cost: nil,
@@ -94,6 +95,12 @@ module RideShare
     end
 
     private
+
+    def find_passenger_or_error(passenger_id)
+      passenger = find_passenger(passenger_id)
+      raise ArgumentError.new("#{passenger_id} not an ID") if passenger.nil? 
+      return passenger
+    end
 
     # Provided list_to_search must be a list of Drivers, Trips, or Passengers.
     def find_by_id(list_to_search, id)
