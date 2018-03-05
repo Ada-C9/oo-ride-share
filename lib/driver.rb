@@ -1,5 +1,4 @@
 require 'csv'
-# require_relative 'trip'
 
 module RideShare
   class Driver
@@ -38,7 +37,8 @@ module RideShare
 
     # Returns the total revenue of all completed trips.
     def get_avg_revenue_per_hour
-      return (get_total_revenue / get_total_trip_durations_in_hours).round(2)
+      avg_rev = (get_total_revenue / get_total_trip_durations_in_hours).round(2)
+      return avg_rev.nan? ? 0.0 : avg_rev
     end
 
     # Returns 'true' if status is available and 'false' otherwise.
@@ -106,7 +106,7 @@ module RideShare
 
     # Returns the trip durations in hours.
     def get_total_trip_durations_in_hours
-      return RideShare.get_all_trip_durations_in_seconds(trips).to_f / 120
+      return RideShare.get_all_trip_durations_in_seconds(trips).to_f / 60 / 60
     end
 
     #

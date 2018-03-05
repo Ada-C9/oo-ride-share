@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'money'
 
 module RideShare
   class Trip
@@ -11,8 +12,9 @@ module RideShare
       @passenger = input[:passenger]
       @start_time = valid_time_or_error(input[:start_time])
       @end_time = input[:end_time]
-      @cost = input[:cost]
+      @cost = valid_cost(input[:cost])
       @rating = valid_rating_or_error(input[:rating])
+      valid_in_progress_or_not
       valid_trip_duration_or_error
     end
 
@@ -28,6 +30,15 @@ module RideShare
     end
 
     private
+
+    def valid_in_progress_or_not
+      if is_in_progress? && (!@cost.nil? || !@rating.nil?)
+        raise ArgumentError.new("Invalid in-progress trip")
+      end
+      if !is_in_progress? && @cost.nil? && @rating.nil?
+        raise ArgumentError.new("Invalid completes trip")
+      end
+    end
 
     # Throws ArgumentError if trip is not in progress and provided ta is provided rating
     def valid_rating_or_error(rating)
@@ -52,10 +63,14 @@ module RideShare
     end
 
     def valid_cost(initial_cost)
-      if initial_cost.class != Double || initial_cost >= 0.00
+      if !is_in_progress? && !is_valid_money_amount?(initial_cost)
         raise ArgumentError.new("Invalid cost #{initial_cost}")
       end
-      return time
+      return initial_cost
+    end
+
+    def is_valid_money_amount?(money)
+      return money.class == Float && (money == 0.0 || money >= 0.01)
     end
 
   end

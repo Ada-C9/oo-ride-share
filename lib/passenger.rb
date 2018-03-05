@@ -13,19 +13,18 @@ module RideShare
 
     # Return all trip drivers.
     def get_drivers
-      return @trips.map{ |trip| trip.driver }
+      return return_all_drivers
     end
 
     # Throws ArgumentError if provided trip is not a valid Trip. Otherwise, adds
     # trip to trips.
     def add_trip(trip)
-      @trips << RideShare.return_valid_trip_or_error(trip)
+      add_trip_if_valid(trip)
     end
 
     # Returns the
     def get_total_money_spent
-      return @trips.inject(0.0) { |sum, trip| sum + trip.cost if
-        !trip.is_in_progress? }
+      return calculate_total_money_spent
     end
 
     # Returns the sum of all complete trips durations in seconds.
@@ -34,6 +33,19 @@ module RideShare
     end
 
     private
+
+    def add_trip_if_valid(trip)
+      @trips << RideShare.return_valid_trip_or_error(trip)
+    end
+
+    def calculate_total_money_spent
+      return @trips.inject(0.0) { |sum, trip|
+        trip.is_in_progress? ? sum + 0 : sum + trip.cost }
+    end
+
+    def return_all_drivers
+      return @trips.map{ |trip| trip.driver }
+    end
 
     def return_valid_phone_or_error(input_phone_num)
       if input_phone_num.count("0-9") < 7
