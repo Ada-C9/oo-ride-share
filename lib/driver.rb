@@ -53,19 +53,25 @@ module RideShare
       @trips.each do |a_trip|
         total_revenue += (a_trip.cost - DRIVER_FEE)*PERCENT_ALLOCATED_TO_DRIVER
     end
+
     return total_revenue
   end
 
+  ##UPDATE HERE TO  INCLUDE CONDITION FOR PENDING TRIPS ##
   def total_revenue_per_hour
-    total_rev = total_revenue
-    total_time = 0
-    @trips.each do |a_trip|
-      total_time += a_trip.trip_in_seconds
-    end
+    # if total time = 0
+    # return total time
+    #you'll need to test for this condition and refactor.
+      total_time = 0
+      @trips.each do |a_trip|
+        total_time += a_trip.trip_in_seconds
+      end
+      #test for less than an hour/compensate for less than an hour
+      total_time = (total_time.to_f/SECONDS_TO_HOUR_RATE)
 
-    #total seconds
-    total_time = total_time/SECONDS_TO_HOUR_RATE
-    return total_rev/(total_time)
+      rev_per_hour = total_revenue/(total_time)
+      return rev_per_hour
+
   end
 
 end
