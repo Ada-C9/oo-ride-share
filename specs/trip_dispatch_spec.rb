@@ -121,9 +121,7 @@ describe "TripDispatcher class" do
     end
 
     it " raises an error if no drivers are available" do
-
       drivers = @dispatcher.drivers
-
       drivers.each do |driver|
         driver.available?(false)
       end
@@ -188,13 +186,10 @@ describe "TripDispatcher class" do
     end
 
     it "drivers that have had no trips are available" do
-
       @dispatcher.drivers.each { |driver_element| driver_element.available?(false)}
-
       working_driver = @dispatcher.drivers.find { |driver_element| driver_element.id == 100 }
       working_driver.available?(true)
       trip = @dispatcher.request_trip(9)
-
       trip.driver.id.must_equal 100
     end
 
@@ -206,7 +201,6 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(13).driver.id.must_equal 87
       @dispatcher.request_trip(9).driver.id.must_equal 75
     end
-
 
     it "prioritizes drivers that have had no trips" do
       @dispatcher.request_trip(9).driver.id.must_equal 100
