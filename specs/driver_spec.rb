@@ -89,11 +89,11 @@ describe "Driver class" do
       @driver.add_trip(@trip_1)
       @driver.add_trip(@trip_2)
 
-      @driver.total_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8
+      @driver.driver_total_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8
     end
 
     it "returns 0 if there are no trips for driver" do
-      @driver.total_revenue.must_equal 0
+      @driver.driver_total_revenue.must_equal 0
     end
 
   end

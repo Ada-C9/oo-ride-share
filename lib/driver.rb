@@ -44,8 +44,8 @@ module RideShare
       @trips << trip
     end
 
-    def total_revenue
-      @trips.empty? ? 0 : (@trips.reduce(0) { |rev, trip| rev + trip.cost } - 1.65) * 0.8
+    def driver_total_revenue
+      @trips.empty? ? 0 : (@trips.reduce(0) { |revenue, trip| revenue + trip.cost } - 1.65) * 0.8
 
     end
 
