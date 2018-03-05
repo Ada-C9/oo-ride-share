@@ -89,9 +89,12 @@ describe "Passenger class" do
 
       trip3 = RideShare::Trip.new({id: 28, driver: @driver, passenger: @passenger, start_time: Time.parse('2015-07-20T12:14:00+00:00'), end_time: Time.parse('2015-07-20T12:19:00+00:00'), cost: 4, rating: 5})
 
+      trip4 = RideShare::Trip.new({id: 128, driver: @driver, passenger: @passenger, start_time: Time.parse('2015-07-20T12:14:00+00:00')})
+
       @passenger.add_trip(trip1)
       @passenger.add_trip(trip2)
       @passenger.add_trip(trip3)
+      @passenger.add_trip(trip4)
 
       @passenger.calc_total_spent.must_equal 25
     end

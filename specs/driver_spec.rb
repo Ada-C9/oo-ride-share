@@ -43,7 +43,6 @@ describe "Driver class" do
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
       @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:44:00+00:00'), rating: 5})
 
-
     end
 
     it "throws an argument error if trip is not provided" do
@@ -61,7 +60,11 @@ describe "Driver class" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:44:00+00:00'), rating: 5})
+
+      tripb = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: Time.parse('2015-05-20T12:14:00+00:00')})
+
       @driver.add_trip(trip)
+      @driver.add_trip(tripb)
     end
 
     it "returns a float" do
@@ -98,7 +101,7 @@ describe "Driver class" do
         @driver.add_trip(trip1)
         @driver.add_trip(trip2)
         @driver.add_trip(trip3)
-
+        @driver.add_trip(trip4)
         @driver.calc_revenue.must_equal 20
 
       end
@@ -127,7 +130,7 @@ describe "Driver class" do
         @driver.add_trip(trip1)
         @driver.add_trip(trip2)
         @driver.add_trip(trip3)
-
+        @driver.add_trip(trip4)
         @driver.calc_avg_revenue.must_equal 48
       end
 

@@ -126,8 +126,6 @@ describe "TripDispatcher class" do
     it "must change the drivers status to unavailable" do
       @dispatcher.drivers[1].status.must_equal :AVAILABLE
       trip_request = @dispatcher.request_trip(1)
-      # puts   @dispatcher.drivers[1].status
-      # puts   @dispatcher.drivers[1].name
       @dispatcher.drivers[1].status.must_equal :UNAVAILABLE
     end
 
@@ -147,9 +145,6 @@ describe "TripDispatcher class" do
       trip_num = @dispatcher.trips.count
       trip_request = @dispatcher.request_trip(1)
       @dispatcher.trips.count.must_equal (trip_num + 1)
-      puts puts puts
-      puts "xxxxxxxx #{trip_request}"
-      puts puts
     end
 
     it "returns the newly created trip" do

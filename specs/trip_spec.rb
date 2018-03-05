@@ -42,9 +42,6 @@ describe "Trip class" do
     it "throws an argument error if the end_time is before the start_time" do
       @trip_data[:start_time] = Time.parse('2015-05-20T12:14:00+00:00')
       @trip_data[:end_time] = Time.parse('2015-05-20T11:14:00+00:00')
-      # print "xxxxxxxxxxxxxxxxxxxxx"
-      # puts puts
-      # print @trip_data[:start_time].class
       proc{
         RideShare::Trip.new(@trip_data)
       }.must_raise ArgumentError
