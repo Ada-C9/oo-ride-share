@@ -42,7 +42,7 @@ describe "Trip class" do
     it "raises an error for an invalid time entry" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
       end_time = start_time - 25 * 60 # 25 minutes earlier
-      @trip_data = {
+      trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
         passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
@@ -51,11 +51,11 @@ describe "Trip class" do
         cost: 23.45,
         rating: 3
       }
-      proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
+      proc { RideShare::Trip.new(trip_data) }.must_raise ArgumentError
     end
 
     it "allows nil values for end_time, cost, and rating" do
-      @trip_data = {
+      trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
         passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
@@ -64,15 +64,16 @@ describe "Trip class" do
         cost: nil,
         rating: nil
       }
-      @trip = RideShare::Trip.new(@trip_data).must_be_instance_of RideShare::Trip
+      trip = RideShare::Trip.new(trip_data)
+      trip.must_be_instance_of RideShare::Trip
     end
   end
 
   describe "duration method" do
     it "returns an the difference between trip start and end times" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60 # 25 minutes
-      @trip_data = {
+      end_time = start_time + 25 * 60 #25 minutes later
+      trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
         passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
@@ -81,28 +82,42 @@ describe "Trip class" do
         cost: 23.45,
         rating: 3
       }
-      @trip = RideShare::Trip.new(@trip_data)
+      trip = RideShare::Trip.new(trip_data)
 
-      @trip.must_respond_to :duration
-      @trip.duration.must_be_kind_of Float
-      @trip.duration.must_equal 1500.0
+      trip.duration.must_be_kind_of Float
+      trip.duration.must_equal 1500.0
     end
 
-    it "returns zero if the trip start and end times are the same" do
+    it "returns zero if trip start and end times are the same" do
       start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = Time.parse('2015-05-20T12:14:00+00:00')
-      @trip_data = {
+      trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
         passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
         start_time: start_time,
-        end_time: end_time,
+        end_time: start_time,
         cost: 23.45,
         rating: 3
       }
-      @trip = RideShare::Trip.new(@trip_data)
+      trip = RideShare::Trip.new(trip_data)
 
-      @trip.duration.must_equal 0.0
+      trip.duration.must_equal 0
+    end
+
+    it "returns zero if trip is not finished" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      trip = RideShare::Trip.new(trip_data)
+
+      trip.duration.must_equal 0
     end
   end
 

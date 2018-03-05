@@ -12,7 +12,7 @@ describe "Passenger class" do
     end
 
     it "throws an argument error with a bad ID value" do
-      proc{ RideShare::Passenger.new(id: 0, name: "Smithy")}.must_raise ArgumentError
+      proc { RideShare::Passenger.new(id: 0, name: "Smithy") }.must_raise ArgumentError
     end
 
     it "sets trips to an empty array if not provided" do

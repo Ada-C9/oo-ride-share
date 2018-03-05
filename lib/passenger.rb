@@ -18,6 +18,10 @@ module RideShare
     end
 
     def add_trip(trip)
+      if trip.class != Trip
+        raise ArgumentError.new("Can only add trip instance to trip collection")
+      end
+
       @trips << trip
     end
 

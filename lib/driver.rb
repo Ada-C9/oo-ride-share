@@ -37,21 +37,24 @@ module RideShare
     end
 
     def average_rating
-      total_ratings = completed_trips.map { |trip| trip.rating }.reduce(0,:+)
+      sum_ratings = completed_trips.map { |trip| trip.rating }.reduce(0,:+)
 
       if completed_trips.empty?
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (sum_ratings.to_f) / completed_trips.length
       end
 
       return average
     end
 
     def total_revenue
-      total_revenue = 0
       trip_fee = 1.65
       driver_share = 0.8
+
+      total_revenue = 0
+
+      # does not apply trip fee if cost of trip is <= trip fee
       completed_trips.each do |trip|
         if trip_fee > trip.cost
           total_revenue += trip.cost * driver_share
@@ -59,6 +62,7 @@ module RideShare
           total_revenue += (trip.cost - trip_fee) * driver_share
         end
       end
+
       return total_revenue
     end
 
@@ -67,11 +71,12 @@ module RideShare
     end
 
     def revenue_per_hour
-      return 0 if completed_trips.empty? || total_time == 0.0
+      return 0 if completed_trips.empty? || total_time == 0
 
-      seconds_per_hr = 3600.0
-      total_revenue_hrs = total_time / seconds_per_hr
+      seconds_per_hour = 3600.0
+      total_revenue_hrs = total_time / seconds_per_hour
       revenue_per_hour = total_revenue / total_revenue_hrs
+
       return revenue_per_hour
     end
 
