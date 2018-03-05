@@ -1,16 +1,10 @@
 require_relative 'spec_helper'
 
-# TODO: test is all ride's features are nil ONLY if ride is in progress
-
 TRIP_FEE = 1.65
 
 describe "Driver class" do
 
   describe "Driver instantiation" do
-    # before do
-    #   @driver = RideShare::Driver.new(id: 1, name: "George",
-    #     vin: "33133313331333133")
-    # end
 
     it "is an instance of Driver" do
       driver = RideShare::Driver.new(id: 1, name: "George",

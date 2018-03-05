@@ -1,7 +1,8 @@
 require_relative 'spec_helper'
 
 describe "Passenger class" do
-
+  # Most of the initialized validation checks are module methods and tested in
+  # their spec.
   describe "Passenger instantiation" do
     before do
       @passenger = RideShare::Passenger.new({id: 1, name: "Smithy",
@@ -12,8 +13,12 @@ describe "Passenger class" do
       @passenger.must_be_kind_of RideShare::Passenger
     end
 
-    it "throws an argument error with a bad ID value" do
-      proc{ RideShare::Passenger.new(id: 0, name: "Smithy")}.must_raise ArgumentError
+    it "throws an argument error with a bad phone number" do
+      proc{ RideShare::Passenger.new(id: 22, name: "Wrong", phone:
+        "35-533-5334")}.must_raise ArgumentError
+
+      proc{ RideShare::Passenger.new(id: 22, name: "Missing")
+        }.must_raise ArgumentError
     end
 
     it "sets trips to an empty array if not provided" do
@@ -31,6 +36,7 @@ describe "Passenger class" do
       @passenger.phone_number.must_be_kind_of String
       @passenger.trips.must_be_kind_of Array
     end
+
   end
 
 
@@ -63,7 +69,7 @@ describe "Passenger class" do
         start_time: Time.parse("2018-01-05T09:30:00+00:00"),
         end_time: Time.parse("2018-01-05T10:00:00+00:00"), cost: 11.0,
         rating: 2})
-      [@trip1, @trip2, @trip3].each { |trip| @passenger.add_trip(trip)}
+      [@trip1, @trip2, @trip3].each { |trip| @passenger.add_trip(trip) }
     end
 
     it "calculates total money spent" do
@@ -79,7 +85,17 @@ describe "Passenger class" do
       new_passenger.get_total_money_spent.must_equal 0.0
     end
 
-    # TODO: doesn't return negative money??
+    it "does not include in-progress trips" do
+      driver3 = RideShare::Driver.new(id: 8, name: "Lovelace",
+        vin: "12345678912345678")
+      new_trip = RideShare::Trip.new( {id: 22, driver: driver3,
+        passenger: @passenger,
+        start_time: Time.parse("2018-01-09T09:30:00+00:00") })
+      @passenger.add_trip(new_trip)
+
+      @passenger.get_total_money_spent.must_equal 20.45 + 10.05 + 11.0
+    end
+
   end
 
   describe "calculates the total trips time" do
@@ -91,7 +107,7 @@ describe "Passenger class" do
       driver2 = RideShare::Driver.new(id: 4, name: "Lovelace",
         vin: "12345678912345678")
 
-      driver3 = RideShare::Driver.new(id: 8, name: "Lovelace",
+      @driver3 = RideShare::Driver.new(id: 8, name: "Lovelace",
         vin: "12345678912345678")
 
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
@@ -107,19 +123,18 @@ describe "Passenger class" do
         end_time: Time.parse("2018-01-4T11:15:00+00:00"), cost: 10.05,
         rating: 5})
 
-      @trip3 = RideShare::Trip.new({id: 22, driver: driver3, passenger: @passenger,
+      @trip3 = RideShare::Trip.new({id: 22, driver: @driver3, passenger: @passenger,
         start_time: Time.parse("2018-01-05T09:30:00+00:00"),
         end_time: Time.parse("2018-01-05T10:00:00+00:00"), cost: 11.0,
         rating: 5})
 
-      [@trip1, @trip2, @trip3].each { |trip| @passenger.add_trip(trip)}
+      [@trip1, @trip2, @trip3].each { |trip| @passenger.add_trip(trip) }
 
       @total_time_spent = [@trip1, @trip2, @trip3].inject(0) {
         |sum, trip| sum + trip.get_duration }
     end
 
     it "calculates total time spent" do
-      # expected_total = 20.45 + 10.05 + 11.0
       @passenger.get_total_time.must_be_kind_of Integer
       @passenger.get_total_time.must_equal @total_time_spent
     end
@@ -130,15 +145,18 @@ describe "Passenger class" do
       new_passenger.get_total_time.must_equal 0
     end
 
-    # it "returns 0.0 if no trips taken" do
-    #   new_passenger = RideShare::Passenger.new(id: 9, name: "No Trips Passenger",
-    #      phone: "1-902-620-2330 x3723", trips: [])
-    #   new_passenger.get_total_money_spent.must_equal 0.0
-    # end
+    it "does not include in-progress trips" do
+      new_trip = RideShare::Trip.new( {id: 22, driver: @driver3,
+        passenger: @passenger,
+        start_time: Time.parse("2018-01-09T09:30:00+00:00") })
+      @passenger.add_trip(new_trip)
+
+      @passenger.get_total_time.must_equal @total_time_spent
+    end
 
   end
 
-
+  # Related module methods are tested in their spec.
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
@@ -169,9 +187,9 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
          phone: "1-602-620-2330 x3723")
-      driver = RideShare::Driver.new(id: 3, name: "Lovelace",
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace",
         vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger,
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger,
         start_time: Time.parse("2018-01-02T10:42:00+00:00"),
         end_time: Time.parse("2018-01-02T11:27:00+00:00"),cost: 6.87, rating: 5})
 
@@ -189,5 +207,24 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+
+    it "returns an empty array if no drivers" do
+      new_passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
+        phone: "1-602-620-2330 x3723")
+
+      new_passenger.get_drivers.must_equal []
+    end
+
+    it "returns an drivers even if trip is in progress" do
+      new_passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III",
+        phone: "1-602-620-2330 x3723")
+      trip = RideShare::Trip.new({id: 8, driver: @driver,
+        passenger: new_passenger,
+        start_time: Time.parse("2018-01-02T10:42:00+00:00")})
+      new_passenger.add_trip(trip)
+
+      new_passenger.get_drivers.must_equal [@driver]
+    end
+
   end
 end

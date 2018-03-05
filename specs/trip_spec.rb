@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 
+# Related module methods are tested in their spec.
 describe "Trip class" do
 
   describe "initialize" do
@@ -33,8 +34,10 @@ describe "Trip class" do
     end
 
     it "raises an error if the end time is before the start time" do
-      @trip_data[:end_time] = Time.parse('2015-05-20T11:14:00+00:00')
-      proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
+      proc {
+        @trip_data[:end_time] = Time.parse('2015-05-20T11:14:00+00:00')
+      RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
     end
 
     it "raises an error if start_time is not a time" do
@@ -44,15 +47,22 @@ describe "Trip class" do
       }.must_raise ArgumentError
     end
 
+    # it "throws error if invalid times" do
+    #   proc {
+    #     @trip_data[:end_time] = "not a time!"
+    #     RideShare::Trip.new(@trip_data)
+    #   }.must_raise ArgumentError
+    # end
+
     it "sets valid costs" do
-        @trip_data[:cost] = 0.0
-        RideShare::Trip.new(@trip_data).cost.must_equal 0.0
+      @trip_data[:cost] = 0.0
+      RideShare::Trip.new(@trip_data).cost.must_equal 0.0
 
-        @trip_data[:cost] = 0.01
-        RideShare::Trip.new(@trip_data).cost.must_equal 0.01
+      @trip_data[:cost] = 0.01
+      RideShare::Trip.new(@trip_data).cost.must_equal 0.01
 
-        @trip_data[:cost] = 1.0
-        RideShare::Trip.new(@trip_data).cost.must_equal 1.0
+      @trip_data[:cost] = 1.0
+      RideShare::Trip.new(@trip_data).cost.must_equal 1.0
     end
 
     it "raises an error if cost is invalid" do
@@ -72,14 +82,6 @@ describe "Trip class" do
       }.must_raise ArgumentError
     end
 
-
-    # it "raises an error if end_time is not a time" do
-    #   proc {
-    #     @trip_data[:end_time] = "This is not a end time!"
-    #     RideShare::Trip.new(@trip_data)
-    #   }.must_raise ArgumentError
-    # end
-
     it "raises an error for an invalid rating" do
       [-3, 0, 6].each do |rating|
         @trip_data[:rating] = rating
@@ -88,12 +90,28 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+    #
+    # it "throws error if invalid end times" do
+    #   proc {  @trip_data[:end_time] = "not a time!"
+    #     RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
+    # end
 
-    # it "raises an error for an invalid rating" do
-    #   @trip_data[:rating] = "This is not an int!"
-    #   proc {
+    # it "throws error if all in-progress trip info is not nil" do
+    #   # @trip_data[:end_time] = nil
+    #   proc { @trip_data[:cost] = nil
+    #     @trip_data[:rating] = nil
     #     RideShare::Trip.new(@trip_data)
     #   }.must_raise ArgumentError
+      #
+      # @trip_data[:end_time] = nil
+      # # @trip_data[:cost] = nil
+      # @trip_data[:rating] = nil
+      # proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
+      #
+      # @trip_data[:end_time] = nil
+      # @trip_data[:cost] = nil
+      # # @trip_data[:rating] = nil
+      # proc { RideShare::Trip.new(@trip_data) }.must_raise ArgumentError
     # end
 
   end
