@@ -127,19 +127,34 @@ describe "TripDispatcher class" do
   end
   describe "choose_available_driver" do
     before do
-      @driver_to_assign = @dispatcher_1.choose_available_driver
+      @chosen_driver = @dispatcher_1.choose_available_driver
     end
 
     it "identifies an available driver" do
-      @driver_to_assign.must_be_instance_of RideShare::Driver
-      @driver_to_assign.status.must_equal :AVAILABLE
+      @chosen_driver.must_be_instance_of RideShare::Driver
+      @chosen_driver.status.must_equal :AVAILABLE
     #   name = driver_to_assign.name
     #   name.must_equal "Emory Rosenbaum"
     end
 
+    it "chooses the first driver who has not yet had a trip, if multiple drivers are available." do
+      @chosen_driver.name.must_equal "Minnie Dach"
+      @chosen_driver.id.must_equal 100
+    end
+
     it "chooses the driver who has been idle the longest since the end of their most recent trip, if more than one driver is available" do
-      @driver_to_assign.name.must_equal "Antwan Prosacco"
-      @driver_to_assign.id.must_equal 14
+
+      @dispatcher_5_no_newbs = RideShare::TripDispatcher.new
+      @dispatcher_5_no_newbs.drivers.delete_at(99)
+      @non_newb_driver = @dispatcher_5_no_newbs.choose_available_driver
+
+      #The following two assertions test the test:
+      @dispatcher_5_no_newbs.drivers.count.must_equal 99
+      @dispatcher_5_no_newbs.drivers.find { |driver| driver.name == "Minnie Datch"}.must_be_nil
+
+      #The following assertions test the actual production code.
+      @non_newb_driver.name.must_equal "Antwan Prosacco"
+      @non_newb_driver.id.must_equal 14
     end
 
     it "will not choose a driver who has a trip in progress" do
@@ -177,7 +192,8 @@ describe "TripDispatcher class" do
   describe "request_trip(passenger_id)" do
 
     before do
-      @test_trip = @dispatcher_1.request_trip(232)
+      @dispatcher_4 = RideShare::TripDispatcher.new
+      @test_trip = @dispatcher_4.request_trip(232)
     end
 
     it "creates a new instance of Trip" do
@@ -189,7 +205,7 @@ describe "TripDispatcher class" do
     end
 
     it "assigns the first available driver" do
-      @test_trip.driver.name.must_equal "Emory Rosenbaum"
+      @test_trip.driver.name.must_equal "Minnie Dach"
     end
 
     it "assigns the passenger with the specified id" do
@@ -213,17 +229,12 @@ describe "TripDispatcher class" do
     end
 
     it "adds the new trip to the TripDispatch's collection" do
-      @dispatcher_1.trips.must_include @test_trip
-      @dispatcher_1.trips.count.must_equal 601
+      @dispatcher_4.trips.must_include @test_trip
+      @dispatcher_4.trips.count.must_equal 601
     end
 
     it "adds the new trip to the driver's collection" do
-      @test_trip.driver.trips.count.must_equal 9
-      @test_trip.driver.trips.find { |trip| trip.id == 601 }.wont_be_nil
-    end
-
-    it "adds the new trip to the driver's collection" do
-      @test_trip.driver.trips.count.must_equal 9
+      @test_trip.driver.trips.count.must_equal 1
       @test_trip.driver.trips.find { |trip| trip.id == 601 }.wont_be_nil
     end
 

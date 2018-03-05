@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -95,16 +96,21 @@ module RideShare
     end
 
     def choose_available_driver
-      #If there's no available driver, I think I just want this
-      #to return nil.  I'll put the error downstream, in
-      #request_trip(passenger_id)
-      #
-      @drivers.find { |driver|
-        driver.status == :AVAILABLE
-    }
+      #If there's no available driver, I think I just want this to return nil.  I'll put the error downstream, in request_trip(passenger_id)
+      chosen_driver = nil
+      available_drivers = @drivers.find_all { |driver| driver.status == :AVAILABLE }
+      newbie_drivers = available_drivers.find_all {|driver| driver.trips.empty?}
+      if newbie_drivers.any?
+        chosen_driver = newbie_drivers.first
+      elsif available_drivers.length == 0
+        chosen_driver = nil
+      else
+        each_drivers_most_recent_trip = available_drivers.map{ | driver | driver.trips.sort{ |a,b| a.end_time <=> b.end_time}.last }
+
+        chosen_driver = each_drivers_most_recent_trip.min_by{|trip| trip.end_time.to_i}.driver
+      end
+      return chosen_driver
     end
-
-
 
     def create_new_trip_id
       @trips.map(&:id).max + 1
@@ -152,3 +158,25 @@ module RideShare
     end
   end
 end
+
+
+
+=begin
+# FROM THE DRIVER-CHOSING MECHANISM, REFACTORED TO TIDIER ENUMERABLES
+# avail_drivers_trips = available_drivers.map {|driver| driver.trips}
+# all_drivers_most_recently_ended = []
+# avail_drivers_trips.each do |trip_array|
+#   ind_driver_most_recent_trip = nil
+#   driver_latest_endtime = 0
+#   trip_array.each do |trip|
+#     if trip.end_time.to_i > driver_latest_endtime
+#       driver_latest_endtime = trip.end_time.to_i
+#       ind_driver_most_recent_trip = trip
+#     end
+#     ind_driver_most_recent_trip
+#   end
+#   all_drivers_most_recently_ended << ind_driver_most_recent_trip
+# end
+# qualifying_trip = all_drivers_most_recently_ended.min_by {|trip| trip.end_time.to_i}
+# chosen_driver = qualifying_trip.driver
+=end
