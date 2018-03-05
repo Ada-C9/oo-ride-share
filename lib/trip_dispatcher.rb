@@ -156,6 +156,3 @@ module RideShare
 
   end # end of TripDispatcher class
 end # end of RideShare module
-
-# testing_code = RideShare::TripDispatcher.new
-# puts testing_code.request_trip(21)
