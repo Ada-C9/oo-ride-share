@@ -118,11 +118,12 @@ describe "TripDispatcher class" do
     end
 
     it "updates the driver's trip list" do
-      orig_number = @dispatcher.request_trip(1).driver.trips.length
+      orig_number = @dispatcher.available_drivers[0].trips.length
+      driver_id = @dispatcher.available_drivers[0].id
 
       @dispatcher.request_trip(1)
 
-      @dispatcher.request_trip(1).driver.trips.length.must_equal orig_number + 1
+      @dispatcher.find_driver(driver_id).trips.length.must_equal orig_number + 1
     end
 
     it "updates driver status" do
