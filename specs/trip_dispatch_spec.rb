@@ -112,6 +112,17 @@ describe "TripDispatcher class" do
       new_request.passenger.trips.must_include new_request
 
     end # driver AVAILABLE
+
+    it "raises an ArgumentError if passenger_id is not found" do
+      dispatcher = RideShare::TripDispatcher.new
+      passenger_id = dispatcher.passengers.last.id + 1
+
+      proc {
+        dispatcher.request_trip(passenger_id)
+      }.must_raise ArgumentError
+
+    end
+
   end # request_trip method
 
 end # TripDispatcher

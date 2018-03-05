@@ -97,9 +97,13 @@ module RideShare
     def request_trip(passenger_id)
       # assign a driver to the trip
       # driver must be the first driver with the status :AVAILABLE
+      passenger = find_passenger(passenger_id)
+      raise ArgumentError.new("Passenger does not exist") if passenger == nil
+
       driver = drivers.find{  |d| d.status == :AVAILABLE} #return first driver
       # driver = drivers.find_available_drivers.first
-      passenger = find_passenger(passenger_id)
+
+
       trip = {
         passenger: passenger ,
         id: trips.last.id + 1,
