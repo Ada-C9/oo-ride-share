@@ -64,21 +64,13 @@ module RideShare
       average_revenue = 0
       total_time = Trip.total_time(trips)/60/60.round(2)
       average = self.total_revenue / total_time
-      #12.04/.8
       average_revenue += average
-      # ((Passenger.total_time_spent * 60)* 60)
       return average_revenue.round(2)
     end
 
-    # def find_available_drivers # instance of driver - Array
-    #   driver = drivers.find{  |d| d.status == :AVAILABLE}
-    #   driver.change_status
-    #   return driver
-    # end # available_drivers
-
     def change_status
       @status = :UNAVAILABLE
-      return 
+      return
     end # change_status
   end # classr
 end # module

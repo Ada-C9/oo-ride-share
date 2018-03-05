@@ -35,12 +35,9 @@ module RideShare
 
     # return the total amount of time that passenger has spent on their trips in seconds
     def total_time_spent
-      # time_spent = 0
+
       time_spent = Trip.total_time(trips)
-      # trip_duration = (@end_time - @start_time)
-      # trips.each do |trip|
-      #   time_spent += trip.duration
-      # end
+
       return time_spent
     end # total_time_spent method
   end # class passenger
