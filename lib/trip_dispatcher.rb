@@ -2,7 +2,6 @@ require 'csv'
 require 'time'
 require 'pry'
 
-
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
@@ -110,26 +109,25 @@ module RideShare
     end
 
     def select_driver
-      latest_end_time = Time.new(1992)
+      most_available_driver_end_time = Time.new(1992)
       most_available_driver = nil
 
       available_drivers.each do |driver|
-
-        unless driver.end_time == nil
-
-          if driver.trips.count == 0
-            most_available_driver = driver
-          else
-            trips.sort_by! {|trip| trip.end_time}
-
-            if trips[0].end_time > latest_end_time
-              latest_end_time = trips[0].end_time
-              most_available_driver = driver
+        if driver.trips.count == 0
+          most_available_driver = driver
+        else
+          last_trip_end = Time.new(2010)
+          driver.trips.each do |trip|
+            if trip.end_time != nil && (trip.end_time > last_trip_end)
+              last_trip_end = trip.end_time
             end
+          end
+          if last_trip_end > most_available_driver_end_time
+            most_available_driver_end_time = last_trip_end
+            most_available_driver = driver
           end
         end
       end
-
       return most_available_driver
     end
 

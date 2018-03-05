@@ -25,7 +25,7 @@ module RideShare
     end
 
     def duration
-      if @end_time == nil
+      if @end_time == nil || @start_time == nil
         trip_duration = nil
       else
         trip_duration = @end_time - @start_time

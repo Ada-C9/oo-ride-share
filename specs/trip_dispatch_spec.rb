@@ -92,7 +92,6 @@ describe "TripDispatcher class" do
     end
   end
 
-  ## NEW
   describe "request_trip" do
 
     before do
@@ -140,9 +139,12 @@ describe "TripDispatcher class" do
       @test_trip.driver.status.must_equal :UNAVAILABLE
     end
 
-    it "available drivers count goes down by 1 after request_ride is called. checks that status of available driver goes to unavailable after assigned a new trip" do
-      test_trip_2 = @test_dispatcher.request_trip(8)
-      @test_dispatcher.available_drivers.count.must_equal(@test_drivers.count - 1)
+    it "available drivers count goes down by 1 after request_ride is called" do
+      test_dispatcher = RideShare::TripDispatcher.new
+      before = test_dispatcher.available_drivers.count
+      test_trip = test_dispatcher.request_trip(5)
+      after = test_dispatcher.available_drivers.count
+      after.must_equal(before - 1)
     end
 
     it "end_time, trip cost and rating must be equal to nil" do
@@ -150,6 +152,23 @@ describe "TripDispatcher class" do
       @test_trip.cost.must_be_nil
       @test_trip.rating.must_be_nil
     end
-    ##
+  end
+
+  describe "request_trip driver" do
+
+    before do
+      @test_dispatcher = RideShare::TripDispatcher.new
+      @test_trip_1 = @test_dispatcher.request_trip(1)
+      @test_trip_2 = @test_dispatcher.request_trip(2)
+      @test_trip_3 = @test_dispatcher.request_trip(3)
+    end
+
+    it "first assigned drivers should be Minnie Dach" do
+      @test_trip_1.driver.name.must_equal("Minnie Dach")
+    end
+
+    it "third assigned drivers should be Nicholas Larkin" do
+      @test_trip_3.driver.name.must_equal("Nicholas Larkin")
+    end
   end
 end
