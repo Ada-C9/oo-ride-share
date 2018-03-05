@@ -31,6 +31,7 @@ Each `Driver` has:
 id|The Driver's ID number
 name|The name of the Driver
 vehicle\_identification|The driver's Vehicle Identification Number (VIN Number), Each vehicle identification number should be a specific length to ensure it is a valid vehicle identification number
+trips | A list of trips the driver has gone on.
 status|Indicating availability, a driver's availability should be either `:AVAILABLE` or `:UNAVAILABLE`
 
 Each `Driver` instance is able to:
@@ -197,7 +198,7 @@ Your code from wave 1 should _ignore_ any in-progress trips. That is to say, any
 
 You should also add explicit tests for this new situation. For example, what happens if you attempt to calculate the total money spent for a `Passenger` with an in-progress trip, or the average hourly revenue of a `Driver` with an in-progress trip?
 
-### Wave 3
+### Optional: Wave 3
 
 We want to evolve `TripDispatcher` so it assigns drivers in more intelligent ways. Every time we make a new trip, we want to pick drivers who haven't completed a trip in a long time.
 
@@ -219,6 +220,17 @@ Grace       | `UNAVAILABLE` | Jan 5, 2018     | `nil`
 Grace is excluded because they are not `AVAILABLE`, and because they have one in-progress trip.
 
 Of Ada and Katherine, we prefer Ada, because their most recent trip is older.
+
+
+=======
+If you've done everything right, the first five trips you create should be assigned to the following drivers.
+
+1. `Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)`
+1. `Driver 27: Nicholas Larkin (last trip 468 ended 2015-04-28T04:13:00+00:00)`
+1. `Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)`
+1. `Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)`
+1. `Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)`
+
 
 **All of this code must have tests.**
 
