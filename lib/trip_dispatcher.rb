@@ -22,6 +22,10 @@ module RideShare
       # For this initial version, choose the first driver whose status is :AVAILABLE
       # The trip hasn't finished yet!
       available_driver = drivers.find {|driver| driver.status == :AVAILABLE }
+
+      # Added this line due to an error in this test: it "raise an exception if you try to request a trip when drivers are UNAVAILABLE" do
+      raise "No available drivers" if available_driver.nil?
+
       selected_passenger = passengers.find {|passenger| passenger.id == passenger_id}
       max_trip_id = trips.map {|trip| trip.id}.max
 
@@ -36,8 +40,6 @@ module RideShare
         :cost => nil,
         :rating => nil
       }
-
-
       # output must be new instance of a trip
       new_trip = Trip.new(input_hash)
 
@@ -46,7 +48,7 @@ module RideShare
       # Add the new trip to the collection of trips for the Passenger
       selected_passenger.add_trip(new_trip)
       # Add the new trip to the collection of all Trips in TripDispatcher
-      @trips << new_trip
+      @trips << new_trip  # <--
       # Return the newly created trip
       return new_trip
     end # ends "request_trip" method

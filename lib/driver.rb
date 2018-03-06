@@ -25,43 +25,28 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end # ends initialize
 
-    # Charles did this in Group Review on 28 Feb 2018
-    # def passengers
-    #   # EACH STYLE
-    #   # passenger = []
-    #   # trips.each do |trip| # <-- trip is an instance of the Trip class
-    #   #   passengers << trip.passenger
-    #   # end
-    #   # return passengers.uniq # <- deals with duplicates
-    #   #
-    #   # MAP STYLE
-    #   passengers = trips.map do |trip|
-    #     trip.passenger # <-- does the shoveling in for us on its own
-    #   end
-    #   return passengers.uniq
-    # end
-
+    def passengers
+      passengers = trips.map do |trip| # <-- trip is an instance of the Trip class
+        trip.passenger # <-- does the shoveling in for us on its own
+      end
+      return passengers.uniq
+    end
 
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
         total_ratings += trip.rating
       end
-
       if trips.length == 0
         average = 0
       else
         average = (total_ratings.to_f) / trips.length
       end
-
       return average
     end
 
     def add_trip(trip)
       # if trip.class != Trip
-      #   raise ArgumentError.new("Can only add trip instance to trip collection")
-      # end
-      # Charles suggests this change in Group Review on Feb 28 2018
       unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
@@ -79,7 +64,7 @@ module RideShare
       end
     end # ends "change_status" method
 
-    # For a given driver, calculate their total revenue for all trips. Each driver gets 80% of the trip cost after a fee of $1.65 is subtracted.
+
     def total_revenue
       fee = 1.65
       subtotal = 0 # (it's really total_revenue and starts at zero)
@@ -89,12 +74,20 @@ module RideShare
         subtotal += trip.cost - fee
       end
 
-      # (Question: write this test: what if the trip costs less than the 1.65 fee?)
-      # make an instance of trip that doesn't exist??? to test this???
+      # TODO Write this test, if time allows: what if the trip costs less than the 1.65 fee?)
 
       total = subtotal * driver_take_home
       return total
     end #ends "total_revenue" method
+
+
+    def average_revenue
+      (total_revenue/finished_trips.length).round(2)
+    end
+
+    def finished_trips
+      trips_reject{|trip| trip.end_time == nil}
+    end
 
   end # ends class Driver
 end # ends module RideShare

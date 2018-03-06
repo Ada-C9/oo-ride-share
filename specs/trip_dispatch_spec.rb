@@ -28,6 +28,11 @@ describe "TripDispatcher class" do
 
     #TODO write this test
     it "checks if trip lists for the driver and passenger were updated" do
+    # Arrange: Arrange our code with all our variables and inputs
+
+    # Act: Perform an action which we want to test: Act
+
+    # Assert: Check with an expectation if it gives the desired result
 
     end
 
@@ -41,27 +46,18 @@ describe "TripDispatcher class" do
       # Assert
       new_trip.driver.status.must_equal :UNAVAILABLE
       new_trip.driver.name.must_equal "Emory Rosenbaum"
-      binding.pry
       # # available_driver = @drivers.find_driver(2)
       # available_driver.name.must_equal "Emory Rosenbaum"
       # # available_driver.id.must_equal 2
       # available_driver.status.must_equal :UNAVAILABLE
     end
 
-    #TODO write this test
-    it "raise an exception if you try to request a trip when there are no AVAILABLE drivers" do
-      # Arrange
+    it "raise an exception if you try to request a trip when drivers are UNAVAILABLE" do
       dispatcher = RideShare::TripDispatcher.new
       dispatcher.drivers.each do |driver|
         driver.status = :UNAVAILABLE
       end
-      # make it so there are no available drivers - how?
-
-      # Act
-      new_trip = dispatcher.request_trip(2)
-
-      # Assert
-      # use a proc around the act step, and say .must_raise
+      error =  proc{ dispatcher.request_trip(2) }.must_raise RuntimeError
     end
 
   end # ends "describe "request_trip method" do"

@@ -33,5 +33,10 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    # Maybe make an in-progress helper method to reject any in-progress rides?
+
+
+
   end
 end
