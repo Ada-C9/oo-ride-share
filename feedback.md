@@ -13,9 +13,10 @@ Answer comprehension questions |
 Complete tests |
 **Wave 2** |
 `TripDispatcher` has a new method to create trips | 
-creating a trip in `TripDispatcher` relies on methods in `Driver` and `Passenger` to modify their own attributes | 
+Creating a trip in `TripDispatcher` relies on methods in `Driver` and `Passenger` to modify their own attributes | 
+Methods from wave 1 work on `Driver`s and `Passenger`s with incomplete trips | 
 Complete tests | 
-**Wave 3** |
+**Wave 3** (optional) |
 Complex logic was correctly implemented and tested | 
 Appropriate use of Ruby's `Date` | 
 Appropriate helper methods were made to help with complex logic | 
