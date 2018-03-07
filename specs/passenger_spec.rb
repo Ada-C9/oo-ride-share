@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Passenger class" do
 
@@ -36,8 +37,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
-
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:25:00+00:00'), rating: 5})
       @passenger.add_trip(trip)
     end
 
@@ -58,7 +58,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:25:00+00:00'), rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -74,5 +74,47 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
-  end
-end
+  end # describe get_drivers method
+
+  describe "total_money_spent and total_time_spent" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      @trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:25:00+00:00'), cost: 10.15, rating: 5})
+      @trip_hundred = RideShare::Trip.new({id: 100, driver: nil, passenger: @passenger, start_time: Time.parse('2014-05-20T12:14:00+00:00'), end_time: Time.parse('2014-05-20T12:25:00+00:00'), cost: 5.20, rating: 5})
+
+      @trip_hundred_one = RideShare::Trip.new({id: 101, driver: nil, passenger: @passenger, start_time: Time.parse('2013-05-20T12:14:00+00:00'), end_time: Time.parse('2013-05-20T12:25:00+00:00'), cost: 8.54, rating: 5})
+
+      @passenger.add_trip(@trip)
+      @passenger.add_trip(@trip_hundred)
+      @passenger.add_trip(@trip_hundred_one)
+    end
+
+    describe "total_money_spent" do
+      it "returns a float equal to amount passenger has spent on all trips" do
+
+        total_money_spent = @trip.cost + @trip_hundred.cost + @trip_hundred_one.cost
+
+        result = @passenger.total_money_spent
+
+        result.must_be_kind_of Float
+        result.must_equal total_money_spent
+
+      end
+    end # total money spent
+
+    describe "total_time_spent" do
+      it "returns a float equal to the amount of time a passenger has spent in total on their trips" do
+        total_time_spent = @trip.duration + @trip_hundred.duration + @trip_hundred_one.duration
+
+        result = @passenger.total_time_spent
+
+        result.must_be_kind_of Float
+        result.must_equal total_time_spent 
+      end
+
+    end
+
+  end # total money and time spent
+
+end # describe Passenger
