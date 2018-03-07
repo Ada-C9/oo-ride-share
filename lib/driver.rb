@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class Driver
@@ -17,31 +18,54 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
+    end
+
+    def finished_trips
+      trips.reject {|trip| trip.end_time == nil}
     end
 
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      finished_trips.each do |trip|
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if finished_trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / finished_trips.length
       end
 
       return average
     end
 
     def add_trip(trip)
-      if trip.class != Trip
+      unless trip.class <= Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
+      if trip.end_time == nil
+        @status = :UNAVAILABLE
+      end
       @trips << trip
+    end
+
+    def total_revenue
+      fee = 1.65
+      driver_takehome = 0.8
+
+      subtotal = 0
+      finished_trips.each do |trip|
+        # Question: what if the cost is less than the fee
+        subtotal += trip.cost - fee
+      end
+
+      total = subtotal * driver_takehome
+      return total
+    end
+
+    def average_revenue
+      (total_revenue / finished_trips.length).round(2)
     end
   end
 end

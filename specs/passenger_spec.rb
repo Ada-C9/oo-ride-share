@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Passenger class" do
 
@@ -36,7 +37,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: "2016-08-08T12:14:+300:008", end_time: "2016-08-08T12:15:00+00:00", rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +59,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00", rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -72,6 +73,71 @@ describe "Passenger class" do
     it "all items in array are Driver instances" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
+      end
+    end
+  end
+
+  describe "total_spent" do
+    it "return the total amount of money that passenger has spent on their trips" do
+      trips = [
+        RideShare::Trip.new({cost: 5, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"}),
+        RideShare::Trip.new({cost: 7, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"}),
+        RideShare::Trip.new({cost: 8, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"})
+      ]
+
+      passenger_data = {
+        id: 7,
+        vin: 'a' * 17,
+        name: 'test driver',
+        trips: trips
+      }
+
+      passenger = RideShare::Passenger.new(passenger_data)
+      passenger.total_spent.must_equal 20.00
+    end
+  end
+
+  describe "total_time" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 30 * 60
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      trip = RideShare::Trip.new(trip_data)
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      @passenger.add_trip(trip)
+    end
+
+    it "return the total amount of time that passenger has spent on their trips" do
+      @passenger.total_time.must_equal 1800
+    end
+
+    describe "finished_trips" do
+      it "return an array of trips that have end time" do
+        trips = [
+          RideShare::Trip.new({cost: 5, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"}),
+          RideShare::Trip.new({cost: 7, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: "2016-08-08T12:15:00+00:00"}),
+          RideShare::Trip.new({cost: 8, rating: 3, start_time: "2016-08-08T12:14:+300:00", end_time: nil})
+        ]
+
+        passenger_data = {
+          id: 7,
+          vin: 'a' * 17,
+          name: 'test driver',
+          trips: trips
+        }
+
+        passenger = RideShare::Passenger.new(passenger_data)
+        passenger.finished_trips.length.must_equal 2        
+        trips.last.finish_trip!
+        passenger.finished_trips.length.must_equal 3
       end
     end
   end

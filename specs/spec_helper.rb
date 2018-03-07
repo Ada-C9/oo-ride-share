@@ -2,6 +2,7 @@ require 'time'
 require 'minitest'
 require 'minitest/autorun'
 require 'minitest/reporters'
+require 'awesome_print'
 # Add simplecov
 
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
