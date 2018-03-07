@@ -34,7 +34,6 @@ module RideShare
         input_data[:status] = status
         all_drivers << Driver.new(input_data)
       end
-
       return all_drivers
     end
 
@@ -54,7 +53,6 @@ module RideShare
 
         passengers << Passenger.new(input_data)
       end
-
       return passengers
     end
 
@@ -75,27 +73,76 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
         trip = Trip.new(parsed_trip)
+        # Set up relations
         driver.add_trip(trip)
         passenger.add_trip(trip)
+
         trips << trip
       end
-
-      trips
+      return trips
     end
-
-    private
 
     def check_id(id)
       if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        raise ArgumentError.new("ID CANNOT BE BLANK OR LESS THAN ZERO (got #{id})")
       end
     end
+
+    def select_available_driver
+      @drivers.find do |driver|
+        if driver.status == :AVAILABLE
+          return driver
+        end
+      end
+      raise ArgumentError("NO DRIVER AVAILABLE AT THIS TIME.")
+    end
+
+    def request_trip(passenger_id)
+      if passenger_id.nil? || passenger_id == ''
+        raise ArgumentError ("INVALID PASSENGER ID")
+      end
+
+      new_ride = {}
+      # create a new ID
+      new_ride[:id] = (@trips.length + 1)
+
+      # check for the available driver
+      new_ride[:driver] = select_available_driver
+
+      # confirm passenger is valid
+      passenger = find_passenger(passenger_id)
+      unless passenger.nil?
+        new_ride[:passenger] = passenger
+      else
+        raise ArgumentError("INVALID ID")
+      end
+
+      new_ride[:start_time] = Time.now
+      new_ride[:end_time] = nil
+      new_ride[:cost] = nil
+      new_ride[:rating] = nil
+
+      active_trip = Trip.new(new_ride)
+
+      select_available_driver.add_trip(active_trip)
+      passenger.add_trip(active_trip)
+
+      @trips << active_trip
+
+      return active_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
+    private
   end
 end

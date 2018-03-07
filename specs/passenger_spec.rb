@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Passenger class" do
 
@@ -33,10 +34,12 @@ describe "Passenger class" do
   end
 
 
-  describe "trips property" do
+  describe "Trips Property" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -54,11 +57,34 @@ describe "Passenger class" do
     end
   end
 
-  describe "get_drivers method" do
+  describe 'Passenger Totals' do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25
+
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 50, rating: 5})
+
+      @passenger.add_trip(trip)
+    end
+    it 'can add the trip cost to the total amount spent' do
+      rider_total = @passenger.total_money_spent
+      rider_total.must_equal 50
+    end
+    it 'can add the time per trip to total time spent' do
+      rider_total = @passenger.total_duration
+      rider_total.must_equal 1500 # converted in duration somewhere
+    end
+  end
+
+  describe "Get Drivers Method" do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -75,4 +101,31 @@ describe "Passenger class" do
       end
     end
   end
+
+  describe 'In-Progress trip' do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = nil
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: nil})
+
+    end
+    it 'removes trips when end time is nil' do
+      @passenger.add_trip(@trip)
+      @passenger.trips.must_include @trip
+      @passenger.in_progress.wont_include @trip
+
+    end
+    it 'will not include trips in progress for total amount spent' do
+      @passenger.add_trip(@trip)
+      @passenger.total_money_spent.must_equal 0
+    end
+
+    it 'will not include trips in progress for total duration' do
+      @passenger.add_trip(@trip)
+      @passenger.total_duration.must_equal 0
+    end
+  end
+
 end
