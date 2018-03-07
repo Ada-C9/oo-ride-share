@@ -72,9 +72,102 @@ describe "Driver class" do
       average.must_be :<=, 5.0
     end
 
-    it "returns zero if no trips" do
+    it "returns nil if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      driver.average_rating.must_equal 0
+      driver.average_rating.must_equal nil
+    end
+  end
+
+  describe 'calculate_total_rev method' do
+    it 'can return total money driver made' do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip1 = RideShare::Trip.new({id: 8, driver: driver, start_time: start_time, end_time: end_time, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5})
+      trip2 = RideShare::Trip.new({id: 8, driver: driver, start_time: start_time, end_time: end_time, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3})
+      trip3 = RideShare::Trip.new({id: 10, start_time: start_time, end_time: nil, driver: driver, cost: nil, passenger: nil, date: "2016-08-010", rating: nil})
+      driver.add_trip(trip1)
+      driver.add_trip(trip2)
+      driver.add_trip(trip3)
+
+      driver.calculate_total_rev.must_be_kind_of Float
+      driver.calculate_total_rev.must_equal 24.7
+    end
+  end
+
+  describe 'total_drive_time' do
+    it 'can return total time driver drove' do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5})
+      trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: end_time, driver: driver, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3})
+      trip3 = RideShare::Trip.new({id: 10, start_time: start_time, end_time: nil, driver: driver, cost: nil, passenger: nil, date: "2016-08-010", rating: nil})
+      driver.add_trip(trip1)
+      driver.add_trip(trip2)
+      driver.add_trip(trip3)
+
+      driver.total_drive_time.must_be_kind_of Integer
+      driver.total_drive_time.must_equal 3000
+    end
+  end
+
+  describe 'avg_rev_per_hour method' do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes 24.7
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: @driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5})
+      @trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: end_time, driver: @driver, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3})
+      @trip3 = RideShare::Trip.new({id: 10, start_time: start_time, end_time: nil, driver: @driver, cost: nil, passenger: nil, date: "2016-08-010", rating: nil})
+      @driver.add_trip(@trip1)
+    end
+
+    it 'can return average driver revenue per hour driving' do
+      @driver.add_trip(@trip2)
+      @driver.avg_rev_per_hour.must_be_kind_of Float
+      @driver.avg_rev_per_hour.must_be_close_to 29.64,0.05
+    end
+  end
+
+  describe 'ignores_incomplete_rides method' do
+    it 'can return a list of drivers complete trips' do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes 24.7
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5 })
+      trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: nil, driver: driver, cost: nil, passenger: nil, date: "2016-08-08", rating: nil })
+      driver.add_trip(trip1)
+      driver.add_trip(trip2)
+
+      complete_rides = driver.ignores_incomplete_rides
+      complete_rides.wont_include trip2
+      complete_rides.length.must_equal 1
+      puts (3 * 100)
+      puts complete_rides
+    end
+  end
+
+  describe 'new_ride method' do
+    before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes 24.7
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      @trip1 = RideShare::Trip.new({id: 8, start_time: start_time, end_time: end_time, driver: @driver, cost: 15.90, passenger: nil, date: "2016-08-08", rating: 5 })
+      @trip2 = RideShare::Trip.new({id: 9, start_time: start_time, end_time: end_time, driver: @driver, cost: 12.10, passenger: nil, date: "2016-08-08", rating: 3 })
+      @driver.add_trip(@trip1)
+    end
+
+    it 'can add a trip to driver trips' do
+      old_length = @driver.trips.length
+      @driver.new_ride(@trip2)
+      @driver.trips[-1].must_be_instance_of RideShare::Trip
+      (@driver.trips.length - 1).must_equal old_length
+    end
+
+    it 'can change driver status to unavailable' do
+      @driver.new_ride(@trip2)
+      @driver.status.must_equal :UNAVAILABLE
     end
   end
 end

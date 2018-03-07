@@ -82,12 +82,43 @@ module RideShare
         }
 
         trip = Trip.new(parsed_trip)
+
+        #set up relation
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
       end
 
       trips
+    end
+
+    def find_available_driver()
+      available_driver = @drivers.find{ |driver| driver.status == :AVAILABLE }
+      return available_driver
+    end
+
+    def request_trip(passenger_id)
+      driver = find_available_driver
+      passenger = find_passenger(passenger_id)
+      parsed_trip = {
+        id: @trips.length + 1,
+        passenger: passenger,
+        driver: driver,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = Trip.new(parsed_trip)
+      driver.new_ride(new_trip)
+      passenger.add_trip(new_trip)
+      @trips << new_trip
+      return new_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

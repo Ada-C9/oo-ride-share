@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -87,6 +88,46 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+    end
+  end
+
+  describe "find_available_driver" do
+    it 'returns first available driver' do
+      @dispatcher = RideShare::TripDispatcher.new
+      driver = @dispatcher.find_available_driver
+      driver.must_be_instance_of(RideShare::Driver)
+      driver.status.must_equal(:AVAILABLE)
+      driver.name.must_equal("Emory Rosenbaum")
+    end
+  end
+
+  describe 'request_trip method' do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @trip = @dispatcher.request_trip(2)
+    end
+
+    it 'can create new trip instance' do
+      @trip.must_be_instance_of RideShare::Trip
+    end
+
+    it 'uses current time as start_time' do
+      now = Time.now
+      check = (@trip.start_time < now)
+      check.must_equal true
+    end
+
+    it 'end_time, cost, rating should all be nil for new trip' do
+      trip = @dispatcher.request_trip(2)
+      trip.end_time.must_be_nil
+      trip.cost.must_be_nil
+      trip.rating.must_be_nil
+    end
+
+    it 'adds the new requested trip to list of trips' do
+      old_length = @dispatcher.trips.length
+      @dispatcher.request_trip(2)
+      (@dispatcher.trips.length - 1).must_equal old_length
     end
   end
 end

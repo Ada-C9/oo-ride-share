@@ -20,5 +20,20 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
-  end
-end
+
+    def total_trips_cost()
+      total_cost = @trips.inject(0) do |total, trip|
+        total + trip.cost
+      end
+      return total_cost
+    end
+
+    def total_ride_time()
+      total_time = @trips.inject(0) do |total, trip|
+         total + trip.calculate_duration
+      end
+      return total_time
+    end
+
+  end#end passenger class
+end#end rideshare module
