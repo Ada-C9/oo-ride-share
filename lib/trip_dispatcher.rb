@@ -1,5 +1,7 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -14,7 +16,9 @@ module RideShare
       @passengers = load_passengers
       @trips = load_trips
     end
-
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
 
@@ -40,6 +44,7 @@ module RideShare
 
     def find_driver(id)
       check_id(id)
+
       @drivers.find{ |driver| driver.id == id }
     end
 
@@ -59,7 +64,9 @@ module RideShare
     end
 
     def find_passenger(id)
+
       check_id(id)
+
       @passengers.find{ |passenger| passenger.id == id }
     end
 
@@ -75,8 +82,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -86,16 +93,74 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
+    end
+
+    def find_available_driver
+     check_status
+
+      available_drivers = drivers.select {|driver| driver.status == :AVAILABLE }
+      first_driver = compare_oldest_trip(available_drivers)
+
+      return first_driver
+    end
+
+
+    def compare_oldest_trip(available_drivers)
+      new_drivers = available_drivers.select {|driver| driver.trips.length == 0}
+
+      if new_drivers.length>0
+        return new_drivers.first
+      end
+
+      older = available_drivers.min_by{|driver| driver.trips.max_by{|trip| trip.end_time}.end_time}
+      return older
+    end
+
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+
+      driver = find_available_driver
+
+      trip_id = trips.length + 1
+
+      in_progress_data = {
+        id: trip_id,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time:nil,
+        cost:nil,
+        rating:nil,
+      }
+
+      unfinished_trip = RideShare::Trip.new(in_progress_data)
+
+      driver.available?(false)
+      trips.push(unfinished_trip)
+      driver.add_trip(unfinished_trip)
+      passenger.add_trip(unfinished_trip)
+
+      return unfinished_trip
+    end
+
+    def check_status
+      if @drivers.all?{ |driver| driver.status == :UNAVAILABLE}
+        raise ArgumentError.new("No available drivers")
+      end
     end
 
     private
 
+    def trip_time
+      return trip[:start_time] - trip[:endtime]
+    end
+
     def check_id(id)
       if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        raise ArgumentError.new("ID cannot be blank or less than zero.(got #{id})")
       end
+
     end
   end
 end
