@@ -39,9 +39,11 @@ describe "Driver class" do
 
   describe "add trip method" do
     before do
+      start_time = Time.parse('2016-08-08T16:01:00+00:00')
+      end_time = Time.parse('2016-08-08T16:37:00+00:00')
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time:start_time,end_time: end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -57,8 +59,10 @@ describe "Driver class" do
 
   describe "average_rating method" do
     before do
+      start_time = Time.parse('2016-08-08T16:01:00+00:00')
+      end_time = Time.parse('2016-08-08T16:37:00+00:00')
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time:start_time,end_time: end_time,rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -75,6 +79,53 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+
+    describe "total_revenue" do
+      before do
+        start_time = Time.parse('2016-08-08T16:01:00+00:00')
+        end_time = Time.parse('2016-08-08T16:37:00+00:00')
+
+        @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+        @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time:start_time,end_time: end_time,cost:17.29, rating: 5})
+
+      end
+
+      it "should return the total_revenue" do
+
+        @driver.add_trip(@trip)
+        @driver.add_trip(@trip)
+
+        @driver.total_revenue.must_be_kind_of Float
+        @driver.total_revenue.must_equal 25.02
+
+      end
+
+      it "returns 0 if there is no trip for this driver" do
+        @driver.total_revenue.must_equal 0
+      end
+    end
+
+    describe "average_revenue" do
+      before do
+        start_time = Time.parse('2016-08-08T16:01:00+00:00')
+        end_time = Time.parse('2016-08-08T16:37:00+00:00')
+        @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+        @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time:start_time,end_time: end_time,cost:17.29,rating: 5})
+
+      end
+      it "should return average revenue" do
+
+        @driver.add_trip(@trip)
+        @driver.average_revenue.must_equal 20.85
+
+      end
+
+      it "returns 0 if there is no trip for this driver" do
+        @driver.average_revenue.must_equal 0
+      end
+
+
     end
   end
 end

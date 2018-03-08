@@ -38,10 +38,53 @@ module RideShare
 
     def add_trip(trip)
       if trip.class != Trip
+
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 
       @trips << trip
     end
+
+    def set_status(new_trip)
+      @trips << new_trip
+      @status = :UNAVAILABLE
+
+    end
+
+    def total_revenue
+      if !@trip_in_progress
+        if @trips.length == 0
+          return 0
+        else
+
+          fee = 1.65
+          driver_portion = 0.8
+          subtotal = @trips.map {|trip| trip.cost - fee}.inject(0, :+) * driver_portion
+        end
+        return subtotal.round(2)
+
+      end
+
+    end
+
+
+    def average_revenue
+      if !@trip_in_progress
+        total_revenue
+        if @trips.length == 0
+          return 0
+        else
+          total_time = 0
+          @trips.each do |trip|
+            total_time += trip.end_time - trip.start_time
+
+          end
+          total_time_per_hour = total_time/3600
+          avg_revenue = (total_revenue) /(total_time_per_hour)
+        end
+        return avg_revenue.round(2)
+      end
+    end
+
   end
 end

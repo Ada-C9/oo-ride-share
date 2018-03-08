@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -70,13 +71,15 @@ module RideShare
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+        start_time = Time.parse(raw_trip[:start_time])
+        end_time = Time.parse(raw_trip[:end_time])
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time:start_time,
+          end_time:end_time,
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -89,6 +92,74 @@ module RideShare
 
       trips
     end
+
+    def available_driver
+
+      available_drivers = @drivers.find_all do |driver|
+        driver.trips.length > 0 && driver.status == :AVAILABLE
+      end
+
+      return nil if available_drivers == []
+
+      last_trips = available_drivers.map do |driver|
+        driver.trips.min_by do |trip|
+          Time.now - trip.end_time
+        end
+      end
+
+
+      longest_end_trip = last_trips.max_by do |trip|
+        Time.now - trip.end_time
+      end
+
+      chosen_driver = longest_end_trip.driver
+      return chosen_driver
+
+
+    end
+
+    def request_trip(passenger_id)
+
+      start_time = Time.now
+      selected_driver = @drivers.find{ |driver| driver.status == :AVAILABLE}
+      selected_driver = available_driver
+      passenger = find_passenger(passenger_id)
+
+      #id = @trips.length + 1
+      next_id_trip = @trips.max_by { |trip| trip.id }
+      next_id = next_id_trip.id
+
+      if selected_driver == nil
+        raise StandardError.new(" Drivers are not available right now")
+      end
+
+      trip_data= {
+        id: next_id,
+        driver: selected_driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time:nil,
+        cost: nil,
+        rating: nil
+
+      }
+      new_trip = RideShare::Trip.new(trip_data)
+
+      selected_driver.add_trip(new_trip)
+      selected_driver.set_status(new_trip)
+
+
+      passenger.add_trip(new_trip)
+      @trips << new_trip
+
+      return new_trip
+    end
+
+
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end # inspect
 
     private
 

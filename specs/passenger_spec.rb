@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Passenger class" do
 
@@ -32,11 +33,64 @@ describe "Passenger class" do
     end
   end
 
+  describe "total_amount_of_money" do
+    before do
+      start_time = Time.parse('2015-11-18T18:32:00+00:00')
+      end_time = Time.parse('2016-04-05T14:01:00+00:00')
+      @passenger = RideShare::Passenger.new(id: 8, name: "Dariana Bernhard IV", phone: "1-904-093-5211 x9183",trips:[])
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      @trip = RideShare::Trip.new({id: 8, driver: driver, passenger: 54, start_time: start_time,end_time: end_time,cost:17.39,rating: 5})
+
+    end
+
+
+
+    it "return total amount spent by passenger " do
+
+
+      @passenger.add_trip(@trip)
+      @passenger.add_trip(@trip)
+      @passenger.total_amount_of_money.must_equal 34.78
+
+    end
+
+    it "returns 0 if there are no trips" do
+      @passenger.total_amount_of_money.must_equal 0
+    end
+  end
+
+  describe "total_amount_of_time" do
+    before do
+
+        start_time = Time.parse('2016-04-05T14:01:00+00:00')
+        end_time = Time.parse('2016-04-05T14:09:00+00:00')
+        @passenger = RideShare::Passenger.new(id: 8, name: "Dariana Bernhard IV", phone: "1-904-093-5211 x9183",trips:[])
+        driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+        @trip = RideShare::Trip.new({id: 8, driver: driver, passenger: 54, start_time: start_time,end_time: end_time,cost:17.39,rating: 5})
+
+
+    end
+
+    it "return total_amount_of_time" do
+
+      @passenger.add_trip(@trip)
+      @passenger.total_amount_of_time.must_equal 480
+
+    end
+
+    it "returns 0 if there are no trips" do
+      @passenger.total_amount_of_money.must_equal 0
+    end
+
+  end
+
+
 
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2016-08-08T16:01:00+00:00'),
+        end_time: Time.parse('2016-08-08T16:37:00+00:00'),rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +112,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2016-08-08T16:01:00+00:00'),end_time: Time.parse('2016-08-08T16:37:00+00:00'), rating: 5})
 
       @passenger.add_trip(trip)
     end
