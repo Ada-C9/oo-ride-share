@@ -23,6 +23,16 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def self.available_drivers(drivers)
+      free_drivers = []
+      drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          free_drivers << driver
+        end
+      end
+      return free_drivers
+    end
+
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
@@ -53,10 +63,10 @@ module RideShare
           income += trip.cost
         end
       end
-      if income == 0
-        net_income = income
-      else
+      if income > 1.65
         net_income = (income - 1.65) * 0.8
+      else
+        net_income = income
       end
       return net_income
     end

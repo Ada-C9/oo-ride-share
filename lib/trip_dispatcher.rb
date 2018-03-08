@@ -98,16 +98,6 @@ module RideShare
       return trips
     end
 
-    def available_drivers
-      free_drivers = []
-      @drivers.each do |driver|
-        if driver.status == :AVAILABLE
-          free_drivers << driver
-        end
-      end
-      return free_drivers
-    end
-
     def last_trip (driver)
       driver_trips = driver.trips
       driver_trips.sort_by! {|trip| trip.end_time}
@@ -115,7 +105,7 @@ module RideShare
     end
 
     def select_driver
-      free_drivers = available_drivers
+      free_drivers = RideShare::Driver.available_drivers(@drivers)
       driver_last_trip = {}
       free_drivers.each do |driver|
         if driver.trips.count == 0

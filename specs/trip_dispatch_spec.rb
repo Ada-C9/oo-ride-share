@@ -98,25 +98,6 @@ describe "TripDispatcher class" do
       @test_dispatcher = RideShare::TripDispatcher.new
       @count_control_trips = @test_dispatcher.trips.count
       @test_trip = @test_dispatcher.request_trip(5)
-      @test_drivers = @test_dispatcher.available_drivers
-    end
-
-    describe "available_driver" do
-
-      it "returns array of instances of driver" do
-        @test_drivers.must_be_kind_of Array
-        @test_drivers[2].must_be_instance_of RideShare::Driver
-        @test_drivers[2].status.must_equal :AVAILABLE
-      end
-
-      it "returns empty array if there are no available drivers" do
-        unavailable_drivers_dispatch = RideShare::TripDispatcher.new
-        unavailable_drivers_dispatch.drivers.each do |driver|
-          driver.status = :UNAVAILABLE
-        end
-        unavailable_drivers_dispatch.available_drivers.must_be_kind_of Array
-        unavailable_drivers_dispatch.available_drivers.count.must_equal 0
-      end
     end
 
     it "trips must increase by 1 everytime request_trip is called" do
@@ -137,14 +118,6 @@ describe "TripDispatcher class" do
 
     it "request_trip assigned driver status is UNAVAILABLE" do
       @test_trip.driver.status.must_equal :UNAVAILABLE
-    end
-
-    it "available drivers count goes down by 1 after request_ride is called" do
-      test_dispatcher = RideShare::TripDispatcher.new
-      before = test_dispatcher.available_drivers.count
-      test_trip = test_dispatcher.request_trip(5)
-      after = test_dispatcher.available_drivers.count
-      after.must_equal(before - 1)
     end
 
     it "end_time, trip cost and rating must be equal to nil" do
