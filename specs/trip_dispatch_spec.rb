@@ -1,4 +1,6 @@
+require 'time'
 require_relative 'spec_helper'
+
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -87,6 +89,59 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+    end
+  end
+
+  describe "request_trip" do
+
+    before do
+      @test_dispatcher = RideShare::TripDispatcher.new
+      @count_control_trips = @test_dispatcher.trips.count
+      @test_trip = @test_dispatcher.request_trip(5)
+    end
+
+    it "trips must increase by 1 everytime request_trip is called" do
+      test_dispatcher_2 = RideShare::TripDispatcher.new
+      before_trips = test_dispatcher_2.trips.count
+      test_trip_2 = test_dispatcher_2.request_trip(5)
+      after_trips = test_dispatcher_2.trips.count
+      after_trips.must_equal (before_trips + 1)
+    end
+
+    it "creates a new instance of trip" do
+      @test_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "trip start_time is an instance of Time" do
+      @test_trip.start_time.must_be_kind_of Time
+    end
+
+    it "request_trip assigned driver status is UNAVAILABLE" do
+      @test_trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "end_time, trip cost and rating must be equal to nil" do
+      @test_trip.end_time.must_be_nil
+      @test_trip.cost.must_be_nil
+      @test_trip.rating.must_be_nil
+    end
+  end
+
+  describe "request_trip driver" do
+
+    before do
+      @test_dispatcher = RideShare::TripDispatcher.new
+      @test_trip_1 = @test_dispatcher.request_trip(1)
+      @test_trip_2 = @test_dispatcher.request_trip(2)
+      @test_trip_3 = @test_dispatcher.request_trip(3)
+    end
+
+    it "first assigned drivers should be Minnie Dach" do
+      @test_trip_1.driver.name.must_equal("Minnie Dach")
+    end
+
+    it "third assigned drivers should be Nicholas Larkin" do
+      @test_trip_3.driver.name.must_equal("Nicholas Larkin")
     end
   end
 end

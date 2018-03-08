@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -59,8 +60,15 @@ module RideShare
     end
 
     def find_passenger(id)
+      found_passenger = nil
       check_id(id)
-      @passengers.find{ |passenger| passenger.id == id }
+
+      @passengers.find do |passenger|
+        if passenger.id == id
+          found_passenger = passenger
+        end
+      end
+      return found_passenger
     end
 
     def load_trips
@@ -75,8 +83,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -87,7 +95,54 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
+    end
+
+    def last_trip (driver)
+      driver_trips = driver.trips
+      driver_trips.sort_by! {|trip| trip.end_time}
+      return driver_trips[-1]
+    end
+
+    def select_driver
+      free_drivers = RideShare::Driver.available_drivers(@drivers)
+      driver_last_trip = {}
+      free_drivers.each do |driver|
+        if driver.trips.count == 0
+          return driver
+        elsif
+          last_trip = last_trip(driver)
+          driver_last_trip.store(driver,last_trip)
+        end
+      end
+      driver_last_trip =
+     driver_last_trip.sort_by {|driver, trip| trip.end_time}.to_a
+      next_driver = driver_last_trip[0][0]
+      return next_driver
+    end
+
+    def request_trip(passenger_id)
+      start_time = Time.now
+      new_trip = Hash.new
+      newly_added_trip = nil
+      new_trip[:id] = @trips.length
+      driver = select_driver
+      if driver != nil
+        driver.status = :UNAVAILABLE
+        new_trip[:driver] = driver
+        new_trip[:passenger] = find_passenger(passenger_id)
+        new_trip[:start_time] = start_time
+        new_trip[:end_time] = nil
+        new_trip[:cost] = nil
+        new_trip[:rating] = nil
+        newly_added_trip = RideShare::Trip.new(new_trip)
+        @trips << newly_added_trip
+      end
+      return newly_added_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
