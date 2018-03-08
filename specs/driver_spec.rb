@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Driver class" do
 
@@ -41,7 +42,9 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 30 * 60
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -58,7 +61,9 @@ describe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 30 * 60
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -75,6 +80,66 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe 'total_revenue' do
+    before do
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 30 * 60
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5, cost: 5})
+      @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5, cost: 5})
+      @trip3 = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5, cost: 5})
+    end
+
+    it 'returns the drivers total revenue' do
+      @driver.add_trip(@trip)
+      @driver.add_trip(@trip2)
+      @driver.add_trip(@trip3)
+
+      @driver.total_revenue.must_be_kind_of Float
+      @driver.total_revenue.must_equal 8.04
+    end
+  end
+
+  describe 'average_hourly_revenue' do
+    before do
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 30 * 60
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5, cost: 5})
+      @trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5, cost: 5})
+      @trip3 = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5, cost: 5})
+    end
+
+    it 'returns the average_hourly_revenue of a driver' do
+      @driver.add_trip(@trip)
+      @driver.add_trip(@trip2)
+      @driver.add_trip(@trip3)
+
+      @driver.average_hourly_revenue.must_be_kind_of Float
+      @driver.average_hourly_revenue.must_equal 5.36
+    end
+  end
+
+  describe 'start_new_trip' do
+    before do
+      pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: Time.now, end_time: nil, rating: nil, cost: nil})
+    end
+    it "adds new trip to driver's trips" do
+      @driver.start_new_trip(@trip)
+
+      @driver.trips.must_include @trip
+    end
+    it 'changes status to :UNAVAILABLE' do
+      @driver.start_new_trip(@trip)
+
+      @driver.status.must_equal :UNAVAILABLE
     end
   end
 end

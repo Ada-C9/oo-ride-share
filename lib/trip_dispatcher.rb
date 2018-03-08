@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -70,13 +71,15 @@ module RideShare
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+        start_time = Time.parse(raw_trip[:start_time])
+        end_time = Time.parse(raw_trip[:end_time])
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: start_time,
+          end_time: end_time,
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +91,58 @@ module RideShare
       end
 
       trips
+    end
+
+    # addition that takes passenger_id to create new trip
+    def request_trip(passenger_id)
+      check_id(passenger_id)
+      id = trips.length + 1
+      available_driver = find_least_recently_active_driver
+      return if available_driver.nil?  # nil return for no available drivers
+      # can be used with passenger in future method to indicate that no trip was
+      # created because no drivers are available
+      passenger = find_passenger(passenger_id)
+      new_trip = {
+        id: id,
+        driver: available_driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      trips << trip = Trip.new(new_trip)
+      available_driver.start_new_trip(trip)
+      passenger.add_trip(trip)
+      trip
+    end
+
+    # finds first driver with no ride history and then driver that is least
+    # recently active
+    # if no driver is available returns nil
+    def find_least_recently_active_driver
+      recent_rides = []
+      @drivers.find_all do |driver|
+        if driver.status == :AVAILABLE && driver.trips.empty?
+          return driver
+        elsif driver.status == :AVAILABLE
+          available_drivers = []
+          unsorted_rides = []
+          available_drivers << driver
+          available_drivers.each { |available_driver| unsorted_rides << available_driver.trips}
+          unsorted_rides.each do |rides|
+              recent_rides << rides.max_by {|ride| ride.end_time.to_i}
+          end
+        end
+      end
+      return if recent_rides.empty?
+      least_recent_ride = recent_rides.min_by { |ride| ride.end_time.to_i }
+      least_recent_ride.driver
+    end
+
+    def inspect
+      "#<#{self.class.name}: 0x#{self.object_id.to_s(16)}>"
     end
 
     private

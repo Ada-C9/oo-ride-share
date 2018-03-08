@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require "pry"
 
 module RideShare
   class Driver
@@ -40,8 +41,21 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
       @trips << trip
+    end
+
+    def total_revenue
+      ((@trips.sum { |t| t.cost - 1.65}) * 0.8).round(2)
+    end
+
+    def average_hourly_revenue
+      total_hours = @trips.sum{ |t| t.calculate_duration / (3600) }
+      (total_revenue / total_hours).round(2)
+    end
+
+    def start_new_trip(trip)
+      add_trip(trip)
+      @status = :UNAVAILABLE
     end
   end
 end
