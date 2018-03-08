@@ -19,6 +19,36 @@ describe "TripDispatcher class" do
     end
   end
 
+  describe "request_trip method" do
+
+    it "is must return a trip" do
+      dispatcher =  RideShare::TripDispatcher.new
+      trip = dispatcher.request_trip(288)
+      trip.must_be_kind_of RideShare::Trip
+
+    end
+
+
+    it "it must return correct passenger id" do
+      passengerz =  RideShare::Passenger.new
+      passenger = find.passenger(28)
+
+      passenger_id.must_equal 28
+    end
+
+
+  # when we push something into add trips we are changing an instance variable(a@trips
+  #   ), i want to look at the original value
+  #   and then it calls the method and then it looks at the new value for that instance
+  #   variable, when we add new trip we should see that the elements in thea array
+  #   increased by one
+  #
+
+
+
+
+
+
   describe "find_driver method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new

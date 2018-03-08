@@ -4,6 +4,7 @@ require 'time'
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
+#require_relative 'time'
 
 module RideShare
   class TripDispatcher
@@ -13,8 +14,15 @@ module RideShare
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
+
     end
 
+    # this is what i was trying to create but this not make sense because this is a method
+    # def time
+    #   @start_time = start_time
+    #   @end_time = end_time
+    # end
+#initialize that raises an ArgumentError if the end time is before the start time, and a corresponding test
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
 
@@ -61,7 +69,41 @@ module RideShare
     def find_passenger(id)
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
+      end
+
+      #Ask Charles tomorrow what this does exaclty does.
+
+    def request_trip(passenger_id)
+
+      available_driver = @drivers.find{|driver| driver.status == :Available }
+      if available_driver == nil
+        return nil
+      end
+
+      passenger = find_passenger(passenger_id)
+      if passenger == nil
+        return nil
+      end
+
+      requested_trip = {
+        id: @trips.length + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now, #current-time- what is current-time?
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+        trip = Trip.new(requested_trip)
+        available_driver.add_trip(trip)
+        passenger.add_trip(trip)
+        @trips.push(trip)
+        return trip
+
+
     end
+
 
     def load_trips
       trips = []
@@ -81,7 +123,17 @@ module RideShare
           rating: raw_trip[:rating].to_i
         }
 
+
+        parsed_trip[:end_time] = Time.parse(parsed_trip[:end_time])
+        parsed_trip[:start_time] = Time.parse(parsed_trip[:start_time])
+
+
+
+
         trip = Trip.new(parsed_trip)
+        # this is what i changed
+        # start_time = Time.new(parsed_end_time)[:start_time]
+        # end_time = Time.new(parsed_end_time)[:end_time]
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
@@ -92,6 +144,10 @@ module RideShare
 
     private
 
+
+
+
+     # this checks id if the id does not exist or the id is less than or equal to zero.
     def check_id(id)
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
