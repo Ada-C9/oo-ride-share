@@ -88,5 +88,93 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "accurately loads trip info for time" do
+      dispatcher = RideShare::TripDispatcher.new
+      first_trip = dispatcher.trips.first
+
+      first_trip.start_time.must_be_kind_of Time
+      first_trip.start_time.must_equal Time.parse("2016-04-05T14:01:00+00:00")
+      first_trip.end_time.must_be_kind_of Time
+      first_trip.end_time.must_equal Time.parse("2016-04-05T14:09:00+00:00")
+
+      last_trip = dispatcher.trips.last
+
+      last_trip.start_time.must_be_kind_of Time
+      last_trip.start_time.must_equal Time.parse("2016-04-25T02:59:00+00:00")
+      last_trip.end_time.must_be_kind_of Time
+      last_trip.end_time.must_equal Time.parse("2016-04-25T03:06:00+00:00")
+    end
   end
+
+  describe "request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @passenger_id = 21
+      @new_trip = @dispatcher.request_trip(@passenger_id)
+    end
+
+    it "return a new trip" do
+      @new_trip.must_be_instance_of RideShare::Trip
+      @new_trip.id.must_equal @new_trip.id
+    end
+
+    it "sets nil values for end_time, cost, and rating" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
+    end
+
+    it "adds the trip to passenger's trips" do
+      trip_passenger = @new_trip.passenger
+      trip_passenger.must_be_instance_of RideShare::Passenger
+      trip_passenger.id.must_equal @passenger_id
+      trip_passenger.trips.last.must_equal @new_trip
+      trip_passenger.trips.last.id.must_equal @new_trip.id
+    end
+
+    it "adds the trip to driver's trips" do
+      trip_driver = @new_trip.driver
+      trip_driver.must_be_instance_of RideShare::Driver
+      trip_driver.trips.last.must_equal @new_trip
+      trip_driver.trips.last.id.must_equal @new_trip.id
+    end
+
+    it "add the trip to all trips" do
+      size_before =  @dispatcher.trips.size
+      @dispatcher.request_trip(23)
+      @dispatcher.trips.size.must_equal size_before + 1
+    end
+
+    it "selects an available driver" do
+      before_ids = @dispatcher.drivers.map { |driver| driver.id if
+        driver.is_available? }
+      new_test_trip = @dispatcher.request_trip(24)
+      after_ids = @dispatcher.drivers.map { |driver| driver.id if
+        driver.is_available? }
+
+      before_ids.include?(new_test_trip.driver.id).must_equal true
+      (before_ids - after_ids).must_equal [new_test_trip.driver.id]
+      new_test_trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "raises ArgumentError if no drivers are available" do
+      while @dispatcher.drivers.count { |driver| driver.is_available? } > 0
+        @dispatcher.request_trip(27)
+      end
+      proc{ @dispatcher.request_trip(27) }.must_raise ArgumentError
+    end
+
+    it "raises ArgumentError if invalid ID " do
+      proc{ @dispatcher.request_trip(1111127) }.must_raise ArgumentError
+    end
+
+    it "finds the drivers' whose ride ended the longest ago" do
+      @new_trip.driver.name.must_equal "Minnie Dach"
+      @dispatcher.request_trip(27).driver.name.must_equal "Antwan Prosacco"
+      @dispatcher.request_trip(27).driver.name.must_equal "Nicholas Larkin"
+    end
+
+  end
+
 end

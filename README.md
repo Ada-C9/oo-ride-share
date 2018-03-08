@@ -221,6 +221,8 @@ Grace is excluded because they are not `AVAILABLE`, and because they have one in
 
 Of Ada and Katherine, we prefer Ada, because their most recent trip is older.
 
+
+=======
 If you've done everything right, the first five trips you create should be assigned to the following drivers.
 
 1. `Driver 14: Antwan Prosacco (last trip 267 ended 2015-04-23T17:53:00+00:00)`
@@ -228,6 +230,7 @@ If you've done everything right, the first five trips you create should be assig
 1. `Driver 6: Mr. Hyman Wolf (last trip 295 ended 2015-08-14T09:54:00+00:00)`
 1. `Driver 87: Jannie Lubowitz (last trip 73 ended 2015-10-26T01:13:00+00:00)`
 1. `Driver 75: Mohammed Barrows (last trip 184 ended 2016-04-01T16:26:00+00:00)`
+
 
 **All of this code must have tests.**
 
