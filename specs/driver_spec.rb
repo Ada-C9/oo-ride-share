@@ -77,4 +77,69 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+  describe "1.2 Aggregate Statistics" do
+    before do #use pry to get this info as hard coded data
+      dispatcher = RideShare::TripDispatcher.new
+      trip = dispatcher.trips.first
+      @driver = trip.driver
+      @duration = trip.duration
+    end
+
+    describe "Driver#total_revenue" do
+      it "returns total revenue" do
+        # use hard coded data to created expected output, not magic numbers
+        trips = @driver.trips
+        subtotal = 0
+         trips.each do |trip|
+          subtotal += (trip.cost - 1.65)
+        end
+        revenue_total = subtotal * 0.8
+        expected_value = revenue_total.round(2)
+
+        total = @driver.total_revenue
+        total.must_equal expected_value
+      end
+    end
+
+    describe "Driver#average_revenue" do
+      it "returns average revenue per hour spent driving" do
+
+        hour = 60 * 60
+        hour_time = 0
+        @driver.trips.each do |trip|
+          hour_time += (trip.duration / hour)
+        end
+        trip_count = @driver.trips.length
+        revenue = @driver.total_revenue
+        expected = (revenue / hour_time) / trip_count
+
+        test = @driver.average_revenue
+        test.must_equal expected
+
+      end
+    end
+  end
+  describe "interaction with TripDispatcher#request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @result = @dispatcher.request_trip(34)
+      @driver = @result.driver
+      @trips = @driver.trips
+    end
+    it "adds new trip to the list of trips" do
+
+      trip_id = @result.id
+
+      result = @trips.last.id
+
+      result.must_equal trip_id
+
+    end
+
+    it "changes status to :UNAVAILABLE" do
+      status = @driver.status
+
+      status.must_equal :UNAVAILABLE
+    end
+  end
 end

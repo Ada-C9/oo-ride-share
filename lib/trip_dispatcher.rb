@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,8 +76,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +89,56 @@ module RideShare
       end
 
       trips
+    end
+
+    def find_last_trips
+      last_trips = []
+      drivers.each do |driver|
+        unless driver.trips.empty? || driver.trips.first.end_time == nil
+          last_trips << driver.trips.max_by {|trip| trip.end_time.to_i}
+        end
+      end
+      return last_trips
+    end
+
+    def least_recent
+
+      completed_trips = find_last_trips.find_all do |trip|
+        trip.end_time != nil && trip.driver.status == :AVAILABLE
+      end
+      completed_trips.sort! {|trip1, trip2| trip1.end_time <=> trip2.end_time}
+      if completed_trips[0] == nil
+        raise ArgumentError.new("No drivers currently available.")
+      else
+        return completed_trips.first.driver
+      end
+    end
+
+    def select_driver
+        return least_recent
+    end
+
+    def request_trip(passenger_id)
+      driver = select_driver
+      id = trips.length + 1
+
+      passenger = find_passenger(passenger_id)
+
+      trip_data = {
+        id: id,
+        driver: driver,
+        passenger: passenger
+      }
+      new_trip = Trip.new(trip_data)
+      trips << new_trip
+      passenger.add_trip(new_trip)
+      driver.add_trip(new_trip)
+
+      return new_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
