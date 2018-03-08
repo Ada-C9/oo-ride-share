@@ -1,5 +1,7 @@
 require 'csv'
 require 'time'
+require 'pry'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,8 +77,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -90,6 +92,67 @@ module RideShare
       trips
     end
 
+    def assign_driver
+      ### WAVE 2 ###
+
+      # drivers_available = @drivers.reject { |driver| driver.status == :UNAVAILABLE }
+      #
+      # if drivers_available.length == 0
+      #   raise ArgumentError.new("There are no drivers available.")
+      # else
+      #   return drivers_available.first
+      # end
+
+      ### WAVE 3 ###
+
+      drivers_pool = drivers.reject { |driver| (driver.status == :UNAVAILABLE) || (driver.trips.length == 0)}
+
+      most_recent_trips = []
+
+      if drivers_pool.length == 0
+        raise ArgumentError.new("There are no drivers available.")
+      else
+        drivers_pool.each do |driver|
+          most_recent_trips << driver.trips.max_by { |trip| trip.end_time }
+        end
+        oldest_trip = most_recent_trips.min_by { |trip| trip.end_time }
+        return oldest_trip.driver
+      end
+    end
+
+    def request_trip(passenger_id)
+
+      check_id(passenger_id)
+      passenger = find_passenger(passenger_id)
+
+      if passenger == nil
+        raise ArgumentError.new("Passenger ID #{passenger_id} not valid.")
+      else
+        driver = assign_driver
+
+        trip_data = {
+          id: @trips.length + 1,
+          driver: driver,
+          passenger: passenger,
+          start_time: Time.now,
+          end_time: nil,
+          cost: nil,
+          rating: nil,
+        }
+
+        new_trip = Trip.new(trip_data)
+        driver.change_to_unavailable
+        driver.add_trip(new_trip)
+        passenger.add_trip(new_trip)
+        trips << new_trip
+        return new_trip
+      end
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
@@ -97,5 +160,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end

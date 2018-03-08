@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 
+
 describe "TripDispatcher class" do
   describe "Initializer" do
     it "is an instance of TripDispatcher" do
@@ -88,5 +89,144 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "stores start_time as instances of Time" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      all_start_times = dispatcher.trips.all? { |trips| trips.start_time.class == Time }
+
+      all_start_times.must_equal true
+
+
+    end
+
+    it "stores end_time as instances of Time" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      all_end_times = dispatcher.trips.all? { |trips| trips.end_time.class == Time }
+
+      all_end_times.must_equal true
+    end
+  end
+
+  describe "#assign_driver" do
+
+    it "assigns the driver to the available driver whose most recent trip ending is the oldest compared to today" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      driver_1 = dispatcher.assign_driver
+      driver_1.change_to_unavailable
+
+      driver_2 = dispatcher.assign_driver
+      driver_2.change_to_unavailable
+
+      driver_3 = dispatcher.assign_driver
+      driver_3.change_to_unavailable
+
+      driver_4 = dispatcher.assign_driver
+      driver_4.change_to_unavailable
+
+      driver_5 = dispatcher.assign_driver
+      driver_5.change_to_unavailable
+
+      assigned_drivers = [driver_1, driver_2, driver_3, driver_4, driver_5]
+
+      all_assigned_drivers = assigned_drivers.all? { |driver| driver.class == RideShare::Driver }
+
+      all_assigned_drivers.must_equal true
+
+      driver_1.id.must_equal 14
+      driver_1.name.must_equal "Antwan Prosacco"
+      driver_2.id.must_equal 27
+      driver_2.name.must_equal "Nicholas Larkin"
+      driver_3.id.must_equal 6
+      driver_3.name.must_equal "Mr. Hyman Wolf"
+      driver_4.id.must_equal 87
+      driver_4.name.must_equal "Jannie Lubowitz"
+      driver_5.id.must_equal 75
+      driver_5.name.must_equal "Mohammed Barrows"
+    end
+
+    it "raises error if there are no drivers available" do
+      dispatcher = RideShare::TripDispatcher.new
+      # 46 drivers originally available
+      46.times do
+        dispatcher.request_trip(1)
+      end
+
+      proc{dispatcher.assign_driver}.must_raise ArgumentError
+    end
+  end
+
+  describe "#request_trip(passenger_id)" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @passenger = @dispatcher.find_passenger(3)
+      @driver = @dispatcher.find_driver(14)
+
+      @initial_trips_length = @dispatcher.trips.length
+      @initial_passenger_trips_length = @passenger.trips.length
+      @initial_driver_trips_length = @driver.trips.length
+
+      @new_trip = @dispatcher.request_trip(3)
+
+    end
+
+    it "returns/creates new instance of Trip" do
+      @new_trip.must_be_kind_of RideShare::Trip
+    end
+
+    it "adds the new Trip to the collection of trips in TripDispatcher" do
+      @dispatcher.trips.length.must_equal @initial_trips_length + 1
+    end
+
+    it "adds the new Trip to the collection of trips for Passenger" do
+      @passenger.trips.length.must_equal @initial_passenger_trips_length + 1
+    end
+
+    it "adds the new Trip to the collection of trips for Driver" do
+      @driver.trips.length.must_equal @initial_driver_trips_length + 1
+    end
+
+    it "changes drivers status to :UNAVAILABLE" do
+      @driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "assigns new trip id (trip ids in dispatcher are in consecutive order)" do
+      @new_trip.id.must_equal 601
+    end
+
+    it "makes the start time and instance of time" do
+      @new_trip.start_time.must_be_kind_of Time
+    end
+
+    it "assigns end_time, cost, and rating of trip to 'nil' as it is in progress" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
+    end
+
+    it "is set up for specific attributes and data types" do
+      [:id, :passenger, :driver, :start_time, :end_time, :cost, :rating].each do |prop|
+        @new_trip.must_respond_to prop
+      end
+
+      @new_trip.id.must_be_kind_of Integer
+      @new_trip.driver.must_be_kind_of RideShare::Driver
+      @new_trip.passenger.must_be_kind_of RideShare::Passenger
+
+    end
+
+    it "raises error if there are no drivers available" do
+      dispatcher = RideShare::TripDispatcher.new
+      # 46 drivers originally available
+      passenger_id = 1
+      46.times do |request_trip|
+        dispatcher.request_trip(passenger_id)
+      end
+
+      proc{dispatcher.request_trip(2)}.must_raise ArgumentError
+    end
+
   end
 end
