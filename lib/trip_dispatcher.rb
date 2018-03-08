@@ -43,6 +43,46 @@ module RideShare
       @drivers.find{ |driver| driver.id == id }
     end
 
+    def find_driver_to_accept_trip
+      available_drivers = @drivers.select {|driver| driver.available? }
+
+      raise StandardError.new("There are no available drivers.") if available_drivers.empty?
+
+      available_drivers_not_on_trip = available_drivers.select {|driver| !driver.on_trip_now?}
+
+      raise StandardError.new("There are no available drivers not on a trip.") if available_drivers_not_on_trip.empty?
+
+      # if code reaches this point, a drive is available
+      selected_driver = available_drivers_not_on_trip.find {|driver| driver.trips.empty? }
+
+      if selected_driver.nil?
+        selected_driver = available_drivers_not_on_trip.max_by { |driver|
+        driver.drivers_most_recent_trip.time_since_trip }
+      end
+
+      return selected_driver
+    end
+
+    def request_trip(passenger_id)
+      selected_driver = self.find_driver_to_accept_trip
+
+      requesting_passenger = self.find_passenger(passenger_id)
+
+      trip = Trip.new({
+        id: @trips.length + 1,
+        driver: selected_driver,
+        passenger: requesting_passenger,
+        start_time: Time.now
+        })
+
+      selected_driver.accept_trip(trip)
+      requesting_passenger.accept_trip(trip)
+
+      @trips << trip
+
+      return trip
+    end
+
     def load_passengers
       passengers = []
 
@@ -52,7 +92,7 @@ module RideShare
         input_data[:name] = line[1]
         input_data[:phone] = line[2]
 
-        passengers << Passenger.new(input_data)
+      passengers << Passenger.new(input_data)
       end
 
       return passengers
@@ -75,8 +115,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -90,6 +130,10 @@ module RideShare
       trips
     end
 
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
@@ -97,5 +141,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end

@@ -1,0 +1,62 @@
+Trip
+* trip_completed?
+    returns true if end time present
+    returns false if end time nil
+        going to return nil if trip in progress
+
+* trip_in_progress?
+    returns true if start time present, but end time nil
+    returns false if end time nil
+    going to return nil if trip in progress
+
+* time_since_trip
+    returns time since trip in hours
+    returns nil if end_time end time is nil
+        going to return nil if trip in progress
+
+Driver
+* available?
+    returns true if driver available
+    returns false if driver unavailable
+
+- method not in use
+- drivers_completed_trips
+    returns list of completed trips (calls trip_completed?)
+
+* drivers_most_recent_trip
+    returns least recent trip as instance of trip
+
+* on_trip_now?
+    returns true if driver has an in progress trip
+
+
+WHAT TO DO
+
+RETURN...
+AVAILABLE_DRIVERS = @drivers.select {|driver| driver.available? }
+    ---> list of available drivers
+
+
+ANT = AVAILABLE_DRIVERS.select {|driver| !driver.on_trip_now? }
+    ---> PEOPLE ABOVE ARE AVAILABLE AND NOT ON A TRIP
+
+
+SELECTED_DRIVER = ANT.find {|driver| driver.trips.empty? }
+
+return SELECTED_DRIVER if SELECTED_DRIVER != nil
+
+ANY REMAINING PEOPLE IN ANT WILL HAVE WORKED BEFORE
+
+SELECTED_DRIVER = ANT.max_by { |driver|
+  driver.drivers_most_recent_trip.time_since_trip }
+
+return SELECTED_DRIVER
+
+
+
+WHAT I'M TRYING TO DO
+Modify TripDispatcher#request_trip to use the following rules to select a Driver:
+
+The Driver must have a status of AVAILABLE
+The Driver must not have any in-progress trips (end time of nil)
+From the Drivers that remain, select the one whose most recent trip ended the longest time ago
