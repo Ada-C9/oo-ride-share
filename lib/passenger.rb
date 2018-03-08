@@ -1,6 +1,7 @@
 module RideShare
   class Passenger
-    attr_reader :id, :name, :phone_number, :trips
+    attr_reader :id, :name, :phone_number
+    attr_accessor :trips
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -14,11 +15,26 @@ module RideShare
     end
 
     def get_drivers
-      @trips.map{ |t| t.driver }
+      trips.map{ |t| t.driver }
     end
 
     def add_trip(trip)
-      @trips << trip
+      trips << trip
     end
+
+    def completed_trips
+      trips.select {|trip| trip.end_time != nil}
+    end
+
+    def total_spent
+      total_spent = completed_trips.inject(0) { |sum, trip| sum + trip.cost }
+    end
+
+
+    def total_time
+      completed_trips.inject(0) {|sum, trip| sum + trip.duration}
+    end
+
+
   end
 end

@@ -3,7 +3,8 @@ require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id
+    attr_accessor :status, :trips
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -43,5 +44,23 @@ module RideShare
 
       @trips << trip
     end
+
+    def completed_trips
+      trips.select {|trip| trip.end_time != nil}
+    end
+
+    def total_revenue
+      total_rev = completed_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
+      return total_rev
+    end
+
+    def average_revenue
+      ave_rev = total_revenue / completed_trips.length
+    end
+
+    def change_to_unavailable
+      @status = :UNAVAILABLE
+    end
+
   end
 end

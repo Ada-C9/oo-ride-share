@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Trip class" do
 
@@ -38,5 +39,48 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+
+    it "raises error for invalid end time" do
+      # @trip_data[:end_time] = Time.parse("2016-04-05T14:01:00+00:00")
+      # @trip_data[:start_time] = Time.parse("2016-04-05T14:09:00+00:00")
+
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse("2016-04-05T14:09:00+00:00"),
+        end_time: Time.parse("2016-04-05T14:01:00+00:00"),
+        cost: 23.45,
+        rating: 3
+      }
+
+      proc {
+        RideShare::Trip.new(trip_data)
+      }.must_raise ArgumentError
+    end
+
+    it "get duration of trip" do
+
+      @trip.duration.must_equal 1500
+      @trip.duration.must_be_instance_of Float
+    end
+
+    it "duration raises error if end_time nil" do
+      new_trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating:nil
+      }
+
+      inprogress_trip = RideShare::Trip.new(new_trip_data)
+      #binding.pry
+      proc{inprogress_trip.duration}.must_raise ArgumentError
+    end
+
+    #end
   end
 end

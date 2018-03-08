@@ -1,3 +1,5 @@
+require 'simplecov'
+SimpleCov.start
 require_relative 'spec_helper'
 
 describe "TripDispatcher class" do
@@ -89,4 +91,84 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe 'request_trip method' do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "will create a new trip object" do
+      @dispatcher.request_trip(2).must_be_instance_of RideShare::Trip
+
+      @dispatcher.request_trip("r").must_be_nil
+    end
+
+    it "will add a new trip to trips array" do
+     @dispatcher.request_trip(2)
+     @dispatcher.trips.length.must_equal 601
+    end
+
+    it "changes chosen drivers status to UNAVAILABLE " do
+      @dispatcher.request_trip(2).driver.status.must_equal :UNAVAILABLE
+      @dispatcher.request_trip(6).driver.status.wont_equal :AVAILABLE
+
+    end
+
+    it "adds a trip to passengers trips" do
+      @dispatcher.request_trip(2).passenger.trips.length.must_equal 2
+      @dispatcher.request_trip(2).passenger.trips.length.must_equal 3
+      @dispatcher.request_trip(2).passenger.trips.length.must_equal 4
+    end
+
+    it "adds a trip to drivers trips" do
+
+      @new_trip = @dispatcher.request_trip(3)
+
+      driver = @new_trip.driver
+      passenger = @new_trip.passenger
+
+
+      driver.trips.must_include @new_trip
+
+    end
+
+    it "trip contains a nil end_time, cost, and rating" do
+      @dispatcher.request_trip(2).end_time.must_be_nil
+      @dispatcher.request_trip(2).cost.must_be_nil
+      @dispatcher.request_trip(2).rating.must_be_nil
+    end
+
+    it "raises argument if no available drivers" do
+      47.times {@dispatcher.request_trip(1)}
+      # there are 47 available drivers in csv
+      # so adding an extra ride request should raise error
+      proc{@dispatcher.request_trip(4)}.must_raise ArgumentError
+    end
+  end
+
+  describe "next_chosen_driver method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    it 'selects driver with longest wait for ride' do
+      @dispatcher.next_chosen_driver.must_be_instance_of RideShare::Driver
+
+      @dispatcher.next_chosen_driver.name.must_equal "Minnie Dach"
+    end
+
+    it 'selects correct new driver for each ride' do
+      @dispatcher2 = RideShare::TripDispatcher.new
+
+      @dispatcher2.request_trip(10).driver.name.must_equal "Minnie Dach"
+
+      @dispatcher2.request_trip(1).driver.name.must_equal "Antwan Prosacco"
+      @dispatcher2.request_trip(2).driver.name.must_equal "Nicholas Larkin"
+      @dispatcher2.request_trip(3).driver.name.must_equal "Mr. Hyman Wolf"
+      @dispatcher2.request_trip(4).driver.name.must_equal "Jannie Lubowitz"
+      @dispatcher2.request_trip(5).driver.name.must_equal "Mohammed Barrows"
+    end
+
+
+  end
+
 end

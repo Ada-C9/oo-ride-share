@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,8 +76,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -86,8 +87,89 @@ module RideShare
         passenger.add_trip(trip)
         trips << trip
       end
-
       trips
+    end
+
+    def available_drivers
+      available_drivers = drivers.find_all {|driver| driver.status == :AVAILABLE}
+
+      if available_drivers.empty?
+        raise ArgumentError.new("No available drivers")
+      else
+        return available_drivers
+      end
+    end
+
+    def request_trip(passenger_id)
+      return nil if passenger_id.class != Integer
+
+      #driver = available_drivers.first # use .sample for a random available driver instead of just the first available in list
+      passenger = find_passenger(passenger_id)
+      driver = next_chosen_driver
+
+      #driver = longest_wait_driver
+
+      new_trip = {
+        id: trips.length + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      requested_trip = RideShare::Trip.new(new_trip)
+
+      driver.change_to_unavailable
+      driver.add_trip(requested_trip)
+      passenger.add_trip(requested_trip)
+      trips << requested_trip
+
+      return requested_trip
+    end
+
+
+    def next_chosen_driver
+
+      available_drivers.each do |driver|
+        if driver.trips.length == 0
+          return driver
+        end
+      end
+      # first choose any driver that has no previous rides.
+
+      all_last_trips = [] #trips with oldest end_time per driver
+      available_drivers.each do |driver|
+        last_trip = driver.trips[0]
+        driver.trips.each do |trip|
+          if trip.end_time > last_trip.end_time
+            last_trip = trip
+          end
+        end
+        all_last_trips << last_trip
+      end
+
+      oldest_trip_taken = all_last_trips[0]
+      last_trip_end_time = all_last_trips[0].end_time #instance of time
+
+      count = 0
+      
+      all_last_trips.length.times do
+        if all_last_trips[count].end_time < last_trip_end_time
+          last_trip_end_time = all_last_trips[count].end_time
+          oldest_trip_taken = all_last_trips[count]
+        end
+        count += 1
+      end
+
+      return oldest_trip_taken.driver
+
+    end #end of next_chosen_driver
+
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
