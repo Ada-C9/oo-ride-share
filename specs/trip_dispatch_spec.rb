@@ -12,10 +12,13 @@ describe "TripDispatcher class" do
       [:trips, :passengers, :drivers].each do |prop|
         dispatcher.must_respond_to prop
       end
+      trip = dispatcher.trips.first
 
       dispatcher.trips.must_be_kind_of Array
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
+      trip.start_time.must_be_kind_of Time
+      trip.end_time.must_be_kind_of Time
     end
   end
 
@@ -87,6 +90,66 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+    end
+  end
+
+  describe "find trip driver" do
+    it "finds driver by status" do
+      # Arrange/Given <= arranged by csv
+      dispatcher = RideShare::TripDispatcher.new
+      # Act/When
+      # Assert/Then
+      dispatcher.find_trip_driver(:AVAILABLE).must_be_kind_of RideShare::Driver
+      dispatcher.find_trip_driver(:AVAILABLE).id.must_equal 2
+    end
+  end
+
+  describe "request_trip(passenger_id)" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    it "creates a new trip" do
+      # Given => use csv data
+      # When
+      # Then
+      @dispatcher.request_trip(5).must_be_kind_of RideShare::Trip
+    end
+
+    it "selects the first AVAILABLE driver" do
+      # Given => use csv data
+      # When
+      # Then
+      @dispatcher.request_trip(5).driver.id.must_equal 2
+    end
+
+    it "sets trip end_time, cost, and rating to nil" do
+      # Given => use csv data
+      # When
+      # Then
+      @dispatcher.request_trip(5).end_time.must_equal nil
+      @dispatcher.request_trip(5).cost.must_equal nil
+      @dispatcher.request_trip(5).cost.must_equal nil
+    end
+
+    it "sets driver to UNAVAILABLE" do
+
+      @dispatcher.request_trip(5).driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "adds new trip to trips" do
+      # Given
+      # When
+      @dispatcher.request_trip(5)
+      # Then
+      @dispatcher.trips.length.must_equal 601
+    end
+
+    it "adds trip to drivers trips" do
+      # Given
+      # When
+      @dispatcher.request_trip(5)
+      # Then
+      @dispatcher.request_trip(5).driver.trips.length.must_equal 9
     end
   end
 end

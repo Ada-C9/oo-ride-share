@@ -63,6 +63,10 @@ module RideShare
       @passengers.find{ |passenger| passenger.id == id }
     end
 
+    def find_trip_driver(driver_status)
+      @drivers.find{ |driver| driver.status == :AVAILABLE}
+    end
+
     def load_trips
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
@@ -75,8 +79,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +92,33 @@ module RideShare
       end
 
       trips
+    end
+
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+      driver = find_trip_driver(:AVAILABLE)
+      driver.set_status_unavailable
+
+      new_trip = {
+        id: (trips.last.id + 1),
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      trip = Trip.new(new_trip)
+      driver.add_trip(trip)
+      passenger.add_trip(trip)
+      trips << trip
+
+      return trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

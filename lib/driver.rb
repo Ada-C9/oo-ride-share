@@ -1,6 +1,8 @@
 require 'csv'
 require_relative 'trip'
 
+require 'pry'
+
 module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
@@ -43,5 +45,32 @@ module RideShare
 
       @trips << trip
     end
+
+    def get_total_rev
+      total_rev = 0
+      @trips.each do |trip|
+        trip_total = (trip.cost - 1.65) * 0.8
+        total_rev += trip_total
+      end
+
+      return total_rev
+    end
+
+    def tot_drive_time
+      tot_time = 0
+      @trips.each do |trip|
+        tot_time += trip.duration
+      end
+      return tot_time
+    end
+
+    def avg_total_rev # per hour
+      get_total_rev/(tot_drive_time/3600)
+    end
+
+    def set_status_unavailable
+      @status = :UNAVAILABLE
+    end
+
   end
 end
