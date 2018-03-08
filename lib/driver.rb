@@ -5,6 +5,9 @@ module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :status, :trips
 
+    FEE_PER_TRIP = 1.65
+    REV_PERCENT = 0.80
+
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{input[:id]})")
@@ -19,22 +22,26 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
-    end
+    end # initialize
+
+    def completed_trips
+      @trips.find_all {|trip| trip.end_time != nil}
+    end # completed_trips
 
     def average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      completed_trips.each do |trip|
         total_ratings += trip.rating
       end
 
-      if trips.length == 0
+      if completed_trips.length == 0
         average = 0
       else
-        average = (total_ratings.to_f) / trips.length
+        average = (total_ratings.to_f) / completed_trips.length
       end
 
       return average
-    end
+    end # average_rating
 
     def add_trip(trip)
       if trip.class != Trip
@@ -42,6 +49,50 @@ module RideShare
       end
 
       @trips << trip
+    end # add_trip
+
+    def total_revenue
+
+      if self.completed_trips == []
+        return 0
+      else
+        costs = self.completed_trips.map do |trip|
+          if trip.cost < FEE_PER_TRIP
+            0
+          else
+            trip.cost-FEE_PER_TRIP
+          end
+        end
+
+        subtotal = costs.inject(:+)
+        total_revenue = REV_PERCENT*subtotal
+
+        return total_revenue
+      end
+
+    end # total_revenue
+
+    def ave_revenue_per_hour
+      rev = self.total_revenue
+      seconds = @trips.map {|trip| trip.duration}.sum
+      hours = (seconds/60)/60
+      return 0 if hours == 0
+      average = rev/hours
+      return average.round(2)
     end
-  end
-end
+
+    def status_switch
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
+      else
+        @status = :AVAILABLE
+      end
+    end
+
+    def turn_off  # FOR TESTING PURPOSES ONLY
+      @status = :UNAVAILABLE
+    end
+
+
+  end # Class Driver
+end # Module RideShare

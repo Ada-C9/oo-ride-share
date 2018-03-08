@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'awesome_print'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -9,11 +10,18 @@ module RideShare
   class TripDispatcher
     attr_reader :drivers, :passengers, :trips
 
-    def initialize
-      @drivers = load_drivers
-      @passengers = load_passengers
-      @trips = load_trips
-    end
+    def initialize(drivers = [], passengers = [], trips = [])
+      @drivers = drivers
+      @passengers = passengers
+      @trips = trips
+      self.load_everything
+    end # Initialize
+
+    def load_everything
+      @drivers += load_drivers
+      @passengers += load_passengers
+      @trips += load_trips
+    end # load_everything
 
     def load_drivers
       my_file = CSV.open('support/drivers.csv', headers: true)
@@ -36,12 +44,12 @@ module RideShare
       end
 
       return all_drivers
-    end
+    end # load_drivers
 
     def find_driver(id)
       check_id(id)
-      @drivers.find{ |driver| driver.id == id }
-    end
+      @drivers.find {|driver| driver.id == id }
+    end # find_driver
 
     def load_passengers
       passengers = []
@@ -56,12 +64,12 @@ module RideShare
       end
 
       return passengers
-    end
+    end # load_passengers
 
     def find_passenger(id)
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
-    end
+    end # find_passenger
 
     def load_trips
       trips = []
@@ -75,8 +83,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -87,8 +95,69 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
+    end # load_trips
+
+    def next_driver
+      # Array of available drivers
+      all_available = @drivers.find_all do |driver|
+        # Minnie (ID 100) is avail, and no current trips,
+        # but assignment doesnt want us to choose her.
+        driver.trips.length > 0 && driver.status == :AVAILABLE
+      end
+
+      return nil if all_available == []
+
+      last_trips = all_available.map do |driver|
+        driver.trips.min_by do |trip|
+          Time.now - trip.end_time
+        end
+      end
+
+      oldest_trip = last_trips.max_by do |trip|
+        Time.now - trip.end_time
+      end
+
+      chosen_driver = oldest_trip.driver
+
+      return chosen_driver
+    end # next_driver
+
+    def next_id
+      ids = @trips.map {|trip| trip.id}
+      return ids.max + 1
     end
+
+    def request_trip(pass_id)
+
+      id = self.next_id
+      pass = self.find_passenger(pass_id)
+      driver = self.next_driver
+
+      if pass == nil
+        raise ArgumentError.new("Sorry: Unregistred customers cannot request ride.")
+      elsif driver == nil
+        raise ArgumentError.new("Sorry: There are no available drivers right now.")
+      end
+
+      data = {
+        id: id,
+        passenger: pass,
+        driver: driver,
+        start_time: Time.now
+      }
+      new_trip = Trip.new(data)
+
+      pass.add_trip(new_trip)
+      driver.add_trip(new_trip)
+      driver.status_switch
+
+      return new_trip
+    end # request_trip
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end # inspect
 
     private
 
@@ -96,6 +165,7 @@ module RideShare
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
-    end
-  end
-end
+    end # check_id
+
+  end # Class TripDispatcher
+end # Module RideShare

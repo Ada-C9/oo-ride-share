@@ -17,9 +17,9 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
-  end
+  end # Initializer
 
-  describe "find_driver method" do
+  describe "#find_driver" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
@@ -32,9 +32,9 @@ describe "TripDispatcher class" do
       driver = @dispatcher.find_driver(2)
       driver.must_be_kind_of RideShare::Driver
     end
-  end
+  end # find_driver
 
-  describe "find_passenger method" do
+  describe "#find_passenger" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
     end
@@ -47,7 +47,7 @@ describe "TripDispatcher class" do
       passenger = @dispatcher.find_passenger(2)
       passenger.must_be_kind_of RideShare::Passenger
     end
-  end
+  end # find_passenger
 
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
@@ -88,5 +88,92 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+
+    it "uses Time instances for trip start and end times" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      trip = dispatcher.trips.first
+      trip.start_time.must_be_instance_of Time
+
+    end
+  end # loader methods
+
+  describe "#request_trip" do
+
+    it "raises argument error if no id provided" do
+      dispatcher = RideShare::TripDispatcher.new
+      proc {
+        dispatcher.request_trip()
+      }.must_raise ArgumentError
+    end
+
+    it "raises argument error if inappropriate passenger id provided" do
+      dispatcher = RideShare::TripDispatcher.new
+      proc {
+        dispatcher.request_trip(892)
+      }.must_raise ArgumentError
+      proc {
+        dispatcher.request_trip("whatever")
+      }.must_raise ArgumentError
+    end
+
+    it "raises argument error if no drivers are available" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.drivers.each {|driver| driver.turn_off}
+      proc {
+        dispatcher.request_trip(14)
+      }.must_raise ArgumentError
+    end
+
+    it "returns instance of trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(45)
+      result.must_be_instance_of RideShare::Trip
+    end
+
+    it "the returned trip has correct data" do
+      dispatcher = RideShare::TripDispatcher.new
+      pass = dispatcher.find_passenger(32)
+      original_trips = pass.trips.length
+      result = dispatcher.request_trip(32)
+      result.driver.must_be_instance_of RideShare::Driver
+      result.passenger.must_be_instance_of RideShare::Passenger
+      result.passenger.trips.length.must_equal original_trips + 1
+      result.end_time.must_be_nil
+    end
+
+    it "updates the passanger appropriately" do
+      dispatcher = RideShare::TripDispatcher.new
+      pass = dispatcher.find_passenger(24)
+      original_trips = pass.trips.length
+      result = dispatcher.request_trip(24)
+      result.passenger.trips.length.must_equal original_trips + 1
+    end
+
+    it "updates the driver appropriately" do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(98)
+      result.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "assigns the driver who's last trip was the longest time ago" do
+      dispatcher = RideShare::TripDispatcher.new
+      result = dispatcher.request_trip(53)
+      result.driver.id.must_equal 14
+      result.driver.name.must_equal "Antwan Prosacco"
+      second_result = dispatcher.request_trip(23)
+      second_result.driver.id.must_equal 27
+      second_result.driver.name.must_equal "Nicholas Larkin"
+      third_result = dispatcher.request_trip(15)
+      third_result.driver.id.must_equal 6
+      third_result.driver.name.must_equal "Mr. Hyman Wolf"
+      fourth_result = dispatcher.request_trip(8)
+      fourth_result.driver.id.must_equal 87
+      fourth_result.driver.name.must_equal "Jannie Lubowitz"
+      fifth_result = dispatcher.request_trip(34)
+      fifth_result.driver.id.must_equal 75
+      fifth_result.driver.name.must_equal "Mohammed Barrows"
+    end
+
+  end # Describbe #request_trip
+end  # Describe TripDispatcher class

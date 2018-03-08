@@ -38,5 +38,40 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
-  end
-end
+
+    it "raises an error for invalid start/end times" do
+      proc {
+        RideShare::Trip.new({
+          id: 8,
+          start_time: Time.parse('2015-05-20T12:14:00+00:00') + 25 * 60,
+          end_time: Time.parse('2015-05-20T12:14:00+00:00'),
+          rating: 3
+        })
+      }.must_raise
+    end
+
+  end # Describe initialize
+
+  describe "#duration" do
+
+    it "returns duration in seconds (float)" do
+      trip = RideShare::Trip.new({
+        id: 8,
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T12:14:00+00:00') + 25 * 60,
+        rating: 3
+      })
+      expected_duration = 1500
+      result = trip.duration
+      result.must_equal expected_duration
+
+    end
+
+    it "returns zero if no start or end time provided" do
+
+    end
+
+
+  end # Describe #duration
+
+end # Describe Trip Class
