@@ -154,7 +154,7 @@ module RideShare
       last_trip_end_time = all_last_trips[0].end_time #instance of time
 
       count = 0
-
+      
       all_last_trips.length.times do
         if all_last_trips[count].end_time < last_trip_end_time
           last_trip_end_time = all_last_trips[count].end_time
