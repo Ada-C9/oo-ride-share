@@ -96,6 +96,8 @@ module RideShare
       }
 
         trip = Trip.new(requested_trip)
+        available_driver.add_trip(trip)
+        passenger.add_trip(trip)
         @trips.push(trip)
         return trip
 
