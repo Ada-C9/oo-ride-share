@@ -77,4 +77,40 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue" do
+    it "Should create a kind of float " do
+      tripss = []
+      trip1 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3, cost: 5)
+      trip2 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:05:00 +0000"), rating: 3, cost: 7)
+      tripss << trip1
+      tripss << trip2
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: tripss)
+      driver.total_revenue.must_be_kind_of Float
+      driver.total_revenue.must_equal (((5 - 1.65) + (7 - 1.65))* 0.8)
+    end
+  end
+
+  describe "average_revenue_hour" do
+    it "Should return a Float" do
+      tripss = []
+      trip1 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3, cost: 5)
+      trip2 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:05:00 +0000"), rating: 3, cost: 7)
+      tripss << trip1
+      tripss << trip2
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ", trips: tripss)
+      driver.average_revenue_hour.must_be_kind_of Float
+      driver.average_revenue_hour.must_equal  83.52
+      #(((5 - 1.65) + (7 - 1.65))* 0.8 / (5 / 60 ))
+
+    end
+  end
+
+  describe "change_driver_status" do
+    it "should change the drivers status" do
+      ddriver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133", status: :AVAILABLE)
+      ddriver.change_driver_status.must_equal :UNAVAILABLE
+    end
+  end
+
 end

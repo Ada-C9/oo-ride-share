@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require "time"
 
 describe "Passenger class" do
 
@@ -74,5 +75,45 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end
+
+
+  describe "total_money_spent" do
+
+    it "should sum all cost of trips" do
+      ## it is failing because I added the unles end time is nil
+      tripss = []
+      trip1 = RideShare::Trip.new(cost: 5.to_f, start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3)
+      trip2 = RideShare::Trip.new(cost: nil)
+      tripss << trip1
+      tripss << trip2
+      trip = RideShare::Passenger.new(id: 3, trips: tripss)
+      trip.total_money_spent.must_equal 5
+    end
+  end
+
+
+  describe "total time spent in trips" do
+    it "should return a type of float" do
+      tripss = []
+      trip1 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3)
+      trip2 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:05:00 +0000"), rating: 3)
+      tripss << trip1
+      tripss << trip2
+      trip = RideShare::Passenger.new(id: 9, trips: tripss)
+      trip.total_time_spent.must_be_kind_of Float
+    end
+
+    it "should return a total of 300" do
+      tripss = []
+      trip1 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:02:00 +0000"), rating: 3)
+      trip2 = RideShare::Trip.new(start_time: Time.parse("2016-04-05 14:01:00 +0000"), end_time: Time.parse("2016-04-05 14:05:00 +0000"), rating: 3)
+      tripss << trip1
+      tripss << trip2
+      trip = RideShare::Passenger.new(id: 9, trips: tripss)
+      trip.total_time_spent.must_equal 300.0
+    end
+
+  
   end
 end

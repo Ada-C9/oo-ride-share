@@ -82,11 +82,100 @@ describe "TripDispatcher class" do
       trip = dispatcher.trips.first
       driver = trip.driver
       passenger = trip.passenger
-
+      
       driver.must_be_instance_of RideShare::Driver
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
   end
+
+describe "available_drivers" do
+
+  it "Should return status available to any driver" do
+    available = RideShare::TripDispatcher.new
+    available.available_drivers.sample.status.must_equal :AVAILABLE
+  end
+end
+
+  describe "request_trip" do
+
+    it "The driver must become unavailable after trip is requested " do
+      trip = RideShare::TripDispatcher.new
+      trip.request_trip(3).driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "passanger must be a passanger in the passanger array" do
+      trip = RideShare::TripDispatcher.new
+      trip.request_trip(3).passenger.id.must_equal 3
+    end
+
+    it "should return nil for end time, cost and rating" do
+      trip = RideShare::TripDispatcher.new
+      trip.request_trip(3).end_time.must_be_nil
+      trip.request_trip(3).cost.must_be_nil
+      trip.request_trip(3).rating.must_be_nil
+    end
+
+    it "Should create an integer id for the new trip" do
+      trip = RideShare::TripDispatcher.new
+      trip.request_trip(3).id.must_be_kind_of Integer
+    end
+
+    it "New trip is added to trips instance variable" do
+      trip = RideShare::TripDispatcher.new
+      id_to_test = trip.request_trip(3).id
+      ids = []
+      trip.trips.each do |trip|
+        id = trip.id
+        ids << id
+      end
+      ids.include?(id_to_test).must_equal true
+    end
+
+    it "New trip is added to drivers trip" do
+      trip = RideShare::TripDispatcher.new
+      new_trip = trip.request_trip(3)
+      ids = []
+      new_trip.driver.trips.each do |trip|
+        id = trip.id
+        ids << id
+      end
+      ids.include?(new_trip.id).must_equal true
+    end
+
+    it "New trip is added to passanger trip" do
+      trip = RideShare::TripDispatcher.new
+      new_trip = trip.request_trip(3)
+      ids = []
+      new_trip.passenger.trips.each do |trip|
+        id = trip.id
+        ids << id
+      end
+      ids.include?(new_trip.id).must_equal true
+    end
+
+    it "Should raise an argument error if there are no available drivers for the new trip." do
+      trip = RideShare::TripDispatcher.new
+      trip.drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          driver.status = :UNAVAILABLE
+        end
+      end
+      proc {trip.request_trip(3)}.must_raise ArgumentError
+    end
+  end
+
+  describe "driver_longest_not_driving" do
+    it "should return first the driver with longest not working and so on" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.request_trip(3).driver.id.must_equal 14
+      dispatcher.request_trip(2).driver.id.must_equal 27
+      dispatcher.request_trip(1).driver.id.must_equal 6
+      dispatcher.request_trip(1).driver.id.must_equal 87
+      dispatcher.request_trip(1).driver.id.must_equal 75
+    end
+  end
+
+
 end

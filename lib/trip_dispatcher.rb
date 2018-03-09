@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require "pry"
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,8 +76,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +89,97 @@ module RideShare
       end
 
       trips
+    end
+
+    def self.split_date_time(datetime)
+      #puts datetime.split("T")
+      puts Time.parse(datetime)
+    end
+
+    def available_drivers
+      available_drivers = []
+      @drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          available_drivers << driver
+        end
+      end
+      return available_drivers
+    end
+
+    def driver_longest_not_driving
+      drivers_lasttrip_endtime = []
+
+      available_drivers.each do |driver|
+        driver_trips_endingtime = []
+
+        driver.trips.each do |trip|
+          unless trip.end_time == nil
+            driver_trips_endingtime << trip.end_time
+          end
+        end
+
+        unless driver_trips_endingtime == []
+          the_trip = driver_trips_endingtime.sort.last
+          d = {
+            id: driver.id,
+            last_trip_end: the_trip
+          }
+          drivers_lasttrip_endtime << d
+        end
+      end
+      if drivers_lasttrip_endtime == []
+        return nil
+      end
+
+      least_recent_last_trip = drivers_lasttrip_endtime.first[:last_trip_end]
+      the_driver = drivers_lasttrip_endtime.first[:id]
+      drivers_lasttrip_endtime.each do |driver|
+        if driver[:last_trip_end] < least_recent_last_trip
+          least_recent_last_trip = driver[:last_trip_end]
+          the_driver = driver[:id]
+        end
+      end
+      return find_driver(the_driver)
+    end
+
+    def trip_id_creator
+      ids = []
+      @trips.each do |trip|
+        id = trip.id
+        ids << id
+      end
+      new_id = (ids.sort.last + 1)
+      return  new_id
+    end
+
+
+
+
+    def request_trip(passenger_id)
+      trip = {
+        id: trip_id_creator,
+        driver: driver_longest_not_driving,
+        passenger: find_passenger(passenger_id),
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      if trip[:driver] == nil
+        raise ArgumentError.new("We cannot request a new trip, there are no available drivers")
+      end
+      request = Trip.new(trip)
+      request.driver.change_driver_status
+      request.passenger.add_trip(request)
+      request.driver.add_trip(request)
+      @trips << request
+      return request
+    end
+
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
