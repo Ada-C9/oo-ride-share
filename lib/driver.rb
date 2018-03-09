@@ -1,9 +1,11 @@
 require 'csv'
 require_relative 'trip'
+# require_relative 'passenger' #take this out later
+require 'time'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :status, :trips, :total
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -17,8 +19,8 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
+
     end
 
     def average_rating
@@ -43,5 +45,49 @@ module RideShare
 
       @trips << trip
     end
+
+    def trip_in_progress(trip) #can I change status in a different method and just use add trip for in progress trips
+      @status = :UNAVAILABLE
+      @trips << trip
+    end
+
+    def total_revenue
+      fee = 1.65
+      driver_percent = 0.8
+      subtotal = 0
+
+      finished_trips = @trips.select{ |trip| trip.end_time != nil }
+      finished_trips.each do |trip|
+        subtotal += trip.cost - fee
+      end
+
+      total = subtotal * driver_percent
+      return total
+    end
+
+    def average_revenue_per_hour
+      revenue = self.total_revenue
+      total_drive_time = self.total_drive_time_hours
+
+      average_revenue_per_hour = (revenue / total_drive_time)
+      return average_revenue_per_hour
+    end
+
+    def total_drive_time_seconds
+      total_drive_time_seconds = 0
+
+      finished_trips = @trips.select{ |trip| trip.end_time != nil }
+      finished_trips.each do |trip|
+        total_drive_time_seconds += trip.calculate_duration
+      end
+      return total_drive_time_seconds
+    end
+
+    def total_drive_time_hours
+      total_drive_time_minutes = self.total_drive_time_seconds / 60
+      total_drive_time_hours = total_drive_time_minutes / 60
+      return total_drive_time_hours
+    end
+
   end
 end

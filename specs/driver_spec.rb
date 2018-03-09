@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Driver class" do
 
@@ -41,7 +42,9 @@ describe "Driver class" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, date: "2016-08-08", rating: 5})
+      start_time = Time.parse("2016-04-05T14:01:00+00:00")
+      end_time = Time.parse("2016-04-05T14:05:00+00:00")
+      @trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: pass, start_time: start_time, end_time: end_time, rating: 5})
     end
 
     it "throws an argument error if trip is not provided" do
@@ -55,10 +58,16 @@ describe "Driver class" do
     end
   end
 
+  describe "trip_in_progress method" do
+
+  end
+
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      start_time = Time.parse("2016-04-05T14:01:00+00:00")
+      end_time = Time.parse("2016-04-05T14:05:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
     end
 
@@ -77,4 +86,80 @@ describe "Driver class" do
       driver.average_rating.must_equal 0
     end
   end
+
+  describe "total_revenue" do
+    it "accurately returns total revenue for 3 trips" do
+      start_time = Time.parse("2016-04-05T14:01:00+00:00")
+      end_time = Time.parse("2016-04-05T14:05:00+00:00")
+
+      trips = [
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time})
+      ]
+      driver_data = {
+        id: 7,
+        vin: "e1e1e1e1e1e1e1e1e",
+        name: 'Speed Racer',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(driver_data)
+      driver.total_revenue.must_equal(20.04)
+    end
+
+    it "does not include unfinished trips in the total" do
+      start_time = Time.parse("2016-04-05T14:01:00+00:00")
+      end_time = Time.parse("2016-04-05T14:05:00+00:00")
+
+      trips = [
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost: 10.00, rating: 3, start_time: start_time, end_time: end_time}),
+        RideShare::Trip.new({cost: nil, rating: 3, start_time: start_time, end_time: nil})
+      ]
+      driver_data = {
+        id: 7,
+        vin: "e1e1e1e1e1e1e1e1e",
+        name: 'Speed Racer',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(driver_data)
+      driver.total_revenue.must_equal(13.36)
+    end
+  end
+
+  describe "total_drive_time_hours" do
+    it "accurately returns total drive time for a driver in hours" do
+      trips = [
+        RideShare::Trip.new({cost: 10.00, rating: 3,start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T16:01:00+00:00")})
+      ]
+      driver_data = {
+        id: 7,
+        vin: "e1e1e1e1e1e1e1e1e",
+        name: 'Speed Racer',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(driver_data)
+      driver.total_drive_time_hours.must_equal(2.0)
+    end
+
+    it "does not include unfinished trips in the total drive time calcuation" do
+      trips = [
+        RideShare::Trip.new({cost: 10.00, rating: 3,start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T16:01:00+00:00")}),
+        RideShare::Trip.new({cost: nil, rating: 3,start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: nil})
+      ]
+      driver_data = {
+        id: 7,
+        vin: "e1e1e1e1e1e1e1e1e",
+        name: 'Speed Racer',
+        trips: trips
+      }
+
+      driver = RideShare::Driver.new(driver_data)
+      driver.total_drive_time_hours.must_equal(2.0)
+    end
+  end
+
 end

@@ -89,4 +89,75 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "find_available_driver" do
+    it "returns the first available driver from @drivers" do
+      @dispatcher = RideShare::TripDispatcher.new
+      driver = @dispatcher.find_available_driver
+      driver.must_be_instance_of(RideShare::Driver)
+      driver.status.must_equal(:AVAILABLE)
+      driver.name.must_equal("Antwan Prosacco")
+    end
+
+    it "raises an error when there are no available drivers" do
+      @dispatcher = RideShare::TripDispatcher.new
+      @dispatcher.drivers.clear
+      proc {
+        @dispatcher.find_available_driver
+      }.must_raise ArgumentError
+    end
+  end
+
+  describe "request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "creates a new instance of Trip" do
+      result = @dispatcher.request_trip(1)
+      result.must_be_instance_of(RideShare::Trip)
+    end
+
+    it "creates an id for trip (trip.id) accurately" do
+      existing_number_of_trips = @dispatcher.trips.length
+      new_trip = @dispatcher.request_trip(55)
+      new_trip.id.must_equal(existing_number_of_trips + 1)
+    end
+
+    it "increments the driver's trips by 1" do
+      driver = @dispatcher.find_available_driver
+      starting_driver_trip_count = driver.trips.length
+      new_request = @dispatcher.request_trip(1)
+      ending_driver_trip_count = driver.trips.length
+      ending_driver_trip_count.must_equal(starting_driver_trip_count + 1)
+    end
+
+    it "increments the passenger's trips by 1" do
+      passenger_id = 298
+      passenger = @dispatcher.find_passenger(passenger_id)
+      starting_ride_count = passenger.trips.length
+
+      new_request = @dispatcher.request_trip(passenger_id)
+      ending_ride_count = new_request.passenger.trips.length
+      ending_ride_count.must_equal(starting_ride_count + 1)
+    end
+
+    it "accurately assigns trips to the available drivers who have not driven in the longest time" do
+      requested_trip_1 = @dispatcher.request_trip(1)
+      requested_trip_1.driver.name.must_equal("Antwan Prosacco")
+
+      requested_trip_2 = @dispatcher.request_trip(99)
+      requested_trip_2.driver.name.must_equal("Nicholas Larkin")
+
+      requested_trip_3 = @dispatcher.request_trip(23)
+      requested_trip_3.driver.name.must_equal("Mr. Hyman Wolf")
+
+      requested_trip_4 = @dispatcher.request_trip(45)
+      requested_trip_4.driver.name.must_equal("Jannie Lubowitz")
+
+      requested_trip_5 = @dispatcher.request_trip(64)
+      requested_trip_5.driver.name.must_equal("Mohammed Barrows")
+    end
+  end
+
 end
