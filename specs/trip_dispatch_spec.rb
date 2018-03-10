@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -52,7 +53,6 @@ describe "TripDispatcher class" do
   describe "loader methods" do
     it "accurately loads driver information into drivers array" do
       dispatcher = RideShare::TripDispatcher.new
-
       first_driver = dispatcher.drivers.first
       last_driver = dispatcher.drivers.last
 
@@ -88,5 +88,51 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+  end
+
+  describe "request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "makes new trips and assigns a driver and passenger" do
+      new_ride = @dispatcher.request_trip(2)
+      new_ride.must_be_instance_of RideShare::Trip
+      new_ride.passenger.must_equal 2
+
+    end
+
+    it "updates driver trip info" do
+      new_ride = @dispatcher.request_trip(2)
+      driver = new_ride.driver
+      trips = @dispatcher.find_driver(driver).trips
+      trips.must_include new_ride
+    end
+
+    it "updates passenger trip info" do
+      before = @dispatcher.find_passenger(2).trips.length
+      new_ride = @dispatcher.request_trip(2)
+      passenger = new_ride.passenger
+
+      after = @dispatcher.find_passenger(passenger).trips.length
+      after.must_equal before + 1
+    end
+
+    it "finds driver that is :AVAILABLE" do
+      driver_id = @dispatcher.find_available
+      @dispatcher.find_driver(driver_id).status.must_equal :AVAILABLE
+    end
+
+    it "returns argument error if no drivers available" do
+      available_drivers = @dispatcher.drivers.find_all { |driver| driver.status == :AVAILABLE }.length
+
+      available_drivers.times do
+        new_ride = @dispatcher.request_trip(2)
+      end
+
+      proc { new_ride = @dispatcher.request_trip(2) }.must_raise ArgumentError
+
+    end
+
   end
 end
