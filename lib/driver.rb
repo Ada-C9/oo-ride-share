@@ -42,6 +42,22 @@ module RideShare
       end
 
       @trips << trip
+
+    end
+
+    DRIVERS_CUT = 0.80
+    FEE = 1.65
+
+    def total_revenue
+      total_revenue = 0
+      @trips.each { |trip|
+        total_revenue += DRIVERS_CUT * (trip.cost - FEE) }
+      return total_revenue.round(2)
+    end
+
+    def average_revenue
+      average_revenue = total_revenue / @trips.length
+      return average_revenue
     end
   end
 end

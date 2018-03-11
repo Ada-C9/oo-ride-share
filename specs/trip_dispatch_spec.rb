@@ -87,6 +87,31 @@ describe "TripDispatcher class" do
       driver.trips.must_include trip
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
+
+      trip.start_time.must_be_instance_of Time
+      trip.end_time.must_be_instance_of Time
+
     end
   end
+
+  describe "generate_available_drivers method" do
+    it "finds all available drivers" do
+
+    end
+  end
+
+  describe "first_available_driver method" do
+    it "lists the first available driver" do
+
+    end
+  end
+
+
+  describe "request_trip methods" do
+    it "accurately requests a trip" do
+
+    end
+  end
+
+
 end
