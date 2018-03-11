@@ -90,3 +90,18 @@ describe "TripDispatcher class" do
     end
   end
 end
+
+
+describe "request_trip method" do
+  it "returns a trip" do
+    dispatcher = RideShare::TripDispatcher.new
+    passenger = 4
+    dispatcher.request_trip(passenger).must_be_instance_of RideShare::Trip
+  end
+end
+
+describe "add_requested_trip method" do
+  it "adds new trip to trips array" do
+
+  end
+end

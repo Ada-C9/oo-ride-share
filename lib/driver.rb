@@ -21,6 +21,21 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
+    def driver_status_change(status)
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
+      end
+      return @status
+    end
+
+    # def add_customer_trip
+    #   @trips.each do |ride|
+    #     if ride.driver == @id
+    #       @trips << ride
+    #     end
+    #   end
+    # end
+
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
@@ -43,5 +58,23 @@ module RideShare
 
       @trips << trip
     end
+
+    def total_revenue
+      total_earnings = 0
+
+      @trips.each do |ride|
+        fee = 1.65
+        driver_earnings = 0.8
+        subtotal = ride.cost - fee
+        total_earnings += subtotal * driver_earnings
+      end
+      return total_earnings.to_f
+    end
+
+    def avg_hourly_pay
+      avg_pay = total_revenue / @trips.length
+      return avg_pay
+    end
+
   end
 end
