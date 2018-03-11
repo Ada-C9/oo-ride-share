@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -88,5 +89,40 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+  end# loader method
+
+  describe 'request_trip' do
+    it 'locates a driver whose status is AVAILABLE' do
+      # Arrange
+      dispatcher = RideShare::TripDispatcher.new
+      passenger_id = 1
+
+      data = {
+        start_time: Time.now,
+        rating: nil,
+        end_time: nil
+      }
+
+      # Act
+      new_request = dispatcher.request_trip(passenger_id)
+      # Assert
+      new_request.must_be_instance_of RideShare::Trip
+      new_request.driver.status.must_equal :UNAVAILABLE
+      new_request.driver.trips.must_include new_request
+      new_request.passenger.trips.must_include new_request
+
+    end # driver AVAILABLE
+
+    it "raises an ArgumentError if passenger_id is not found" do
+      dispatcher = RideShare::TripDispatcher.new
+      passenger_id = dispatcher.passengers.last.id + 1
+
+      proc {
+        dispatcher.request_trip(passenger_id)
+      }.must_raise ArgumentError
+
+    end
+
+  end # request_trip method
+
+end # TripDispatcher

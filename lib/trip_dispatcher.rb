@@ -4,6 +4,7 @@ require 'time'
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class TripDispatcher
@@ -64,12 +65,15 @@ module RideShare
     end
 
     def load_trips
+
       trips = []
       trip_data = CSV.open('support/trips.csv', 'r', headers: true, header_converters: :symbol)
 
       trip_data.each do |raw_trip|
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
+        start_time = Time.parse(raw_trip[:start_time])
+        end_time = Time.parse(raw_trip[:end_time])
 
         parsed_trip = {
           id: raw_trip[:id].to_i,
@@ -87,7 +91,39 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
+    end
+
+    def request_trip(passenger_id)
+      # assign a driver to the trip
+      # driver must be the first driver with the status :AVAILABLE
+      passenger = find_passenger(passenger_id)
+      raise ArgumentError.new("Passenger does not exist") if passenger == nil
+
+      driver = drivers.find{  |d| d.status == :AVAILABLE} #returns 1st driver
+    
+      trip = {
+        passenger: passenger ,
+        id: trips.last.id + 1,
+        driver: driver,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      request_trip = Trip.new(trip)
+
+
+      request_trip.driver.change_status
+      driver.add_trip(request_trip)
+      passenger.add_trip(request_trip)
+      @trips << request_trip
+      return request_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
@@ -96,6 +132,8 @@ module RideShare
       if id == nil || id <= 0
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
-    end
-  end
-end
+    end #check_id
+
+
+  end # class
+end # module

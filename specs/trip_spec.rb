@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
-
+gem 'minitest', '>= 5.0.0'
+require 'minitest/pride'
 describe "Trip class" do
 
   describe "initialize" do
@@ -16,6 +17,22 @@ describe "Trip class" do
         rating: 3
       }
       @trip = RideShare::Trip.new(@trip_data)
+    end
+
+    it "raises and ArgumentError if end_time is before start_time" do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T13:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        cost: 23.45,
+        rating: 3
+      }
+
+    proc {
+      RideShare::Trip.new(@trip_data)
+    }.must_raise ArgumentError
     end
 
     it "is an instance of Trip" do
@@ -38,5 +55,21 @@ describe "Trip class" do
         }.must_raise ArgumentError
       end
     end
+  end # initialize
+  describe '#duration' do
+
+    it "Calculates the duration of the ride in seconds" do
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+        end_time: Time.parse('2015-05-20T13:14:00+00:00'),
+        cost: 23.45,
+        rating: 3
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+      @trip.duration.must_equal 3600
+    end
   end
-end
+end #Trip class
