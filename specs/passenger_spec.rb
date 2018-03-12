@@ -12,7 +12,7 @@ describe "Passenger class" do
     end
 
     it "throws an argument error with a bad ID value" do
-      proc{ RideShare::Passenger.new(id: 0, name: "Smithy")}.must_raise ArgumentError
+      proc { RideShare::Passenger.new(id: 0, name: "Smithy") }.must_raise ArgumentError
     end
 
     it "sets trips to an empty array if not provided" do
@@ -32,11 +32,10 @@ describe "Passenger class" do
     end
   end
 
-
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: nil, end_time: nil, rating: nil})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +57,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: nil, end_time: nil, rating: nil})
 
       @passenger.add_trip(trip)
     end
@@ -73,6 +72,109 @@ describe "Passenger class" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
       end
+    end
+  end
+
+  describe "add trip method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      @trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: Time.parse("2016-04-05T14:09:00+00:00"), rating: 5})
+    end
+
+    it "raises an argument error if trip is not provided" do
+      proc{ @passenger.add_trip(1) }.must_raise ArgumentError
+    end
+
+    it "increases the trip count by one" do
+      previous_count = @passenger.trips.length
+      @passenger.add_trip(@trip)
+      @passenger.trips.length.must_equal previous_count + 1
+    end
+  end
+
+  describe "total_cost method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+    end
+
+    it "returns a number" do
+      @passenger.total_cost.must_be_kind_of Numeric
+    end
+
+    it "returns zero if the passenger has no trips" do
+      @passenger.total_cost.must_equal 0
+    end
+
+    it "returns the sum cost of the passenger's trips" do
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:14:10+00:00'), cost: 10.15, rating: 3})
+      trip_2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2015-05-20T12:14:00+00:00'), end_time: Time.parse('2015-05-20T12:14:08+00:00'), cost: 7, rating: 5})
+      @passenger.add_trip(trip_1)
+      @passenger.add_trip(trip_2)
+
+      @passenger.total_cost.must_equal 17.15
+    end
+  end
+
+  describe "total_time method" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+    end
+
+    it "returns a number" do
+      @passenger.total_time.must_be_kind_of Numeric
+    end
+
+    it "returns zero if the passenger has no completed trips" do
+      @passenger.total_time.must_equal 0
+
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse("2016-04-05T14:01:00+00:00"), end_time: nil, cost: nil, rating: nil})
+      @passenger.add_trip(trip_1)
+      @passenger.total_time.must_equal 0
+    end
+
+    it "returns the sum duration of the passenger's completed trips" do
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      trip_1_start = Time.parse("2016-04-05T14:01:00+00:00")
+      trip_1_end = trip_1_start + 8 * 60  #8 minutes later
+      trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: trip_1_start, end_time: trip_1_end, cost: 10.00, rating: 3})
+      trip_2_start = Time.parse("2016-01-13T13:16:00+00:00")
+      trip_2_end = trip_2_start + 12 * 60   #12 minutes later
+      trip_2 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: trip_2_start, end_time: trip_2_end, cost: 15.00, rating: 5})
+
+      @passenger.add_trip(trip_1)
+      @passenger.total_time.must_equal 480
+
+      @passenger.add_trip(trip_2)
+      @passenger.total_time.must_equal 1200
+    end
+  end
+
+  describe "completed_trips method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @passenger_1 = @dispatcher.find_passenger(1)
+    end
+
+    it "returns an array of trips" do
+      @passenger_1.completed_trips.must_be_kind_of Array
+      @passenger_1.completed_trips.each do |trip|
+        trip.must_be_instance_of RideShare::Trip
+      end
+    end
+
+    it "does not include incomplete trips" do
+      new_trip = @dispatcher.request_trip(1)
+      @passenger_1.trips.must_include new_trip
+      @passenger_1.completed_trips.wont_include new_trip
+    end
+
+    it "returns an empty array if the passenger has no trips" do
+      new_passenger = RideShare::Passenger.new(id: 301, name: "Caroline Nardi", phone: "1-602-620-2330")
+      new_passenger.completed_trips.must_be_kind_of Array
+      new_passenger.completed_trips.must_be_empty
     end
   end
 end

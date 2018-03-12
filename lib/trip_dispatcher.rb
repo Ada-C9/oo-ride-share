@@ -58,7 +58,7 @@ module RideShare
       return passengers
     end
 
-    def find_passenger(id)
+    def find_passenger(id) # will return nil if a passenger was not found
       check_id(id)
       @passengers.find{ |passenger| passenger.id == id }
     end
@@ -75,8 +75,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -87,7 +87,72 @@ module RideShare
         trips << trip
       end
 
-      trips
+      return trips
+    end
+
+    def request_trip(passenger_id)
+
+      if find_passenger(passenger_id).nil?
+        raise ArgumentError.new("A trip can only be requested for an existing customer.")
+      end
+
+      new_trip_data = {
+        id: new_trip_id,
+        passenger: find_passenger(passenger_id),
+        driver: select_driver,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = Trip.new(new_trip_data)
+
+      @trips << new_trip
+      new_trip.driver.add_trip(new_trip)
+      new_trip.passenger.add_trip(new_trip)
+
+      new_trip.driver.change_status
+
+      return new_trip
+    end
+
+    def new_trip_id
+      @trips.map { |trip| trip.id }.max + 1
+    end
+
+    def available_drivers
+      available_drivers = @drivers.select do |driver|
+        driver.status == :AVAILABLE && driver.trips.length > 0
+      end
+
+      if available_drivers.nil?
+        raise StandardError.new("There are no availabe drivers at this time. A trip cannot be requested.")
+      end
+
+      return available_drivers
+    end
+
+    def most_recent_trip_by_driver
+      most_recent_trip_by_driver = available_drivers.map do |driver|
+        driver.trips.max_by do |trip|
+          trip.end_time
+        end
+      end
+
+      return most_recent_trip_by_driver
+    end
+
+    def select_driver
+      most_distant_trip = most_recent_trip_by_driver.min_by do |trip|
+        trip.end_time
+      end
+
+      return most_distant_trip.driver
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

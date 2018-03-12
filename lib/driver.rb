@@ -1,5 +1,4 @@
 require 'csv'
-require_relative 'trip'
 
 module RideShare
   class Driver
@@ -21,19 +20,12 @@ module RideShare
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def average_rating
-      total_ratings = 0
-      @trips.each do |trip|
-        total_ratings += trip.rating
-      end
-
-      if trips.length == 0
-        average = 0
+    def change_status
+      if @status == :AVAILABLE
+        @status = :UNAVAILABLE
       else
-        average = (total_ratings.to_f) / trips.length
+        @status = :AVAILABLE
       end
-
-      return average
     end
 
     def add_trip(trip)
@@ -42,6 +34,54 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def average_rating
+      sum_ratings = completed_trips.map { |trip| trip.rating }.reduce(0,:+)
+
+      if completed_trips.empty?
+        average = 0
+      else
+        average = (sum_ratings.to_f) / completed_trips.length
+      end
+
+      return average
+    end
+
+    def total_revenue
+      trip_fee = 1.65
+      driver_share = 0.8
+
+      total_revenue = 0
+
+      # does not apply trip fee if cost of trip is <= trip fee
+      completed_trips.each do |trip|
+        if trip_fee > trip.cost
+          total_revenue += trip.cost * driver_share
+        else
+          total_revenue += (trip.cost - trip_fee) * driver_share
+        end
+      end
+
+      return total_revenue
+    end
+
+    def total_time
+      completed_trips.map { |trip| trip.duration }.reduce(0,:+)
+    end
+
+    def revenue_per_hour
+      return 0 if completed_trips.empty? || total_time == 0
+
+      seconds_per_hour = 3600.0
+      total_revenue_hrs = total_time / seconds_per_hour
+      revenue_per_hour = total_revenue / total_revenue_hrs
+
+      return revenue_per_hour
+    end
+
+    def completed_trips
+      @trips.select { |trip| trip.is_finished? }
     end
   end
 end

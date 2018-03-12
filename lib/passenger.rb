@@ -14,11 +14,27 @@ module RideShare
     end
 
     def get_drivers
-      @trips.map{ |t| t.driver }
+      @trips.map{ |trip| trip.driver }
     end
 
     def add_trip(trip)
+      if trip.class != Trip
+        raise ArgumentError.new("Can only add trip instance to trip collection")
+      end
+
       @trips << trip
+    end
+
+    def total_cost
+      completed_trips.map { |trip| trip.cost }.reduce(0,:+)
+    end
+
+    def total_time
+      completed_trips.map { |trip| trip.duration }.reduce(0,:+)
+    end
+
+    def completed_trips
+      @trips.select { |trip| trip.is_finished? }
     end
   end
 end
