@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'time'
 
 describe "Trip class" do
 
@@ -13,7 +14,7 @@ describe "Trip class" do
         start_time: start_time,
         end_time: end_time,
         cost: 23.45,
-        rating: 3
+        rating: 3,
       }
       @trip = RideShare::Trip.new(@trip_data)
     end
@@ -37,6 +38,32 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
+    end
+
+    it "Raises an exception if a trip's end time is before its start time." do
+      @trip_data[:start_time] = '2016-04-05T14:09:00+00:00'
+      @trip_data[:end_time] = '2016-04-05T14:01:00+00:00'
+      proc {
+        RideShare::Trip.new(@trip_data)
+      }.must_raise ArgumentError
+    end
+  end
+
+  describe "#calculate_duration" do
+    it "calculates the duration of the trip in seconds" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      @trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3,
+      }
+      @trip = RideShare::Trip.new(@trip_data)
+      @trip.calculate_duration.must_equal 1500
     end
   end
 end

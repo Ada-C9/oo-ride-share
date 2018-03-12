@@ -89,4 +89,80 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+  describe "find_available_drivers" do
+    it "returns an array of all drivers that are available" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.find_available_drivers.each do |driver|
+        driver.status.must_equal :AVAILABLE
+      end
+      dispatcher.find_available_drivers.must_be_kind_of Array
+    end
+  end
+  describe "select_driver" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "will not return a driver with a trip already in progress" do
+      @dispatcher.select_driver.trips.each do |trip|
+        trip.end_time.wont_be_nil
+      end
+    end
+  end
+
+  describe "request_trip" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @new_trip = @dispatcher.request_trip(25)
+    end
+
+    it "creates a new trip instance" do
+      @new_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "raises argument error if no drivers are available" do
+      @dispatcher.drivers.each do |driver|
+        driver.turn_unavailable
+      end
+      proc{ @dispatcher.request_trip(25) }.must_raise ArgumentError
+    end
+
+    it "Changes the driver's status to unavailable" do
+      @new_trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "sets the current time as the start_time" do
+      @new_trip.start_time.wont_be_nil
+      @new_trip.start_time.must_be_instance_of Time
+    end
+
+    it "sets the end_time, cost, and rating to nil" do
+      @new_trip.end_time.must_be_nil
+      @new_trip.cost.must_be_nil
+      @new_trip.rating.must_be_nil
+    end
+
+    it "updates the driver's trip list" do
+      @new_trip.driver.trips.must_include @new_trip
+    end
+
+    it "updates the passenger's trip list" do
+      @new_trip.passenger.trips.must_include @new_trip
+    end
+
+    it "updates the total trips" do
+      @dispatcher.trips.must_include @new_trip
+    end
+    it "assigns the driver who's last trip was the longest time ago" do
+      first_result = @dispatcher.request_trip(25)
+      first_result.driver.name.must_equal "Minnie Dach"
+      second_result = @dispatcher.request_trip(43)
+      second_result.driver.name.must_equal "Antwan Prosacco"
+      third_result = @dispatcher.request_trip(1)
+      third_result.driver.name.must_equal "Nicholas Larkin"
+      fourth_result = @dispatcher.request_trip(19)
+      fifth_result = @dispatcher.request_trip(30)
+      fifth_result.driver.name.must_equal "Jannie Lubowitz"
+    end
+  end
 end

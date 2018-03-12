@@ -43,5 +43,34 @@ module RideShare
 
       @trips << trip
     end
+
+    def calculate_driver_revenue
+      fee = 1.65
+      driver_takehome = 0.8
+
+      subtotal = 0
+      @trips.each do |trip|
+        subtotal += trip.cost - fee
+      end
+      total = subtotal * driver_takehome
+      return total
+    end
+
+    def calculate_driver_average_revenue
+      return calculate_driver_revenue / @trips.length
+    end
+
+    def change_driver_status
+      if status == :AVAILABLE
+        status = :UNAVAILABLE
+      else
+        status = :AVAILABLE
+      end
+    end
+
+    def turn_unavailable
+      @status = :UNAVAILABLE
+    end
+
   end
 end
