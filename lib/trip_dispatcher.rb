@@ -75,19 +75,93 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
 
         trip = Trip.new(parsed_trip)
+
+        # set up relations
         driver.add_trip(trip)
         passenger.add_trip(trip)
         trips << trip
       end
 
-      trips
+      return trips
+    end
+
+    # helper method to calculate the next new id for the request_trip method
+    def gets_new_trip_id
+      next_id = @trips.max_by {|trip| trip.id}
+      return next_id.id
+    end
+
+    # helper method to get next driver with status available and oldest recent trip.
+    def driver_selection
+      drivers_available = drivers.find_all do |driver|
+        driver.status == :AVAILABLE
+      end
+
+      return nil if drivers_available.length == 0
+
+      # collect the last trip of each of the drivers available
+      oldest_trips = []
+      drivers_available.each do |driver|
+        oldest_trip = driver.trips.max_by do |trip|
+          trip.end_time
+        end
+
+        if oldest_trip != nil
+          oldest_trips.push({driver_id: driver.id, end_time_of_oldest_trip: oldest_trip.end_time})
+        end
+      end
+
+      # The minimum value of oldest_trips array will be the oldest trip.
+      driver_selected_info = oldest_trips.min_by do |data|
+        data[:end_time_of_oldest_trip]
+      end
+
+      return find_driver(driver_selected_info[:driver_id])
+
+    end
+
+    def request_trip(passenger_id)
+      #refactor variable driver for wave 3 requirements
+      driver = driver_selection
+
+      raise ArgumentError.new("Sorry, currently no available drivers") if driver == nil
+
+      passenger = self.find_passenger(passenger_id)
+      new_id = 1 + self.gets_new_trip_id
+
+
+      trip_data = {id: new_id,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      raise ArgumentError.new("Ride cannot be processed, passenger not registered") if trip_data[:passenger].nil?
+
+      trip = Trip.new(trip_data)
+
+      passenger.add_trip(trip)
+      driver.add_trip(trip)
+      driver.unavailable
+
+      @trips << trip
+
+      return trip
+
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private

@@ -36,7 +36,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,7 +58,7 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger,start_time: Time.parse('2016-01-13T13:16:00+00:00'), end_time: Time.parse('2016-01-13T13:28:00+00:00'), rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -73,6 +73,56 @@ describe "Passenger class" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
       end
+    end
+  end
+
+  describe "passenger_spents method" do
+    before do
+      @trips = [RideShare::Trip.new({rating: 3, cost: 10}), RideShare::Trip.new({rating: 5, cost: 10})]
+    end
+
+    it 'returns amount spent by the passenger' do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334",trips: @trips})
+      result = @passenger.passenger_spents
+      expected_spent = 20
+      result.must_equal expected_spent
+      # result.must_be_kind_of Float
+    end
+
+    it 'returns 0 if the passenger has no trips' do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334",
+        trips: []})
+      result = @passenger.passenger_spents
+      expected_spent = 0
+      result.must_equal expected_spent
+    end
+  end
+
+  describe "travel time method" do
+    before do
+      @start_time_1 = Time.parse('2016-08-08T16:01:00+00:00')
+      @end_time_1 = @start_time_1 + 30*60
+      @start_time_2 = Time.parse('2016-08-08T16:01:00+00:00')
+      @end_time_2 = @start_time_2 + 20*60
+
+      @trips = [RideShare::Trip.new({rating: 3, start_time: @start_time_1, end_time: @end_time_1 }),
+        RideShare::Trip.new({rating: 5, start_time: @start_time_2, end_time: @end_time_2 })]
+    end
+
+    it "returns amount of time the passenger spent on their trip " do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips: @trips})
+      result = @passenger.travel_time
+      expected_time = 50*60
+      result.must_equal expected_time
+      result.must_be_kind_of Float
+    end
+
+    it "returns 0 as amount of time if the passenger has no trips " do
+      @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334", trips:[]})
+      result = @passenger.travel_time
+      expected_time = 0
+      result.must_equal expected_time
+      result.must_be_kind_of Float
     end
   end
 end
