@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -75,8 +76,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -90,12 +91,53 @@ module RideShare
       trips
     end
 
-    private
+    def available_driver
+      driver_today = nil
+      available_drivers = @drivers.select { |driver|
+        driver.status == :AVAILABLE}
 
-    def check_id(id)
-      if id == nil || id <= 0
-        raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        if available_drivers.empty?
+          raise ArgumentError.new("There are no available drivers")
+        else
+          driver_today = available_drivers.first
+        end
+      end
+
+      def request_trip(passenger_id)
+        driver_today = available_driver
+        passenger = find_passenger(passenger_id)
+        id = @trips.length + 1
+
+        trip_details = {
+          id: id,
+          driver: driver_today,
+          passenger: passenger,
+          start_time: Time.now,
+          end_time: nil,
+          cost: nil,
+          rating: nil,
+        }
+
+        trip = Trip.new(trip_details)
+        @trips << trip
+
+        driver_today.toggle_status
+        driver_today.add_trip(trip)
+        passenger.add_trip(trip)
+
+        return trip
+      end
+
+      def inspect
+        "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+      end
+
+      private
+
+      def check_id(id)
+        if id == nil || id <= 0
+          raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
+        end
       end
     end
   end
-end

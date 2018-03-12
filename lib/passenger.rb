@@ -10,7 +10,31 @@ module RideShare
       @id = input[:id]
       @name = input[:name]
       @phone_number = input[:phone]
+      # did whoever gave us this input hash
+      # put any trips in it?
+      # will get nil back if the key in question
+      # doesn't exist
       @trips = input[:trips] == nil ? [] : input[:trips]
+    end
+
+    def money_spent
+      total = 0.0
+      @trips.each do |trip|
+        if trip.cost != nil
+        total += trip.cost
+        end
+      end
+      return total
+    end
+
+    def time_spent
+      time_spent = 0.0
+      @trips.each do |trip|
+        if trip.end_time != nil
+        time_spent += trip.trip_duration
+        end
+      end
+      return time_spent
     end
 
     def get_drivers
@@ -20,5 +44,6 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
   end
 end

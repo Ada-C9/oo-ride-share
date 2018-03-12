@@ -19,6 +19,45 @@ describe "TripDispatcher class" do
     end
   end
 
+  describe "request_trip" do
+    it "request_trip creates a new trip" do
+      dispatcher = RideShare::TripDispatcher.new
+      trip = dispatcher.request_trip(1)
+
+      trip.driver.must_be_kind_of RideShare::Driver
+      trip.driver.id.must_equal 2
+      trip.passenger.id.must_equal 1
+      trip.driver.status.must_equal :UNAVAILABLE
+    end
+
+    it "raises an argument error when no drivers are available" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.drivers.each do |driver|
+        driver.toggle_status
+      end
+
+      proc{dispatcher.request_trip(1)}.must_raise ArgumentError
+    end
+
+    it "request_trip adds current trip to driver" do
+      dispatcher = RideShare::TripDispatcher.new
+      new_trip = dispatcher.request_trip(1)
+      driver = new_trip.driver
+
+      driver.trips.last.must_equal new_trip
+    end
+
+    it "request_trip adds current trip to passenger" do
+      dispatcher = RideShare::TripDispatcher.new
+      passenger = dispatcher.find_passenger(21)
+      number_of_trips = passenger.trips.length
+      new_trip = dispatcher.request_trip(21)
+
+      passenger.trips.length.must_equal number_of_trips + 1
+      passenger.trips.last.must_equal new_trip
+    end
+  end
+
   describe "find_driver method" do
     before do
       @dispatcher = RideShare::TripDispatcher.new
