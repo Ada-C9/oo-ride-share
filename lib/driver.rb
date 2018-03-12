@@ -17,13 +17,12 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
-    def average_rating
+    def get_average_rating
       total_ratings = 0
-      @trips.each do |trip|
+      finished_trips.each do |trip|
         total_ratings += trip.rating
       end
 
@@ -33,7 +32,7 @@ module RideShare
         average = (total_ratings.to_f) / trips.length
       end
 
-      return average
+      return average.to_f
     end
 
     def add_trip(trip)
@@ -43,5 +42,43 @@ module RideShare
 
       @trips << trip
     end
+
+    def finished_trips
+      trips_closed = @trips
+      trips_closed.each do |trip|
+        if trip.end_time == nil || trip.cost == nil || trip.rating == nil
+          trips_closed.delete(trip)
+        end
+      end
+
+      return trips_closed
+    end
+
+    def calculate_total_revenue
+      fee = 1.65
+      driver_portion = 0.8
+      subtotal = finished_trips.map{ |trip| trip.cost - fee}.inject(0, :+).round(2)
+
+      raise StandardError.new("Negative revenue") if subtotal < 0
+
+      return subtotal * driver_portion
+    end
+
+    def calculate_average_revenue
+      hour_to_second = 3600
+      total_duration = finished_trips.map {|trip| trip.duration}.inject(0, :+) / hour_to_second
+
+      return (calculate_total_revenue / total_duration).round(2)
+    end
+
+    def add_new_trip(trip)
+      @trips << trip
+      @status = :UNAVAILABLE
+    end
+
+    def find_most_recent_trip
+      finished_trips.max_by {|trip| trip.end_time}
+    end
+
   end
 end

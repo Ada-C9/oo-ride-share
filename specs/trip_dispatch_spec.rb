@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -89,4 +90,73 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "request_trip method" do
+
+    it "can create a new trip requested by a passenger" do
+      passenger_id = 90
+      trip_dispatcher = RideShare::TripDispatcher.new
+
+      trip_dispatcher.request_trip(passenger_id).must_be_kind_of RideShare::Trip
+    end
+
+    it "return an updated trip collections including the new trip in passenger class" do
+      passenger_id = 100
+      trip_dispatcher = RideShare::TripDispatcher.new
+
+      new_trip = trip_dispatcher.request_trip(passenger_id)
+
+      new_trip.passenger.trips.must_include new_trip
+
+      new_trip.driver.trips.must_include new_trip
+    end
+
+    it "returns the status of chosen driver" do
+      passenger_id = 10
+      trip_dispatcher = RideShare::TripDispatcher.new
+      first_driver_id = 14
+      first_driver = trip_dispatcher.find_driver(first_driver_id)
+
+      first_driver.status.must_equal :AVAILABLE
+
+      new_trip = trip_dispatcher.request_trip(passenger_id)
+
+    end
+
+    it "can return the first driver who is available" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+
+      first_driver_id = 14
+      second_driver_id = 27
+      third_driver_id = 6
+      fourth_driver_id = 87
+      fifth_driver_id = 75
+
+      first_driver = trip_dispatcher.find_driver(first_driver_id)
+      second_driver = trip_dispatcher.find_driver(second_driver_id)
+      third_driver = trip_dispatcher.find_driver(third_driver_id)
+      fourth_driver = trip_dispatcher.find_driver(fourth_driver_id)
+      fifth_driver = trip_dispatcher.find_driver(fifth_driver_id)
+
+      passenger_id_1 = 10
+      passenger_id_2 = 20
+      passenger_id_3 = 30
+      passenger_id_4 = 40
+      passenger_id_5 = 50
+
+      new_trip_1 = trip_dispatcher.request_trip(passenger_id_1)
+      new_trip_2 = trip_dispatcher.request_trip(passenger_id_2)
+      new_trip_3 = trip_dispatcher.request_trip(passenger_id_3)
+      new_trip_4 = trip_dispatcher.request_trip(passenger_id_4)
+      new_trip_5 = trip_dispatcher.request_trip(passenger_id_5)
+
+      new_trip_1.driver.must_equal first_driver
+      new_trip_2.driver.must_equal second_driver
+      new_trip_3.driver.must_equal third_driver
+      new_trip_4.driver.must_equal fourth_driver
+      new_trip_5.driver.must_equal fifth_driver
+
+    end
+  end
+
 end

@@ -20,5 +20,22 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
+
+    def get_total_spending
+      finished_trips.map{|trip| trip.cost}.inject(0, :+).round(2)
+    end
+
+    def finished_trips
+      trips_closed = @trips
+      trips_closed.reject! {|trip| trip.end_time == nil || trip.cost == nil || trip.rating == nil }
+
+      return trips_closed
+    end
+
+    def get_total_time
+      finished_trips.map{|trip| trip.duration}.inject(0, :+).round(1)
+    end
+
   end
+
 end
