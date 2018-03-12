@@ -88,5 +88,53 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
-  end
-end
+
+  end # end of describe "loader methods"
+
+  describe "find_available_driver method" do
+
+    it "finds the first driver who has an available status" do
+      dispatcher = RideShare::TripDispatcher.new
+
+      dispatcher.find_available_driver.must_be_instance_of RideShare::Driver
+    end
+
+    it "raises an error when not enough drivers" do
+    dispatcher = RideShare::TripDispatcher.new
+    proc {
+      55.times do
+        dispatcher.find_available_driver
+      end}.must_raise StandardError
+    end
+
+  end # end of find_available_driver
+
+  describe "find_next_trip_id" do
+    it "finds the next appropriate trip id" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.find_next_trip_id.must_equal 601
+    end
+  end # end of describe "find_next_trip_id"
+
+  describe "get_new_start_time" do
+    it "creates an instance of time" do
+      dispatcher = RideShare::TripDispatcher.new
+      dispatcher.get_new_start_time.must_be_instance_of Time
+    end
+  end # end of describe get_current_time
+
+  describe "request_trip(passenger_id) method" do
+
+    it "throws an ArgumentError if passenger_id is invalid" do
+      proc {
+        dispatcher = RideShare::TripDispatcher.new
+        dispatcher.request_trip(543)}.must_raise ArgumentError
+
+      end # end of throws an ArgumentError if passenger_id is invalid
+
+      it "creates a new instance of Trip" do
+        dispatcher = RideShare::TripDispatcher.new
+        dispatcher.request_trip(5).must_be_instance_of RideShare::Trip
+      end
+    end # end of describe request_trip(passenger_id) method
+  end # end of describe "TripDispatcher class"

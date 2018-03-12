@@ -71,12 +71,14 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+        start_time = Time.parse(raw_trip[:start_time])
+        end_time = Time.parse(raw_trip[:end_time])
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: start_time,
+          end_time: end_time,
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +90,57 @@ module RideShare
       end
 
       trips
+    end # end load_trips
+
+    def find_available_driver
+      @drivers.each do |driver|
+        if driver.status == :AVAILABLE
+          driver.change_status
+          return driver
+        end
+      end
+      raise StandardError.new("There aren't any available drivers at this time.")
+    end
+
+    def find_next_trip_id
+      new_id_num = @trips.length + 1
+      return new_id_num
+    end
+
+    def get_new_start_time
+      start_time = Time.now
+      return start_time
+    end
+
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+      if passenger == nil
+        raise ArgumentError.new("Passnger ID #{passenger_id} is not valid.")
+      end
+
+      available_driver = find_available_driver
+
+      new_trip_data = {
+        id: find_next_trip_id,
+        driver: available_driver.id,
+        passenger: passenger.id,
+        start_time: get_new_start_time,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = RideShare::Trip.new(new_trip_data)
+
+      available_driver.add_trip(new_trip)
+      passenger.add_trip(new_trip)
+
+      return new_trip
+
+    end # end of request_trip
+
+    def inspect
+      "#<#{self.class.name}: 0x#{self.object_id.to_s(16)}>"
     end
 
     private
@@ -97,5 +150,5 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
-  end
-end
+  end # end of class
+end # end of module

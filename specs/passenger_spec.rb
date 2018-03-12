@@ -30,13 +30,16 @@ describe "Passenger class" do
       @passenger.phone_number.must_be_kind_of String
       @passenger.trips.must_be_kind_of Array
     end
-  end
+  end # end of describe Passenger initiation
 
 
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+
+      start_time = Time.parse("2015-05-27T01:11:00+00:00")
+      end_time = Time.parse("2015-05-27T01:11:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -52,13 +55,17 @@ describe "Passenger class" do
         trip.passenger.id.must_equal 9
       end
     end
-  end
+  end # end of describe trips property
 
   describe "get_drivers method" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+
+      start_time = Time.parse("2017-02-08T08:22:00+00:00")
+      end_time = Time.parse("2017-02-08T08:58:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -74,5 +81,104 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end # end of describe get_drivers method
+
+  describe "calculate_all_trips_cost method" do
+
+    it "returns a the correct total" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      start_time = Time.parse("2015-05-27T01:11:00+00:00")
+      end_time = Time.parse("2015-05-27T01:11:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+      @passenger.add_trip(trip)
+
+      start_time = Time.parse("2016-05-25T23:04:00+00:00")
+      end_time = Time.parse("2016-05-25T23:49:00+00:00")
+      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 23, rating: 5})
+
+      @passenger.add_trip(trip1)
+
+      @passenger.calculate_all_trips_cost.must_be_kind_of Float
+      @passenger.calculate_all_trips_cost.must_equal 27.25
+    end # end of returns a float
+
+    it "returns 0 when no trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      @passenger.calculate_all_trips_cost.must_equal 0
+    end
+
+    it "returns the correct total when there are in progress trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      start_time = Time.parse("2015-05-27T01:11:00+00:00")
+      end_time = Time.parse("2015-05-27T01:11:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+      @passenger.add_trip(trip)
+
+      start_time = Time.parse("2016-05-25T23:04:00+00:00")
+      end_time = Time.parse("2016-05-25T23:49:00+00:00")
+      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 23, rating: 5})
+
+      @passenger.add_trip(trip1)
+
+      trip2 = RideShare::Trip.new({id: 84, driver: 94, passenger: @passenger, start_time: Time.new, end_time: nil, cost: nil, rating: nil})
+
+      @passenger.add_trip(trip2)
+
+      @passenger.calculate_all_trips_cost.must_be_kind_of Float
+      @passenger.calculate_all_trips_cost.must_equal 27.25
+    end
+  end # end of describe calculate_all_trips_cost
+
+  describe "calculate_total_trips_time_in_sec" do
+    it "returns a sum of all times" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+      start_time = Time.parse("2015-05-27T01:11:00+00:00")
+      end_time = Time.parse("2015-05-27T01:11:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+      @passenger.add_trip(trip)
+
+      start_time1 = Time.parse("2016-05-25T23:04:00+00:00")
+      end_time1 = Time.parse("2016-05-25T23:49:00+00:00")
+      trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time1, end_time: end_time1, cost: 23, rating: 5})
+
+      @passenger.add_trip(trip1)
+
+      @passenger.calculate_total_trips_time_in_sec.must_equal 2700.0
+    end
+
+    it "returns 0 when no trips" do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+      @passenger.calculate_all_trips_cost.must_equal 0
+    end
+
+    it "returns a sum of all times if there are trips in progress" do    
+    @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+
+    start_time = Time.parse("2015-05-27T01:11:00+00:00")
+    end_time = Time.parse("2015-05-27T01:11:00+00:00")
+    trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 4.25, rating: 5})
+
+    @passenger.add_trip(trip)
+
+    start_time1 = Time.parse("2016-05-25T23:04:00+00:00")
+    end_time1 = Time.parse("2016-05-25T23:49:00+00:00")
+    trip1 = RideShare::Trip.new({id: 24, driver: nil, passenger: @passenger, start_time: start_time1, end_time: end_time1, cost: 23, rating: 5})
+
+    @passenger.add_trip(trip1)
+
+    trip2 = RideShare::Trip.new({id: 84, driver: 94, passenger: @passenger, start_time: Time.new, end_time: nil, cost: nil, rating: nil})
+
+    @passenger.add_trip(trip2)
+
+    @passenger.calculate_total_trips_time_in_sec.must_equal 2700.0
   end
-end
+
+  end # end of describe "calculate_total_trips_time"
+
+end # end of describe Passenger
