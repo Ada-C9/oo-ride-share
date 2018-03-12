@@ -89,4 +89,53 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+
+  # Was the trip created properly?
+  # Were the trip lists for the driver and passenger updated?
+  # Was the driver who was selected AVAILABLE?
+  # What happens if you try to request a trip when there are no AVAILABLE drivers?
+
+  describe "request_trip method" do
+
+    it "trip was created properly" do
+      input_hash = {
+        :id => max_trip_id + 1,
+        :driver => available_driver,
+        :passenger => selected_passenger,
+        # Your code should use the current time for the start time
+        :start_time => Time.now,
+        # The end date, cost and rating will all be nil
+        :end_time => nil,
+        :cost => nil,
+        :rating => nil
+      }
+
+      new_trip = Trip.new(input_hash)
+
+      new_trip.must_be_instance_of RideShare::TripDispatcher
+
+    end
+
+    it "trip lists were updated for driver and passenger" do
+      # Arrange (set up)
+
+
+
+      # Act (must always call the method)
+
+
+      # Assert
+      @trips.must_include new_trip
+    end
+
+    it "driver with avaiable status was selected" do
+
+      driver.status.must_equal :AVALIABLE
+    end
+
+    it "raises an error when there are no available drivers" do
+    end
+
+  end
 end
