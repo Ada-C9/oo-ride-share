@@ -1,9 +1,10 @@
 require 'csv'
+require 'pry'
 require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+    attr_reader :id, :name, :vehicle_id, :trips, :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -24,6 +25,7 @@ module RideShare
     def average_rating
       total_ratings = 0
       @trips.each do |trip|
+        next if trip.rating == nil
         total_ratings += trip.rating
       end
 
@@ -43,5 +45,46 @@ module RideShare
 
       @trips << trip
     end
-  end
-end
+
+
+    def total_revenue
+      subtotal = 0
+      fee = 1.65
+      driver_cut = 0.8
+      @trips.each do |trip|
+        next if trip.cost.nil?
+        unless trip.cost <= fee
+          subtotal += (trip.cost - fee)
+        else
+          subtotal += 0
+        end
+      end
+      total = subtotal * driver_cut
+      return total.round(2)
+    end
+
+    def avg_revenue
+      return total_hours == 0 ? 0 : (total_revenue/total_hours).round(2)
+    end
+
+    def change_status
+      @status = :UNAVAILABLE
+    end
+
+    private
+
+    def total_hours
+      total_seconds = 0
+      @trips.each do |trip|
+        next if trip.trip_duration.nil?
+        total_seconds += trip.trip_duration
+      end
+      total_hours = total_seconds.to_f / 3600
+      return total_hours.round(2)
+    end
+
+
+  end # Driver
+end # RideShare
+
+# binding.pry

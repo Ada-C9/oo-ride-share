@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Driver class" do
 
@@ -59,7 +60,9 @@ describe "Driver class" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      trip2 = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: "2016-04-06T14:01:00+00:00"})
       @driver.add_trip(trip)
+      @driver.add_trip(trip2)
     end
 
     it "returns a float" do
@@ -75,6 +78,49 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe "total_revenue method" do
+    it "must return the total amount made by a driver" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      trip1 = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, cost: 10, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00", rating: 5})
+
+      trip2 = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, cost: 15.00, rating: 3, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00"})
+
+      driver.add_trip(trip1)
+      driver.add_trip(trip2)
+      driver.total_revenue.must_equal 17.36
+    end
+
+    it "must return zero if no trips have been made" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      driver.total_revenue.must_equal 0
+    end
+  end
+
+  describe "avg_revenue" do
+    it "must return the average amount made per hour for a driver" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
+      trip1 = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, cost: 10, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00", rating: 5})
+
+      trip2 = RideShare::Trip.new({id: 8, driver: driver, passenger: passenger, cost: 15.00, rating: 3, start_time: "2016-04-06T14:01:00+00:00", end_time: "2016-04-06T14:09:00+00:00"})
+
+      driver.add_trip(trip1)
+      driver.add_trip(trip2)
+
+      driver.avg_revenue.must_equal 64.30
+    end
+
+    it "must return zero if a driver made no trips" do
+      driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+
+      driver.avg_revenue.must_equal 0
     end
   end
 end

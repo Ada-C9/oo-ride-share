@@ -20,5 +20,28 @@ module RideShare
     def add_trip(trip)
       @trips << trip
     end
-  end
-end
+
+    def total_spent
+      cost = 0.00
+      @trips.each do |trip|
+        next if trip.cost.nil?
+        cost += trip.cost
+      end
+      return cost.round(2)
+    end
+
+    def total_time
+      total = 0
+      @trips.each do |trip|
+        next if trip.cost.nil?
+        total += trip.trip_duration # this is in seconds
+      end
+      return total
+      # hours = total / 3600
+      # minutes = (total % 3600) / 60
+      # seconds = (total % 3600) % 60
+      # return "You've ridden for a total of #{hours} hours, #{minutes} minutes, and #{seconds} seconds."
+    end
+
+  end # Passenger
+end # RideShare
