@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'awesome_print'
 
 describe "TripDispatcher class" do
   describe "Initializer" do
@@ -88,5 +89,71 @@ describe "TripDispatcher class" do
       passenger.must_be_instance_of RideShare::Passenger
       passenger.trips.must_include trip
     end
+
+    it "returns time" do
+      last_trip = RideShare::TripDispatcher.new
+
+      last_trip.trips.last.start_time.must_be_kind_of Time
+    end
+  end
+
+  describe "accept_trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+      @new_trip = @dispatcher.request_trip(1)
+    end
+
+    it "makes a new trip" do
+      @new_trip.must_be_instance_of RideShare::Trip
+    end
+
+    it "changes driver's status to UNAVAILABLE" do
+      @new_trip.driver.status.must_equal :UNAVAILABLE
+      # binding.pry
+    end
+
+    it "selects driver from available driver list" do
+      @dispatcher.drivers.must_include @new_trip.driver
+    end
+
+    it "raises an error when no drivers available" do
+      number_of_available_drivers = @dispatcher.drivers.find_all { |driver| driver.status == :AVAILABLE }.length
+      number_of_available_drivers.times do
+        @new_trip = @dispatcher.request_trip(1)
+      end
+
+      proc { @new_trip = @dispatcher.request_trip(1) }.must_raise ArgumentError
+    end
+
+    it "updates the driver's trip list" do
+      @new_trip.driver.trips.must_be_kind_of Array
+      @new_trip.driver.trips.length.must_be_kind_of Integer
+      @new_trip.driver.trips.must_include @new_trip
+
+    end
+
+    it "updates the passenger's trip list" do
+      @new_trip.passenger.trips.must_be_kind_of Array
+      @new_trip.passenger.trips.length.must_be_kind_of Integer
+      @new_trip.passenger.trips.must_include @new_trip
+    end
+
+    it "does not update the passenger's total spent if end time is nil" do
+
+      @new_trip.passenger.total_amount_of_money.must_be_kind_of Float
+      @new_trip.passenger.total_amount_of_money.must_be_within_delta 37.29, 0.01
+
+      @next_trip = @dispatcher.request_trip(1)
+      @next_trip.passenger.total_amount_of_money.must_be_within_delta 37.29, 0.01
+
+    end
+
+    it "does not update the driver revenue if end_time is nil" do
+      @drivers = @dispatcher.drivers.dup
+      @drivers[1].total_revenue
+
+      @new_trip.driver.total_revenue.must_equal @drivers[1].total_revenue
+    end
+
   end
 end

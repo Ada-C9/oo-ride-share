@@ -1,5 +1,7 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
+require 'awesome_print'
 
 module RideShare
   class Driver
@@ -19,7 +21,23 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
+
     end
+
+    def passengers
+      # EACH STYLE
+      # passengers = []
+      # trips.each do |trip|
+      #   passengers << trip.passenger
+      # end
+
+      # MAP STYLE
+      passengers = trips.map do |trip|
+        trip.passenger
+      end
+      return passengers
+    end
+
 
     def average_rating
       total_ratings = 0
@@ -41,7 +59,35 @@ module RideShare
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
 
+      if trip.end_time == nil
+        accept_trip
+      end
+
       @trips << trip
+
+    end
+
+    def accept_trip
+      @status = :UNAVAILABLE
+      return status
+    end
+
+    def total_revenue
+      driver_revenue = 0
+      @trips.each do |trip|
+        if !(trip.end_time.nil?)
+          driver_revenue += ((trip.cost - 1.65) * 0.8)
+        end
+      end
+      return driver_revenue.round(2)
+    end
+
+    def average_revenue_per_hour
+      if @trips.length > 0
+        driver_revenue = total_revenue / @trips.length
+      else
+        raise ArgumentError.new "No trips to provide revenue"
+      end
     end
   end
 end

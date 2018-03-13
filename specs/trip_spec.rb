@@ -1,11 +1,14 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Trip class" do
 
   describe "initialize" do
     before do
-      start_time = Time.parse('2015-05-20T12:14:00+00:00')
-      end_time = start_time + 25 * 60 # 25 minutes
+      # start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      # end_time = start_time + 25 * 60 # 25 minutes
+      start_time = '2015-05-20T12:14:00+00:00'
+      end_time = '2015-05-20T12:39:00+00:00'
       @trip_data = {
         id: 8,
         driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
@@ -37,6 +40,17 @@ describe "Trip class" do
           RideShare::Trip.new(@trip_data)
         }.must_raise ArgumentError
       end
+    end
+
+    it "returns trip duration" do
+      @trip.trip_duration.must_be_kind_of Integer
+      @trip.trip_duration.must_equal 25
+    end
+
+    it "raises an ArgumentError" do
+      proc {
+        @trip_data[:end_time] = '2015-05-20T12:00:00+00:00'
+        RideShare::Trip.new(@trip_data).trip_duration}.must_raise ArgumentError
     end
   end
 end

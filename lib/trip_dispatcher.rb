@@ -4,10 +4,11 @@ require 'time'
 require_relative 'driver'
 require_relative 'passenger'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class TripDispatcher
-    attr_reader :drivers, :passengers, :trips
+    attr_reader :drivers, :passengers, :trips, :status
 
     def initialize
       @drivers = load_drivers
@@ -71,6 +72,10 @@ module RideShare
         driver = find_driver(raw_trip[:driver_id].to_i)
         passenger = find_passenger(raw_trip[:passenger_id].to_i)
 
+        if driver.nil? || passenger.nil?
+          raise "No driver or passenger for trip ID {raw_trip[:id]}"
+        end
+
         parsed_trip = {
           id: raw_trip[:id].to_i,
           driver: driver,
@@ -88,6 +93,43 @@ module RideShare
       end
 
       trips
+    end
+
+    def select_available_driver
+      # drivers.each do |driver|
+      #   if driver.status == :AVAILABLE
+      #   end
+      #   return driver
+      #   break
+      # end
+      available_driver = drivers.find {|driver| driver.status == :AVAILABLE}
+
+      raise ArgumentError.new "No available drivers" if available_driver.nil?
+
+      return available_driver
+    end
+
+    def request_trip(passenger_id)
+
+      new_trip_info = {
+        id: trips.length + 1,
+        driver: select_available_driver,
+        passenger: find_passenger(passenger_id),
+        start_time: Time.now.to_s,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+      new_trip = RideShare::Trip.new(new_trip_info)
+
+      new_trip_info[:driver].add_trip(new_trip)
+      new_trip_info[:passenger].add_trip(new_trip)
+
+      return new_trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
