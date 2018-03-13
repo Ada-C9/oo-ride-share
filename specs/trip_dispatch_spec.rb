@@ -17,6 +17,7 @@ describe "TripDispatcher class" do
       dispatcher.passengers.must_be_kind_of Array
       dispatcher.drivers.must_be_kind_of Array
     end
+
   end
 
   describe "find_driver method" do
@@ -89,4 +90,68 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "finds next available driver method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "must return the next available driver" do
+      driver = @dispatcher.find_available_drivers
+      driver.must_be_kind_of RideShare::Driver
+      driver.status.must_equal :AVAILABLE
+    end
+  end
+
+  describe "request trip method" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+
+    it "must find an available driver" do
+      trip_request = @dispatcher.request_trip(1)
+      trip_request.driver.must_be_kind_of Integer
+      trip_request.driver.must_equal 2
+    end
+
+    it "throws an argument error for a bad ID" do
+      proc{ @dispatcher.request_trip(0) }.must_raise ArgumentError
+    end
+
+    it "must return a time for the start time" do
+      trip_request = @dispatcher.request_trip(1)
+      trip_request.start_time.must_be_instance_of Time
+    end
+
+    it "must change the drivers status to unavailable" do
+      @dispatcher.drivers[1].status.must_equal :AVAILABLE
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.drivers[1].status.must_equal :UNAVAILABLE
+    end
+
+    it "adds the trip to the driver's list of trips" do
+      trip_num = @dispatcher.drivers[1].trips.count
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.drivers[1].trips.count.must_equal (trip_num + 1)
+    end
+
+    it "adds the trip to the passenger's list of trips" do
+      trip_num = @dispatcher.passengers[0].trips.count
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.passengers[0].trips.count.must_equal (trip_num + 1)
+    end
+
+    it "adds the trip to the passenger's list of trips" do
+      trip_num = @dispatcher.trips.count
+      trip_request = @dispatcher.request_trip(1)
+      @dispatcher.trips.count.must_equal (trip_num + 1)
+    end
+
+    it "returns the newly created trip" do
+      trip_request = @dispatcher.request_trip(1)
+      trip_request.must_be_instance_of RideShare::Trip
+    end
+
+  end
+
 end

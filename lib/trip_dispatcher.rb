@@ -75,8 +75,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.new(raw_trip[:start_time]),
+          end_time: Time.new(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +88,37 @@ module RideShare
       end
 
       trips
+    end
+
+    def find_available_drivers
+      @drivers.find{ |driver| driver.status == :AVAILABLE }
+    end
+
+    def request_trip(passenger_id)
+      check_id(passenger_id)
+      driver_id = find_available_drivers.id
+      driver = find_driver(driver_id.to_i)
+      passenger = find_passenger(passenger_id.to_i)
+      #@drivers.find{ |driver| driver.status == AVAILABLE }
+      trip_data  = {
+        id: ((@trips.map{ |t| t.id }).max) + 1, #can I reduce to use the Passenger get_drivers method?
+        driver: driver_id,
+        passenger: passenger_id,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil,
+      }
+      trip = Trip.new(trip_data) ## consider collapsing with object above
+      driver.add_trip(trip)
+      driver.change_status
+      passenger.add_trip(trip)
+      @trips << trip
+      return trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
