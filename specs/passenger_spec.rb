@@ -1,6 +1,27 @@
+require 'time'
 require_relative 'spec_helper'
 
 describe "Passenger class" do
+
+
+  before do
+
+  @passenger_a = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+  driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+
+  trip_1 = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger_a, start_time: Time.parse('2016-08-08T16:01:00+00:00'), end_time: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
+
+  trip_2 = RideShare::Trip.new({id: 9, driver: driver, passenger: @passenger_a, start_time: Time.parse('2016-09-08T16:01:00+00:00'), end_time: Time.parse('2016-09-08T16:38:00+00:00'), cost: 10.13, rating: 5})
+
+  trip_3 = RideShare::Trip.new({id: 10, driver: driver, passenger: @passenger_a, start_time: Time.parse('2016-10-08T16:01:00+00:00'), end_time: Time.parse('2016-10-08T16:39:00+00:00'), cost: 10.14, rating: 5})
+
+  @passenger_a.add_trip(trip_1)
+  @passenger_a.add_trip(trip_2)
+  @passenger_a.add_trip(trip_3)
+
+  @newly_requested_trip = RideShare::Trip.new({id: 10, driver: "Meret Oppenheim", passenger: @passenger_a, start_time: Time.now, end_time: nil, cost: nil, rating: nil})
+
+  end
 
   describe "Passenger instantiation" do
     before do
@@ -36,7 +57,7 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: Time.parse('2016-08-08T16:01:00+00:00'), end_time: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -57,10 +78,13 @@ describe "Passenger class" do
   describe "get_drivers method" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: Time.parse('2016-08-08T16:01:00+00:00'), end_time: Time.parse('2016-08-08T16:37:00+00:00'), cost: 10.12, rating: 5})
 
       @passenger.add_trip(trip)
+
     end
 
     it "returns an array" do
@@ -73,6 +97,50 @@ describe "Passenger class" do
       @passenger.get_drivers.each do |driver|
         driver.must_be_kind_of RideShare::Driver
       end
+    end
+  end
+
+  describe "log_newly_reqested_trip(trip)" do
+    before do
+      @passenger_a.log_newly_requested_trip(@newly_requested_trip)
+    end
+
+    it "adds the requested trip to the passenger's collection" do
+      @passenger_a.trips.count.must_equal 4
+      @passenger_a.trips.must_include @newly_requested_trip
+    end
+  end
+
+  describe "total_ride_time" do
+
+    it "returns an accurate tally of the passenger's ride-times" do
+
+      total_trip_seconds = @passenger_a.total_ride_time
+      total_trip_seconds.must_equal 6660
+
+    end
+
+    it "functions properly if a passenger has a ride in progress" do
+      @passenger_a.add_trip(@newly_requested_trip)
+      total_trip_seconds = @passenger_a.total_ride_time
+      total_trip_seconds.must_equal 6660
+    end
+  end
+
+  describe "total_spent" do
+
+    it "returns an accurate tally of the passenger's payments" do
+
+      passenger_total_paid = @passenger_a.total_spent
+      passenger_total_paid.must_equal 30.39
+
+    end
+
+    it "functions properly if a passenger has a ride in progress" do
+
+      @passenger_a.add_trip(@newly_requested_trip)
+      passenger_total_paid = @passenger_a.total_spent
+      passenger_total_paid.must_equal 30.39
     end
   end
 end

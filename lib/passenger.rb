@@ -1,3 +1,6 @@
+require 'time'
+require 'pry'
+
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -19,6 +22,19 @@ module RideShare
 
     def add_trip(trip)
       @trips << trip
+    end
+
+    def log_newly_requested_trip(trip)
+       @trips << trip
+    end
+
+    def total_ride_time
+      @trips.map{ |t| t.duration_seconds }.reduce(:+)
+    end
+
+    def total_spent
+     @trips.map{ |trip| trip.cost }.reject{ |cost| cost.nil? }.reduce(:+)
+  #   @trips.map{ |t| t.cost }.reduce(:+)
     end
   end
 end
