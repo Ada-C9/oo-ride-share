@@ -3,7 +3,12 @@ require_relative 'trip'
 
 module RideShare
   class Driver
-    attr_reader :id, :name, :vehicle_id, :status, :trips
+
+    FEE = 1.65
+    PERCENT_TAKEHOME = 0.8
+
+    attr_reader :id, :name, :vehicle_id, :trips
+    attr_accessor :status
 
     def initialize(input)
       if input[:id] == nil || input[:id] <= 0
@@ -19,6 +24,10 @@ module RideShare
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
 
       @trips = input[:trips] == nil ? [] : input[:trips]
+    end
+
+    def update_driver_info(new_trip)
+      new_trip.driver.status = :UNAVAILABLE
     end
 
     def average_rating
@@ -42,6 +51,26 @@ module RideShare
       end
 
       @trips << trip
+    end
+
+    def total_revenue
+      total = trips.inject(0) do |sum, trip|
+        (trip.cost != nil && trip.cost > 1.65) ? sum += (trip.cost - FEE) * PERCENT_TAKEHOME : sum += 0
+      end
+      return total
+    end
+
+    def avg_revenue_per_hour
+      revenue = total_revenue
+
+      time_in_secs = trips.inject(0) { |sum, trip| sum += trip.duration_in_seconds }
+
+      time_in_hours = (time_in_secs / 3600).round(2)
+
+      if time_in_secs != 0
+        return revenue / time_in_hours
+      end
+      return 0
     end
   end
 end

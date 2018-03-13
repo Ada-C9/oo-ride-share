@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -60,7 +61,11 @@ module RideShare
 
     def find_passenger(id)
       check_id(id)
-      @passengers.find{ |passenger| passenger.id == id }
+      if id > @passengers.last.id
+        raise ArgumentError.new
+      else
+        @passengers.find{ |passenger| passenger.id == id }
+      end
     end
 
     def load_trips
@@ -75,8 +80,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -88,6 +93,83 @@ module RideShare
       end
 
       trips
+    end
+
+    #------------------------------------------------------------------#
+    def request_trip(passenger_id)
+      if any_drivers_available
+        available_drivers = removes_unavailable_drivers
+        new_trip = make_new_trip(passenger_id, available_drivers)
+        update_trips_arrays(new_trip)
+        return new_trip
+      else
+        return nil
+      end
+    end
+
+    def any_drivers_available
+      @drivers.any? { |driver| driver.status == :AVAILABLE } ? true : false
+    end
+
+    def removes_unavailable_drivers
+      available_drivers = @drivers.delete_if { |driver| driver.status == :UNAVAILABLE }
+    end
+
+    def make_new_trip(passenger_id, available_drivers)
+      driver = find_new_driver(available_drivers)
+      passenger = find_passenger(passenger_id)
+      start_time = Time.now
+
+      trip_data = {
+        id: passenger_id,
+        driver: driver,
+        passenger: passenger,
+        start_time: start_time,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      new_trip = Trip.new(trip_data)
+      return new_trip
+    end
+
+    def update_trips_arrays(new_trip)
+      new_trip.driver.update_driver_info(new_trip)
+      new_trip.driver.add_trip(new_trip)
+      new_trip.passenger.add_trip(new_trip)
+      trips << new_trip
+    end
+
+    def find_new_driver(available_drivers)
+      selected_driver = available_drivers.first
+      time_passed = 0
+
+      available_drivers.each do |driver|
+        all_trips = driver.trips
+        if all_trips.length != 0
+          most_recent_trip = get_most_recent_trip(all_trips)
+          time_difference = (Time.now - most_recent_trip.end_time)
+          if time_difference > time_passed
+            selected_driver = driver
+            time_passed = time_difference
+          end
+        else
+          selected_driver =  driver
+          break
+        end
+      end
+
+      return selected_driver
+    end
+
+    def get_most_recent_trip(all_trips)
+      return sorted_trips = all_trips.sort { |x,y| x.end_time <=> y.end_time }.last
+    end
+    #---------------------------------------------------------------------#
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
     private
