@@ -35,8 +35,10 @@ describe "Passenger class" do
 
   describe "trips property" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = Time.parse('2015-05-20T12:16:00+00:00')
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -56,9 +58,12 @@ describe "Passenger class" do
 
   describe "get_drivers method" do
     before do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = Time.parse('2015-05-20T12:16:00+00:00')
+
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -74,5 +79,72 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+
+    describe "#total_money_spent" do
+      before do
+        start_time = Time.parse('2015-05-20T12:14:00+00:00')
+        end_time = Time.parse('2015-05-20T12:16:00+00:00')
+        @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+        trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 27.456, rating: 5})
+        trip1 = RideShare::Trip.new({id: 9, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 45.34, rating: 5})
+
+        trip2_in_progress = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: nil, cost: 35.34, rating: 5})
+
+        @passenger.add_trip(trip)
+        @passenger.add_trip(trip1)
+        @passenger.add_trip(trip2_in_progress)
+      end
+
+      it "returns the total amount of money that passenger has spent on their trips and ignores in-progress trips" do
+        @passenger.total_money_spent.must_equal 72.8
+        @passenger.total_money_spent.must_be_instance_of Float
+      end
+
+    end
+
+    describe "#total_time_spent" do
+      before do
+        start_time = Time.parse('2015-05-20T12:14:00+00:00')
+        end_time = Time.parse('2015-05-20T14:16:23+00:00')
+        @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
+        trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 27, rating: 5})
+        trip1 = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 45, rating: 5})
+
+        trip2_in_progress = RideShare::Trip.new({id: 10, driver: nil, passenger: @passenger, start_time: start_time, end_time: nil, cost: 35.34, rating: 5})
+
+        @passenger.add_trip(trip)
+        @passenger.add_trip(trip1)
+        @passenger.add_trip(trip2_in_progress)
+      end
+
+      it "return the total amount of time that passenger has spent on their trips and ignores the in-progress trips" do
+        @passenger.total_time_spent.must_equal 14686
+        @passenger.total_time_spent.must_be_instance_of Integer
+      end
+    end
+
+    describe "#add_trip" do
+      before do
+        @passenger = RideShare::Passenger.new({id: 1, name: "Smithy", phone: "353-533-5334",trips: []})
+        @trip_data = {
+          id: 8,
+          driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+          passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+          start_time: Time.parse('2015-05-20T12:14:00+00:00'),
+          end_time: Time.parse('2015-05-20T12:16:00+00:00'),
+          cost: 23.45,
+          rating: 3
+        }
+
+      end
+      it "Add the new trip to the collection of trips for the Passenger" do
+        before_count = @passenger.trips.count
+        @passenger.add_trip(@trip)
+        expected_count = before_count + 1
+        @passenger.trips.count.must_equal expected_count
+      end
+    end
+
+
   end
 end

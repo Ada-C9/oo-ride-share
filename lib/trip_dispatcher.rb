@@ -75,8 +75,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -90,6 +90,42 @@ module RideShare
       trips
     end
 
+    # def find_available_driver
+    #   return @drivers.find{ |each_driver| each_driver.status == :AVAILABLE }
+    # end
+
+    def find_available_driver
+      drivers = @drivers.select{ |each_driver| each_driver.status == :AVAILABLE && !each_driver.is_trip_in_progress? }
+      return drivers.min_by{ |each_driver| each_driver.recent_trip_end_time.to_i }
+    end
+
+    def request_trip(passenger_id)
+      passenger = find_passenger(passenger_id)
+      raise ArgumentError.new("Passenger id doesn't exist") if passenger.nil?
+      driver = find_available_driver
+      if driver.nil?
+        puts "There are no drivers AVAILABLE"
+        return nil
+      end
+      trip = Trip.new({
+        id: @trips.last.id + 1,
+        driver: driver,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+        })
+        driver.add_latest_trip trip
+        passenger.add_trip trip
+        @trips << trip
+        return trip
+    end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
     private
 
     def check_id(id)
@@ -97,5 +133,6 @@ module RideShare
         raise ArgumentError.new("ID cannot be blank or less than zero. (got #{id})")
       end
     end
+
   end
 end
