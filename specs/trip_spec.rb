@@ -18,6 +18,67 @@ describe "Trip class" do
       @trip = RideShare::Trip.new(@trip_data)
     end
 
+    it "will alert the user to an end time before start time" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = 0
+      new_trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      proc {RideShare::Trip.new(new_trip_data) }.must_raise ArgumentError
+    end
+
+    it "will alert the user to a nil time input" do
+      new_trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: nil,
+        end_time: nil,
+        cost: 23.45,
+        rating: 3
+      }
+
+      proc {RideShare::Trip.new(new_trip_data) }.must_raise ArgumentError
+    end
+
+    it "will ensure a Time object input" do
+      new_trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: 34,
+        end_time: 45,
+        cost: 23.45,
+        rating: 3
+      }
+
+      proc { RideShare::Trip.new(new_trip_data) }.must_raise ArgumentError
+    end
+
+    it "will return the duration of a trip" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip_data = {
+        id: 8,
+        driver: RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678"),
+        passenger: RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640"),
+        start_time: start_time,
+        end_time: end_time,
+        cost: 23.45,
+        rating: 3
+      }
+      a_trip = RideShare::Trip.new(trip_data)
+      diff = (end_time - start_time).to_i
+      a_trip.trip_in_seconds.must_equal diff
+
+    end
+
     it "is an instance of Trip" do
       @trip.must_be_kind_of RideShare::Trip
     end
