@@ -99,7 +99,7 @@ module RideShare
       # helper method for in_progress
       trip_id = (trips.last.id) + 1
       available_driver = @drivers.find {|driver| driver.status == :AVAILABLE}
-      start_time =  Time.now
+      start_time = Time.now
       # if driver is available then return their id # && make them UNAVAILABLE
       passenger = find_passenger(passenger_id)
 
