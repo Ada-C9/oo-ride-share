@@ -9,10 +9,10 @@ module RideShare
   class TripDispatcher
     attr_reader :drivers, :passengers, :trips
 
-    def initialize
-      @drivers = load_drivers
-      @passengers = load_passengers
-      @trips = load_trips
+    def initialize(drivers=nil, passengers=nil)
+      @drivers = drivers != nil ? drivers : load_drivers
+      @passengers = passengers != nil ? passengers : load_passengers
+      @trips = (drivers != nil || passengers != nil) ? [] : load_trips
     end
 
     def load_drivers

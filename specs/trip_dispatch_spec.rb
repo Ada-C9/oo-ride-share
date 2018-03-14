@@ -89,4 +89,41 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "optional parameters in initialize" do
+    it "optionally takes in drivers parameter, which should make trips array empty" do
+      test_driver = RideShare::Driver.new({id: 1, name: 'Virginia Bartell', vin: '12345678901234567'})
+
+      dispatcher = RideShare::TripDispatcher.new( [ test_driver ] )
+
+      dispatcher.drivers.must_be_kind_of Array
+      dispatcher.drivers.length.must_equal 1
+
+      driver = dispatcher.drivers.first
+      driver.must_be_kind_of RideShare::Driver
+      driver.id.must_equal 1
+      driver.name.must_equal 'Virginia Bartell'
+      driver.vehicle_id.must_equal '12345678901234567'
+
+      dispatcher.passengers.length.must_equal 300
+      dispatcher.trips.must_be_empty
+    end
+
+    it "optionally takes in passengers parameter, which should make trips array empty" do
+      test_passenger = RideShare::Passenger.new({id: 99, name: 'Kali Skiles PhD'})
+
+      dispatcher = RideShare::TripDispatcher.new( nil, [ test_passenger ] )
+
+      dispatcher.passengers.must_be_kind_of Array
+      dispatcher.passengers.length.must_equal 1
+
+      passenger = dispatcher.passengers.first
+      passenger.must_be_kind_of RideShare::Passenger
+      passenger.id.must_equal 99
+      passenger.name.must_equal 'Kali Skiles PhD'
+
+      dispatcher.drivers.length.must_equal 100
+      dispatcher.trips.must_be_empty
+    end
+  end
 end
