@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-xdescribe "Driver class" do
+describe "Driver class" do
   before do
     # 1,Bernardo Prosacco,WBWSS52P9NEYLVDE9,UNAVAILABLE
     # 1,1,54,2016-04-05T14:01:00+00:00,2016-04-05T14:09:00+00:00,17.39,3
@@ -11,7 +11,7 @@ xdescribe "Driver class" do
   end
 
 
-  xdescribe "Driver instantiation" do
+  describe "Driver instantiation" do
     before do
       @driver = RideShare::Driver.new(id: 1, name: "George", vin: "33133313331333133")
     end
@@ -46,7 +46,7 @@ xdescribe "Driver class" do
     end
   end
 
-  xdescribe "add trip method" do
+  describe "add trip method" do
     before do
       pass = RideShare::Passenger.new(id: 1, name: "Ada", phone: "412-432-7640")
       @driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
@@ -67,12 +67,10 @@ xdescribe "Driver class" do
   describe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, date: "2016-08-08", rating: 5})
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 5})
       @driver.add_trip(trip)
-    end
-
-    it "returns a float" do
-      @driver.average_rating.must_be_kind_of Float
     end
 
     it "returns a float within range of 1.0 to 5.0" do
@@ -81,9 +79,35 @@ xdescribe "Driver class" do
       average.must_be :<=, 5.0
     end
 
-    it "returns zero if no trips" do
+    it "returns the average rating for all finished trips" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 3})
+      @driver.add_trip(trip)
+
+      @driver.average_rating.must_equal 4.0
+    end
+
+    it "ignores unfinished trips" do
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      end_time = start_time + 25 * 60 # 25 minutes
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: end_time, rating: 3})
+      @driver.add_trip(trip)
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: nil, rating: nil})
+      @driver.add_trip(trip)
+      @driver.average_rating.must_equal 4.0
+
+    end
+
+
+    it "returns nil if no finished trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
-      driver.average_rating.must_equal 0
+      driver.average_rating.must_be_nil
+
+      start_time = Time.parse('2015-05-20T12:14:00+00:00')
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: nil, start_time: start_time, end_time: nil, rating: 5})
+      driver.add_trip(trip)
+      driver.average_rating.must_be_nil
     end
   end
 
@@ -91,7 +115,7 @@ xdescribe "Driver class" do
     it "calculates the driver total revenue" do
       @driver.add_trip(@trip_1)
       @driver.add_trip(@trip_2)
-      @driver.total_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8
+      @driver.total_revenue.must_equal (17.39 - 1.65 + 13.11 - 1.65) * 0.8
     end
 
     it "returns 0 if there is no trip for this driver" do
@@ -103,7 +127,7 @@ xdescribe "Driver class" do
     it "calculates the driver average revenue" do
       @driver.add_trip(@trip_1)
       @driver.add_trip(@trip_2)
-      @driver.average_revenue.must_equal (17.39 + 13.11 - 1.65) * 0.8 / 2.round(2)
+      @driver.average_revenue.must_equal ((17.39 - 1.65 + 13.11 - 1.65) * 0.8 / 2).round(2)
     end
   end
 end

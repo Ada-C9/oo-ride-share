@@ -1,6 +1,6 @@
 require 'csv'
 require_relative 'trip'
-
+require 'pry'
 module RideShare
   class Driver
     attr_reader :id, :name, :vehicle_id, :trips
@@ -23,20 +23,15 @@ module RideShare
 
     def finished_trips
       @trips.select { |trip| trip.end_time != nil  }
-    end # finished trips
+    end
 
     def average_rating
+      return if finished_trips.empty?
       total_ratings = 0
       finished_trips.each do |trip|
         total_ratings += trip.rating
       end
-
-      if finished_trips.length == 0
-        average = 0
-      else
-        average = (total_ratings.to_f) / trips.length
-      end
-      return average
+      return (total_ratings.to_f) / finished_trips.length
     end
 
     def add_trip(trip)
@@ -48,12 +43,11 @@ module RideShare
     end
 
     def total_revenue
-      @trips.finished_trips.inject(0) {| sum , trip| sum + ((trip.cost - 1.65) * 0.8)}
-      return total_revenue
+      finished_trips.inject(0) {| sum , trip| sum + trip.cost - 1.65} * 0.8
     end
 
     def average_revenue
-      @trips.empty? ? 0 : (total_revenue / @trips.finished_trips.length.round(2))
+      @trips.empty? ? 0 : (total_revenue / finished_trips.length).round(2)
     end
 
     def change_status
