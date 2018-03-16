@@ -36,7 +36,9 @@ describe "Passenger class" do
   describe "trips property" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723", trips: [])
-      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, date: "2016-08-08", rating: 5})
+      start_time = Time.parse("2016-05-02T09:06:00+00:00")
+      end_time = Time.parse("2016-05-02T09:56:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: nil, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
 
       @passenger.add_trip(trip)
     end
@@ -58,8 +60,9 @@ describe "Passenger class" do
     before do
       @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
       driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
-      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, date: "2016-08-08", rating: 5})
-
+      start_time = Time.parse("2016-05-02T09:06:00+00:00")
+      end_time = Time.parse("2016-05-02T09:56:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, rating: 5})
       @passenger.add_trip(trip)
     end
 
@@ -74,5 +77,26 @@ describe "Passenger class" do
         driver.must_be_kind_of RideShare::Driver
       end
     end
+  end
+
+  describe "totals" do
+    before do
+      @passenger = RideShare::Passenger.new(id: 9, name: "Merl Glover III", phone: "1-602-620-2330 x3723")
+      driver = RideShare::Driver.new(id: 3, name: "Lovelace", vin: "12345678912345678")
+      start_time = Time.parse("2016-05-02T09:06:00+00:00")
+      end_time = Time.parse("2016-05-02T09:56:00+00:00")
+      trip = RideShare::Trip.new({id: 8, driver: driver, passenger: @passenger, start_time: start_time, end_time: end_time, cost: 5.99, rating: 5})
+
+      @passenger.add_trip(trip)
+    end
+
+    it "returns the total amount spent on trips" do
+      @passenger.total_money.must_equal 5.99
+    end
+
+    it "returns the total time of the trip" do
+      @passenger.total_time.must_equal 3000
+    end
+
   end
 end

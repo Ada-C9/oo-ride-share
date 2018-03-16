@@ -22,6 +22,14 @@ describe "Trip class" do
       @trip.must_be_kind_of RideShare::Trip
     end
 
+    it "has a start/end time that is parsed with the time class" do
+      @trip.start_time.must_be_kind_of Time
+    end
+
+    it "can return the duration of a trip" do
+      @trip.duration.must_equal 1500
+    end
+
     it "stores an instance of passenger" do
       @trip.passenger.must_be_kind_of RideShare::Passenger
     end

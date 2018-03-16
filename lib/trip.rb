@@ -1,4 +1,5 @@
 require 'csv'
+require 'time'
 
 module RideShare
   class Trip
@@ -13,9 +14,36 @@ module RideShare
       @cost = input[:cost]
       @rating = input[:rating]
 
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
+
+      unless @rating == nil
+        if @rating > 5 || @rating < 1
+          raise ArgumentError.new("Invalid rating #{@rating}")
+        end
       end
+
+      return true if @end_time == nil || @start_time == nil
+
+      unless @end_time == nil
+        if @end_time < @start_time
+          puts "inside initialize start #{@start_time} and end #{@end_time}"
+          raise ArgumentError.new("Invalid start (#{@start_time}) or end time (#{@end_time})")
+        end
+      end
+    end # initialize
+
+    def duration
+      time_diff = (end_time - start_time).to_i
+      return time_diff
     end
-  end
-end
+
+    def inspect
+      "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
+  end # class
+end # module
+
+# boolean is returned below
+# def finished?
+#   return end_time != nil
+# end

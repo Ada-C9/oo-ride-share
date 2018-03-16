@@ -89,4 +89,19 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "adds new trips" do
+    before do
+      @dispatcher = RideShare::TripDispatcher.new
+    end
+    
+    it "returns the first available driver" do
+      trip = @dispatcher.request_trip(3)
+      trip[:id].must_equal(601)
+      trip[:driver].id.must_equal(2)
+      trip[:passenger].id.must_equal(3)
+      trip[:start_time].must_be_instance_of(Time)
+    end
+
+  end
 end
