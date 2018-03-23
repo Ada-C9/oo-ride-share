@@ -75,4 +75,28 @@ describe "Passenger class" do
       end
     end
   end
+
+  describe "total_spent method" do
+    it "calculates total spent" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+      expected_result = 37.95
+
+      passenger = trip_dispatcher.find_passenger(34)
+
+      passenger.total_spent.must_equal expected_result
+
+    end
+  end
+
+  describe "total_duration method" do
+    it "calculates total duration of trips" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+      expected_result = 3780.0
+
+      passenger = trip_dispatcher.find_passenger(56)
+
+      passenger.total_duration.must_equal expected_result
+
+    end
+  end
 end
