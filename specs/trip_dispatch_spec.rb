@@ -89,4 +89,17 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+  describe "available? method" do
+    it "available_drivers must be an array" do
+      new_driver = RideShare::TripDispatcher.new
+      new_driver.available?.must_be_kind_of Array
+    end
+
+    it "returns the first available driver" do
+      new_driver = RideShare::TripDispatcher.new
+
+      new_driver.available?.must_equal 
+    end
+  end
 end

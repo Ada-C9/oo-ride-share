@@ -14,6 +14,7 @@ module RideShare
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
+
     end
 
     def load_drivers
@@ -38,6 +39,54 @@ module RideShare
 
       return all_drivers
     end
+
+    # I want to access all drivers
+    # I want to put every driver with an AVAILABLE status into an array
+    # I want to return the first element from this array and delete afterwards
+
+
+    def available?
+      available_drivers =[]
+
+      all_drivers = @drivers.find{ |driver| driver.status == :AVAILABLE }
+      available_drivers << all_drivers
+      return available_drivers[0]
+    end
+
+
+
+    def request_trip(passenger_id)
+      passenger = @passengers.find{ |passenger| passenger.id == id }
+      trip_id = trips.map { |trip| trip.id}.max
+
+      input_data = {
+        id: trip_id + 1,
+        driver: available?,
+        passenger: passenger,
+        start_time: Time.now,
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      requested_trip = Trip.new(input_data)
+
+      trip = Trip.new(input_data)
+      available?.add_trip(requested_trip)
+      passenger.add_trip(requested_trip)
+      @trips << trip
+
+      return requested_trip
+    end
+
+
+
+
+
+
+
+
+
 
     def find_driver(id)
       check_id(id)
@@ -89,12 +138,6 @@ module RideShare
       end
 
       trips
-    end
-
-
-    def request_trip(passenger_id)
-    passenger = trips.find_passenger(passenger_id)
-    
     end
 
 
