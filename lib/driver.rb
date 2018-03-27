@@ -43,27 +43,32 @@ module RideShare
       @status = :UNAVAILABLE
       @trips << trip
     end
-
+    # Any trip where the end time
+    # is nil should not be included in your totals.
     def total_revenue
       fee = 1.65
       take_home = 0.8
       subtotal = 0
 
       trips.each do |trip|
-        subtotal += trip.cost - fee
+        if trip.cost != nil
+          subtotal += trip.cost - fee
+        end
+        total = subtotal * take_home
+        return total
       end
-      total = subtotal * take_home
-      return total
     end
 
     def total_hours
       trip_duration = 0
 
       trips.each do | trip |
-        trip_duration += trip.duration
-      end
-      hours = trip_duration / (60 * 60)
-      return hours
+        if trip.duration != nil
+          trip_duration += trip.duration
+        end
+        hours = trip_duration / (60 * 60)
+        return hours
+      end 
     end
 
     def average_revenue

@@ -23,20 +23,26 @@ module RideShare
       @trips << trip
     end
 
+    # Any trip where the end time
+    # is nil should NOT be included in your totals.
     def total_spent
       total = 0
       trips.each do |trip|
-        total += trip.cost
+        if trip.cost != nil
+          total += trip.cost
+        end
+        return total
       end
-      return total
     end
 
     def total_duration
       total = 0
       trips.each do |trip|
-        total += trip.duration
+        if trip.duration != nil
+          total += trip.duration
+        end
+        return total
       end
-      return total
-    end 
+    end
   end
 end
