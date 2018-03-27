@@ -36,7 +36,7 @@ module RideShare
       trips.each do |trip|
         total += trip.duration
       end
-      return total 
-    end
+      return total
+    end 
   end
 end

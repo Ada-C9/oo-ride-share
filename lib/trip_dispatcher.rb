@@ -40,52 +40,59 @@ module RideShare
       return all_drivers
     end
 
-    # I want to access all drivers
-    # I want to put every driver with an AVAILABLE status into an array
-    # I want to return the first element from this array and delete afterwards
-
-
+    # Automatically assign first AVAILABLE driver.
     def available?
       available_drivers =[]
 
-      all_drivers = @drivers.find{ |driver| driver.status == :AVAILABLE }
-      available_drivers << all_drivers
-      return available_drivers[0]
+      all_drivers = @drivers.find_all{ |driver| driver.status == :AVAILABLE }
+        available_drivers += all_drivers
+
+      return available_drivers
     end
 
 
-
+    # The passenger id will be supplied. Find passenger.
     def request_trip(passenger_id)
-      passenger = @passengers.find{ |passenger| passenger.id == id }
-      trip_id = trips.map { |trip| trip.id}.max
+
+      passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
+
+      trip_id = @trips.map { |trip| trip.id}.max + 1
+
+      driver = available?[0]
+      if driver == nil
+        raise StandardError.new("There are no available drivers")
+      end
 
       input_data = {
-        id: trip_id + 1,
-        driver: available?,
+        id: trip_id,
+        driver: driver,
         passenger: passenger,
+        # Your code should use the current time for the start_time.
         start_time: Time.now,
+        # Because the trip is in progress, the next 3 are nil.
         end_time: nil,
         cost: nil,
         rating: nil
       }
 
-      requested_trip = Trip.new(input_data)
-
+      # Create new trip.
       trip = Trip.new(input_data)
-      available?.add_trip(requested_trip)
-      passenger.add_trip(requested_trip)
-      @trips << trip
 
-      return requested_trip
+      # Add the new trip to the driver's collection of trips.
+      driver.add_trip(trip)
+
+      # Set the driver's status to UNAVAILABLE.
+
+
+      # Add the new trip to the passenger's collection of trips.
+      passenger.add_trip(trip)
+
+      # Add the new trip to the collection of all Trips in TripDispatcher
+      trips << trip
+
+      # Return the newly created trip.
+      return trip
     end
-
-
-
-
-
-
-
-
 
 
     def find_driver(id)

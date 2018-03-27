@@ -82,10 +82,23 @@ describe "Passenger class" do
       expected_result = 37.95
 
       passenger = trip_dispatcher.find_passenger(34)
+      # trip_dispatcher.request_trip(34)
 
       passenger.total_spent.must_equal expected_result
 
     end
+
+    # it "does not calculate total spent if trip is in progress" do
+    #   trip_dispatcher = RideShare::TripDispatcher.new
+    #   expected_result = nil
+    #
+    #   passenger = trip_dispatcher.find_passenger(34)
+    #   trip_dispatcher.request_trip(34)
+    #
+    #   passenger.total_spent.must_equal nil
+    #
+    # end
+
   end
 
   describe "total_duration method" do
@@ -94,6 +107,7 @@ describe "Passenger class" do
       expected_result = 3780.0
 
       passenger = trip_dispatcher.find_passenger(56)
+      # trip_dispatcher.request_trip(56)
 
       passenger.total_duration.must_equal expected_result
 
