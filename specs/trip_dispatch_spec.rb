@@ -155,8 +155,6 @@ describe "TripDispatcher class" do
 
       end
 
-
-
       proc {
 
         new_trip = trip_dispatcher.request_trip(3)
@@ -164,7 +162,7 @@ describe "TripDispatcher class" do
     end
   end
 
-    # Was the driver who was selected AVAILABLE?
+
   describe "available? method" do
 
     it "returns the first available driver" do
