@@ -1,5 +1,6 @@
 require 'csv'
 require 'time'
+require 'pry'
 
 require_relative 'driver'
 require_relative 'passenger'
@@ -13,6 +14,7 @@ module RideShare
       @drivers = load_drivers
       @passengers = load_passengers
       @trips = load_trips
+
     end
 
     def load_drivers
@@ -37,6 +39,61 @@ module RideShare
 
       return all_drivers
     end
+
+    # Automatically assign first AVAILABLE driver.
+    def available?
+      available_drivers =[]
+
+      all_drivers = @drivers.find_all{ |driver| driver.status == :AVAILABLE }
+        available_drivers += all_drivers
+
+      return available_drivers
+    end
+
+
+    # The passenger id will be supplied. Find passenger.
+    def request_trip(passenger_id)
+
+      passenger = @passengers.find{ |passenger| passenger.id == passenger_id }
+
+      trip_id = @trips.map { |trip| trip.id}.max + 1
+
+      driver = available?[0]
+      if driver == nil
+        raise StandardError.new("There are no available drivers")
+      end
+
+      input_data = {
+        id: trip_id,
+        driver: driver,
+        passenger: passenger,
+        # Your code should use the current time for the start_time.
+        start_time: Time.now,
+        # Because the trip is in progress, the next 3 are nil.
+        end_time: nil,
+        cost: nil,
+        rating: nil
+      }
+
+      # Create new trip.
+      trip = Trip.new(input_data)
+
+      # Add the new trip to the driver's collection of trips.
+      driver.add_trip(trip)
+
+      # Set the driver's status to UNAVAILABLE.
+
+
+      # Add the new trip to the passenger's collection of trips.
+      passenger.add_trip(trip)
+
+      # Add the new trip to the collection of all Trips in TripDispatcher
+      trips << trip
+
+      # Return the newly created trip.
+      return trip
+    end
+
 
     def find_driver(id)
       check_id(id)
@@ -75,8 +132,8 @@ module RideShare
           id: raw_trip[:id].to_i,
           driver: driver,
           passenger: passenger,
-          start_time: raw_trip[:start_time],
-          end_time: raw_trip[:end_time],
+          start_time: Time.parse(raw_trip[:start_time]),
+          end_time: Time.parse(raw_trip[:end_time]),
           cost: raw_trip[:cost].to_f,
           rating: raw_trip[:rating].to_i
         }
@@ -89,6 +146,7 @@ module RideShare
 
       trips
     end
+
 
     private
 

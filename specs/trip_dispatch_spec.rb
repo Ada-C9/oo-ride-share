@@ -89,4 +89,86 @@ describe "TripDispatcher class" do
       passenger.trips.must_include trip
     end
   end
+
+    # Was the trip created properly?
+  describe "request_trip method" do
+    it "checks if trip was created properly" do
+      requested_trip = RideShare::TripDispatcher.new
+      new_trip = requested_trip.request_trip(4)
+
+      new_trip.must_be_kind_of RideShare::Trip
+    end
+
+
+      # Were the trip lists for the driver and passenger updated?
+
+      # When I create a new trip with request trip
+      # we can call the trips method on the trip dispatcher
+      # and if must include the new trip
+
+      # driver - we can access the driver from the new trips
+      # and look at the list of trips on that driver
+      # and it must include the new trip
+    it "checks if trip was added to list of trips" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+
+      new_trip = trip_dispatcher.request_trip(3)
+
+
+      include_trip = trip_dispatcher.trips
+
+      include_trip.must_include new_trip
+    end
+
+
+    it "checks if trip lists were updated for driver" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+      new_trip = trip_dispatcher.request_trip(3)
+      update_driver = new_trip.driver.trips
+      update_driver.must_include new_trip
+
+    end
+
+
+    it "checks if trip lists were updated for passenger" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+      new_trip = trip_dispatcher.request_trip(3)
+      update_passenger = new_trip.passenger.trips
+      update_passenger.must_include new_trip
+    end
+
+    it "sets the driver's status to UNAVAILABLE" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+      new_trip = trip_dispatcher.request_trip(3)
+      update_status = new_trip.driver.status
+      update_status.must_equal :UNAVAILABLE
+    end
+
+    it "raises an error when there are no AVAILABLE drivers" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+      drivers = trip_dispatcher.available?
+
+
+      drivers.length.times do
+
+        new_trip = trip_dispatcher.request_trip(3)
+
+      end
+
+      proc {
+
+        new_trip = trip_dispatcher.request_trip(3)
+      }.must_raise StandardError
+    end
+  end
+
+
+  describe "available? method" do
+
+    it "returns the first available driver" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+
+      trip_dispatcher.available?.must_be_kind_of Array
+    end
+  end
 end

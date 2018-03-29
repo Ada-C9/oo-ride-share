@@ -1,3 +1,5 @@
+require 'pry'
+
 module RideShare
   class Passenger
     attr_reader :id, :name, :phone_number, :trips
@@ -19,6 +21,28 @@ module RideShare
 
     def add_trip(trip)
       @trips << trip
+    end
+
+    # Any trip where the end time
+    # is nil should NOT be included in your totals.
+    def total_spent
+      total = 0
+      trips.each do |trip|
+        if trip.cost != nil
+          total += trip.cost
+        end
+        return total
+      end
+    end
+
+    def total_duration
+      total = 0
+      trips.each do |trip|
+        if trip.duration != nil
+          total += trip.duration
+        end
+        return total
+      end
     end
   end
 end

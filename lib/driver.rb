@@ -1,5 +1,6 @@
 require 'csv'
 require_relative 'trip'
+require 'pry'
 
 module RideShare
   class Driver
@@ -17,7 +18,6 @@ module RideShare
       @name = input[:name]
       @vehicle_id = input[:vin]
       @status = input[:status] == nil ? :AVAILABLE : input[:status]
-
       @trips = input[:trips] == nil ? [] : input[:trips]
     end
 
@@ -40,8 +40,39 @@ module RideShare
       if trip.class != Trip
         raise ArgumentError.new("Can only add trip instance to trip collection")
       end
-
+      @status = :UNAVAILABLE
       @trips << trip
+    end
+    # Any trip where the end time
+    # is nil should not be included in your totals.
+    def total_revenue
+      fee = 1.65
+      take_home = 0.8
+      subtotal = 0
+
+      trips.each do |trip|
+        if trip.cost != nil
+          subtotal += trip.cost - fee
+        end
+        total = subtotal * take_home
+        return total
+      end
+    end
+
+    def total_hours
+      trip_duration = 0
+
+      trips.each do | trip |
+        if trip.duration != nil
+          trip_duration += trip.duration
+        end
+        hours = trip_duration / (60 * 60)
+        return hours
+      end 
+    end
+
+    def average_revenue
+      avg_rev = total_revenue / total_hours
     end
   end
 end

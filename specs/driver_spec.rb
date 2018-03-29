@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 describe "Driver class" do
 
@@ -75,6 +76,47 @@ describe "Driver class" do
     it "returns zero if no trips" do
       driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
       driver.average_rating.must_equal 0
+    end
+  end
+
+  describe "total_revenue method" do
+    it "returns the total revenue of driver trips" do
+      # Arrange
+
+      trip_dispatcher = RideShare::TripDispatcher.new
+      # Act
+
+      driver = trip_dispatcher.find_driver(1)
+      # Assert
+
+      driver.total_revenue.round(2).must_equal 115.97
+    end
+  end
+
+  describe "total_hours method" do
+    it "returns the total amount of hours" do
+      start_time = Time.now
+      # end_time = start_time + 30 * 60
+
+      @driver = RideShare::Driver.new(id: 54, name: "Rogers Bartell IV", vin: "1C9EVBRM0YBC564DZ")
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: start_time + 30 * 60, rating: 5})
+      @driver.add_trip(trip)
+      trip = RideShare::Trip.new({id: 8, driver: @driver, passenger: nil, start_time: start_time, end_time: start_time + 90 * 60, rating: 5})
+      @driver.add_trip(trip)
+
+
+      @driver.total_hours.must_equal 2.0
+
+    end
+  end
+
+  describe "average_revenue method" do
+    it "returns the average revenue of driver trips" do
+      trip_dispatcher = RideShare::TripDispatcher.new
+
+      driver = trip_dispatcher.find_driver(25)
+
+      driver.average_revenue.round(2).must_equal 17.32
     end
   end
 end
